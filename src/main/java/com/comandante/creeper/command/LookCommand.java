@@ -2,6 +2,7 @@
 package com.comandante.creeper.command;
 
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -35,7 +36,14 @@ public class LookCommand extends Command {
             for (String presentPlayerId : presentPlayerIds) {
                 Player presentPlayer = gameManager.getPlayerManager().getPlayer(presentPlayerId);
                 if (presentPlayer.getPlayerName().equals(target)) {
-                    write(playerManager.getLookString(presentPlayer));
+                    write(gameManager.getLookString(presentPlayer) + "\r\n");
+                }
+            }
+            Set<String> npcIds = currentRoom.getNpcIds();
+            for (String npcId : npcIds) {
+                Npc currentNpc = gameManager.getEntityManager().getNpcEntity(npcId);
+                if (currentNpc.getValidTriggers().contains(target)) {
+                    write(gameManager.getLookString(currentNpc) + "\r\n");
                 }
             }
         } finally {

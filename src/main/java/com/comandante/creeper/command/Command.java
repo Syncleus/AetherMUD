@@ -8,6 +8,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.world.Coords;
@@ -25,6 +26,7 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public abstract class Command extends SimpleChannelUpstreamHandler {
 
@@ -50,6 +52,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public List<String> originalMessageParts;
     public WorldExporter worldExporter;
     public PlayerMetadata playerMetadata;
+    public String originalCommand;
 
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description) {
@@ -144,5 +147,14 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean hasRole(PlayerRole playerRole) {
+        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
+        if (playerRoleSet != null) {
+            return playerMetadata.getPlayerRoleSet().contains(playerRole);
+        } else {
+            return false;
+        }
     }
 }

@@ -1,6 +1,9 @@
 package com.comandante.creeper.player;
 
 
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricFilter;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.SessionManager;
@@ -19,7 +22,10 @@ import org.nocrala.tools.texttablefmt.Table;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.codahale.metrics.MetricRegistry.name;
 
 public class PlayerManager {
 
@@ -116,44 +122,6 @@ public class PlayerManager {
         return players.containsKey(new String(Base64.encodeBase64(username.getBytes())));
     }
 
-    public String getLookString(Player player) {
-        PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
-        Stats playerStats = playerMetadata.getStats();
-
-        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.HEADER_AND_FOOTER);
-
-        t.setColumnWidth(0, 14, 14);
-        t.setColumnWidth(1, 3, 5);
-
-        t.addCell(player.getPlayerName());
-        t.addCell("");
-        t.addCell("Strength");
-        t.addCell(Integer.toString(playerStats.getStrength()));
-
-        t.addCell("Willpower");
-        t.addCell(Integer.toString(playerStats.getWillpower()));
-
-        t.addCell("Aim");
-        t.addCell(Integer.toString(playerStats.getAim()));
-
-        t.addCell("Agile");
-        t.addCell(Integer.toString(playerStats.getAgile()));
-
-        t.addCell("Armor");
-        t.addCell(Integer.toString(playerStats.getArmorRating()));
-
-        t.addCell("Mele");
-        t.addCell(Integer.toString(playerStats.getMeleSkill()));
-
-        t.addCell("Health");
-        t.addCell(Integer.toString(playerStats.getMaxHealth()));
-
-        t.addCell(Integer.toString(playerStats.getExperience()));
-        t.addCell("XP");
-        return t.render();
-    }
-
     public void updatePlayerHealth(String playerId, int amount) {
         synchronized (playerId) {
             PlayerMetadata playerMetadata = getPlayerMetadata(playerId);
@@ -184,4 +152,50 @@ public class PlayerManager {
         return sb.toString();
     }
 
+    public void createGauges(final PlayerMetadata playerMetadata) {
+        String guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "gold");
+        if (!doesGaugeExist(guageName)) {
+            Main.metrics.register(guageName,
+                    new Gauge<Integer>() {
+                        @Override
+                        public Integer getValue() {
+                            return playerMetadata.getGold();
+                        }
+                    });
+        }
+
+        guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health");
+        if (!doesGaugeExist(guageName)) {
+            Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health"),
+                    new Gauge<Integer>() {
+                        @Override
+                        public Integer getValue() {
+                            return playerMetadata.getStats().getCurrentHealth();
+                        }
+                    });
+        }
+
+        guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "xp");
+        if (!doesGaugeExist(guageName)) {
+            Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "xp"),
+                    new Gauge<Integer>() {
+                        @Override
+                        public Integer getValue() {
+                            return playerMetadata.getStats().getExperience();
+                        }
+                    });
+        }
+    }
+
+    public void createAllGauges() {
+        Iterator<Map.Entry<String, Player>> iterator = players.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Player> next = iterator.next();
+            createGauges(getPlayerMetadata(next.getValue().getPlayerId()));
+        }
+    }
+
+    private boolean doesGaugeExist(String name) {
+        return Main.metrics.getGauges().containsKey(name);
+    }
 }

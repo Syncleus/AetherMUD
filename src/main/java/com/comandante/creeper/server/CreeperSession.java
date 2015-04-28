@@ -3,7 +3,7 @@ package com.comandante.creeper.server;
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.server.command.Command;
+import com.comandante.creeper.command.Command;
 import com.google.common.base.Optional;
 
 import java.text.SimpleDateFormat;

@@ -4,6 +4,7 @@ package com.comandante.creeper.command.admin;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMovement;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.world.Room;
@@ -28,6 +29,9 @@ public class TeleportCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
+            if (!hasRole(PlayerRole.ADMIN)){
+                return;
+            }
             if (originalMessageParts.size() <= 1) {
                 return;
             }

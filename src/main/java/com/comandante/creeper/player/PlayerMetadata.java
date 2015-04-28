@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 
 import com.comandante.creeper.stat.Stats;
+import com.google.common.collect.Sets;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,13 +18,15 @@ public class PlayerMetadata implements Serializable {
     Stats stats;
     String[] inventory;
     private int gold;
+    Set<PlayerRole> playerRoleSet;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
         this.stats = stats;
         this.gold = gold;
+        this.playerRoleSet = playerRoleSet;
     }
 
     public String[] getInventory() {
@@ -89,5 +92,20 @@ public class PlayerMetadata implements Serializable {
 
     public void incrementGold(int amt) {
         this.gold = gold + amt;
+    }
+
+    public Set<PlayerRole> getPlayerRoleSet() {
+        return playerRoleSet;
+    }
+
+    public void setPlayerRoleSet(Set<PlayerRole> playerRoleSet) {
+        this.playerRoleSet = playerRoleSet;
+    }
+
+    public void addPlayerRole(PlayerRole playerRole) {
+        if (this.playerRoleSet == null) {
+            playerRoleSet = Sets.newHashSet();
+        }
+        playerRoleSet.add(playerRole);
     }
 }

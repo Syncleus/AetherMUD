@@ -3,7 +3,6 @@ package com.comandante.creeper;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.graphite.PickledGraphite;
 import com.comandante.creeper.Items.Item;
@@ -13,15 +12,17 @@ import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.merchant.LloydBartender;
-import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantItemForSale;
 import com.comandante.creeper.npc.*;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.CreeperCommandRegistry;
 import com.comandante.creeper.server.CreeperServer;
-import com.comandante.creeper.server.command.*;
-import com.comandante.creeper.server.command.admin.*;
+import com.comandante.creeper.command.*;
+import com.comandante.creeper.command.admin.*;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -220,6 +221,20 @@ public class Main {
         itemsForSale.put(1, merchantItemForSale);
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
+
+
+        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("fibs"));
+        playerMetadata.addPlayerRole(PlayerRole.ADMIN);
+        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+
+        PlayerMetadata blazecraftmeta = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("BLAZECRAFT"));
+        blazecraftmeta.addPlayerRole(PlayerRole.ADMIN);
+        gameManager.getPlayerManager().savePlayerMetadata(blazecraftmeta);
+
+
+        PlayerMetadata puffmeta = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("puff"));
+        puffmeta.addPlayerRole(PlayerRole.ADMIN);
+        gameManager.getPlayerManager().savePlayerMetadata(puffmeta);
 
     }
 }

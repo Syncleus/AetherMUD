@@ -1,6 +1,6 @@
 package com.comandante.creeper.server;
 
-import com.comandante.creeper.server.command.Command;
+import com.comandante.creeper.command.Command;
 
 import java.util.*;
 

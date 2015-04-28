@@ -1,13 +1,13 @@
 package com.comandante.creeper.server;
 
-import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.command.CommandAuditLog;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
-import com.comandante.creeper.server.command.Command;
+import com.comandante.creeper.command.Command;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
@@ -38,7 +38,10 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
             return;
         }
         Command commandByTrigger = Main.creeperCommandRegistry.getCommandByTrigger(rootCommand);
-        Main.metrics.counter(MetricRegistry.name(CreeperCommandHandler.class, rootCommand + "-cmd")).inc();
+        if (commandByTrigger.getDescription() != null) {
+            Main.metrics.counter(MetricRegistry.name(CreeperCommandHandler.class, rootCommand)).inc();
+            CommandAuditLog.logCommand(rootCommand, session.getUsername().get());
+        }
         commandMeter.mark();
         e.getChannel().getPipeline().addLast("executed_command", commandByTrigger);
         super.messageReceived(ctx, e);

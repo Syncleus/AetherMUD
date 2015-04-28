@@ -26,7 +26,7 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void handleUpstream(ChannelHandlerContext ctx, ChannelEvent e) throws Exception {
         if (e instanceof ChannelStateEvent) {
-            System.err.println(e);
+            System.out.println("Upstream Handling: " + e);
         }
         super.handleUpstream(ctx, e);
     }
@@ -37,7 +37,7 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
         stringBuilder
                 .append(GameManager.LOGO + "\r\n")
                 .append(RESET + "\r\n")
-               // .append("First time here? Type \"new\".\r\n")
+                .append("First time here? Type \"tupac\".\r\n")
                 .append("username: ");
         e.getChannel().write(stringBuilder.toString());
         CreeperSession creeperSession = new CreeperSession();
@@ -63,6 +63,7 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
                 e.getChannel().setAttachment(creeperSession);
                 gameManager.currentRoomLogic(Main.createPlayerId(creeperSession.getUsername().get()));
                 gameManager.getChannelUtils().write(Main.createPlayerId(creeperSession.getUsername().get()), "\r\n" + gameManager.getPlayerManager().buildPrompt(Main.createPlayerId(creeperSession.getUsername().get())));
+                gameManager.getPlayerManager().createGauges(gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(creeperSession.getUsername().get())));
             }
         } else {
             //gameManager.getPlayerManager().getSessionManager().putSession(creeperSession);

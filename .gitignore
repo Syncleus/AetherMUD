@@ -10,3 +10,4 @@ creeperDb*
 *.bak
 .idea/
 *.mapdb*
+*.log

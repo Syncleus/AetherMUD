@@ -10,17 +10,22 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.server.MultiLineInputManager;
+import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.*;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interners;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jboss.netty.channel.MessageEvent;
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.ShownBorders;
+import org.nocrala.tools.texttablefmt.Table;
 
 import java.util.Iterator;
 import java.util.List;
@@ -334,5 +339,53 @@ public class GameManager {
             }
             channelUtils.write(player.getPlayerId(), message, true);
         }
+    }
+
+    public String getLookString(Npc npc) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(npc.getName()).append("\r\n");
+        sb.append(buildLookString(npc.getStats()));
+        return sb.toString();
+    }
+
+    public String getLookString(Player player) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+        StringBuilder sb = new StringBuilder();
+        sb.append(player.getPlayerName()).append("\r\n");
+        sb.append(buildLookString(playerMetadata.getStats()));
+        return sb.toString();
+    }
+
+    public String buildLookString(Stats stats) {
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.SURROUND);
+
+        t.setColumnWidth(0, 14, 14);
+        t.setColumnWidth(1, 3, 14);
+
+        t.addCell("Strength");
+        t.addCell(Integer.toString(stats.getStrength()));
+
+        t.addCell("Willpower");
+        t.addCell(Integer.toString(stats.getWillpower()));
+
+        t.addCell("Aim");
+        t.addCell(Integer.toString(stats.getAim()));
+
+        t.addCell("Agile");
+        t.addCell(Integer.toString(stats.getAgile()));
+
+        t.addCell("Armor");
+        t.addCell(Integer.toString(stats.getArmorRating()));
+
+        t.addCell("Mele");
+        t.addCell(Integer.toString(stats.getMeleSkill()));
+
+        t.addCell("Health");
+        t.addCell(Integer.toString(stats.getCurrentHealth()) + "/" + Integer.toString(stats.getMaxHealth()));
+
+        t.addCell("XP");
+        t.addCell(Integer.toString(stats.getExperience()));
+        return t.render();
     }
 }

@@ -4,9 +4,11 @@ package com.comandante.creeper.managers;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.player.PlayerStats;
 import com.comandante.creeper.server.CreeperSession;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 import org.jboss.netty.channel.MessageEvent;
 
 public class NewUserRegistrationManager {
@@ -59,7 +61,7 @@ public class NewUserRegistrationManager {
             return;
         }
         session.setPassword(Optional.of(password));
-        PlayerMetadata playerMetadata = new PlayerMetadata(session.getUsername().get(), session.getPassword().get(), Main.createPlayerId(session.getUsername().get()), PlayerStats.DEFAULT_PLAYER.createStats(), 0);
+        PlayerMetadata playerMetadata = new PlayerMetadata(session.getUsername().get(), session.getPassword().get(), Main.createPlayerId(session.getUsername().get()), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL));
         playerManager.savePlayerMetadata(playerMetadata);
         e.getChannel().write("User created.\r\n");
         session.setState(CreeperSession.State.newUserRegCompleted);

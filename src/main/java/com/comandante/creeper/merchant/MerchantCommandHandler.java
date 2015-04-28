@@ -31,9 +31,11 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
             if (message.contains(" ")) {
                 String[] split = message.split(" ");
                 cmd = split[0];
-                Integer desiredItem = Integer.parseInt(split[1]);
-                if (cmd.equalsIgnoreCase("buy")) {
-                    merchantManager.purchaseItem(merchant, desiredItem, playerByUsername);
+                if (split.length > 1) {
+                    Integer desiredItem = Integer.parseInt(split[1]);
+                    if (cmd.equalsIgnoreCase("buy")) {
+                        merchantManager.purchaseItem(merchant, desiredItem, playerByUsername);
+                    }
                 }
             } else if (cmd.equalsIgnoreCase("done")) {
                 gameManager.getChannelUtils().write(playerByUsername.getPlayerId(), "Thanks, COME AGAIN." + "\r\n"+ "\r\n"+ "\r\n", true);

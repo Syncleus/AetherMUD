@@ -2,6 +2,7 @@ package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.player.PlayerRole;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -24,6 +25,9 @@ public class TitleCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
+            if (!hasRole(PlayerRole.ADMIN)){
+                return;
+            }
             originalMessageParts.remove(0);
             currentRoom.setRoomTitle(Joiner.on(" ").join(originalMessageParts));
             write("Titled saved.");

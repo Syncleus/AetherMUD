@@ -1,6 +1,6 @@
 package com.comandante.creeper.player;
 
-import com.comandante.creeper.server.command.MovementCommand;
+import com.comandante.creeper.command.MovementCommand;
 
 public class PlayerMovement {
 

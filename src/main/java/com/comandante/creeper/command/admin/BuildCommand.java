@@ -3,6 +3,7 @@ package com.comandante.creeper.command.admin;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.world.BasicRoom;
 import com.comandante.creeper.world.BasicRoomBuilder;
 import com.comandante.creeper.world.Coords;
@@ -37,6 +38,9 @@ public class BuildCommand extends Command {
     public synchronized void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
+            if (!hasRole(PlayerRole.ADMIN)){
+                return;
+            }
             if (originalMessageParts.size() > 1) {
                 String desiredBuildDirection = originalMessageParts.get(1);
                 if (desiredBuildDirection.equalsIgnoreCase("n") | desiredBuildDirection.equalsIgnoreCase("north")) {
