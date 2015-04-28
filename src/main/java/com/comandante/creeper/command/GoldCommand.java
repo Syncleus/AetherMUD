@@ -1,8 +1,6 @@
-package com.comandante.creeper.server.command;
+package com.comandante.creeper.command;
 
 
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;

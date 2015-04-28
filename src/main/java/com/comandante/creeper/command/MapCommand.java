@@ -1,17 +1,15 @@
-package com.comandante.creeper.server.command;
+package com.comandante.creeper.command;
 
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.world.Coords;
 import com.comandante.creeper.world.Room;
-import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class MapCommand extends Command {
 

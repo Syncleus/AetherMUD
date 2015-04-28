@@ -1,14 +1,12 @@
-package com.comandante.creeper.server.command.admin;
+package com.comandante.creeper.command.admin;
 
 
-import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.server.Color;
-import com.comandante.creeper.server.command.Command;
+import com.comandante.creeper.command.Command;
 import com.comandante.creeper.world.Room;
-import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -16,7 +14,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 public class TeleportCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("teleport", "t");

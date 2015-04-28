@@ -1,4 +1,4 @@
-package com.comandante.creeper.server.command;
+package com.comandante.creeper.command;
 
 import com.comandante.creeper.Items.LootManager;
 import com.comandante.creeper.Main;

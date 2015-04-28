@@ -1,10 +1,9 @@
-package com.comandante.creeper.server.command;
+package com.comandante.creeper.command;
 
 
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.player.Player;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -13,10 +12,6 @@ import org.jboss.netty.channel.MessageEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-
-import static com.comandante.creeper.server.Color.RESET;
-import static com.comandante.creeper.server.Color.YELLOW;
 
 public class TalkCommand extends Command {
 

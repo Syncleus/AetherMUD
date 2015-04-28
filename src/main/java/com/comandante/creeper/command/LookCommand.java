@@ -1,5 +1,5 @@
 
-package com.comandante.creeper.server.command;
+package com.comandante.creeper.command;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;

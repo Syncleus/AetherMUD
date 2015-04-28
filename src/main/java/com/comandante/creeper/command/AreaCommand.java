@@ -1,9 +1,7 @@
-package com.comandante.creeper.server.command;
+package com.comandante.creeper.command;
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.Player;
 import com.comandante.creeper.world.Area;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
