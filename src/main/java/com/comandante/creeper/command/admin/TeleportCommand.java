@@ -8,6 +8,7 @@ import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.world.Room;
+import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -29,7 +30,7 @@ public class TeleportCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (!hasRole(PlayerRole.ADMIN)){
+            if (!hasAnyOfRoles(Sets.newHashSet(PlayerRole.ADMIN, PlayerRole.TELEPORTER))){
                 return;
             }
             if (originalMessageParts.size() <= 1) {
@@ -41,9 +42,10 @@ public class TeleportCommand extends Command {
                 Map.Entry<String, Player> next = players.next();
                 if (next.getValue().getPlayerName().equals(desiredId)) {
                     Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(next.getValue()).get();
+                    Integer destinationRoomId = playerCurrentRoom.getRoomId();
                     PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), playerCurrentRoom.getRoomId(), null, "vanished into the heavens.", "");
+                    channelUtils.writeToRoom(destinationRoomId, "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n");
                     gameManager.movePlayer(playerMovement);
-                    channelUtils.writeToRoom(playerId, "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n");
                     gameManager.currentRoomLogic(player.getPlayerId());
                     return;
                 }
@@ -53,8 +55,8 @@ public class TeleportCommand extends Command {
                 Map.Entry<Integer, Room> next = rooms.next();
                 if (Integer.toString(next.getKey()).equals(desiredId)) {
                     PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), Integer.parseInt(desiredId), null, "vanished into the heavens.", "");
+                    channelUtils.writeToRoom(Integer.parseInt(desiredId), "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n");
                     gameManager.movePlayer(playerMovement);
-                    channelUtils.writeToRoom(playerId, "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n");
                     gameManager.currentRoomLogic(player.getPlayerId());
                     return;
                 }

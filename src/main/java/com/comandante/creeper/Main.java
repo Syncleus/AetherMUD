@@ -74,6 +74,7 @@ public class Main {
 
         RoomManager roomManager = new RoomManager();
         PlayerManager playerManager = new PlayerManager(db, new SessionManager());
+        playerManager.createAllGauges();
         startUpMessage("Configuring default admins.");
         MapsManager mapsManager = new MapsManager(roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
@@ -222,7 +223,6 @@ public class Main {
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
 
-
         PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("fibs"));
         playerMetadata.addPlayerRole(PlayerRole.ADMIN);
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
@@ -231,10 +231,14 @@ public class Main {
         blazecraftmeta.addPlayerRole(PlayerRole.ADMIN);
         gameManager.getPlayerManager().savePlayerMetadata(blazecraftmeta);
 
-
         PlayerMetadata puffmeta = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("puff"));
         puffmeta.addPlayerRole(PlayerRole.ADMIN);
         gameManager.getPlayerManager().savePlayerMetadata(puffmeta);
 
+        PlayerMetadata likwidmeta = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("likwid"));
+        if (likwidmeta != null) {
+            likwidmeta.addPlayerRole(PlayerRole.TELEPORTER);
+            gameManager.getPlayerManager().savePlayerMetadata(likwidmeta);
+        }
     }
 }

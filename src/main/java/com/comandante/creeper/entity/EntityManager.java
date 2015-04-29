@@ -4,7 +4,6 @@ import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.ItemSerializer;
 import com.comandante.creeper.fight.FightResults;
-import com.comandante.creeper.fight.FightResultsBuilder;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
@@ -92,7 +91,7 @@ public class EntityManager {
                     int experience = playerManager.getPlayerMetadata(playerId).getStats().getExperience();
                     experience += npc.getStats().getExperience();
                     channelUtils.write(playerId, "You killed " + npc.getName() + " (" + npc.getStats().getExperience() + "exp)", true);
-                    channelUtils.writeToRoom(playerId, npc.getDieMessage());
+                    channelUtils.writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
                     playerManager.getPlayerMetadata(playerId).getStats().setExperience(experience);
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
                     addItem(corpse);

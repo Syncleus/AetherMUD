@@ -53,7 +53,7 @@ public class FightRun implements Callable<FightResults> {
 
 
         if (playerStats.getCurrentHealth() <= 0) {
-            gameManager.getChannelUtils().writeToRoom(player.getPlayerId(), player.getPlayerName() + " is now dead." + "\r\n");
+            gameManager.getChannelUtils().writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is now dead." + "\r\n");
             PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
             gameManager.movePlayer(playerMovement);
             gameManager.currentRoomLogic(player.getPlayerId());

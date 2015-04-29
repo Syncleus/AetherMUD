@@ -40,7 +40,7 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
         Command commandByTrigger = Main.creeperCommandRegistry.getCommandByTrigger(rootCommand);
         if (commandByTrigger.getDescription() != null) {
             Main.metrics.counter(MetricRegistry.name(CreeperCommandHandler.class, rootCommand)).inc();
-            CommandAuditLog.logCommand(rootCommand, session.getUsername().get());
+            CommandAuditLog.logCommand((String) e.getMessage(), session.getUsername().get());
         }
         commandMeter.mark();
         e.getChannel().getPipeline().addLast("executed_command", commandByTrigger);

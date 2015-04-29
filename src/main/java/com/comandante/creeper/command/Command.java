@@ -130,7 +130,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     }
 
     public void writeToRoom(String msg) {
-        channelUtils.writeToRoom(playerId, msg);
+        channelUtils.writeToPlayerCurrentRoom(playerId, msg);
     }
 
     public void currentRoomLogic() {
@@ -156,5 +156,19 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         } else {
             return false;
         }
+    }
+
+    public boolean hasAnyOfRoles(Set<PlayerRole> checkRoles) {
+        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
+        if (playerRoleSet != null) {
+            for (PlayerRole checkRole : checkRoles) {
+                if (playerRoleSet.contains(checkRole)) {
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+        return false;
     }
 }

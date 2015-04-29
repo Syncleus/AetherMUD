@@ -63,7 +63,6 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
                 e.getChannel().setAttachment(creeperSession);
                 gameManager.currentRoomLogic(Main.createPlayerId(creeperSession.getUsername().get()));
                 gameManager.getChannelUtils().write(Main.createPlayerId(creeperSession.getUsername().get()), "\r\n" + gameManager.getPlayerManager().buildPrompt(Main.createPlayerId(creeperSession.getUsername().get())));
-                gameManager.getPlayerManager().createGauges(gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(creeperSession.getUsername().get())));
             }
         } else {
             //gameManager.getPlayerManager().getSessionManager().putSession(creeperSession);

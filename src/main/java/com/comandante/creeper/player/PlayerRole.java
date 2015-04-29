@@ -3,9 +3,9 @@ package com.comandante.creeper.player;
 public enum PlayerRole {
 
     ADMIN("administrator", 1),
-    MORTAL("mortal", 2);
-
-
+    MORTAL("mortal", 2),
+    TELEPORTER("TELEPORTER", 3);
+    
     private final String roleType;
     private final int roleId;
 

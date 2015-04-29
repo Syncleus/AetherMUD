@@ -188,10 +188,10 @@ public class PlayerManager {
     }
 
     public void createAllGauges() {
-        Iterator<Map.Entry<String, Player>> iterator = players.entrySet().iterator();
+        Iterator<Map.Entry<String, PlayerMetadata>> iterator = playerMetadataStore.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<String, Player> next = iterator.next();
-            createGauges(getPlayerMetadata(next.getValue().getPlayerId()));
+            Map.Entry<String, PlayerMetadata> next = iterator.next();
+            createGauges(next.getValue());
         }
     }
 

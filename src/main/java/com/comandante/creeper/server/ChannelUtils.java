@@ -17,7 +17,16 @@ public class ChannelUtils {
         this.roomManager = roomManager;
     }
 
-    public void writeToRoom(String playerId, String message) {
+    public void writeToRoom(Integer roomId, String message) {
+        Room room = roomManager.getRoom(roomId);
+        Set<String> presentPlayerIds = room.getPresentPlayerIds();
+        for (String id : presentPlayerIds) {
+            Player presentPlayer = playerManager.getPlayer(id);
+            write(presentPlayer.getPlayerId(), message, true);
+        }
+    }
+
+    public void writeToPlayerCurrentRoom(String playerId, String message) {
         if (playerManager.getSessionManager().getSession(playerId).getGrabMultiLineInput().isPresent()) {
             return;
         }
