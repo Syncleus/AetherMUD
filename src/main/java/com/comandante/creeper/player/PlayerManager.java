@@ -5,6 +5,7 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.MapDbAutoCommitService;
 import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.server.Color;
@@ -45,6 +46,8 @@ public class PlayerManager {
         } else {
             this.playerMetadataStore = db.createHashMap("playerMetadata").valueSerializer(new PlayerMetadataSerializer()).make();
         }
+        MapDbAutoCommitService mapDbAutoCommitService = new MapDbAutoCommitService(db);
+        mapDbAutoCommitService.startAsync();
         this.sessionManager = sessionManager;
     }
 
@@ -91,7 +94,7 @@ public class PlayerManager {
 
     public void savePlayerMetadata(PlayerMetadata playerMetadata) {
         playerMetadataStore.put(playerMetadata.getPlayerId(), playerMetadata);
-        db.commit();
+        //db.commit();
     }
 
     public Player addPlayer(Player player) {

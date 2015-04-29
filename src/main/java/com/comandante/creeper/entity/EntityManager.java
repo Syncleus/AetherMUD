@@ -68,7 +68,7 @@ public class EntityManager {
 
     public void removeItem(Item item) {
         items.remove(item.getItemId());
-        db.commit();
+        //db.commit();
     }
 
     public void deleteNpcEntity(String npcId) {

@@ -22,6 +22,8 @@ public class TeleportCommand extends Command {
     final static String description = "Teleport to a roomId or playerId. For admins only.";
     final static boolean isAdminOnly = true;
 
+    final static String teleportMessage = "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n";
+
     public TeleportCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description, isAdminOnly);
     }
@@ -44,7 +46,8 @@ public class TeleportCommand extends Command {
                     Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(next.getValue()).get();
                     Integer destinationRoomId = playerCurrentRoom.getRoomId();
                     PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), playerCurrentRoom.getRoomId(), null, "vanished into the heavens.", "");
-                    channelUtils.writeToRoom(destinationRoomId, "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n");
+                    channelUtils.writeToRoom(destinationRoomId, teleportMessage);
+                    channelUtils.write(playerId, teleportMessage);
                     gameManager.movePlayer(playerMovement);
                     gameManager.currentRoomLogic(player.getPlayerId());
                     return;
@@ -55,7 +58,8 @@ public class TeleportCommand extends Command {
                 Map.Entry<Integer, Room> next = rooms.next();
                 if (Integer.toString(next.getKey()).equals(desiredId)) {
                     PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), Integer.parseInt(desiredId), null, "vanished into the heavens.", "");
-                    channelUtils.writeToRoom(Integer.parseInt(desiredId), "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n");
+                    channelUtils.writeToRoom(Integer.parseInt(desiredId), teleportMessage);
+                    channelUtils.write(playerId, teleportMessage);
                     gameManager.movePlayer(playerMovement);
                     gameManager.currentRoomLogic(player.getPlayerId());
                     return;
