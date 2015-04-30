@@ -1,5 +1,8 @@
 package com.comandante.creeper.Items;
 
+import com.comandante.creeper.player.EquipmentBuilder;
+import com.comandante.creeper.server.Color;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -8,15 +11,15 @@ import static com.comandante.creeper.server.Color.*;
 
 public enum ItemType {
 
-
-    UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0),
+    UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0, false),
     KEY(1, Arrays.asList("key", "gold key", "shiny gold key"),
             YELLOW + "a shiny gold key" + RESET,
             YELLOW + "a shiny gold key" + RESET + " catches your eye.",
             "A basic key with nothing really remarkable other than its made of gold.",
             false,
             0,
-            60),
+            60,
+            false),
 
     BEER(2, Arrays.asList("beer", "can of beer", "b"),
             "a dented can of " + CYAN + "beer" + RESET,
@@ -24,7 +27,8 @@ public enum ItemType {
             "an ice cold " + CYAN + "beer" + RESET + " that restores 50 health" + RESET,
             true,
             2,
-            60),
+            60,
+            false),
 
     BOOK(3, Arrays.asList("book", "used book"),
             MAGENTA + "a leather book" + RESET,
@@ -32,7 +36,17 @@ public enum ItemType {
             "A book written in a foreign language. Doesn't matter as you can't read.",
             false,
             0,
-            60);
+            60,
+            false),
+
+    WOMB_SHIFTER(4, Arrays.asList("womb", "womb shifter", "the womb shifter"),
+            Color.YELLOW + "the womb shifter" + Color.RESET,
+            "A sword big enough to shift wombs.",
+            "A bloody womb shifter lays upon the ground.",
+            false,
+            0,
+            60,
+            true);
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
@@ -42,8 +56,9 @@ public enum ItemType {
     private final boolean isDisposable;
     private final int maxUses;
     private final int itemHalfLifeTicks;
+    private final boolean isEquipment;
 
-    ItemType(Integer itemTypeCode, List<String> itemTriggers, String itemName, String restingName, String itemDescription, boolean isDisposable, int maxUses, int itemHalfLifeTicks) {
+    ItemType(Integer itemTypeCode, List<String> itemTriggers, String itemName, String restingName, String itemDescription, boolean isDisposable, int maxUses, int itemHalfLifeTicks, boolean isEquipment) {
         this.itemTypeCode = itemTypeCode;
         this.itemTriggers = itemTriggers;
         this.itemName = itemName;
@@ -56,10 +71,15 @@ public enum ItemType {
             this.isDisposable = isDisposable;
         }
         this.itemHalfLifeTicks = itemHalfLifeTicks;
+        this.isEquipment = isEquipment;
     }
 
     public Item create() {
-        return new Item(getItemName(), getItemDescription(), getItemTriggers(), getRestingName(), UUID.randomUUID().toString(), getItemTypeCode(), 0, false, itemHalfLifeTicks);
+        Item newItem = new Item(getItemName(), getItemDescription(), getItemTriggers(), getRestingName(), UUID.randomUUID().toString(), getItemTypeCode(), 0, false, itemHalfLifeTicks);
+        if (isEquipment) {
+            return EquipmentBuilder.Build(newItem);
+        }
+        return newItem;
     }
 
 

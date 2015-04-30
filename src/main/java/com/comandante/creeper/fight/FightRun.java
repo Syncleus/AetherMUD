@@ -28,7 +28,8 @@ public class FightRun implements Callable<FightResults> {
     public FightResults call() throws Exception {
         Stats npcStats = npc.getStats();
         PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
-        Stats playerStats = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats();
+        Stats baseStats = playerMetadata.getStats();
+        Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipment(playerMetadata);
 
         while (npcStats.getCurrentHealth() > 0) {
             if (playerStats.getCurrentHealth() <= 0) {

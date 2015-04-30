@@ -1,7 +1,7 @@
 package com.comandante.creeper.Items;
 
 
-import com.google.common.base.Optional;
+import com.comandante.creeper.player.Equipment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,9 +18,10 @@ public class Item implements Serializable {
     private boolean isWithPlayer;
     private Loot loot;
     private final int itemHalfLifeTicks;
+    private Equipment equipment;
 
     public static final int CORPSE_ID_RESERVED = 100;
-
+    public static final int EQUIPMENT_ID_RESERVED = 101;
 
     public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks) {
         this.itemName = itemName;
@@ -118,5 +119,13 @@ public class Item implements Serializable {
 
     public Loot getLoot() {
         return loot;
+    }
+
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
     }
 }

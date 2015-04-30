@@ -19,14 +19,16 @@ public class PlayerMetadata implements Serializable {
     String[] inventory;
     private int gold;
     Set<PlayerRole> playerRoleSet;
+    String[] playerEquipment;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
         this.stats = stats;
         this.gold = gold;
         this.playerRoleSet = playerRoleSet;
+        this.playerEquipment = playerEquipment;
     }
 
     public String[] getInventory() {
@@ -56,6 +58,27 @@ public class PlayerMetadata implements Serializable {
             i++;
         }
         this.inventory = newItems;
+    }
+
+    public void addEquipmentEntityId(String equipmentItemId) {
+        if (playerEquipment == null) {
+            playerEquipment = new String[0];
+        }
+        String[] result = Arrays.copyOf(playerEquipment, playerEquipment.length + 1);
+        result[playerEquipment.length] = equipmentItemId;
+        this.playerEquipment = result;
+    }
+
+    public void removeEquipmentEntityId(String equipmentItemId) {
+        List<String> equipMendItemsKeep = new ArrayList<String>(Arrays.asList(playerEquipment));
+        equipMendItemsKeep.remove(equipmentItemId);
+        String[] newItems = new String[equipMendItemsKeep.size()];
+        int i = 0;
+        for (String id : equipMendItemsKeep) {
+            newItems[i] = id;
+            i++;
+        }
+        this.playerEquipment = newItems;
     }
 
     public String getPlayerName() {
@@ -107,5 +130,9 @@ public class PlayerMetadata implements Serializable {
             playerRoleSet = Sets.newHashSet();
         }
         playerRoleSet.add(playerRole);
+    }
+
+    public String[] getPlayerEquipment() {
+        return playerEquipment;
     }
 }

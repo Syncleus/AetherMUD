@@ -8,10 +8,7 @@ import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
-import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerManager;
-import com.comandante.creeper.player.PlayerMetadata;
-import com.comandante.creeper.player.PlayerMovement;
+import com.comandante.creeper.player.*;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
@@ -60,6 +57,7 @@ public class GameManager {
     private final MapsManager mapsManager;
     private final FloorManager floorManager;
     private final LootManager lootManager;
+    private final EquipmentManager equipmentManager;
 
     public GameManager(RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -74,7 +72,11 @@ public class GameManager {
         this.floorManager = new FloorManager();
         this.channelUtils = channelUtils;
         this.lootManager = new LootManager();
+        this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager);
+    }
 
+    public EquipmentManager getEquipmentManager() {
+        return equipmentManager;
     }
 
     public LootManager getLootManager() {
@@ -352,7 +354,22 @@ public class GameManager {
         PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         StringBuilder sb = new StringBuilder();
         sb.append(player.getPlayerName()).append("\r\n");
-        sb.append(buildLookString(playerMetadata.getStats()));
+        sb.append(buildLookString(equipmentManager.getPlayerStatsWithEquipment(playerMetadata))).append("\r\n");
+        sb.append(buildEquipmentString(playerMetadata));
+        return sb.toString();
+    }
+
+    public String buildEquipmentString(PlayerMetadata playerMetadata) {
+        StringBuilder sb = new StringBuilder();
+        String[] playerEquipment = playerMetadata.getPlayerEquipment();
+        if (playerEquipment == null) {
+            return sb.toString();
+        }
+        for (String equipId: playerEquipment) {
+            Item itemEntity = entityManager.getItemEntity(equipId);
+            sb.append(itemEntity.getEquipment().getEquipmentSlotType().getName()).append(": ");
+            sb.append(itemEntity.getItemName()).append("\r\n");
+        }
         return sb.toString();
     }
 

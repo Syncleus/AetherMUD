@@ -113,6 +113,8 @@ public class Main {
         creeperCommandRegistry.addCommand(new InfoCommand(gameManager));
         creeperCommandRegistry.addCommand(new TeleportCommand(gameManager));
         creeperCommandRegistry.addCommand(new TalkCommand(gameManager));
+        creeperCommandRegistry.addCommand(new EquipCommand(gameManager));
+
 
 
         createNpcs(entityManager, gameManager);
@@ -219,7 +221,9 @@ public class Main {
 
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newHashMap();
         MerchantItemForSale merchantItemForSale = new MerchantItemForSale(ItemType.BEER, 1);
+        MerchantItemForSale wombShifterForSale = new MerchantItemForSale(ItemType.WOMB_SHIFTER, 0);
         itemsForSale.put(1, merchantItemForSale);
+        itemsForSale.put(2, wombShifterForSale);
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
 

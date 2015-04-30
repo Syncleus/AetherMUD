@@ -10,6 +10,7 @@ import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Room;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -79,6 +80,18 @@ public class PlayerManager {
     public void removeInventoryId(String playerId, String inventoryId) {
         PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
         playerMetadata.removeInventoryEntityId(inventoryId);
+        savePlayerMetadata(playerMetadata);
+    }
+
+    public void addEquipmentId(String playerId, String equipmentId) {
+        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
+        playerMetadata.addEquipmentEntityId(equipmentId);
+        savePlayerMetadata(playerMetadata);
+    }
+
+    public void removeEquipmentId(String playerId, String equipmentId) {
+        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
+        playerMetadata.removeEquipmentEntityId(equipmentId);
         savePlayerMetadata(playerMetadata);
     }
 
