@@ -65,7 +65,7 @@ public class MovementCommand extends Command {
                 Optional<RemoteExit> remoteExitOptional = doesEnterExitExist();
                 if (remoteExitOptional.isPresent()) {
                     Room destinationRoom = roomManager.getRoom(remoteExitOptional.get().getRoomId());
-                    playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "entered " + remoteExitOptional.get().getDirection() + ".", "N/A");
+                    playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "entered " + remoteExitOptional.get().getExitDetail() + ".", "N/A");
                 } else {
                     write("There's no where to go with that name. (" + command + ")");
                     return;
