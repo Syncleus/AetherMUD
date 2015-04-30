@@ -44,7 +44,8 @@ public class NewUserRegistrationManager {
             newUserRegistrationFlow(session, e);
             return false;
         }
-        session.setUsername(Optional.of((String) e.getMessage()));
+        String username = (String) e.getMessage();
+        session.setUsername(Optional.of(username.replaceAll("[^a-zA-Z0-9]", "")));
         return true;
     }
 

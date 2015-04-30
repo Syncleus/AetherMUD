@@ -24,7 +24,7 @@ public class MapCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (originalMessageParts.size() > 1) {
+            if (originalMessageParts.size() > 1 && isInteger(originalMessageParts.get(1))) {
                 int max = Integer.parseInt(originalMessageParts.get(1));
                 write(mapsManager.drawMap(currentRoom.getRoomId(), new Coords(max, max)));
             } else {

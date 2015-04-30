@@ -41,8 +41,8 @@ public enum ItemType {
 
     BROAD_SWORD(4, Arrays.asList("sword", "broad", "a broad sword", "the broad sword"),
             Color.YELLOW + "the broad sword" + Color.RESET,
-            "A great broad sword.",
-            "A big broad sword rests upon the ground.",
+            "An iron broad sword rests upon the ground.",
+            "An iron broad sword",
             false,
             0,
             60,

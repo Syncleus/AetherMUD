@@ -2,12 +2,10 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 
-import java.util.Set;
 
 public class EquipmentManager {
 

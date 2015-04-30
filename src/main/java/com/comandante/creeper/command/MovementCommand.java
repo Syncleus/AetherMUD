@@ -57,10 +57,10 @@ public class MovementCommand extends Command {
                 playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited to the west.", "east");
             } else if (upTriggers.contains(command.toLowerCase()) && currentRoom.getUpId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getUpId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited to the west.", "down");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited up.", "down");
             } else if (downTriggers.contains(command.toLowerCase()) && currentRoom.getDownId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getDownId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited to the west.", "up");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited down.", "up");
             } else if (enterTriggers.contains(command.toLowerCase())) {
                 Optional<RemoteExit> remoteExitOptional = doesEnterExitExist();
                 if (remoteExitOptional.isPresent()) {

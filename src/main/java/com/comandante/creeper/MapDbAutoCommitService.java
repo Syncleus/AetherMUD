@@ -21,6 +21,6 @@ public class MapDbAutoCommitService extends AbstractScheduledService {
 
     @Override
     protected Scheduler scheduler() {
-        return Scheduler.newFixedRateSchedule(0, 120, TimeUnit.SECONDS);
+        return Scheduler.newFixedRateSchedule(30, 120, TimeUnit.SECONDS);
     }
 }
