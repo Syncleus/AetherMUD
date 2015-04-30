@@ -26,7 +26,7 @@ public class EquipmentBuilder {
     }
 
     public static Item getWombShifter(Item item) {
-        Stats stats = new StatsBuilder().setStrength(5).createStats();
+        Stats stats = new StatsBuilder().setStrength(10).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
         item.setEquipment(equipment);
         return item;

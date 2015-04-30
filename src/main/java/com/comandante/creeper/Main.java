@@ -221,7 +221,7 @@ public class Main {
 
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newHashMap();
         MerchantItemForSale merchantItemForSale = new MerchantItemForSale(ItemType.BEER, 1);
-        MerchantItemForSale wombShifterForSale = new MerchantItemForSale(ItemType.WOMB_SHIFTER, 0);
+        MerchantItemForSale wombShifterForSale = new MerchantItemForSale(ItemType.WOMB_SHIFTER, 1000);
         itemsForSale.put(1, merchantItemForSale);
         itemsForSale.put(2, wombShifterForSale);
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
