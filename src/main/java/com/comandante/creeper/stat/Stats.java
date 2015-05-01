@@ -17,6 +17,24 @@ public class Stats implements Serializable {
     private int experience;
     private int gold;
 
+    public Stats(Stats stats) {
+        this.strength = stats.strength;
+        this.willpower = stats.willpower;
+        this.aim = stats.aim;
+        this.agile = stats.agile;
+        this.armorRating = stats.armorRating;
+        this.meleSkill = stats.meleSkill;
+        this.currentHealth = stats.currentHealth;
+        this.maxHealth = stats.maxHealth;
+        this.currentHealth = stats.currentHealth;
+        this.maxHealth = stats.maxHealth;
+        this.weaponRatingMax = stats.weaponRatingMax;
+        this.weaponRatingMin = stats.weaponRatingMin;
+        this.numberOfWeaponRolls = stats.numberOfWeaponRolls;
+        this.experience = stats.experience;
+        this.gold = stats.gold;
+    }
+
     public int getExperience() {
         return experience;
     }

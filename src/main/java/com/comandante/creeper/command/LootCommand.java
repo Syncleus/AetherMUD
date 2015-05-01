@@ -24,7 +24,7 @@ public class LootCommand extends Command {
         configure(e);
         try {
             if (originalMessageParts.size() > 1) {
-                for (String inventoryString: playerMetadata.getInventory()) {
+                for (String inventoryString: playerManager.getInventory(player)) {
                     Item itemEntity = entityManager.getItemEntity(inventoryString);
                     if (itemEntity != null) {
                         if (itemEntity.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
@@ -33,10 +33,10 @@ public class LootCommand extends Command {
                                 int gold = lootManager.lootGoldAmountReturn(loot);
                                 if (gold > 0) {
                                     write("You looted " + gold + Color.YELLOW + " gold." + Color.RESET);
-                                    playerManager.incrementGold(playerId, gold);
+                                    playerManager.incrementGold(player, gold);
                                 }
                             }
-                            playerManager.removeInventoryId(playerId, itemEntity.getItemId());
+                            playerManager.removeInventoryId(player, itemEntity.getItemId());
                             entityManager.removeItem(itemEntity);
                             return;
                         }

@@ -36,7 +36,7 @@ public class MovementCommand extends Command {
         configure(e);
         try {
             if (FightManager.isActiveFight(creeperSession)) {
-                write("You can't not move while in a fight!");
+                write("You can't move while in a fight!");
                 return;
             }
             final String command = getRootCommand(e);

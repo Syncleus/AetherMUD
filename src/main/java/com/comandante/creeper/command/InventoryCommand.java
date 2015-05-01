@@ -4,6 +4,7 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.managers.GameManager;
+import org.apache.log4j.Logger;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -17,6 +18,8 @@ public class InventoryCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("i", "inventory");
     final static String description = "View your inventory.";
+    private static final Logger log = Logger.getLogger(InventoryCommand.class);
+
 
     public InventoryCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description);
@@ -26,17 +29,21 @@ public class InventoryCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            String[] inventory1 = playerMetadata.getInventory();
+            String[] inventory1 = playerManager.getInventory(player);
             if (inventory1 == null) {
                 write("You aren't carrying anything.");
                 return;
             }
-            ArrayList<String> inventory = new ArrayList<String>(Arrays.asList(playerMetadata.getInventory()));
+            ArrayList<String> inventory = new ArrayList<String>(Arrays.asList(inventory1));
             StringBuilder sb = new StringBuilder();
             sb.append("You are carrying:\r\n");
             sb.append(RESET);
             for (String inventoryId : inventory) {
                 Item item = entityManager.getItemEntity(inventoryId);
+                if (item == null) {
+                    log.info("ERROR!: SKIPPING INVENTORY ID: " + inventoryId + " NOT FOUND IN DB?");
+                    continue;
+                }
                 sb.append(item.getItemName());
                 int maxUses = ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses();
                 if (maxUses > 0) {

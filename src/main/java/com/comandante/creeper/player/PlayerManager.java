@@ -13,6 +13,8 @@ import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Room;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
@@ -61,53 +63,89 @@ public class PlayerManager {
         return ImmutableSet.copyOf(players);
     }
 
-    public int getNumberOfLoggedInUsers() {
-        int cnt = 0;
-        Iterator<Map.Entry<String, Player>> players = getPlayers();
-        while (players.hasNext()) {
-            Map.Entry<String, Player> next = players.next();
-            cnt++;
+    public String[] getInventory(Player player) {
+        PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+        return playerMetadata.getInventory();
+    }
+
+    public void addInventoryId(Player player, String inventoryId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.addInventoryEntityId(inventoryId);
+            savePlayerMetadata(playerMetadata);
         }
-        return cnt;
     }
 
-    public void addInventoryId(String playerId, String inventoryId) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
-        playerMetadata.addInventoryEntityId(inventoryId);
-        savePlayerMetadata(playerMetadata);
+    public void removeInventoryId(Player player, String inventoryId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.removeInventoryEntityId(inventoryId);
+            savePlayerMetadata(playerMetadata);
+        }
     }
 
-    public void removeInventoryId(String playerId, String inventoryId) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
-        playerMetadata.removeInventoryEntityId(inventoryId);
-        savePlayerMetadata(playerMetadata);
+    public void addEquipmentId(Player player, String equipmentId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.addEquipmentEntityId(equipmentId);
+            savePlayerMetadata(playerMetadata);
+        }
     }
 
-    public void addEquipmentId(String playerId, String equipmentId) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
-        playerMetadata.addEquipmentEntityId(equipmentId);
-        savePlayerMetadata(playerMetadata);
+    public void removeEquipmentId(Player player, String equipmentId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.removeEquipmentEntityId(equipmentId);
+            savePlayerMetadata(playerMetadata);
+        }
     }
 
-    public void removeEquipmentId(String playerId, String equipmentId) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
-        playerMetadata.removeEquipmentEntityId(equipmentId);
-        savePlayerMetadata(playerMetadata);
+    public void incrementGold(Player player, int amt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.incrementGold(amt);
+            savePlayerMetadata(playerMetadata);
+        }
     }
 
-    public void incrementGold(String playerId, int amt) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
-        playerMetadata.incrementGold(amt);
-        savePlayerMetadata(playerMetadata);
+    public void incrementHealth(Player player, int amt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.getStats().setCurrentHealth(playerMetadata.getStats().getCurrentHealth() + amt);
+            savePlayerMetadata(playerMetadata);
+        }
     }
 
     public PlayerMetadata getPlayerMetadata(String playerId) {
-        return playerMetadataStore.get(playerId);
+        return new PlayerMetadata(playerMetadataStore.get(playerId));
     }
 
     public void savePlayerMetadata(PlayerMetadata playerMetadata) {
         playerMetadataStore.put(playerMetadata.getPlayerId(), playerMetadata);
-        //db.commit();
+    }
+
+    public void addRole(Player player, PlayerRole playerRole) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
+            playerMetadata.addPlayerRole(playerRole);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void addExperience(Player player, int exp) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
+            playerMetadata.getStats().setExperience(playerMetadata.getStats().getExperience() + exp);
+            savePlayerMetadata(playerMetadata);
+        }
     }
 
     public Player addPlayer(Player player) {
@@ -138,13 +176,40 @@ public class PlayerManager {
         return players.containsKey(new String(Base64.encodeBase64(username.getBytes())));
     }
 
-    public void updatePlayerHealth(String playerId, int amount) {
-        synchronized (playerId) {
-            PlayerMetadata playerMetadata = getPlayerMetadata(playerId);
+    public void updatePlayerHealth(Player player, int amount) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
             Stats stats = playerMetadata.getStats();
             stats.setCurrentHealth(stats.getCurrentHealth() + amount);
             savePlayerMetadata(playerMetadata);
         }
+    }
+
+
+    public boolean hasRole(Player player, PlayerRole playerRole) {
+        PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
+        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
+        if (playerRoleSet != null) {
+            return playerMetadata.getPlayerRoleSet().contains(playerRole);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean hasAnyOfRoles(Player player, Set<PlayerRole> checkRoles) {
+        PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
+        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
+        if (playerRoleSet != null) {
+            for (PlayerRole checkRole : checkRoles) {
+                if (playerRoleSet.contains(checkRole)) {
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+        return false;
     }
 
 

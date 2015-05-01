@@ -22,7 +22,7 @@ public class GoldCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-          write("You have " + playerMetadata.getGold() + Color.YELLOW + " gold." + Color.RESET);
+          write("You have " + playerManager.getPlayerMetadata(playerId).getGold() + Color.YELLOW + " gold." + Color.RESET);
         } finally {
             super.messageReceived(ctx, e);
         }

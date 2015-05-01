@@ -19,20 +19,21 @@ public class EquipmentManager {
         this.playerManager = playerManager;
     }
 
-    public void equip(PlayerMetadata playerMetaData, Item item) {
+    public void equip(Player player, Item item) {
         if (item.getEquipment() == null){
             return;
         }
         Equipment equipment = item.getEquipment();
         EquipmentSlotType equipmentSlotType = equipment.getEquipmentSlotType();
-        if (isSlotOccupied(playerMetaData, equipmentSlotType)) {
-            unEquip(playerMetaData, item);
+        if (isSlotOccupied(player, equipmentSlotType)) {
+            unEquip(player, item);
         }
-        playerManager.addEquipmentId(playerMetaData.getPlayerId(), item.getItemId());
-        playerManager.removeInventoryId(playerMetaData.getPlayerId(), item.getItemId());
+        playerManager.addEquipmentId(player, item.getItemId());
+        playerManager.removeInventoryId(player, item.getItemId());
     }
 
-    public boolean isSlotOccupied(PlayerMetadata playerMetadata, EquipmentSlotType slot) {
+    public boolean isSlotOccupied(Player player, EquipmentSlotType slot) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         if (playerMetadata.getPlayerEquipment() == null) {
             return false;
         }
@@ -46,10 +47,11 @@ public class EquipmentManager {
         return false;
     }
 
-    public void unEquip(PlayerMetadata playerMetadata, Item item) {
+    public void unEquip(Player player, Item item) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         channelUtils.write(playerMetadata.getPlayerId(), "Un-equipping " + item.getItemName());
-        playerManager.removeEquipmentId(playerMetadata.getPlayerId(), item.getItemId());
-        playerManager.addInventoryId(playerMetadata.getPlayerId(), item.getItemId());
+        playerManager.removeEquipmentId(player, item.getItemId());
+        playerManager.addInventoryId(player, item.getItemId());
     }
 
     public Stats getPlayerStatsWithEquipment(PlayerMetadata playerMetadata) {

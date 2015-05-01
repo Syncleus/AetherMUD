@@ -48,8 +48,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public Coords currentRoomCoords;
     public List<String> originalMessageParts;
     public WorldExporter worldExporter;
-    public PlayerMetadata playerMetadata;
-    public String originalCommand;
     public EquipmentManager equipmentManager;
 
 
@@ -82,7 +80,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.mapMatrix = mapsManager.getFloorMatrixMaps().get(currentRoom.getFloorId());
         this.currentRoomCoords = mapMatrix.getCoords(currentRoom.getRoomId());
         this.originalMessageParts = getOriginalMessageParts(e);
-        this.playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
     }
 
     @Override
@@ -136,39 +133,12 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         gameManager.currentRoomLogic(playerId);
     }
 
-    public void printMap() {
-        write(currentRoom.getMapData().get());
-    }
-
     public String getPrompt() {
         return playerManager.buildPrompt(playerId);
     }
 
     public String getDescription() {
         return description;
-    }
-
-    public boolean hasRole(PlayerRole playerRole) {
-        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
-        if (playerRoleSet != null) {
-            return playerMetadata.getPlayerRoleSet().contains(playerRole);
-        } else {
-            return false;
-        }
-    }
-
-    public boolean hasAnyOfRoles(Set<PlayerRole> checkRoles) {
-        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
-        if (playerRoleSet != null) {
-            for (PlayerRole checkRole : checkRoles) {
-                if (playerRoleSet.contains(checkRole)) {
-                    return true;
-                }
-            }
-        } else {
-            return false;
-        }
-        return false;
     }
 
     public static boolean isInteger(String s) {

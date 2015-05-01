@@ -325,10 +325,10 @@ public class GameManager {
         if (playerCurrentRoom.getItemIds().contains(itemId)) {
             playerCurrentRoom.getItemIds().remove(itemId);
         }
-        playerManager.addInventoryId(player.getPlayerId(), itemId);
+        playerManager.addInventoryId(player, itemId);
         Item itemEntity = entityManager.getItemEntity(itemId);
         itemEntity.setWithPlayer(true);
-        entityManager.addItem(itemEntity);
+        entityManager.saveItem(itemEntity);
     }
 
     public void roomSay(Integer roomId, String message, String sourcePlayerId) {

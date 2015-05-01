@@ -67,7 +67,7 @@ public class FightManager {
         int chanceToHitBack = getChanceToHit(victim, challenger);
         int damageBack = getAttack(victim, challenger);
         if (randInt(0, 100) < chanceToHitBack) {
-            doPlayerDamage(player.getPlayerId(), damageBack);
+            doPlayerDamage(player, damageBack);
             channelUtils.write(player.getPlayerId(), npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + damageBack, true);
         } else {
             channelUtils.write(player.getPlayerId(), npc.getColorName() + " MISSES you!", true);
@@ -79,8 +79,8 @@ public class FightManager {
         }
     }
 
-    private void doPlayerDamage(String playerId, int damageAmount) {
-        playerManager.updatePlayerHealth(playerId, -damageAmount);
+    private void doPlayerDamage(Player player, int damageAmount) {
+        playerManager.updatePlayerHealth(player, -damageAmount);
     }
 
     private void doNpcDamage(String npcId, int damageAmount, String playerId) {

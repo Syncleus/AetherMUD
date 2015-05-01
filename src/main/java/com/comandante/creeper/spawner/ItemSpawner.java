@@ -58,7 +58,7 @@ public class ItemSpawner extends CreeperEntity {
         ArrayList<Room> rooms = Lists.newArrayList(Iterators.filter(gameManager.getRoomManager().getRoomsByArea(spawnArea).iterator(), getRoomsWithRoom()));
         Room room = rooms.get(random.nextInt(rooms.size()));
         Item item = spawnItemType.create();
-        gameManager.getEntityManager().addItem(item);
+        gameManager.getEntityManager().saveItem(item);
         gameManager.placeItemInRoom(room.getRoomId(), item.getItemId());
         Main.metrics.counter(MetricRegistry.name(ItemSpawner.class, item.getItemName()  + "-spawn")).inc();
     }

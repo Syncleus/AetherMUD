@@ -11,6 +11,8 @@ import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.base.Optional;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 
@@ -61,9 +63,9 @@ public class EntityManager {
         }
     }
 
-    public void addItem(Item item) {
+    public void saveItem(Item item) {
         items.put(item.getItemId(), item);
-        db.commit();
+        //db.commit();
     }
 
     public void removeItem(Item item) {
@@ -82,19 +84,18 @@ public class EntityManager {
 
     public void updateNpcHealth(String npcId, int amt, String playerId) {
         Player player = playerManager.getPlayer(playerId);
-        synchronized (npcId){
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(npcId)){
             Npc npc = getNpcEntity(npcId);
             if (npc != null) {
                 npc.getStats().setCurrentHealth(npc.getStats().getCurrentHealth() + amt);
                 if (npc.getStats().getCurrentHealth() <= 0) {
                     playerManager.getSessionManager().getSession(playerId).setActiveFight(Optional.<Future<FightResults>>absent());
-                    int experience = playerManager.getPlayerMetadata(playerId).getStats().getExperience();
-                    experience += npc.getStats().getExperience();
+                    playerManager.addExperience(player, npc.getStats().getExperience());
                     channelUtils.write(playerId, "You killed " + npc.getName() + " (" + npc.getStats().getExperience() + "exp)", true);
                     channelUtils.writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
-                    playerManager.getPlayerMetadata(playerId).getStats().setExperience(experience);
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
-                    addItem(corpse);
+                    saveItem(corpse);
                     roomManager.getRoom(roomManager.getPlayerCurrentRoom(player).get().getRoomId()).addPresentItem(getItemEntity(corpse.getItemId()).getItemId());
                     itemDecayManager.addItem(corpse);
                     deleteNpcEntity(npc.getEntityId());
@@ -104,7 +105,8 @@ public class EntityManager {
     }
 
     public Item getItemEntity(String itemId) {
-        return items.get(itemId);
+        Item item = items.get(itemId);
+        return new Item(item);
     }
 
     class Ticker implements Runnable {

@@ -21,7 +21,6 @@ public class CreeperSession {
     private AtomicBoolean isAbleToDoAbility = new AtomicBoolean(false);
     private Optional<CreeperEntry<UUID, Command>> grabMultiLineInput = Optional.absent();
     private Optional<CreeperEntry<Merchant, Command>> grabMerchant = Optional.absent();
-    private final long sessionCreationTimestamp = System.currentTimeMillis();
     private String lastMessage;
 
     State state;
@@ -41,14 +40,6 @@ public class CreeperSession {
 
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
-    }
-
-    public long getSessionCreationTimestamp() {
-        return sessionCreationTimestamp;
-    }
-
-    public String getPrettyDate() {
-        return  new SimpleDateFormat("d MMM yyyy, hh:mm aaa").format(new Date(getSessionCreationTimestamp()));
     }
 
     public Optional<Future<FightResults>> getActiveFight() {

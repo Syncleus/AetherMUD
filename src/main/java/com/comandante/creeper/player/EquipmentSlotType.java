@@ -5,7 +5,8 @@ public enum EquipmentSlotType {
 
     HAND("hand"),
     HEAD("head"),
-    FOOT("foot"),
+    FEET("feet"),
+    LEGS("legs"),
     WRISTS("wrists"),
     CHEST("chest");
 

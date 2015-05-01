@@ -4,6 +4,7 @@ package com.comandante.creeper.Items;
 import com.codahale.metrics.MetricRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.CreeperSession;
 
 public class ItemUseHandler {
@@ -11,14 +12,14 @@ public class ItemUseHandler {
     private final Item item;
     private final CreeperSession creeperSession;
     private final GameManager gameManager;
-    private final String playerId;
+    private final Player player;
     private final ItemType itemType;
 
-    public ItemUseHandler(Item item, CreeperSession creeperSession, GameManager gameManager, String playerId) {
+    public ItemUseHandler(Item item, CreeperSession creeperSession, GameManager gameManager, Player player) {
         this.item = item;
         this.creeperSession = creeperSession;
         this.gameManager = gameManager;
-        this.playerId = playerId;
+        this.player = player;
         this.itemType = ItemType.itemTypeFromCode(item.getItemTypeId());
     }
 
@@ -28,10 +29,10 @@ public class ItemUseHandler {
     }
 
     private void processBeer() {
-        String playerName = gameManager.getPlayerManager().getPlayer(playerId).getPlayerName();
+        String playerName = player.getPlayerName();
         writeToRoom(playerName + " drinks an ice cold cruiser." + "\r\n");
         writeToPlayer("50 health is restored.");
-        gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().incrementHealth(50);
+        gameManager.getPlayerManager().incrementHealth(player, 50);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-beer-drank")).inc();
     }
 
@@ -60,21 +61,21 @@ public class ItemUseHandler {
 
             if (itemType.isDisposable()) {
                 if (item.getNumberOfUses() < itemType.getMaxUses()) {
-                    gameManager.getEntityManager().addItem(item);
+                    gameManager.getEntityManager().saveItem(item);
                     return;
                 }
-                gameManager.getPlayerManager().removeInventoryId(playerId, item.getItemId());
+                gameManager.getPlayerManager().removeInventoryId(player, item.getItemId());
                 gameManager.getEntityManager().removeItem(item);
             }
         }
     }
 
     private void writeToPlayer(String message) {
-        gameManager.getChannelUtils().write(playerId, message);
+        gameManager.getChannelUtils().write(player.getPlayerId(), message);
     }
 
     private void writeToRoom(String message) {
-        gameManager.getChannelUtils().writeToPlayerCurrentRoom(playerId, message);
+        gameManager.getChannelUtils().writeToPlayerCurrentRoom(player.getPlayerId(), message);
     }
 
 

@@ -9,7 +9,6 @@ import com.comandante.creeper.player.Player;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -34,9 +33,9 @@ public class MerchantManager {
                     int availableGold = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getGold();
                     if (availableGold >= price) {
                         Item item = next.getValue().getItem().create();
-                        gameManager.getEntityManager().addItem(item);
+                        gameManager.getEntityManager().saveItem(item);
                         gameManager.acquireItem(player, item.getItemId());
-                        gameManager.getPlayerManager().incrementGold(player.getPlayerId(), -price);
+                        gameManager.getPlayerManager().incrementGold(player, -price);
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
                     } else {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + next.getValue().getItem().getItemName() + "\r\n");
@@ -59,9 +58,9 @@ public class MerchantManager {
                     int availableGold = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getGold();
                     if (availableGold >= price) {
                         Item item = next.getValue().getItem().create();
-                        gameManager.getEntityManager().addItem(item);
+                        gameManager.getEntityManager().saveItem(item);
                         gameManager.acquireItem(player, item.getItemId());
-                        gameManager.getPlayerManager().incrementGold(player.getPlayerId(), -price);
+                        gameManager.getPlayerManager().incrementGold(player, -price);
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
                     } else {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + next.getValue().getItem().getItemName() + "\r\n");

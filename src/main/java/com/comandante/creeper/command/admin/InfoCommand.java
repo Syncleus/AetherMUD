@@ -22,7 +22,7 @@ public class InfoCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (!hasRole(PlayerRole.ADMIN)){
+            if (!playerManager.hasRole(player, PlayerRole.ADMIN)){
                 return;
             }
             write("roomId: " + currentRoom.getRoomId());

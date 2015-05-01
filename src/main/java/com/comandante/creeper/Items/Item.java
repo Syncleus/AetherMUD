@@ -8,15 +8,15 @@ import java.util.List;
 
 public class Item implements Serializable {
 
-    private String itemName;
-    private String itemDescription;
-    private List<String> itemTriggers;
-    private String restingName;
-    private String itemId;
-    private Integer itemTypeId;
+    private final String itemName;
+    private final String itemDescription;
+    private final List<String> itemTriggers;
+    private final String restingName;
+    private final String itemId;
+    private final Integer itemTypeId;
     private int numberOfUses;
     private boolean isWithPlayer;
-    private Loot loot;
+    private final Loot loot;
     private final int itemHalfLifeTicks;
     private Equipment equipment;
 
@@ -49,6 +49,22 @@ public class Item implements Serializable {
         this.itemHalfLifeTicks = itemHalfLifeTicks;
     }
 
+    public Item(Item origItem) {
+        this.itemName = origItem.getItemName();
+        this.itemDescription = origItem.itemDescription;
+        this.itemTriggers = origItem.itemTriggers;
+        this.restingName = origItem.restingName;
+        this.itemId = origItem.itemId;
+        this.itemTypeId = origItem.itemTypeId;
+        this.numberOfUses = new Integer(origItem.numberOfUses);
+        this.loot = origItem.loot;
+        this.itemHalfLifeTicks = origItem.itemHalfLifeTicks;
+        this.isWithPlayer = new Boolean(origItem.isWithPlayer);
+        if (this.equipment != null) {
+            this.equipment = new Equipment(equipment);
+        }
+    }
+
     public boolean isWithPlayer() {
         return isWithPlayer;
     }
@@ -69,16 +85,8 @@ public class Item implements Serializable {
         return itemId;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
-    }
-
     public Integer getItemTypeId() {
         return itemTypeId;
-    }
-
-    public void setItemTypeId(Integer itemTypeId) {
-        this.itemTypeId = itemTypeId;
     }
 
     public String getItemName() {
@@ -93,24 +101,8 @@ public class Item implements Serializable {
         return itemTriggers;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public void setItemDescription(String itemDescription) {
-        this.itemDescription = itemDescription;
-    }
-
-    public void setItemTriggers(List<String> itemTriggers) {
-        this.itemTriggers = itemTriggers;
-    }
-
     public String getRestingName() {
         return restingName;
-    }
-
-    public void setRestingName(String restingName) {
-        this.restingName = restingName;
     }
 
     public int getItemHalfLifeTicks() {

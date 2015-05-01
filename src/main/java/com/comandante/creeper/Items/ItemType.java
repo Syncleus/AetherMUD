@@ -40,13 +40,41 @@ public enum ItemType {
             false),
 
     BROAD_SWORD(4, Arrays.asList("sword", "broad", "a broad sword", "the broad sword"),
-            Color.YELLOW + "the broad sword" + Color.RESET,
-            "An iron broad sword rests upon the ground.",
-            "An iron broad sword",
+            Color.CYAN + "the broad sword" + Color.RESET,
+            "an iron broad sword rests upon the ground.",
+            "an iron broad sword",
+            false,
+            0,
+            60,
+            true),
+
+    IRON_BOOTS(5, Arrays.asList("boots", "boot", "iron boots"),
+    Color.CYAN + "iron boots" + Color.RESET,
+            "a pair of iron boots are here on the ground.",
+            "a pair of iron boots",
+            false,
+            0,
+            60,
+            true),
+
+    IRON_CHEST_PLATE(6, Arrays.asList("chest", "iron chest plate", "plate"),
+    Color.CYAN + "iron chest plate" + Color.RESET,
+            "an iron chest place is on the ground.",
+            "an iron chest place",
+            false,
+            0,
+            60,
+            true),
+
+    IRON_LEGGINGS(7, Arrays.asList("leggings", "iron leggings", "legs"),
+    Color.CYAN + "iron leggings" + Color.RESET,
+            "an a pair of iron leggings are here on the ground",
+            "an iron pair of leggings",
             false,
             0,
             60,
             true);
+
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;

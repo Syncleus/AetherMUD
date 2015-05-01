@@ -29,15 +29,16 @@ public class EquipCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            if (playerMetadata.getInventory() != null) {
-                for (String inventoryId : playerMetadata.getInventory()) {
-                    Item itemEntity = entityManager.getItemEntity(inventoryId);
+            String[] inventory = playerManager.getInventory(player);
+            if (inventory != null) {
+                for (String inventoryId : inventory) {
+                    final Item itemEntity = entityManager.getItemEntity(inventoryId);
                     if (itemEntity.getItemTriggers().contains(itemTarget)) {
                         if (itemEntity.getEquipment() == null) {
                             write("Item is not equipable.");
                             return;
                         }
-                        equipmentManager.equip(playerMetadata, itemEntity);
+                        equipmentManager.equip(player, itemEntity);
                         return;
                     }
                 }

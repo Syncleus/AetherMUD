@@ -24,7 +24,7 @@ public class SaveWorldCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (!hasRole(PlayerRole.ADMIN)){
+            if (!playerManager.hasRole(player, PlayerRole.ADMIN)){
                 return;
             }
             worldExporter.saveWorld();

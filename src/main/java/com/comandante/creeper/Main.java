@@ -222,27 +222,15 @@ public class Main {
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newHashMap();
         MerchantItemForSale merchantItemForSale = new MerchantItemForSale(ItemType.BEER, 1);
         MerchantItemForSale broadswordForSale = new MerchantItemForSale(ItemType.BROAD_SWORD, 1000);
+        MerchantItemForSale bootsForSale = new MerchantItemForSale(ItemType.IRON_BOOTS, 800);
+        MerchantItemForSale chestplateforSale = new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500);
+        MerchantItemForSale ironChestPlayForSale = new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100);
         itemsForSale.put(1, merchantItemForSale);
         itemsForSale.put(2, broadswordForSale);
+        itemsForSale.put(3, bootsForSale);
+        itemsForSale.put(4, chestplateforSale);
+        itemsForSale.put(5, ironChestPlayForSale);
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
-
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("fibs"));
-        playerMetadata.addPlayerRole(PlayerRole.ADMIN);
-        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
-
-        PlayerMetadata blazecraftmeta = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("BLAZECRAFT"));
-        blazecraftmeta.addPlayerRole(PlayerRole.ADMIN);
-        gameManager.getPlayerManager().savePlayerMetadata(blazecraftmeta);
-
-        PlayerMetadata puffmeta = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("puff"));
-        puffmeta.addPlayerRole(PlayerRole.ADMIN);
-        gameManager.getPlayerManager().savePlayerMetadata(puffmeta);
-
-        PlayerMetadata likwidmeta = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("likwid"));
-        if (likwidmeta != null) {
-            likwidmeta.addPlayerRole(PlayerRole.TELEPORTER);
-            gameManager.getPlayerManager().savePlayerMetadata(likwidmeta);
-        }
     }
 }

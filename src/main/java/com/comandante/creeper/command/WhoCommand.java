@@ -33,43 +33,14 @@ public class WhoCommand extends Command {
             t.setColumnWidth(2, 26, 26);
             t.addCell("player");
             t.addCell("ip address");
-            t.addCell("logged in since");
             Set<Player> allPlayers = gameManager.getAllPlayers();
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
                 t.addCell(allPlayer.getChannel().getRemoteAddress().toString().substring(1).split(":")[0]);
-                t.addCell(extractCreeperSession(e.getChannel()).getPrettyDate());
             }
             write(t.render());
         } finally {
             super.messageReceived(ctx, e);
         }
     }
-
-    public static void main(String[] args) {
-        CellStyle numberStyle = new CellStyle(CellStyle.HorizontalAlign.right);
-
-        Table t = new Table(3, BorderStyle.UNICODE_BOX,
-                ShownBorders.HEADER_ONLY);
-
-        t.setColumnWidth(0, 22, 28);
-        t.setColumnWidth(1, 15, 22);
-        t.setColumnWidth(2, 9, 16);
-
-        t.addCell("Chrisadfasdfas");
-        t.addCell("127.0.0.1");
-        t.addCell("November 1, 1997");
-
-        t.addCell("Brian");
-        t.addCell("127.0.0.1");
-        t.addCell("November 1, 1997");
-
-        t.addCell("Turd");
-        t.addCell("127.0.0.1");
-        t.addCell("November 1, 1997");
-
-
-        System.out.println("\n\n\n\n" + t.render());
-    }
-
 }

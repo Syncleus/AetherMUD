@@ -32,7 +32,7 @@ public class TeleportCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (!hasAnyOfRoles(Sets.newHashSet(PlayerRole.ADMIN, PlayerRole.TELEPORTER))){
+            if (!playerManager.hasAnyOfRoles(player, Sets.newHashSet(PlayerRole.ADMIN, PlayerRole.TELEPORTER))){
                 return;
             }
             if (originalMessageParts.size() <= 1) {
