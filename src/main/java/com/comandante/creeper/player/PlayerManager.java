@@ -123,7 +123,11 @@ public class PlayerManager {
     }
 
     public PlayerMetadata getPlayerMetadata(String playerId) {
-        return new PlayerMetadata(playerMetadataStore.get(playerId));
+        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
+        if (playerMetadata == null) {
+            return playerMetadata;
+        }
+        return new PlayerMetadata(playerMetadata);
     }
 
     public void savePlayerMetadata(PlayerMetadata playerMetadata) {

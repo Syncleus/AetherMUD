@@ -64,7 +64,9 @@ public class EquipmentManager {
             return playerStats;
         }
         for (String equipId: playerEquipment) {
-            Stats stats = entityManager.getItemEntity(equipId).getEquipment().getStats();
+            Item itemEntity = entityManager.getItemEntity(equipId);
+            Equipment equipment = itemEntity.getEquipment();
+            Stats stats = equipment.getStats();
             combineStats(newStats, stats);
         }
         return newStats;

@@ -26,11 +26,10 @@ public class WhoCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            Table t = new Table(3, BorderStyle.CLASSIC_COMPATIBLE,
+            Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                     ShownBorders.HEADER_AND_FIRST_COLLUMN);
             t.setColumnWidth(0, 8, 14);
             t.setColumnWidth(1, 14, 16);
-            t.setColumnWidth(2, 26, 26);
             t.addCell("player");
             t.addCell("ip address");
             Set<Player> allPlayers = gameManager.getAllPlayers();

@@ -35,8 +35,7 @@ public class Item implements Serializable {
         this.itemHalfLifeTicks = itemHalfLifeTicks;
     }
 
-    public
-    Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer,int itemHalfLifeTicks, Loot loot) {
+    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer,int itemHalfLifeTicks, Loot loot) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemTriggers = itemTriggers;
@@ -60,8 +59,8 @@ public class Item implements Serializable {
         this.loot = origItem.loot;
         this.itemHalfLifeTicks = origItem.itemHalfLifeTicks;
         this.isWithPlayer = new Boolean(origItem.isWithPlayer);
-        if (this.equipment != null) {
-            this.equipment = new Equipment(equipment);
+        if (origItem.equipment != null) {
+            this.equipment = new Equipment(origItem.equipment);
         }
     }
 

@@ -106,6 +106,9 @@ public class EntityManager {
 
     public Item getItemEntity(String itemId) {
         Item item = items.get(itemId);
+        if (item == null) {
+            return item;
+        }
         return new Item(item);
     }
 
