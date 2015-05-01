@@ -36,9 +36,13 @@ public class PlayerMetadata implements Serializable {
         this.password = playerMetadata.password;
         this.playerId = playerMetadata.playerId;
         this.stats = new Stats(playerMetadata.stats);
-        this.inventory = Arrays.copyOf(playerMetadata.inventory, playerMetadata.inventory.length);
+        if (playerMetadata.inventory != null) {
+            this.inventory = Arrays.copyOf(playerMetadata.inventory, playerMetadata.inventory.length);
+        }
         this.gold = new Integer(playerMetadata.gold);
-        this.playerRoleSet = Sets.newHashSet(playerMetadata.playerRoleSet);
+        if (playerMetadata.playerRoleSet != null) {
+            this.playerRoleSet = Sets.newHashSet(playerMetadata.playerRoleSet);
+        }
         this.playerEquipment = Arrays.copyOf(playerMetadata.playerEquipment, playerMetadata.playerEquipment.length);
     }
 

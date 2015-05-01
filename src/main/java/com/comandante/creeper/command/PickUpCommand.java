@@ -3,14 +3,17 @@ package com.comandante.creeper.command;
 import com.codahale.metrics.Timer;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.managers.GameManager;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -36,7 +39,7 @@ public class PickUpCommand extends Command {
             for (String next : itemIds) {
                 Item itemEntity = entityManager.getItemEntity(next);
                 if (itemEntity.getItemTriggers().contains(desiredPickUpItem)) {
-                    gameManager.acquireItem(player, itemEntity.getItemId());
+                    gameManager.acquireItem(player, next);
                     String playerName = player.getPlayerName();
                     gameManager.roomSay(currentRoom.getRoomId(), playerName + " picked up " + itemEntity.getItemName(), playerId);
                     return;

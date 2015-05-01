@@ -80,6 +80,7 @@ public class FightManager {
     }
 
     private void doPlayerDamage(Player player, int damageAmount) {
+        System.out.println("UPDATING PLAYER HEALTH");
         playerManager.updatePlayerHealth(player, -damageAmount);
     }
 

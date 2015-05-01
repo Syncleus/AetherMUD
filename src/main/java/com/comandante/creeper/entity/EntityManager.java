@@ -65,7 +65,7 @@ public class EntityManager {
 
     public void saveItem(Item item) {
         items.put(item.getItemId(), item);
-        //db.commit();
+        db.commit();
     }
 
     public void removeItem(Item item) {
@@ -96,9 +96,12 @@ public class EntityManager {
                     channelUtils.writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
                     saveItem(corpse);
-                    roomManager.getRoom(roomManager.getPlayerCurrentRoom(player).get().getRoomId()).addPresentItem(getItemEntity(corpse.getItemId()).getItemId());
+                    Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
+                    Room room = roomManager.getRoom(roomId);
+                    room.addPresentItem(corpse.getItemId());
                     itemDecayManager.addItem(corpse);
                     deleteNpcEntity(npc.getEntityId());
+                    channelUtils.writeToPlayerCurrentRoom(playerId, npc.getName() + " turned into a corpse.");
                 }
             }
         }

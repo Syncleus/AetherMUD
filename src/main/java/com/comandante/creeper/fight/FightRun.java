@@ -33,7 +33,6 @@ public class FightRun implements Callable<FightResults> {
         try {
             Stats npcStats = npc.getStats();
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
-            Stats baseStats = playerMetadata.getStats();
             Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipment(playerMetadata);
 
             while (npcStats.getCurrentHealth() > 0) {
@@ -53,8 +52,6 @@ public class FightRun implements Callable<FightResults> {
                 }
             }
 
-            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
-
             fightResults = new FightResultsBuilder().setNpcWon(false).setPlayerWon(false).createFightResults();
 
             if (playerStats.getCurrentHealth() <= 0) {
@@ -62,7 +59,6 @@ public class FightRun implements Callable<FightResults> {
                 PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
                 gameManager.movePlayer(playerMovement);
                 gameManager.currentRoomLogic(player.getPlayerId());
-                gameManager.getPlayerManager().getSessionManager().getSession(player.getPlayerId()).setActiveFight(Optional.<Future<FightResults>>absent());
                 String prompt = gameManager.getPlayerManager().buildPrompt(player.getPlayerId());
                 gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
                 npc.setIsInFight(false);
