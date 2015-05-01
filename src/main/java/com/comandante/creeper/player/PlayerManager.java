@@ -244,7 +244,7 @@ public class PlayerManager {
                     new Gauge<Integer>() {
                         @Override
                         public Integer getValue() {
-                            return playerMetadata.getGold();
+                            return getPlayerMetadata(playerMetadata.getPlayerId()).getGold();
                         }
                     });
         }
@@ -255,7 +255,7 @@ public class PlayerManager {
                     new Gauge<Integer>() {
                         @Override
                         public Integer getValue() {
-                            return playerMetadata.getStats().getCurrentHealth();
+                            return getPlayerMetadata(playerMetadata.getPlayerId()).getStats().getCurrentHealth();
                         }
                     });
         }
@@ -266,7 +266,7 @@ public class PlayerManager {
                     new Gauge<Integer>() {
                         @Override
                         public Integer getValue() {
-                            return playerMetadata.getStats().getExperience();
+                            return getPlayerMetadata(playerMetadata.getPlayerId()).getStats().getExperience();
                         }
                     });
         }

@@ -43,7 +43,9 @@ public class PlayerMetadata implements Serializable {
         if (playerMetadata.playerRoleSet != null) {
             this.playerRoleSet = Sets.newHashSet(playerMetadata.playerRoleSet);
         }
-        this.playerEquipment = Arrays.copyOf(playerMetadata.playerEquipment, playerMetadata.playerEquipment.length);
+        if (playerMetadata.playerEquipment != null) {
+            this.playerEquipment = Arrays.copyOf(playerMetadata.playerEquipment, playerMetadata.playerEquipment.length);
+        }
     }
 
     public String[] getInventory() {
