@@ -17,9 +17,10 @@ public class TalkCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("talk");
     final static String description = "Talk to a merchant.";
+    final static String correctUsage = "talk <merchant name>";
 
     public TalkCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

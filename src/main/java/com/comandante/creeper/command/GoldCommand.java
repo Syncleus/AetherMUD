@@ -12,10 +12,11 @@ import java.util.List;
 public class GoldCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("gold");
-    final static String description = "Prints the amount of gold you hold.";
+    final static String description = "Displays how much gold is in your posession.";
+    final static String correctUsage = "gold";
 
     public GoldCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

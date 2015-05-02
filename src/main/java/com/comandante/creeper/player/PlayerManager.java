@@ -6,6 +6,7 @@ import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.MapDbAutoCommitService;
+import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.server.Color;
@@ -61,11 +62,6 @@ public class PlayerManager {
             players.add(getPlayer(playerId));
         }
         return ImmutableSet.copyOf(players);
-    }
-
-    public String[] getInventory(Player player) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
-        return playerMetadata.getInventory();
     }
 
     public void addInventoryId(Player player, String inventoryId) {

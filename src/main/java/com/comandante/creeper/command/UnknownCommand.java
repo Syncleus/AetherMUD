@@ -7,7 +7,7 @@ import org.jboss.netty.channel.MessageEvent;
 public class UnknownCommand extends Command {
 
     public UnknownCommand(GameManager gameManager) {
-        super(gameManager, null, null);
+        super(gameManager, null, null, null);
     }
 
     @Override

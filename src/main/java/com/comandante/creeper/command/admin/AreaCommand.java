@@ -1,6 +1,8 @@
-package com.comandante.creeper.command;
+package com.comandante.creeper.command.admin;
 
+import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.world.Area;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -12,11 +14,13 @@ import java.util.Set;
 
 
 public class AreaCommand extends Command {
-    final static List<String> validTriggers = Arrays.asList("a", "area");
+    final static List<String> validTriggers = Arrays.asList("area", "a");
     final static String description = "Alter area settings for the current room.";
+    final static String correctUsage = "area <area name>,<area name>";
+    final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
     public AreaCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage, roles);
     }
 
     @Override

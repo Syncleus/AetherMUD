@@ -4,10 +4,12 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.command.CommandAuditLog;
+import com.comandante.creeper.command.UnknownCommand;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.player.Player;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
@@ -38,6 +40,15 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
             return;
         }
         Command commandByTrigger = Main.creeperCommandRegistry.getCommandByTrigger(rootCommand);
+        Player player = gameManager.getPlayerManager().getPlayerByUsername(session.getUsername().get());
+        if ((commandByTrigger.roles != null) && commandByTrigger.roles.size() > 0) {
+            boolean roleMatch = gameManager.getPlayerManager().hasAnyOfRoles(player, commandByTrigger.roles);
+            if (!roleMatch) {
+                e.getChannel().getPipeline().addLast("executed_command", new UnknownCommand(gameManager));
+                super.messageReceived(ctx, e);
+                return;
+            }
+        }
         if (commandByTrigger.getDescription() != null) {
             Main.metrics.counter(MetricRegistry.name(CreeperCommandHandler.class, rootCommand)).inc();
             CommandAuditLog.logCommand((String) e.getMessage(), session.getUsername().get());

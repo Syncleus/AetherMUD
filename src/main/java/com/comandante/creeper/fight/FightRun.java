@@ -34,13 +34,14 @@ public class FightRun implements Callable<FightResults> {
             Stats npcStats = npc.getStats();
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
             Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipment(playerMetadata);
-
-            while (npcStats.getCurrentHealth() > 0) {
-                if (playerStats.getCurrentHealth() <= 0) {
-                    break;
+            boolean playerDied = false;
+            while (npcStats.getCurrentHealth() > 0 && !playerDied) {
+                if (getCurrentHealth() <= 0) {
+                    playerDied = true;
+                    continue;
                 }
                 gameManager.getFightManager().fightTurn(playerStats, npcStats, 3, player, npc);
-                if (FightManager.isActiveFight(gameManager.getPlayerManager().getSessionManager().getSession(player.getPlayerId()))) {
+                if (getCurrentHealth() > 0 && npcStats.getCurrentHealth() > 0) {
                     gameManager.getChannelUtils().write(player.getPlayerId(), "Use an ability!", true);
                     gameManager.getPlayerManager().getSessionManager().getSession(player.getPlayerId()).setIsAbleToDoAbility(true);
                     try {
@@ -54,7 +55,7 @@ public class FightRun implements Callable<FightResults> {
 
             fightResults = new FightResultsBuilder().setNpcWon(false).setPlayerWon(false).createFightResults();
 
-            if (playerStats.getCurrentHealth() <= 0) {
+            if (playerDied) {
                 gameManager.getChannelUtils().writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is now dead." + "\r\n");
                 PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
                 gameManager.movePlayer(playerMovement);
@@ -72,5 +73,9 @@ public class FightRun implements Callable<FightResults> {
             log.error("Fight Failure!", e);
         }
         return fightResults;
+    }
+
+    private int getCurrentHealth() {
+        return gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentHealth();
     }
 }

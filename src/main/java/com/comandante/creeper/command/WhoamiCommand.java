@@ -9,10 +9,11 @@ import java.util.List;
 
 public class WhoamiCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("whoami");
-    final static String description = "Who am I?";
+    final static String description = "Display information about your character.";
+    final static String correctUsage = "whoami";
 
     public WhoamiCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

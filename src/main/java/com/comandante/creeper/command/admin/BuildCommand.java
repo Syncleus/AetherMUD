@@ -28,19 +28,17 @@ public class BuildCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("build", "b");
     final static String description = "Build new rooms in the world.";
-    final static boolean isAdminOnly = true;
+    final static String correctUsage = "build [n|s|e|w|enter <name>]";
+    final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
     public BuildCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description, isAdminOnly);
+        super(gameManager, validTriggers, description, correctUsage, roles);
     }
 
     @Override
     public synchronized void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (!playerManager.hasRole(player,PlayerRole.ADMIN)){
-                return;
-            }
             if (originalMessageParts.size() > 1) {
                 String desiredBuildDirection = originalMessageParts.get(1);
                 if (desiredBuildDirection.equalsIgnoreCase("n") | desiredBuildDirection.equalsIgnoreCase("north")) {

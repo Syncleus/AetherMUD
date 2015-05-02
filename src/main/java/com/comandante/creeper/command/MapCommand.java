@@ -13,11 +13,13 @@ import java.util.List;
 
 public class MapCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("m", "map");
-    final static String description = "Display the map.  You can pass it a max value for a bigger map.";
+    final static List<String> validTriggers = Arrays.asList("map", "m");
+    final static String description = "Display the world map as visible to your current locaion.";
+    final static String correctUsage = "map";
+
 
     public MapCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

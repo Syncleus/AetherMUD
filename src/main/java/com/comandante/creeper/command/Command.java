@@ -15,6 +15,7 @@ import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.WorldExporter;
+import com.google.common.collect.Sets;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -29,8 +30,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     public final List<String> validTriggers;
     public final String description;
-    public final boolean isAdminCommand;
-
+    public final Set<PlayerRole> roles;
     public final GameManager gameManager;
     public final FloorManager floorManager;
     public final MapsManager mapsManager;
@@ -40,6 +40,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public final ChannelUtils channelUtils;
     public final FightManager fightManager;
     public final LootManager lootManager;
+    public final String correctUsage;
     public CreeperSession creeperSession;
     public Player player;
     public Room currentRoom;
@@ -50,16 +51,16 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public WorldExporter worldExporter;
     public EquipmentManager equipmentManager;
 
-
-    protected Command(GameManager gameManager, List<String> validTriggers, String description) {
-        this(gameManager, validTriggers, description, false);
+    protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
+        this(gameManager, validTriggers, description, correctUsage, Sets.<PlayerRole>newHashSet());
     }
 
-    protected Command(GameManager gameManager, List<String> validTriggers, String description, boolean isAdminCommand) {
+
+    protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage, Set<PlayerRole> roles) {
         this.gameManager = gameManager;
         this.validTriggers = validTriggers;
         this.description = description;
-        this.isAdminCommand = isAdminCommand;
+        this.correctUsage = correctUsage;
         this.floorManager = gameManager.getFloorManager();
         this.mapsManager = gameManager.getMapsManager();
         this.roomManager = gameManager.getRoomManager();
@@ -70,6 +71,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.worldExporter = new WorldExporter(roomManager, mapsManager, floorManager, entityManager);
         this.lootManager = gameManager.getLootManager();
         this.equipmentManager = gameManager.getEquipmentManager();
+        this.roles = roles;
     }
 
     public void configure(MessageEvent e) {

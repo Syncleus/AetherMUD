@@ -14,9 +14,10 @@ public class LootCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("loot");
     final static String description = "Loot a corpse.";
+    final static String correctUsage = "loot corpse";
 
     public LootCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override
@@ -24,22 +25,19 @@ public class LootCommand extends Command {
         configure(e);
         try {
             if (originalMessageParts.size() > 1) {
-                for (String inventoryString: playerManager.getInventory(player)) {
-                    Item itemEntity = entityManager.getItemEntity(inventoryString);
-                    if (itemEntity != null) {
-                        if (itemEntity.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
-                            Loot loot = itemEntity.getLoot();
-                            if (loot != null) {
-                                int gold = lootManager.lootGoldAmountReturn(loot);
-                                if (gold > 0) {
-                                    write("You looted " + gold + Color.YELLOW + " gold." + Color.RESET);
-                                    playerManager.incrementGold(player, gold);
-                                }
+                for (Item item : entityManager.getInventory(player)) {
+                    if (item.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
+                        Loot loot = item.getLoot();
+                        if (loot != null) {
+                            int gold = lootManager.lootGoldAmountReturn(loot);
+                            if (gold > 0) {
+                                write("You looted " + gold + Color.YELLOW + " gold." + Color.RESET);
+                                playerManager.incrementGold(player, gold);
                             }
-                            playerManager.removeInventoryId(player, itemEntity.getItemId());
-                            entityManager.removeItem(itemEntity);
-                            return;
                         }
+                        playerManager.removeInventoryId(player, item.getItemId());
+                        entityManager.removeItem(item);
+                        return;
                     }
                 }
             }

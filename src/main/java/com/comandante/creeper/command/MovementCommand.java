@@ -15,7 +15,8 @@ import java.util.List;
 
 public class MovementCommand extends Command {
 
-    final static String description = "Make a move.";
+    final static String description = "Move your player.";
+    final static String correctUsage = "n|s|e|w|enter e-<name>";
 
     public final static List<String> northTriggers = Arrays.asList("n", "north".toLowerCase());
     public final static List<String> southTriggers = Arrays.asList("s", "south".toLowerCase());
@@ -28,7 +29,7 @@ public class MovementCommand extends Command {
     public final static ImmutableList validTriggers = new ImmutableList.Builder<String>().addAll(northTriggers).addAll(southTriggers).addAll(eastTriggers).addAll(westTriggers).addAll(upTriggers).addAll(downTriggers).addAll(enterTriggers).build();
 
     public MovementCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

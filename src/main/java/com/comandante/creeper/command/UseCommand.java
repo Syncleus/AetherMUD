@@ -12,15 +12,16 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class UseCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("use");
     final static String description = "Use an item.";
-    private static final Logger log = Logger.getLogger(UseCommand.class);
+    final static String correctUsage = "use <item name>";
 
     public UseCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override
@@ -33,16 +34,11 @@ public class UseCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            String[] inventory = playerManager.getInventory(player);
+            Set<Item> inventory = entityManager.getInventory(player);
             if (inventory != null) {
-                for (String inventoryId : inventory) {
-                    Item itemEntity = entityManager.getItemEntity(inventoryId);
-                    if (itemEntity == null) {
-                        log.info("THERE IS A BAD INENTORY ITEM TRYING TO BE USED BOOO");
-                        continue;
-                    }
-                    if (itemEntity.getItemTriggers().contains(itemTarget)) {
-                        new ItemUseHandler(itemEntity, creeperSession, gameManager, player).handle();
+                for (Item item : inventory) {
+                    if (item.getItemTriggers().contains(itemTarget)) {
+                        new ItemUseHandler(item, creeperSession, gameManager, player).handle();
                         return;
                     }
                 }

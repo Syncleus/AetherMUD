@@ -17,11 +17,12 @@ import java.util.concurrent.Future;
 
 public class FightKillCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("k", "kill", "fight", "f");
-    final static String description = "Fight a mob.";
+    final static List<String> validTriggers = Arrays.asList("kill", "k", "fight", "f");
+    final static String description = "Initiate a fight with a mob.";
+    final static String correctUsage = "kill <mob name>";
 
     public FightKillCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

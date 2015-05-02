@@ -10,13 +10,16 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class EquipCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("equip");
     final static String description = "Equip an item.";
+    final static String correctUsage = "equip <equipment item name>";
+
 
     public EquipCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override
@@ -29,16 +32,15 @@ public class EquipCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            String[] inventory = playerManager.getInventory(player);
+            Set<Item> inventory = entityManager.getInventory(player);
             if (inventory != null) {
-                for (String inventoryId : inventory) {
-                    final Item itemEntity = entityManager.getItemEntity(inventoryId);
-                    if (itemEntity.getItemTriggers().contains(itemTarget)) {
-                        if (itemEntity.getEquipment() == null) {
+                for (Item item : inventory) {
+                    if (item.getItemTriggers().contains(itemTarget)) {
+                        if (item.getEquipment() == null) {
                             write("Item is not equipable.");
                             return;
                         }
-                        equipmentManager.equip(player, itemEntity);
+                        equipmentManager.equip(player, item);
                         return;
                     }
                 }

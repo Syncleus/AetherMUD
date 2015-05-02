@@ -73,8 +73,16 @@ public enum ItemType {
             false,
             0,
             60,
-            true);
+            true),
 
+    BALLERS_SWORD(8, Arrays.asList("ballers", "ballers sword", "sword"),
+            Color.CYAN + "b" + Color.GREEN + "a" + Color.RED + "l" + Color.BLUE + "l" + Color.YELLOW + "e" + Color.MAGENTA + "r" + Color.YELLOW + "s" + " sword" + Color.RESET,
+            "a " + Color.CYAN + "b" + Color.GREEN + "a" + Color.RED + "l" + Color.BLUE + "l" + Color.YELLOW + "e" + Color.MAGENTA + "r" + Color.YELLOW + "s" + " sword" + Color.RESET + " is on the ground.",
+            "a " + Color.CYAN + "b" + Color.GREEN + "a" + Color.RED + "l" + Color.BLUE + "l" + Color.YELLOW + "e" + Color.MAGENTA + "r" + Color.YELLOW + "s" + " sword" + Color.RESET,
+            false,
+            0,
+            60,
+            true);
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;

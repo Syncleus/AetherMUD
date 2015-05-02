@@ -11,39 +11,33 @@ import org.jboss.netty.channel.MessageEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.comandante.creeper.server.Color.RESET;
 
 public class InventoryCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("i", "inventory");
+    final static List<String> validTriggers = Arrays.asList("inventory", "i");
     final static String description = "View your inventory.";
-    private static final Logger log = Logger.getLogger(InventoryCommand.class);
-
+    final static String correctUsage = "inventory";
 
     public InventoryCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            String[] inventory1 = playerManager.getInventory(player);
-            if (inventory1 == null) {
+            Set<Item> inventory = entityManager.getInventory(player);
+            if (inventory == null) {
                 write("You aren't carrying anything.");
                 return;
             }
-            ArrayList<String> inventory = new ArrayList<String>(Arrays.asList(inventory1));
             StringBuilder sb = new StringBuilder();
             sb.append("You are carrying:\r\n");
             sb.append(RESET);
-            for (String inventoryId : inventory) {
-                Item item = entityManager.getItemEntity(inventoryId);
-                if (item == null) {
-                    log.info("ERROR!: SKIPPING INVENTORY ID: " + inventoryId + " NOT FOUND IN DB?");
-                    continue;
-                }
+            for (Item item : inventory) {
                 sb.append(item.getItemName());
                 int maxUses = ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses();
                 if (maxUses > 0) {

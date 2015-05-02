@@ -16,10 +16,11 @@ import java.util.Set;
 public class WhoCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("who");
-    final static String description = "Drop an item";
+    final static String description = "Display who is currently logged into the mud.";
+    final static String correctUsage = "who";
 
     public WhoCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

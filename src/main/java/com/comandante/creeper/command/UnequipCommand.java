@@ -1,5 +1,6 @@
 package com.comandante.creeper.command;
 
+
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.managers.GameManager;
 import com.google.common.base.Joiner;
@@ -8,14 +9,14 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-public class DropCommand extends Command {
+public class UnequipCommand extends Command {
+    final static List<String> validTriggers = Arrays.asList("unequip");
+    final static String description = "Un-Equip an item.";
+    final static String correctUsage = "unequip <equipment item name>";
 
-    final static List<String> validTriggers = Arrays.asList("drop", "d");
-    final static String description = "Drop an item.";
-    final static String correctUsage = "drop <item name>";
-
-    public DropCommand(GameManager gameManager) {
+    public UnequipCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description, correctUsage);
     }
 
@@ -24,22 +25,19 @@ public class DropCommand extends Command {
         configure(e);
         try {
             if (originalMessageParts.size() == 1) {
-                write("No item specified.");
+                write("No equipment item specified.");
                 return;
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            for (Item item : entityManager.getInventory(player)) {
+            Set<Item> equipment = entityManager.getEquipment(player);
+            for (Item item : equipment) {
                 if (item.getItemTriggers().contains(itemTarget)) {
-                    item.setWithPlayer(false);
-                    gameManager.placeItemInRoom(currentRoom.getRoomId(), item.getItemId());
-                    playerManager.removeInventoryId(player, item.getItemId());
-                    gameManager.getItemDecayManager().addItem(item);
-                    entityManager.saveItem(item);
-                    gameManager.roomSay(currentRoom.getRoomId(), player.getPlayerName() + " dropped " + item.getItemName(), playerId);
+                    equipmentManager.unEquip(player, item);
                     return;
                 }
             }
+            write("Item is not currently equipped.");
         } finally {
             super.messageReceived(ctx, e);
         }

@@ -25,31 +25,32 @@ public class EquipmentManager {
         }
         Equipment equipment = item.getEquipment();
         EquipmentSlotType equipmentSlotType = equipment.getEquipmentSlotType();
-        if (isSlotOccupied(player, equipmentSlotType)) {
-            unEquip(player, item);
+        Item slotItem = getSlotItem(player, equipmentSlotType);
+        if (slotItem != null){
+            unEquip(player, slotItem);
         }
+        channelUtils.write(player.getPlayerId(), "Equipping " + item.getItemName() + "\r\n");
         playerManager.addEquipmentId(player, item.getItemId());
         playerManager.removeInventoryId(player, item.getItemId());
     }
 
-    public boolean isSlotOccupied(Player player, EquipmentSlotType slot) {
+    public Item getSlotItem(Player player, EquipmentSlotType slot) {
         PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         if (playerMetadata.getPlayerEquipment() == null) {
-            return false;
+            return null;
         }
         for (String item: playerMetadata.getPlayerEquipment()) {
             Item itemEntity = entityManager.getItemEntity(item);
             EquipmentSlotType equipmentSlotType = itemEntity.getEquipment().getEquipmentSlotType();
             if (equipmentSlotType.equals(slot)) {
-                return true;
+                return itemEntity;
             }
         }
-        return false;
+        return null;
     }
 
     public void unEquip(Player player, Item item) {
-        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-        channelUtils.write(playerMetadata.getPlayerId(), "Un-equipping " + item.getItemName());
+        channelUtils.write(player.getPlayerId(), "Un-equipping " + item.getItemName() + "\r\n");
         playerManager.removeEquipmentId(player, item.getItemId());
         playerManager.addInventoryId(player, item.getItemId());
     }

@@ -7,19 +7,19 @@ import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.base.Optional;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import com.google.common.collect.Sets;
+import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +37,8 @@ public class EntityManager {
     private final DB db;
     private final ChannelUtils channelUtils;
     private final ItemDecayManager itemDecayManager;
+    private static final Logger log = Logger.getLogger(EntityManager.class);
+
 
     public EntityManager(RoomManager roomManager, PlayerManager playerManager, DB db, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -75,6 +77,41 @@ public class EntityManager {
         roomManager.getNpcCurrentRoom(getNpcEntity(npcId)).get().removePresentNpc(npcId);
         npcs.remove(npcId);
     }
+
+    public Set<Item> getInventory(Player player) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+        Set<Item> inventoryItems = Sets.newHashSet();
+        String[] inventory = playerMetadata.getInventory();
+        if (inventory != null) {
+            for (String itemId : inventory) {
+                Item itemEntity = getItemEntity(itemId);
+                if (itemEntity == null) {
+                    log.info("Orphaned inventoryId:" + itemId + " player: " + player.getPlayerName());
+                    continue;
+                }
+                inventoryItems.add(itemEntity);
+            }
+        }
+        return inventoryItems;
+    }
+
+    public Set<Item> getEquipment(Player player) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+        Set<Item> equipmentItems = Sets.newHashSet();
+        String[] equipment = playerMetadata.getPlayerEquipment();
+        if (equipment != null) {
+            for (String itemId : equipment) {
+                Item itemEntity = getItemEntity(itemId);
+                if (itemEntity == null) {
+                    log.info("Orphaned equipmentId:" + itemId + " player: " + player.getPlayerName());
+                    continue;
+                }
+                equipmentItems.add(itemEntity);
+            }
+        }
+        return equipmentItems;
+    }
+
 
     public Npc getNpcEntity(String npcId) {
         return npcs.get(npcId);

@@ -17,11 +17,12 @@ import static com.comandante.creeper.server.Color.RESET;
 
 public class GossipCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("g", "gossip");
-    final static String description = "Gossip to the entire server.";
+    final static List<String> validTriggers = Arrays.asList("gossip", "g");
+    final static String description = "Sends a message to the entire MUD.";
+    final static String correctUsage = "gossip <message>";
 
     public GossipCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

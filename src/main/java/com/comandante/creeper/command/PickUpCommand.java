@@ -19,19 +19,17 @@ import static com.codahale.metrics.MetricRegistry.name;
 
 public class PickUpCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("p", "pick", "pickup");
+    final static List<String> validTriggers = Arrays.asList("pickup", "pick", "p");
     final static String description = "Pick up an item.";
-    private final Timer responses = Main.metrics.timer(name(PickUpCommand.class, "invocation_time"));
-
+    final static String correctUsage = "pickup <item name>";
 
     public PickUpCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description,correctUsage);
     }
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
-        final Timer.Context context = responses.time();
         try {
             Set<String> itemIds = currentRoom.getItemIds();
             originalMessageParts.remove(0);
@@ -46,7 +44,6 @@ public class PickUpCommand extends Command {
                 }
             }
         } finally {
-            context.stop();
             super.messageReceived(ctx, e);
         }
     }

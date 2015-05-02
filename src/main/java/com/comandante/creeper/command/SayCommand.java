@@ -16,10 +16,11 @@ import static com.comandante.creeper.server.Color.RESET;
 public class SayCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("say");
-    final static String description = "Say something to the world.";
+    final static String description = "Say something to the current room.";
+    final static String correctUsage = "say <message>";
 
     public SayCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override

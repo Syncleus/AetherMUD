@@ -14,11 +14,12 @@ import static com.comandante.creeper.server.Color.YELLOW;
 
 public class TellCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("t", "tell");
-    final static String description = "Tell something to someone.";
+    final static List<String> validTriggers = Arrays.asList("tell", "t");
+    final static String description = "Send a private message to a player.";
+    final static String correctUsage = "tell <player name> <message>";
 
     public TellCommand(GameManager gameManager) {
-        super(gameManager, validTriggers, description);
+        super(gameManager, validTriggers, description, correctUsage);
     }
 
     @Override
