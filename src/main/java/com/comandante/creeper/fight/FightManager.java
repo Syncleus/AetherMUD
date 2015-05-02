@@ -51,7 +51,7 @@ public class FightManager {
             damageToVictim = getAttack(challenger, victim);
         }
         if (damageToVictim > 0) {
-            channelUtils.write(player.getPlayerId(), damageToVictim + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName(), true);
+            channelUtils.write(player.getPlayerId(), Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName(), true);
             doNpcDamage(npc.getEntityId(), damageToVictim, player.getPlayerId());
         } else {
             channelUtils.write(player.getPlayerId(), "You MISS " + npc.getName() + "!", true);
@@ -68,9 +68,9 @@ public class FightManager {
         int damageBack = getAttack(victim, challenger);
         if (randInt(0, 100) < chanceToHitBack) {
             doPlayerDamage(player, damageBack);
-            channelUtils.write(player.getPlayerId(), npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + damageBack, true);
+            channelUtils.write(player.getPlayerId(), npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET, true);
         } else {
-            channelUtils.write(player.getPlayerId(), npc.getColorName() + " MISSES you!", true);
+            channelUtils.write(player.getPlayerId(), npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES"+ Color.RESET + " you!", true);
         }
         try {
             Thread.sleep(600);

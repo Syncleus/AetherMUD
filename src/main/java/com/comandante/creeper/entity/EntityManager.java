@@ -9,6 +9,7 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.ChannelUtils;
+import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.base.Optional;
@@ -128,16 +129,15 @@ public class EntityManager {
                 if (npc.getStats().getCurrentHealth() <= 0) {
                     playerManager.getSessionManager().getSession(playerId).setActiveFight(Optional.<Future<FightResults>>absent());
                     playerManager.addExperience(player, npc.getStats().getExperience());
-                    channelUtils.write(playerId, "You killed " + npc.getName() + " (" + npc.getStats().getExperience() + "exp)", true);
                     channelUtils.writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
-                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
+                    channelUtils.write(playerId, "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + npc.getStats().getExperience() + Color.RESET + " experience points." + "\r\n", true);
+                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
                     saveItem(corpse);
                     Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
                     Room room = roomManager.getRoom(roomId);
                     room.addPresentItem(corpse.getItemId());
                     itemDecayManager.addItem(corpse);
                     deleteNpcEntity(npc.getEntityId());
-                    channelUtils.writeToPlayerCurrentRoom(playerId, npc.getName() + " turned into a corpse.");
                 }
             }
         }

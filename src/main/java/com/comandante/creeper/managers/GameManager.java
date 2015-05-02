@@ -345,7 +345,9 @@ public class GameManager {
     public String getLookString(Npc npc) {
         StringBuilder sb = new StringBuilder();
         // passing an empty createState because of the "difference calculation"
-        sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats()));
+        sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(npc.getColorName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
+        sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats())).append("\r\n");
         return sb.toString();
     }
 
@@ -354,6 +356,7 @@ public class GameManager {
         Stats origStats = playerManager.getPlayerMetadata(player.getPlayerId()).getStats();
         Stats modifiedStats = equipmentManager.getPlayerStatsWithEquipment(player);
         Stats diffStats = equipmentManager.getDifference(modifiedStats, origStats);
+        sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(player.getPlayerName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildEquipmentString(player)).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
