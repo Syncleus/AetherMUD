@@ -16,6 +16,6 @@ public class PlayerStats {
             .setMaxHealth(100)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(20)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(0);
 }

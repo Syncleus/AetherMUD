@@ -20,8 +20,8 @@ public class EquipmentBuilder {
                     return getIronChestPlate(item);
                 case IRON_LEGGINGS:
                     return getIronLeggings(item);
-                case BALLERS_SWORD:
-                    return getBallersSword(item);
+                case PHANTOM_SWORD:
+                    return getPhantomSword(item);
             }
         }
         return null;
@@ -55,8 +55,8 @@ public class EquipmentBuilder {
         return item;
     }
 
-    public static Item getBallersSword(Item item) {
-        Stats stats = new StatsBuilder().setArmorRating(5).setStrength(15).createStats();
+    public static Item getPhantomSword(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(5).setStrength(15).setWeaponRatingMax(5).setWeaponRatingMin(5).setNumberOfWeaponRolls(1).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
         item.setEquipment(equipment);
         return item;

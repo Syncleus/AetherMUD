@@ -52,6 +52,7 @@ public class EntityManager {
         tickService.submit(new Ticker());
         this.channelUtils = channelUtils;
         this.itemDecayManager = new ItemDecayManager(this);
+        addEntity(itemDecayManager);
     }
 
     public void addEntity(CreeperEntity creeperEntity) {

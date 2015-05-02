@@ -32,7 +32,7 @@ public class HelpCommand extends Command {
             Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                     ShownBorders.HEADER_FIRST_AND_LAST_COLLUMN);
             t.setColumnWidth(0, 10, 30);
-            t.setColumnWidth(1, 30, 69);
+            t.setColumnWidth(1, 30, 55);
             t.addCell("commands");
             t.addCell("description");
             Set<Command> creeperCommands = Main.creeperCommandRegistry.getCreeperCommands();

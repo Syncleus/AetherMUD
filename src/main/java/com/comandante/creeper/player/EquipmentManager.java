@@ -55,7 +55,8 @@ public class EquipmentManager {
         playerManager.addInventoryId(player, item.getItemId());
     }
 
-    public Stats getPlayerStatsWithEquipment(PlayerMetadata playerMetadata) {
+    public Stats getPlayerStatsWithEquipment(Player player) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         StatsBuilder statsBuilder = new StatsBuilder();
         Stats newStats = statsBuilder.createStats();
         Stats playerStats = playerMetadata.getStats();
@@ -71,6 +72,23 @@ public class EquipmentManager {
             combineStats(newStats, stats);
         }
         return newStats;
+    }
+
+    public Stats getDifference(Stats modifiedStats, Stats origStats) {
+        StatsBuilder statsBuilder = new StatsBuilder();
+        statsBuilder.setAgile(modifiedStats.getAgile() - origStats.getAgile());
+        statsBuilder.setAim(modifiedStats.getAim() - origStats.getAim());
+        statsBuilder.setArmorRating(modifiedStats.getArmorRating() - origStats.getArmorRating());
+        statsBuilder.setCurrentHealth(modifiedStats.getCurrentHealth() - origStats.getCurrentHealth());
+        statsBuilder.setMaxHealth(modifiedStats.getMaxHealth() - origStats.getMaxHealth());
+        statsBuilder.setExperience(modifiedStats.getExperience() - origStats.getExperience());
+        statsBuilder.setMeleSkill(modifiedStats.getMeleSkill() - origStats.getMeleSkill());
+        statsBuilder.setNumberOfWeaponRolls(modifiedStats.getNumberOfWeaponRolls() - origStats.getNumberOfWeaponRolls());
+        statsBuilder.setStrength(modifiedStats.getStrength() - origStats.getStrength());
+        statsBuilder.setWeaponRatingMax(modifiedStats.getWeaponRatingMax() - origStats.getWeaponRatingMax());
+        statsBuilder.setWeaponRatingMin(modifiedStats.getWeaponRatingMin() - origStats.getWeaponRatingMin());
+        statsBuilder.setWillpower(modifiedStats.getWillpower() - origStats.getWillpower());
+        return statsBuilder.createStats();
     }
 
     private void combineStats(Stats orig, Stats combine) {

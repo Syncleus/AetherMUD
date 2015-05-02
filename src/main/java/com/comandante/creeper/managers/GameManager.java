@@ -14,6 +14,7 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.*;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
@@ -24,10 +25,8 @@ import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.NumberFormat;
+import java.util.*;
 
 import static com.comandante.creeper.server.Color.*;
 
@@ -345,64 +344,122 @@ public class GameManager {
 
     public String getLookString(Npc npc) {
         StringBuilder sb = new StringBuilder();
-        sb.append(npc.getName()).append("\r\n");
-        sb.append(buildLookString(npc.getStats()));
+        // passing an empty createState because of the "difference calculation"
+        sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats()));
         return sb.toString();
     }
 
     public String getLookString(Player player) {
-        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         StringBuilder sb = new StringBuilder();
-        sb.append(player.getPlayerName()).append("\r\n");
-        sb.append(buildLookString(equipmentManager.getPlayerStatsWithEquipment(playerMetadata))).append("\r\n");
-        sb.append(buildEquipmentString(playerMetadata));
+        Stats origStats = playerManager.getPlayerMetadata(player.getPlayerId()).getStats();
+        Stats modifiedStats = equipmentManager.getPlayerStatsWithEquipment(player);
+        Stats diffStats = equipmentManager.getDifference(modifiedStats, origStats);
+        sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(buildEquipmentString(player)).append("\r\n");
+        sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(buildLookString(player.getPlayerName(), modifiedStats, diffStats)).append("\r\n");
         return sb.toString();
     }
 
-    public String buildEquipmentString(PlayerMetadata playerMetadata) {
-        StringBuilder sb = new StringBuilder();
-        String[] playerEquipment = playerMetadata.getPlayerEquipment();
-        if (playerEquipment == null) {
-            return sb.toString();
-        }
-        for (String equipId: playerEquipment) {
-            Item itemEntity = entityManager.getItemEntity(equipId);
-            sb.append(itemEntity.getEquipment().getEquipmentSlotType().getName()).append(": ");
-            sb.append(itemEntity.getItemName()).append("\r\n");
-        }
-        return sb.toString();
-    }
-
-    public String buildLookString(Stats stats) {
+    public String buildEquipmentString(Player player) {
         Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.SURROUND);
+                ShownBorders.NONE);
+        t.setColumnWidth(0, 16, 20);
 
-        t.setColumnWidth(0, 14, 14);
-        t.setColumnWidth(1, 3, 14);
+        List<EquipmentSlotType> all = EquipmentSlotType.getAll();
+        for (EquipmentSlotType slot: all) {
+            t.addCell(capitalize(slot.getName()));
+            Item slotItem = equipmentManager.getSlotItem(player, slot);
+            if (slotItem != null) {
+                t.addCell(slotItem.getItemName());
+            } else {
+                t.addCell("");
+            }
+        }
+        return t.render();
+    }
 
-        t.addCell("Strength");
-        t.addCell(Integer.toString(stats.getStrength()));
+    public String buildLookString(String name, Stats stats, Stats diff) {
+        StringBuilder returnString = new StringBuilder();
+        Table t = new Table(3, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
 
-        t.addCell("Willpower");
-        t.addCell(Integer.toString(stats.getWillpower()));
+        t.setColumnWidth(0, 16, 20);
+        t.setColumnWidth(1, 10, 13);
 
-        t.addCell("Aim");
-        t.addCell(Integer.toString(stats.getAim()));
 
-        t.addCell("Agile");
-        t.addCell(Integer.toString(stats.getAgile()));
-
-        t.addCell("Armor");
-        t.addCell(Integer.toString(stats.getArmorRating()));
-
-        t.addCell("Mele");
-        t.addCell(Integer.toString(stats.getMeleSkill()));
+        t.addCell("Experience");
+        t.addCell(NumberFormat.getNumberInstance(Locale.US).format(stats.getExperience()));
+        t.addCell("");
 
         t.addCell("Health");
-        t.addCell(Integer.toString(stats.getCurrentHealth()) + "/" + Integer.toString(stats.getMaxHealth()));
+        t.addCell(getFormattedNumber(stats.getCurrentHealth()));
+        t.addCell("");
 
-        t.addCell("XP");
-        t.addCell(Integer.toString(stats.getExperience()));
-        return t.render();
+
+        StringBuilder sb = new StringBuilder();
+        t.addCell("Strength");
+        t.addCell(getFormattedNumber(stats.getStrength()));
+        if (diff.getStrength() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getStrength())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Willpower");
+        t.addCell(getFormattedNumber(stats.getWillpower()));
+        if (diff.getWillpower() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getWillpower())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Aim");
+        t.addCell(getFormattedNumber(stats.getAim()));
+        if (diff.getAim() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getAim())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Agile");
+        t.addCell(getFormattedNumber(stats.getAgile()));
+        if (diff.getAgile() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getAgile())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Armor");
+        t.addCell(getFormattedNumber(stats.getArmorRating()));
+        if (diff.getArmorRating() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getArmorRating())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Mele");
+        t.addCell(getFormattedNumber(stats.getMeleSkill()));
+        if (diff.getMeleSkill() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getMeleSkill())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Weapon Rating");
+        t.addCell(getFormattedNumber(stats.getWeaponRatingMin()) + "-" + getFormattedNumber(stats.getWeaponRatingMax()));
+        if (diff.getWeaponRatingMin() > 0 || diff.getWeaponRatingMax() > 0) {
+            sb.append("(");
+            if (diff.getWeaponRatingMin() > 0) {
+                sb.append(Color.GREEN);
+                sb.append("+");
+            }
+            sb.append(Integer.toString(diff.getWeaponRatingMin())).append(Color.RESET).append("-");
+            if (diff.getWeaponRatingMax() > 0) {
+                sb.append(Color.GREEN);
+                sb.append("+");
+            }
+            sb.append(getFormattedNumber(diff.getWeaponRatingMax()));
+            sb.append(Color.RESET).append(")");
+        }
+        t.addCell(sb.toString());
+        returnString.append(t.render());
+        return returnString.toString();
+    }
+
+    private String capitalize(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+    }
+
+    private String getFormattedNumber(Integer integer) {
+       return NumberFormat.getNumberInstance(Locale.US).format(integer);
     }
 }

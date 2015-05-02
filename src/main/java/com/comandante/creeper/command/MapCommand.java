@@ -14,8 +14,8 @@ import java.util.List;
 public class MapCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("map", "m");
-    final static String description = "Display the world map as visible to your current locaion.";
-    final static String correctUsage = "map";
+    final static String description = "Display the map.";
+    final static String correctUsage = "map <size number>";
 
 
     public MapCommand(GameManager gameManager) {

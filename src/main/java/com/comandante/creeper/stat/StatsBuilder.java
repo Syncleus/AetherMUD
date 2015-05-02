@@ -11,7 +11,7 @@ public class StatsBuilder {
     private int maxHealth;
     private int weaponRatingMax;
     private int weaponRatingMin;
-    private int numberweaponOfRolls;
+    private int numberOfWeaponRolls;
     private int experience;
     private int goldDrop;
 
@@ -65,8 +65,8 @@ public class StatsBuilder {
         return this;
     }
 
-    public StatsBuilder setNumberweaponOfRolls(int numberweaponOfRolls) {
-        this.numberweaponOfRolls = numberweaponOfRolls;
+    public StatsBuilder setNumberOfWeaponRolls(int numberOfWeaponRolls) {
+        this.numberOfWeaponRolls = numberOfWeaponRolls;
         return this;
     }
 
@@ -81,6 +81,6 @@ public class StatsBuilder {
     }
 
     public Stats createStats() {
-        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberweaponOfRolls, experience, goldDrop);
+        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, goldDrop);
     }
 }

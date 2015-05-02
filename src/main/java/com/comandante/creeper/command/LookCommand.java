@@ -15,7 +15,7 @@ import java.util.Set;
 public class LookCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("look", "l");
-    final static String description = "Examine your surroundings, another player, or yourself.";
+    final static String description = "look at the room, another player, or yourself.";
     final static String correctUsage = "look <playerName>";
 
     public LookCommand(GameManager gameManager) {

@@ -14,7 +14,7 @@ public class NpcStats {
             .setMaxHealth(100)
             .setWeaponRatingMin(5)
             .setWeaponRatingMax(10)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(3);
 
     public final static StatsBuilder DRUGGED_PIMP = new StatsBuilder()
@@ -28,7 +28,7 @@ public class NpcStats {
             .setMaxHealth(150)
             .setWeaponRatingMin(5)
             .setWeaponRatingMax(10)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(3)
             .setGoldDrop(5);
 
@@ -43,7 +43,7 @@ public class NpcStats {
             .setMaxHealth(200)
             .setWeaponRatingMin(8)
             .setWeaponRatingMax(13)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(150)
             .setGoldDrop(12);
 
@@ -59,7 +59,7 @@ public class NpcStats {
             .setMaxHealth(230)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(13)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(190)
             .setGoldDrop(20);
 
@@ -74,7 +74,7 @@ public class NpcStats {
             .setMaxHealth(230)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(13)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(190)
             .setGoldDrop(20);
 
@@ -89,7 +89,7 @@ public class NpcStats {
             .setMaxHealth(300)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(16)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(300)
             .setGoldDrop(40);
 
@@ -104,7 +104,7 @@ public class NpcStats {
             .setMaxHealth(300)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(16)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(300)
             .setGoldDrop(40);
 
@@ -119,7 +119,7 @@ public class NpcStats {
             .setMaxHealth(450)
             .setWeaponRatingMin(12)
             .setWeaponRatingMax(18)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(450);
 
     public final static StatsBuilder STEALTH_PANTHER = new StatsBuilder()
@@ -133,7 +133,7 @@ public class NpcStats {
             .setMaxHealth(500)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(20)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(510);
 
     public final static StatsBuilder DEATH_GRIFFIN = new StatsBuilder()
@@ -147,7 +147,7 @@ public class NpcStats {
             .setMaxHealth(1000)
             .setWeaponRatingMin(20)
             .setWeaponRatingMax(65)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(2100);
 
     public final static StatsBuilder DEMON_SUCCUBUS = new StatsBuilder()
@@ -161,7 +161,7 @@ public class NpcStats {
             .setMaxHealth(1200)
             .setWeaponRatingMin(35)
             .setWeaponRatingMax(60)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(2600);
 
     public final static StatsBuilder TIGER_MONOCERUS = new StatsBuilder()
@@ -175,7 +175,7 @@ public class NpcStats {
             .setMaxHealth(600)
             .setWeaponRatingMin(20)
             .setWeaponRatingMax(36)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(800);
 
     public final static StatsBuilder NIGHTMARE_TROLL = new StatsBuilder()
@@ -189,7 +189,7 @@ public class NpcStats {
             .setMaxHealth(550)
             .setWeaponRatingMin(5)
             .setWeaponRatingMax(32)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(720);
 
     public final static StatsBuilder RAZORCLAW_WOLF = new StatsBuilder()
@@ -203,7 +203,7 @@ public class NpcStats {
             .setMaxHealth(500)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(27)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(600);
 
     public final static StatsBuilder PHANTOM_WIZARD = new StatsBuilder()
@@ -217,7 +217,7 @@ public class NpcStats {
             .setMaxHealth(400)
             .setWeaponRatingMin(12)
             .setWeaponRatingMax(25)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(510);
 
     public final static StatsBuilder PHANTOM_KNIGHT = new StatsBuilder()
@@ -231,7 +231,7 @@ public class NpcStats {
             .setMaxHealth(500)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(20)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(600);
 
     public final static StatsBuilder PHANTOM_ORC = new StatsBuilder()
@@ -245,7 +245,7 @@ public class NpcStats {
             .setMaxHealth(500)
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(20)
-            .setNumberweaponOfRolls(1)
+            .setNumberOfWeaponRolls(1)
             .setExperience(510);
 
 }

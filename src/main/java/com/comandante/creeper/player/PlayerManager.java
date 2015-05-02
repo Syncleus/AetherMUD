@@ -109,6 +109,15 @@ public class PlayerManager {
         }
     }
 
+    public void incrementGold(String playerId, int amt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
+            playerMetadata.incrementGold(amt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
     public void incrementHealth(Player player, int amt) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {

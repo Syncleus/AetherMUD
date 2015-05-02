@@ -32,8 +32,7 @@ public class FightRun implements Callable<FightResults> {
         FightResults fightResults = null;
         try {
             Stats npcStats = npc.getStats();
-            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
-            Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipment(playerMetadata);
+            Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipment(player);
             boolean playerDied = false;
             while (npcStats.getCurrentHealth() > 0 && !playerDied) {
                 if (getCurrentHealth() <= 0) {
@@ -42,7 +41,8 @@ public class FightRun implements Callable<FightResults> {
                 }
                 gameManager.getFightManager().fightTurn(playerStats, npcStats, 3, player, npc);
                 if (getCurrentHealth() > 0 && npcStats.getCurrentHealth() > 0) {
-                    gameManager.getChannelUtils().write(player.getPlayerId(), "Use an ability!", true);
+                    String prompt = gameManager.getPlayerManager().buildPrompt(player.getPlayerId());
+                    gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
                     gameManager.getPlayerManager().getSessionManager().getSession(player.getPlayerId()).setIsAbleToDoAbility(true);
                     try {
                         Thread.sleep(2200);

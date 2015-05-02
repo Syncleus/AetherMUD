@@ -14,7 +14,9 @@ import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.merchant.LloydBartender;
 import com.comandante.creeper.merchant.MerchantItemForSale;
 import com.comandante.creeper.npc.*;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.CreeperCommandRegistry;
 import com.comandante.creeper.server.CreeperServer;
@@ -113,10 +115,6 @@ public class Main {
         creeperCommandRegistry.addCommand(new EquipCommand(gameManager));
         creeperCommandRegistry.addCommand(new UnequipCommand(gameManager));
         creeperCommandRegistry.addCommand(new QuitCommand(gameManager));
-
-
-
-
 
         createNpcs(entityManager, gameManager);
 
@@ -226,14 +224,16 @@ public class Main {
         MerchantItemForSale bootsForSale = new MerchantItemForSale(ItemType.IRON_BOOTS, 800);
         MerchantItemForSale chestplateforSale = new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500);
         MerchantItemForSale ironChestPlayForSale = new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100);
-        MerchantItemForSale ballersSwordForSale = new MerchantItemForSale(ItemType.BALLERS_SWORD, 4000);
+        MerchantItemForSale phantomSword = new MerchantItemForSale(ItemType.PHANTOM_SWORD, 7000);
 
         itemsForSale.put(1, merchantItemForSale);
         itemsForSale.put(2, broadswordForSale);
         itemsForSale.put(3, bootsForSale);
         itemsForSale.put(4, chestplateforSale);
         itemsForSale.put(5, ironChestPlayForSale);
-        itemsForSale.put(6, ballersSwordForSale);
+        itemsForSale.put(6, phantomSword);
+
+      /*  gameManager.getPlayerManager().incrementGold(createPlayerId("puff"), 4000);*/
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
     }
