@@ -1,6 +1,8 @@
 package com.comandante.creeper.command;
 
 
+import com.comandante.creeper.ConfigureCommands;
+import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
@@ -35,7 +37,7 @@ public class HelpCommand extends Command {
             t.setColumnWidth(1, 30, 55);
             t.addCell("commands");
             t.addCell("description");
-            Set<Command> creeperCommands = Main.creeperCommandRegistry.getCreeperCommands();
+            Set<Command> creeperCommands = ConfigureCommands.creeperCommandRegistry.getCreeperCommands();
             for (Command command : creeperCommands) {
                 Joiner.on(" ").join(validTriggers);
                 if (command.roles != null) {

@@ -13,11 +13,9 @@ import java.util.concurrent.Executors;
 public class CreeperServer {
 
     private final int port;
-    private final DB db;
 
-    public CreeperServer(int port, DB db) {
+    public CreeperServer(int port) {
         this.port = port;
-        this.db = db;
     }
 
     public static void exitServer(String exitMessage) {

@@ -2,6 +2,7 @@ package com.comandante.creeper.server;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.command.CommandAuditLog;
 import com.comandante.creeper.command.UnknownCommand;
@@ -39,7 +40,7 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
             super.messageReceived(ctx, e);
             return;
         }
-        Command commandByTrigger = Main.creeperCommandRegistry.getCommandByTrigger(rootCommand);
+        Command commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand);
         Player player = gameManager.getPlayerManager().getPlayerByUsername(session.getUsername().get());
         if ((commandByTrigger.roles != null) && commandByTrigger.roles.size() > 0) {
             boolean roleMatch = gameManager.getPlayerManager().hasAnyOfRoles(player, commandByTrigger.roles);

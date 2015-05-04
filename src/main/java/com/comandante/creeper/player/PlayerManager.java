@@ -4,6 +4,7 @@ package com.comandante.creeper.player;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
+import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.MapDbAutoCommitService;
 import com.comandante.creeper.entity.EntityManager;
@@ -232,7 +233,7 @@ public class PlayerManager {
                 .append("[")
                 .append(player.getPlayerName())
                 .append("@")
-                .append(Main.MUD_NAME)
+                .append("creeper")
                 .append(" ")
                 .append(currentHealth).append("/").append(maxHealth);
         if (isFight) {
