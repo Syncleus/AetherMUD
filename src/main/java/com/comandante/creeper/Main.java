@@ -17,6 +17,7 @@ import com.comandante.creeper.npc.*;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.CreeperCommandRegistry;
 import com.comandante.creeper.server.CreeperServer;
@@ -225,16 +226,39 @@ public class Main {
         MerchantItemForSale chestplateforSale = new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500);
         MerchantItemForSale ironChestPlayForSale = new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100);
         MerchantItemForSale phantomSword = new MerchantItemForSale(ItemType.PHANTOM_SWORD, 7000);
+        MerchantItemForSale bracers = new MerchantItemForSale(ItemType.IRON_BRACERS, 400);
+        MerchantItemForSale helmet = new MerchantItemForSale(ItemType.IRON_HELMET, 500);
+        MerchantItemForSale phantomHelmet = new MerchantItemForSale(ItemType.PHANTOM_HELMET, 3500);
+        MerchantItemForSale phantomChestplate = new MerchantItemForSale(ItemType.PHANTOM_CHESTPLATE, 5000);
+        MerchantItemForSale phantomBoots = new MerchantItemForSale(ItemType.PHANTOM_BOOTS, 3000);
+        MerchantItemForSale phantomBracers = new MerchantItemForSale(ItemType.PHANTOM_BRACERS, 1500);
+        MerchantItemForSale phantomLeggings = new MerchantItemForSale(ItemType.PHANTOM_LEGGINGS, 4000);
+
+
 
         itemsForSale.put(1, merchantItemForSale);
         itemsForSale.put(2, broadswordForSale);
         itemsForSale.put(3, bootsForSale);
-        itemsForSale.put(4, chestplateforSale);
-        itemsForSale.put(5, ironChestPlayForSale);
-        itemsForSale.put(6, phantomSword);
+        itemsForSale.put(4, bracers);
+        itemsForSale.put(5, helmet);
+        itemsForSale.put(6, chestplateforSale);
+        itemsForSale.put(7, ironChestPlayForSale);
+        itemsForSale.put(8, phantomSword);
+        itemsForSale.put(9, phantomHelmet);
+        itemsForSale.put(10, phantomChestplate);
+        itemsForSale.put(11, phantomBoots);
+        itemsForSale.put(12, phantomBracers);
+        itemsForSale.put(13, phantomLeggings);
+
+
 
       /*  gameManager.getPlayerManager().incrementGold(createPlayerId("puff"), 4000);*/
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
+
+        /*PlayerMetadata kns = gameManager.getPlayerManager().getPlayerMetadata(createPlayerId("kns"));
+        kns.addPlayerRole(PlayerRole.ADMIN);
+        gameManager.getPlayerManager().savePlayerMetadata(kns);*/
+
     }
 }

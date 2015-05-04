@@ -122,7 +122,7 @@ public class PlayerMetadata implements Serializable {
         return playerRoleSet;
     }
 
-    protected void addPlayerRole(PlayerRole playerRole) {
+    public void addPlayerRole(PlayerRole playerRole) {
         if (this.playerRoleSet == null) {
             playerRoleSet = Sets.newHashSet();
         }

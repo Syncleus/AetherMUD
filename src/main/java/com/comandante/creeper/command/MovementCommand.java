@@ -86,10 +86,12 @@ public class MovementCommand extends Command {
     }
 
     private Optional<RemoteExit> doesEnterExitExist() {
-        String enterExitName = originalMessageParts.get(1);
-        for (RemoteExit remoteExit : currentRoom.getEnterExits()) {
-            if (remoteExit.getExitDetail().equals(enterExitName)) {
-                return Optional.of(remoteExit);
+        if (originalMessageParts.size() > 1) {
+            String enterExitName = originalMessageParts.get(1);
+            for (RemoteExit remoteExit : currentRoom.getEnterExits()) {
+                if (remoteExit.getExitDetail().equals(enterExitName)) {
+                    return Optional.of(remoteExit);
+                }
             }
         }
         return Optional.absent();

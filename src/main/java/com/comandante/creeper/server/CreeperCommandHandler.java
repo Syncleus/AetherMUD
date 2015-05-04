@@ -18,7 +18,7 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
 
     private final GameManager gameManager;
-    private final Meter commandMeter =  Main.metrics.meter(MetricRegistry.name(CreeperCommandHandler.class, "commands"));
+    private final Meter commandMeter = Main.metrics.meter(MetricRegistry.name(CreeperCommandHandler.class, "commands"));
 
     public CreeperCommandHandler(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -70,8 +70,9 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
 
     private String getRootCommand(MessageEvent e) {
         String origMessage = (String) e.getMessage();
-        if (origMessage.contains(" ")) {
-            return origMessage.split(" ")[0].toLowerCase();
+        String[] split = origMessage.split(" ");
+        if (split.length > 0) {
+            return split[0].toLowerCase();
         } else {
             return origMessage;
         }
