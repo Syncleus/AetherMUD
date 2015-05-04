@@ -70,7 +70,7 @@ public class Main {
 
         checkAndCreateWorld();
 
-        DB db = DBMaker.newFileDB(new File("world/creeper.mapdb")).closeOnJvmShutdown().encryptionEnable("creepandicrawl").make();
+        DB db = DBMaker.newFileDB(new File("world/creeper.mapdb")).closeOnJvmShutdown().make();
 
         RoomManager roomManager = new RoomManager();
         PlayerManager playerManager = new PlayerManager(db, new SessionManager());
@@ -220,37 +220,19 @@ public class Main {
         entityManager.addEntity(new NpcSpawner(razorClawWolf, Sets.newHashSet(Area.TOFT3_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
 
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newHashMap();
-        MerchantItemForSale merchantItemForSale = new MerchantItemForSale(ItemType.BEER, 1);
-        MerchantItemForSale broadswordForSale = new MerchantItemForSale(ItemType.BROAD_SWORD, 1000);
-        MerchantItemForSale bootsForSale = new MerchantItemForSale(ItemType.IRON_BOOTS, 800);
-        MerchantItemForSale chestplateforSale = new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500);
-        MerchantItemForSale ironChestPlayForSale = new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100);
-        MerchantItemForSale phantomSword = new MerchantItemForSale(ItemType.PHANTOM_SWORD, 7000);
-        MerchantItemForSale bracers = new MerchantItemForSale(ItemType.IRON_BRACERS, 400);
-        MerchantItemForSale helmet = new MerchantItemForSale(ItemType.IRON_HELMET, 500);
-        MerchantItemForSale phantomHelmet = new MerchantItemForSale(ItemType.PHANTOM_HELMET, 3500);
-        MerchantItemForSale phantomChestplate = new MerchantItemForSale(ItemType.PHANTOM_CHESTPLATE, 5000);
-        MerchantItemForSale phantomBoots = new MerchantItemForSale(ItemType.PHANTOM_BOOTS, 3000);
-        MerchantItemForSale phantomBracers = new MerchantItemForSale(ItemType.PHANTOM_BRACERS, 1500);
-        MerchantItemForSale phantomLeggings = new MerchantItemForSale(ItemType.PHANTOM_LEGGINGS, 4000);
-
-
-
-        itemsForSale.put(1, merchantItemForSale);
-        itemsForSale.put(2, broadswordForSale);
-        itemsForSale.put(3, bootsForSale);
-        itemsForSale.put(4, bracers);
-        itemsForSale.put(5, helmet);
-        itemsForSale.put(6, chestplateforSale);
-        itemsForSale.put(7, ironChestPlayForSale);
-        itemsForSale.put(8, phantomSword);
-        itemsForSale.put(9, phantomHelmet);
-        itemsForSale.put(10, phantomChestplate);
-        itemsForSale.put(11, phantomBoots);
-        itemsForSale.put(12, phantomBracers);
-        itemsForSale.put(13, phantomLeggings);
-
-
+        itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 1));
+        itemsForSale.put(2, new MerchantItemForSale(ItemType.BROAD_SWORD, 1000));
+        itemsForSale.put(3, new MerchantItemForSale(ItemType.IRON_BOOTS, 800));
+        itemsForSale.put(4, new MerchantItemForSale(ItemType.IRON_BRACERS, 400));
+        itemsForSale.put(5, new MerchantItemForSale(ItemType.IRON_HELMET, 500));
+        itemsForSale.put(6, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
+        itemsForSale.put(7, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
+        itemsForSale.put(8, new MerchantItemForSale(ItemType.PHANTOM_SWORD, 7000));
+        itemsForSale.put(9, new MerchantItemForSale(ItemType.PHANTOM_HELMET, 3500));
+        itemsForSale.put(10, new MerchantItemForSale(ItemType.PHANTOM_CHESTPLATE, 5000));
+        itemsForSale.put(11, new MerchantItemForSale(ItemType.PHANTOM_BOOTS, 3000));
+        itemsForSale.put(12, new MerchantItemForSale(ItemType.PHANTOM_BRACERS, 1500));
+        itemsForSale.put(13, new MerchantItemForSale(ItemType.PHANTOM_LEGGINGS, 4000));
 
       /*  gameManager.getPlayerManager().incrementGold(createPlayerId("puff"), 4000);*/
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
