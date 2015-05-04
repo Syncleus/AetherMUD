@@ -112,7 +112,7 @@ public enum ItemType {
             true),
 
     PHANTOM_CHESTPLATE(11, Arrays.asList("chestplate", "chest", "phantom chest plate", "the phantom chest plate"),
-            "phantom" + Color.RESET + Color.YELLOW + " chest plate" + Color.RESET,
+            Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " chest plate" + Color.RESET,
             "a " + Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " chest plate" + Color.RESET + " is on the ground.",
             "a " + Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " chest plate" + Color.RESET,
             false,
