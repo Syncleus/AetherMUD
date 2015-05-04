@@ -93,13 +93,16 @@ public class Main {
 
     private static Configuration buildConfiguration(String[] args) throws ConfigurationException {
         CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
-        if (args.length > 0) {
-            File propFile = new File(args[0]);
-            if (propFile.exists()) {
-                compositeConfiguration.addConfiguration(new PropertiesConfiguration(propFile));
-            }
-            compositeConfiguration.addConfiguration(new SystemConfiguration());
+        File propFile;
+        if (args.length == 0) {
+            propFile = new File("server.config");
+        } else {
+            propFile = new File(args[0]);
         }
+        if (propFile.exists()) {
+            compositeConfiguration.addConfiguration(new PropertiesConfiguration(propFile));
+        }
+        compositeConfiguration.addConfiguration(new SystemConfiguration());
         return compositeConfiguration;
     }
 }
