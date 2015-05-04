@@ -32,19 +32,21 @@ public class GiveGoldCommand extends Command {
                 write("This attempt to cheat has been logged.");
                 return;
             }
-            String destinationPlayerName = originalMessageParts.get(1);
-            String amt = originalMessageParts.get(2);
-            if (!isInteger(amt)) {
-                write("Third option to givegold needs to be an integer amount.");
-                return;
+            if (originalMessageParts.size() > 2) {
+                String destinationPlayerName = originalMessageParts.get(1);
+                String amt = originalMessageParts.get(2);
+                if (!isInteger(amt)) {
+                    write("Third option to givegold needs to be an integer amount.");
+                    return;
+                }
+                PlayerMetadata destinationPlayer = playerManager.getPlayerMetadata(Main.createPlayerId(destinationPlayerName));
+                if (destinationPlayer == null) {
+                    write("Player does not exist.");
+                    return;
+                }
+                playerManager.incrementGold(destinationPlayer.getPlayerId(), Integer.parseInt(amt));
+                write("The amount of " + amt + " gold has been placed into " + destinationPlayerName + "'s inventory.");
             }
-            PlayerMetadata destinationPlayer = playerManager.getPlayerMetadata(Main.createPlayerId(destinationPlayerName));
-            if (destinationPlayer == null) {
-                write("Player does not exist.");
-                return;
-            }
-            playerManager.incrementGold(destinationPlayer.getPlayerId(), Integer.parseInt(amt));
-            write("The amount of " + amt + " gold has been placed into " + destinationPlayerName + "'s inventory.");
         } finally {
             super.messageReceived(ctx, e);
         }
