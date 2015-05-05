@@ -27,9 +27,11 @@ public class DoneCommand extends BankCommand {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
-        gameManager.getChannelUtils().write(playerId, "Thanks, COME AGAIN." + "\r\n" + "\r\n" + "\r\n", true);
+        gameManager.getChannelUtils().write(playerId, "Thanks, COME AGAIN." + "\r\n", true);
         creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>absent());
         e.getChannel().getPipeline().remove("executed_command");
         e.getChannel().getPipeline().remove("executed_bank_command");
+        String s = gameManager.getPlayerManager().buildPrompt(playerId);
+        write(s);
     }
 }
