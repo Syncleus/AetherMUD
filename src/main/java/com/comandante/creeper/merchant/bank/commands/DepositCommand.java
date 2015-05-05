@@ -23,7 +23,7 @@ public class DepositCommand extends BankCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (originalMessageParts.size() > 0 && Command.isInteger(originalMessageParts.get(1))) {
+            if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
                 int depositAmt = Integer.parseInt(originalMessageParts.get(1));
                 if (areFundsAvailable(depositAmt)) {
                     playerManager.transferGoldToBank(playerId, depositAmt);

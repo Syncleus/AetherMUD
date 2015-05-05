@@ -22,7 +22,7 @@ public class WithdrawalCommand extends BankCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (originalMessageParts.size() > 0 && Command.isInteger(originalMessageParts.get(1))) {
+            if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
                 int withdrawalAmount = Integer.parseInt(originalMessageParts.get(1));
                 if (areBankFundsAvailable(withdrawalAmount)) {
                     playerManager.transferBankGoldToPlayer(playerId, withdrawalAmount);
