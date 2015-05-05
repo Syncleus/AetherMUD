@@ -18,10 +18,11 @@ public class PlayerMetadata implements Serializable {
     private Stats stats;
     private String[] inventory;
     private int gold;
+    private int goldInBank;
     private Set<PlayerRole> playerRoleSet;
     private String[] playerEquipment;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -29,6 +30,7 @@ public class PlayerMetadata implements Serializable {
         this.gold = gold;
         this.playerRoleSet = playerRoleSet;
         this.playerEquipment = playerEquipment;
+        this.goldInBank = goldInBank;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -40,6 +42,7 @@ public class PlayerMetadata implements Serializable {
             this.inventory = Arrays.copyOf(playerMetadata.inventory, playerMetadata.inventory.length);
         }
         this.gold = new Integer(playerMetadata.gold);
+        this.goldInBank = new Integer(playerMetadata.goldInBank);
         if (playerMetadata.playerRoleSet != null) {
             this.playerRoleSet = Sets.newHashSet(playerMetadata.playerRoleSet);
         }
@@ -114,7 +117,21 @@ public class PlayerMetadata implements Serializable {
         return gold;
     }
 
+    public int getGoldInBank() {
+        return goldInBank;
+    }
+
     protected void incrementGold(int amt) {
+        this.gold = gold + amt;
+    }
+
+    protected void transferGoldToBank(int amt) {
+        this.gold = gold - amt;
+        this.goldInBank = goldInBank + amt;
+    }
+
+    protected void transferBankGoldToPlayer(int amt) {
+        this.goldInBank = goldInBank - amt;
         this.gold = gold + amt;
     }
 

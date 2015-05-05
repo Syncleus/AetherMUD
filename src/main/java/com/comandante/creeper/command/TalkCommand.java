@@ -4,10 +4,12 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
+import com.comandante.creeper.merchant.bank.commands.BankCommand;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +30,7 @@ public class TalkCommand extends Command {
         configure(e);
         try {
             if (creeperSession.getGrabMerchant().isPresent()) {
-                creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, Command>>absent());
+                creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>absent());
                 return;
             }
             originalMessageParts.remove(0);
@@ -37,10 +39,14 @@ public class TalkCommand extends Command {
             for (Merchant merchant: merchants) {
                 if (merchant.getValidTriggers().contains(desiredMerchantTalk)) {
                     write(merchant.getWelcomeMessage() + "\r\n");
-                    write(merchant.getMenu() + "\r\n");
-                    gameManager.getChannelUtils().write(playerId, "\r\n[" + merchant.getName() + " (done to exit, buy <itemNo>)] ");
+                    if (merchant.getMerchantType() != Merchant.MerchantType.BANK) {
+                        write(merchant.getMenu() + "\r\n");
+                        gameManager.getChannelUtils().write(playerId, "\r\n[" + merchant.getName() + " (done to exit, buy <itemNo>)] ");
+                    } else {
+                       write(BankCommand.getPrompt());
+                    }
                     creeperSession.setGrabMerchant(Optional.of(
-                            new CreeperEntry<Merchant, Command>(merchant, this)));
+                            new CreeperEntry<Merchant, SimpleChannelUpstreamHandler>(merchant, this)));
                 }
             }
         } finally {

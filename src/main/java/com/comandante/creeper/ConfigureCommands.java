@@ -1,13 +1,25 @@
 package com.comandante.creeper;
 
 import com.comandante.creeper.command.*;
+import com.comandante.creeper.command.UnknownCommand;
 import com.comandante.creeper.command.admin.*;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.merchant.bank.commands.*;
 import com.comandante.creeper.server.CreeperCommandRegistry;
 
 public class ConfigureCommands {
 
     public static CreeperCommandRegistry creeperCommandRegistry;
+
+    public static BankCommandRegistry bankCommandRegistry;
+
+    public static void configureBankCommands(GameManager gameManager) {
+        bankCommandRegistry = new BankCommandRegistry(new com.comandante.creeper.merchant.bank.commands.UnknownCommand(gameManager));
+        bankCommandRegistry.addCommand(new AccountQueryCommand(gameManager));
+        bankCommandRegistry.addCommand(new DepositCommand(gameManager));
+        bankCommandRegistry.addCommand(new WithdrawalCommand(gameManager));
+        bankCommandRegistry.addCommand(new DoneCommand(gameManager));
+    }
 
     public static void configure(GameManager gameManager) {
         creeperCommandRegistry = new CreeperCommandRegistry(new UnknownCommand(gameManager));

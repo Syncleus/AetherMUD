@@ -1,18 +1,11 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.Player;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.world.Area;
-import com.google.common.base.Optional;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -26,14 +19,20 @@ public abstract class Merchant extends CreeperEntity {
     private final Set<String> validTriggers;
     private final Map<Integer, MerchantItemForSale> merchantItemForSales;
     private final String welcomeMessage;
+    private final MerchantType merchantType;
 
     public Merchant(GameManager gameManager, String name, String colorName, Set<String> validTriggers, Map<Integer, MerchantItemForSale> merchantItemForSales, String welcomeMessage) {
+        this(gameManager, name, colorName, validTriggers, merchantItemForSales, welcomeMessage, MerchantType.BASIC);
+    }
+
+    public Merchant(GameManager gameManager, String name, String colorName, Set<String> validTriggers, Map<Integer, MerchantItemForSale> merchantItemForSales, String welcomeMessage, MerchantType merchantType) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
         this.validTriggers = validTriggers;
         this.merchantItemForSales = merchantItemForSales;
         this.welcomeMessage = welcomeMessage;
+        this.merchantType = merchantType;
     }
 
     public String getMenu() {
@@ -88,5 +87,14 @@ public abstract class Merchant extends CreeperEntity {
 
     public String getWelcomeMessage() {
         return welcomeMessage;
+    }
+
+    public MerchantType getMerchantType() {
+        return merchantType;
+    }
+
+    public enum MerchantType {
+        BANK,
+        BASIC
     }
 }

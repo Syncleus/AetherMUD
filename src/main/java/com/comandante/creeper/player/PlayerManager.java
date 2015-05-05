@@ -2,17 +2,12 @@ package com.comandante.creeper.player;
 
 
 import com.codahale.metrics.Gauge;
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricFilter;
-import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.MapDbAutoCommitService;
-import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Room;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
@@ -21,14 +16,10 @@ import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
-import org.nocrala.tools.texttablefmt.BorderStyle;
-import org.nocrala.tools.texttablefmt.ShownBorders;
-import org.nocrala.tools.texttablefmt.Table;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.codahale.metrics.MetricRegistry.name;
@@ -115,6 +106,24 @@ public class PlayerManager {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
             playerMetadata.incrementGold(amt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void transferGoldToBank(String playerId, int amt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
+            playerMetadata.transferGoldToBank(amt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void transferBankGoldToPlayer(String playerId, int amt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
+            playerMetadata.transferBankGoldToPlayer(amt);
             savePlayerMetadata(playerMetadata);
         }
     }

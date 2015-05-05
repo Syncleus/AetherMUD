@@ -6,6 +6,7 @@ import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Blacksmith;
+import com.comandante.creeper.merchant.JimBanker;
 import com.comandante.creeper.merchant.LloydBartender;
 import com.comandante.creeper.merchant.MerchantItemForSale;
 import com.comandante.creeper.npc.*;
@@ -125,6 +126,12 @@ public class ConfigureNpc {
 
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), blacksmithItems);
         gameManager.getRoomManager().addMerchant(66, blacksmith);
+        gameManager.getRoomManager().addMerchant(253, blacksmith);
+
+        JimBanker jimBanker = new JimBanker(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), null);
+        gameManager.getRoomManager().addMerchant(65, jimBanker);
+        gameManager.getRoomManager().addMerchant(209, jimBanker);
+
 
     }
 }

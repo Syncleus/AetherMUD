@@ -5,6 +5,7 @@ import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.command.Command;
 import com.google.common.base.Optional;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,7 +21,7 @@ public class CreeperSession {
     private Optional<Future<FightResults>> activeFight = Optional.absent();
     private AtomicBoolean isAbleToDoAbility = new AtomicBoolean(false);
     private Optional<CreeperEntry<UUID, Command>> grabMultiLineInput = Optional.absent();
-    private Optional<CreeperEntry<Merchant, Command>> grabMerchant = Optional.absent();
+    private Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant = Optional.absent();
     private String lastMessage;
 
     State state;
@@ -106,11 +107,11 @@ public class CreeperSession {
         this.isAbleToDoAbility = isAbleToDoAbility;
     }
 
-    public Optional<CreeperEntry<Merchant, Command>> getGrabMerchant() {
+    public Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> getGrabMerchant() {
         return grabMerchant;
     }
 
-    public void setGrabMerchant(Optional<CreeperEntry<Merchant, Command>> grabMerchant) {
+    public void setGrabMerchant(Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant) {
         this.grabMerchant = grabMerchant;
     }
 }
