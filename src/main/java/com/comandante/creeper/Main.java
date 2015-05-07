@@ -87,10 +87,11 @@ public class Main {
         startUpMessage("Creeper MUD engine started");
 
         creeperServer.run(gameManager);
-        startUpMessage("Creeper online");
+        startUpMessage("Creeper MUD engine online");
 
 
         if (creeperConfiguration.isIrcEnabled) {
+            startUpMessage("Starting irc server.");
             configureIrc(gameManager);
         }
     }
