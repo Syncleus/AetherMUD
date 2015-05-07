@@ -174,8 +174,14 @@ public class GameManager {
                 sb.append(" ").append(playerMovement.getRoomExitMessage());
                 channelUtils.write(next.getPlayerId(), sb.toString(), true);
             }
+            if (creeperConfiguration.isIrcEnabled && (Objects.equals(creeperConfiguration.ircBridgeRoomId, sourceRoom.getRoomId()))) {
+                ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(playerMovement.getRoomExitMessage());
+            }
             for (Player next : playerManager.getPresentPlayers(destinationRoom)) {
                 channelUtils.write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
+            }
+            if (creeperConfiguration.isIrcEnabled && (Objects.equals(creeperConfiguration.ircBridgeRoomId, destinationRoom.getRoomId()))) {
+                ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(playerMovement.getPlayer().getPlayerName() + " arrived.");
             }
             destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
         }
@@ -498,6 +504,18 @@ public class GameManager {
             channelUtils.write(presentPlayer.getPlayerId(), message, true);
         }
         if (creeperConfiguration.isIrcEnabled && (Objects.equals(creeperConfiguration.ircBridgeRoomId, playerCurrentRoom.getRoomId()))) {
+            ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(message);
+        }
+    }
+
+    public void writeToRoom(Integer roomId, String message) {
+        Room room = roomManager.getRoom(roomId);
+        Set<String> presentPlayerIds = room.getPresentPlayerIds();
+        for (String id : presentPlayerIds) {
+            Player presentPlayer = playerManager.getPlayer(id);
+            channelUtils.write(presentPlayer.getPlayerId(), message, true);
+        }
+        if (creeperConfiguration.isIrcEnabled && (Objects.equals(creeperConfiguration.ircBridgeRoomId, roomId))) {
             ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(message);
         }
     }

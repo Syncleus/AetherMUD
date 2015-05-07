@@ -20,15 +20,6 @@ public class ChannelUtils {
         this.roomManager = roomManager;
     }
 
-    public void writeToRoom(Integer roomId, String message) {
-        Room room = roomManager.getRoom(roomId);
-        Set<String> presentPlayerIds = room.getPresentPlayerIds();
-        for (String id : presentPlayerIds) {
-            Player presentPlayer = playerManager.getPlayer(id);
-            write(presentPlayer.getPlayerId(), message, true);
-        }
-    }
-
     public void write(String playerId, String message) {
         write(playerId, message, false);
     }

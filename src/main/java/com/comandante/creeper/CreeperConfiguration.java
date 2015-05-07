@@ -29,7 +29,7 @@ public class CreeperConfiguration {
     public final int graphitePort;
 
     public static final String IRC_SERVER = "irc.server";
-    public static final String IRC_SERVER_DEFAULT = "us.undernet.org";
+    public static final String IRC_SERVER_DEFAULT = "epsilon.us.ix.undernet.org";
     public final String ircServer;
 
     public static final String IRC_USERNAME = "irc.username";
@@ -49,7 +49,7 @@ public class CreeperConfiguration {
     public final Integer ircBridgeRoomId;
 
     public static final String IS_IRC_ENABLED = "irc.enabled";
-    public static final boolean IS_IRC_ENABLED_DEFAULT = false;
+    public static final boolean IS_IRC_ENABLED_DEFAULT = true;
     public final boolean isIrcEnabled;
 
     public CreeperConfiguration(Configuration configuration) {
