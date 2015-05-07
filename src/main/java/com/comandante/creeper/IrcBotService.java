@@ -3,7 +3,6 @@ package com.comandante.creeper;
 
 import com.comandante.creeper.managers.GameManager;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
-import com.google.common.util.concurrent.AbstractIdleService;
 import org.pircbotx.PircBotX;
 
 public class IrcBotService extends AbstractExecutionThreadService {

@@ -2,14 +2,13 @@ package com.comandante.creeper.merchant;
 
 
 import com.comandante.creeper.Items.Loot;
-import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
-import org.nocrala.tools.texttablefmt.BorderStyle;
-import org.nocrala.tools.texttablefmt.ShownBorders;
-import org.nocrala.tools.texttablefmt.Table;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static com.comandante.creeper.server.Color.BOLD_ON;
 

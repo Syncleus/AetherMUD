@@ -20,11 +20,8 @@ import org.apache.commons.configuration.*;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
-import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 

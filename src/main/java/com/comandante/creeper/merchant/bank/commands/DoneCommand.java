@@ -2,10 +2,8 @@ package com.comandante.creeper.merchant.bank.commands;
 
 
 import com.comandante.creeper.CreeperEntry;
-import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.server.Color;
 import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -13,7 +11,6 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class DoneCommand extends BankCommand {
 

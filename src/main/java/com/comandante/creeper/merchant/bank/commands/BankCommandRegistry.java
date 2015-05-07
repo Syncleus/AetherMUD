@@ -1,7 +1,5 @@
 package com.comandante.creeper.merchant.bank.commands;
 
-import com.comandante.creeper.command.Command;
-
 import java.util.*;
 
 public class BankCommandRegistry {

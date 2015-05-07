@@ -1,8 +1,6 @@
 package com.comandante.creeper.command;
 
 
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -10,7 +8,6 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class NexusCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("nexus", "nx");

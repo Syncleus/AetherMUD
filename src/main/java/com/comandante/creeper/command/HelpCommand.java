@@ -2,11 +2,8 @@ package com.comandante.creeper.command;
 
 
 import com.comandante.creeper.ConfigureCommands;
-import com.comandante.creeper.CreeperConfiguration;
-import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
-import com.comandante.creeper.server.Color;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -14,7 +11,9 @@ import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class HelpCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("help", "h");

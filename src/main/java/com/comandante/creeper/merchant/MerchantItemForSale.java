@@ -1,11 +1,6 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.managers.GameManager;
-
-import java.util.Map;
-import java.util.Set;
 
 
 public class MerchantItemForSale {

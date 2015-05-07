@@ -1,14 +1,12 @@
 package com.comandante.creeper.server;
 
 import com.comandante.creeper.CreeperEntry;
+import com.comandante.creeper.command.Command;
 import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.command.Command;
 import com.google.common.base.Optional;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;

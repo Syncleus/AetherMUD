@@ -4,21 +4,14 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.world.Room;
-import com.comandante.creeper.world.RoomManager;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import org.nocrala.tools.texttablefmt.BorderStyle;
-import org.nocrala.tools.texttablefmt.ShownBorders;
-import org.nocrala.tools.texttablefmt.Table;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.types.GenericChannelEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 import java.util.*;
 
-import static com.comandante.creeper.server.Color.MAGENTA;
-import static com.comandante.creeper.server.Color.RED;
-import static com.comandante.creeper.server.Color.RESET;
+import static com.comandante.creeper.server.Color.*;
 
 public class MyListener extends ListenerAdapter {
 

@@ -4,7 +4,6 @@ import com.comandante.creeper.entity.EntityManager;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.GsonBuilder;

@@ -1,6 +1,5 @@
 package com.comandante.creeper.fight;
 
-import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;

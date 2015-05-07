@@ -1,6 +1,5 @@
 package com.comandante.creeper.merchant.bank.commands;
 
-import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;

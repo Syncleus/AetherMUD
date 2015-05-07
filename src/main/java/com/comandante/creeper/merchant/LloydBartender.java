@@ -2,11 +2,7 @@ package com.comandante.creeper.merchant;
 
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.npc.Npc;
-import com.comandante.creeper.npc.NpcStats;
 import com.comandante.creeper.server.Color;
-import com.comandante.creeper.world.Area;
-import com.google.common.base.Optional;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.comandante.creeper.server.Color.BOLD_ON;
-import static com.comandante.creeper.server.Color.RESET;
 
 public class LloydBartender extends Merchant {
     private final static long phraseIntervalMs = 300000;

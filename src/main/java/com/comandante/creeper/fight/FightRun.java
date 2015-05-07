@@ -3,14 +3,11 @@ package com.comandante.creeper.fight;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.stat.Stats;
-import com.google.common.base.Optional;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 
 public class FightRun implements Callable<FightResults> {

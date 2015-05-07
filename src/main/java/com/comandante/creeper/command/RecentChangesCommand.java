@@ -1,16 +1,15 @@
 package com.comandante.creeper.command;
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.npc.Npc;
-import com.comandante.creeper.player.Player;
-import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.kohsuke.github.*;
+import org.kohsuke.github.GHCommit;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.PagedIterable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class RecentChangesCommand extends Command {
 

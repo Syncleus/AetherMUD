@@ -5,7 +5,6 @@ import com.comandante.creeper.managers.GameManager;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelException;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.mapdb.DB;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;

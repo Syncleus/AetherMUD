@@ -1,14 +1,8 @@
 package com.comandante.creeper.server;
 
-import com.comandante.creeper.CreeperConfiguration;
-import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
-import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
-
-import java.util.Objects;
-import java.util.Set;
 
 public class ChannelUtils {
 
