@@ -1,11 +1,14 @@
 package com.comandante.creeper.managers;
 
 
+import com.comandante.creeper.CreeperConfiguration;
+import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.LootManager;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
+import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.*;
@@ -18,6 +21,7 @@ import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.*;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jboss.netty.channel.MessageEvent;
@@ -27,6 +31,7 @@ import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.Future;
 
 import static com.comandante.creeper.server.Color.*;
 
@@ -57,21 +62,33 @@ public class GameManager {
     private final FloorManager floorManager;
     private final LootManager lootManager;
     private final EquipmentManager equipmentManager;
+    private final IrcBotService ircBotService;
+    private final CreeperConfiguration creeperConfiguration;
 
-    public GameManager(RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
+    public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
         this.itemDecayManager = new ItemDecayManager(entityManager);
         this.entityManager.addEntity(itemDecayManager);
         this.newUserRegistrationManager = new NewUserRegistrationManager(playerManager);
-        this.fightManager = new FightManager(channelUtils, entityManager, playerManager);
         this.multiLineInputManager = new MultiLineInputManager();
         this.mapsManager = mapsManager;
         this.floorManager = new FloorManager();
         this.channelUtils = channelUtils;
         this.lootManager = new LootManager();
         this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager);
+        this.fightManager = new FightManager(this);
+        this.ircBotService = new IrcBotService(creeperConfiguration, this);
+        this.creeperConfiguration = creeperConfiguration;
+    }
+
+    public IrcBotService getIrcBotService() {
+        return ircBotService;
+    }
+
+    public CreeperConfiguration getCreeperConfiguration() {
+        return creeperConfiguration;
     }
 
     public EquipmentManager getEquipmentManager() {
@@ -340,6 +357,9 @@ public class GameManager {
             }
             channelUtils.write(player.getPlayerId(), message, true);
         }
+        if (creeperConfiguration.isIrcEnabled && (Objects.equals(creeperConfiguration.ircBridgeRoomId, roomId))) {
+            ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(message);
+        }
     }
 
     public String getLookString(Npc npc) {
@@ -464,5 +484,46 @@ public class GameManager {
 
     private String getFormattedNumber(Integer integer) {
        return NumberFormat.getNumberInstance(Locale.US).format(integer);
+    }
+
+    public void writeToPlayerCurrentRoom(String playerId, String message) {
+        if (playerManager.getSessionManager().getSession(playerId).getGrabMultiLineInput().isPresent()) {
+            return;
+        }
+        Player player = playerManager.getPlayer(playerId);
+        Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
+        Set<String> presentPlayerIds = playerCurrentRoom.getPresentPlayerIds();
+        for (String id : presentPlayerIds) {
+            Player presentPlayer = playerManager.getPlayer(id);
+            channelUtils.write(presentPlayer.getPlayerId(), message, true);
+        }
+        if (creeperConfiguration.isIrcEnabled && (Objects.equals(creeperConfiguration.ircBridgeRoomId, playerCurrentRoom.getRoomId()))) {
+            ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(message);
+        }
+    }
+
+
+    public void updateNpcHealth(String npcId, int amt, String playerId) {
+        Player player = playerManager.getPlayer(playerId);
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(npcId)){
+            Npc npc = entityManager.getNpcEntity(npcId);
+            if (npc != null) {
+                npc.getStats().setCurrentHealth(npc.getStats().getCurrentHealth() + amt);
+                if (npc.getStats().getCurrentHealth() <= 0) {
+                    playerManager.getSessionManager().getSession(playerId).setActiveFight(Optional.<Future<FightResults>>absent());
+                    playerManager.addExperience(player, npc.getStats().getExperience());
+                    writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
+                    channelUtils.write(playerId, "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + npc.getStats().getExperience() + Color.RESET + " experience points." + "\r\n", true);
+                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
+                    entityManager.saveItem(corpse);
+                    Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
+                    Room room = roomManager.getRoom(roomId);
+                    room.addPresentItem(corpse.getItemId());
+                    itemDecayManager.addItem(corpse);
+                    entityManager.deleteNpcEntity(npc.getEntityId());
+                }
+            }
+        }
     }
 }

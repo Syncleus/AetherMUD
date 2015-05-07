@@ -20,8 +20,11 @@ import org.apache.commons.configuration.*;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
@@ -61,7 +64,8 @@ public class Main {
         MapsManager mapsManager = new MapsManager(roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
         EntityManager entityManager = new EntityManager(roomManager, playerManager, db, channelUtils);
-        GameManager gameManager = new GameManager(roomManager, playerManager, entityManager, mapsManager, channelUtils);
+        GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
+
 
         startUpMessage("Reading world from disk.");
         WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager);
@@ -84,6 +88,9 @@ public class Main {
 
         creeperServer.run(gameManager);
         startUpMessage("Creeper online");
+
+
+        configureIrc(gameManager);
     }
 
     public static void startUpMessage(String message) {
@@ -107,5 +114,9 @@ public class Main {
         }
         compositeConfiguration.addConfiguration(new SystemConfiguration());
         return compositeConfiguration;
+    }
+
+    public static void configureIrc(GameManager gameManager) throws Exception {
+        gameManager.getIrcBotService().startAsync();
     }
 }

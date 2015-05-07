@@ -1,10 +1,13 @@
 package com.comandante.creeper.server;
 
+import com.comandante.creeper.CreeperConfiguration;
+import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class ChannelUtils {
@@ -20,18 +23,6 @@ public class ChannelUtils {
     public void writeToRoom(Integer roomId, String message) {
         Room room = roomManager.getRoom(roomId);
         Set<String> presentPlayerIds = room.getPresentPlayerIds();
-        for (String id : presentPlayerIds) {
-            Player presentPlayer = playerManager.getPlayer(id);
-            write(presentPlayer.getPlayerId(), message, true);
-        }
-    }
-
-    public void writeToPlayerCurrentRoom(String playerId, String message) {
-        if (playerManager.getSessionManager().getSession(playerId).getGrabMultiLineInput().isPresent()) {
-            return;
-        }
-        Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(playerManager.getPlayer(playerId)).get();
-        Set<String> presentPlayerIds = playerCurrentRoom.getPresentPlayerIds();
         for (String id : presentPlayerIds) {
             Player presentPlayer = playerManager.getPlayer(id);
             write(presentPlayer.getPlayerId(), message, true);

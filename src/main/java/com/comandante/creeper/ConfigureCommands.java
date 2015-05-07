@@ -52,5 +52,7 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new UnequipCommand(gameManager));
         creeperCommandRegistry.addCommand(new QuitCommand(gameManager));
         creeperCommandRegistry.addCommand(new GiveGoldCommand(gameManager));
+        creeperCommandRegistry.addCommand(new NexusCommand(gameManager));
+
     }
 }

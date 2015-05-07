@@ -119,30 +119,6 @@ public class EntityManager {
         return npcs.get(npcId);
     }
 
-    public void updateNpcHealth(String npcId, int amt, String playerId) {
-        Player player = playerManager.getPlayer(playerId);
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(npcId)){
-            Npc npc = getNpcEntity(npcId);
-            if (npc != null) {
-                npc.getStats().setCurrentHealth(npc.getStats().getCurrentHealth() + amt);
-                if (npc.getStats().getCurrentHealth() <= 0) {
-                    playerManager.getSessionManager().getSession(playerId).setActiveFight(Optional.<Future<FightResults>>absent());
-                    playerManager.addExperience(player, npc.getStats().getExperience());
-                    channelUtils.writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
-                    channelUtils.write(playerId, "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + npc.getStats().getExperience() + Color.RESET + " experience points." + "\r\n", true);
-                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
-                    saveItem(corpse);
-                    Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
-                    Room room = roomManager.getRoom(roomId);
-                    room.addPresentItem(corpse.getItemId());
-                    itemDecayManager.addItem(corpse);
-                    deleteNpcEntity(npc.getEntityId());
-                }
-            }
-        }
-    }
-
     public Item getItemEntity(String itemId) {
         Item item = items.get(itemId);
         if (item == null) {

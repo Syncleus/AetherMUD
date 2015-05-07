@@ -1,6 +1,7 @@
 package com.comandante.creeper.fight;
 
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
@@ -17,16 +18,16 @@ import java.util.concurrent.Future;
 public class FightManager {
 
     private final PlayerManager playerManager;
-    private final EntityManager entityManager;
+    private final GameManager gameManager;
     private final ChannelUtils channelUtils;
     private static final Random random = new Random();
 
     private final ExecutorService fightService;
 
-    public FightManager(ChannelUtils channelUtils, EntityManager entityManager, PlayerManager playerManager) {
-        this.channelUtils = channelUtils;
-        this.entityManager = entityManager;
-        this.playerManager = playerManager;
+    public FightManager(GameManager gameManager) {
+        this.channelUtils = gameManager.getChannelUtils();
+        this.playerManager = gameManager.getPlayerManager();
+        this.gameManager = gameManager;
         this.fightService = Executors.newFixedThreadPool(10);
     }
 
@@ -84,7 +85,7 @@ public class FightManager {
     }
 
     private void doNpcDamage(String npcId, int damageAmount, String playerId) {
-        entityManager.updateNpcHealth(npcId, -damageAmount, playerId);
+        gameManager.updateNpcHealth(npcId, -damageAmount, playerId);
     }
 
     private static int getChanceToHit(Stats challenger, Stats victim) {

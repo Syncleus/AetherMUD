@@ -56,7 +56,7 @@ public class FightRun implements Callable<FightResults> {
             fightResults = new FightResultsBuilder().setNpcWon(false).setPlayerWon(false).createFightResults();
 
             if (playerDied) {
-                gameManager.getChannelUtils().writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is now dead." + "\r\n");
+                gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is now dead." + "\r\n");
                 PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
                 gameManager.movePlayer(playerMovement);
                 gameManager.currentRoomLogic(player.getPlayerId());

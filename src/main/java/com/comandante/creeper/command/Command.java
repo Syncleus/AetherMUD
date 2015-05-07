@@ -128,7 +128,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     }
 
     public void writeToRoom(String msg) {
-        channelUtils.writeToPlayerCurrentRoom(playerId, msg);
+        gameManager.writeToPlayerCurrentRoom(playerId, msg);
     }
 
     public void currentRoomLogic() {

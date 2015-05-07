@@ -8,6 +8,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.comandante.creeper.server.Color.RED;
@@ -40,6 +41,9 @@ public class SayCommand extends Command {
                 } else {
                     channelUtils.write(presentPlayer.getPlayerId(), stringBuilder.append("\r\n").toString(), true);
                 }
+            }
+            if (gameManager.getCreeperConfiguration().isIrcEnabled && (Objects.equals(gameManager.getCreeperConfiguration().ircBridgeRoomId, currentRoom.getRoomId()))) {
+                gameManager.getIrcBotService().getBot().getUserChannelDao().getChannel(gameManager.getCreeperConfiguration().ircChannel).send().message(player.getPlayerName() + ": " + message);
             }
         } finally {
             super.messageReceived(ctx, e);

@@ -15,7 +15,7 @@ public class Stats implements Serializable {
     private int weaponRatingMin;
     private int numberOfWeaponRolls;
     private int experience;
-    private int gold;
+    private int mana;
 
     public Stats(Stats stats) {
         this.strength = stats.strength;
@@ -32,7 +32,7 @@ public class Stats implements Serializable {
         this.weaponRatingMin = stats.weaponRatingMin;
         this.numberOfWeaponRolls = stats.numberOfWeaponRolls;
         this.experience = stats.experience;
-        this.gold = stats.gold;
+        this.mana = stats.mana;
     }
 
     public int getExperience() {
@@ -160,7 +160,6 @@ public class Stats implements Serializable {
         this.weaponRatingMin = weaponRatingMin;
         this.numberOfWeaponRolls = numberOfWeaponRolls;
         this.experience = experience;
-        this.gold = gold;
     }
 
     @Override
@@ -178,7 +177,6 @@ public class Stats implements Serializable {
                 ", weaponRatingMin=" + weaponRatingMin +
                 ", numberOfWeaponRolls=" + numberOfWeaponRolls +
                 ", experience=" + experience +
-                ", gold=" + gold +
                 '}';
     }
 }

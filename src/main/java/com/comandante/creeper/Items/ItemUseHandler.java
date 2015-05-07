@@ -75,7 +75,7 @@ public class ItemUseHandler {
     }
 
     private void writeToRoom(String message) {
-        gameManager.getChannelUtils().writeToPlayerCurrentRoom(player.getPlayerId(), message);
+        gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), message);
     }
 
 
