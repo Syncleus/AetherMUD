@@ -90,7 +90,9 @@ public class Main {
         startUpMessage("Creeper online");
 
 
-        configureIrc(gameManager);
+        if (creeperConfiguration.isIrcEnabled) {
+            configureIrc(gameManager);
+        }
     }
 
     public static void startUpMessage(String message) {

@@ -57,7 +57,8 @@ public enum Area {
     TISLAND7_ZONE("tisland7_zone"),
     TISLAND8_ZONE("tisland8_zone"),
     TISLAND9_ZONE("tisland9_zone"),
-    TISLAND10_ZONE("tisland10_zone");
+    TISLAND10_ZONE("tisland10_zone"),
+    RADIO_ROOM("radio_room");
 
     private final String name;
 

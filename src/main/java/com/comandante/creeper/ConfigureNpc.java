@@ -42,6 +42,8 @@ public class ConfigureNpc {
         Main.startUpMessage("Adding Red-Eyed Bears");
         entityManager.addEntity(new NpcSpawner(new RedEyedBear(gameManager, new Loot(8, 13, Sets.<Item>newHashSet())), Sets.newHashSet(Area.TOFT1_ZONE), gameManager, new SpawnRule(10, 14, 3, 100)));
         entityManager.addEntity(new NpcSpawner(new RedEyedBear(gameManager, new Loot(8, 13, Sets.<Item>newHashSet())), Sets.newHashSet(Area.TOFT2_ZONE), gameManager, new SpawnRule(10, 14, 3, 100)));
+        entityManager.addEntity(new NpcSpawner(new RedEyedBear(gameManager, new Loot(8, 13, Sets.<Item>newHashSet())), Sets.newHashSet(Area.RADIO_ROOM), gameManager, new SpawnRule(10, 1, 1, 10)));
+
 
         Main.startUpMessage("Adding Swamp Bears");
         entityManager.addEntity(new NpcSpawner(new SwampBear(gameManager, new Loot(9, 14, Sets.<Item>newHashSet())), Sets.newHashSet(Area.NORTH3_ZONE), gameManager, new SpawnRule(10, 12, 3, 100)));

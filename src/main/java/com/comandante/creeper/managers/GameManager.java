@@ -175,7 +175,7 @@ public class GameManager {
                 channelUtils.write(next.getPlayerId(), sb.toString(), true);
             }
             if (creeperConfiguration.isIrcEnabled && (Objects.equals(creeperConfiguration.ircBridgeRoomId, sourceRoom.getRoomId()))) {
-                ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(playerMovement.getRoomExitMessage());
+                ircBotService.getBot().getUserChannelDao().getChannel(creeperConfiguration.ircChannel).send().message(playerMovement.getPlayer().getPlayerName() + " " + playerMovement.getRoomExitMessage());
             }
             for (Player next : playerManager.getPresentPlayers(destinationRoom)) {
                 channelUtils.write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);

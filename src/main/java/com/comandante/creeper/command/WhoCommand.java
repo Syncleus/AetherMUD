@@ -9,8 +9,10 @@ import org.nocrala.tools.texttablefmt.CellStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class WhoCommand extends Command {
@@ -27,16 +29,20 @@ public class WhoCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                    ShownBorders.HEADER_AND_FIRST_COLLUMN);
+            Table t = new Table(4, BorderStyle.CLASSIC_COMPATIBLE,
+                    ShownBorders.HEADER_AND_COLUMNS);
             t.setColumnWidth(0, 8, 14);
             t.setColumnWidth(1, 14, 16);
             t.addCell("player");
             t.addCell("ip address");
+            t.addCell("XP");
+            t.addCell("Location");
             Set<Player> allPlayers = gameManager.getAllPlayers();
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
                 t.addCell(allPlayer.getChannel().getRemoteAddress().toString().substring(1).split(":")[0]);
+                t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerManager.getPlayerMetadata(playerId).getStats().getExperience())));
+                t.addCell(roomManager.getPlayerCurrentRoom(player).get().getRoomTitle());
             }
             write(t.render());
         } finally {

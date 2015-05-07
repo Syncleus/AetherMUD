@@ -10,6 +10,7 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,21 +42,26 @@ public class FightManager {
             if (challenger.getCurrentHealth() <= 0 || victim.getCurrentHealth() <= 0) {
                 return;
             }
-             fightRound(challenger, victim, player, npc);
+            fightRound(challenger, victim, player, npc);
         }
     }
 
     public void fightRound(Stats challenger, Stats victim, Player player, Npc npc) {
+        Integer roomId = gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId();
         int chanceToHit = getChanceToHit(challenger, victim);
         int damageToVictim = 0;
         if (randInt(0, 100) < chanceToHit) {
             damageToVictim = getAttack(challenger, victim);
         }
         if (damageToVictim > 0) {
-            channelUtils.write(player.getPlayerId(), Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName(), true);
+            final String fightMsg = Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+            channelUtils.write(player.getPlayerId(), fightMsg, true);
+            sendMessageToIrc(fightMsg, roomId);
             doNpcDamage(npc.getEntityId(), damageToVictim, player.getPlayerId());
         } else {
-            channelUtils.write(player.getPlayerId(), "You MISS " + npc.getName() + "!", true);
+            final String fightMsg = "You MISS " + npc.getName() + "!";
+            channelUtils.write(player.getPlayerId(), fightMsg, true);
+            sendMessageToIrc(fightMsg, roomId);
         }
         try {
             Thread.sleep(600);
@@ -69,9 +75,13 @@ public class FightManager {
         int damageBack = getAttack(victim, challenger);
         if (randInt(0, 100) < chanceToHitBack) {
             doPlayerDamage(player, damageBack);
-            channelUtils.write(player.getPlayerId(), npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET, true);
+            final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
+            channelUtils.write(player.getPlayerId(), fightMsg, true);
+            sendMessageToIrc(fightMsg, roomId);
         } else {
-            channelUtils.write(player.getPlayerId(), npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES"+ Color.RESET + " you!", true);
+            final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
+            channelUtils.write(player.getPlayerId(), fightMsg, true);
+            sendMessageToIrc(fightMsg, roomId);
         }
         try {
             Thread.sleep(600);
@@ -109,6 +119,12 @@ public class FightManager {
     public static boolean isActiveFight(CreeperSession session) {
         if (session == null) return false;
         return (session.getActiveFight().isPresent() && !session.getActiveFight().get().isDone());
+    }
+
+    private void sendMessageToIrc(String message, Integer roomId) {
+        if (gameManager.getCreeperConfiguration().isIrcEnabled && (Objects.equals(gameManager.getCreeperConfiguration().ircBridgeRoomId, roomId))) {
+            gameManager.getIrcBotService().getBot().getUserChannelDao().getChannel(gameManager.getCreeperConfiguration().ircChannel).send().message(message);
+        }
     }
 
 }
