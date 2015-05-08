@@ -248,4 +248,45 @@ public class NpcStats {
             .setNumberOfWeaponRolls(1)
             .setExperience(510);
 
+        public final static StatsBuilder BLACKHOODED_WIZARD = new StatsBuilder()
+                .setStrength(35)
+                .setWillpower(7)
+                .setAim(6)
+                .setAgile(6)
+                .setArmorRating(17)
+                .setMeleSkill(8)
+                .setCurrentHealth(650)
+                .setMaxHealth(650)
+                .setWeaponRatingMin(22)
+                .setWeaponRatingMax(32)
+                .setNumberOfWeaponRolls(2)
+                .setExperience(1000);
+
+        public final static StatsBuilder TUNNEL_COBRA = new StatsBuilder()
+                .setStrength(40)
+                .setWillpower(16)
+                .setAim(9)
+                .setAgile(9)
+                .setArmorRating(20)
+                .setMeleSkill(18)
+                .setCurrentHealth(300)
+                .setMaxHealth(300)
+                .setWeaponRatingMin(24)
+                .setWeaponRatingMax(31)
+                .setNumberOfWeaponRolls(2)
+                .setExperience(920);
+
+        public final static StatsBuilder STONE_GIANT = new StatsBuilder()
+                .setStrength(50)
+                .setWillpower(9)
+                .setAim(4)
+                .setAgile(5)
+                .setArmorRating(30)
+                .setMeleSkill(8)
+                .setCurrentHealth(700)
+                .setMaxHealth(700)
+                .setWeaponRatingMin(25)
+                .setWeaponRatingMax(35)
+                .setNumberOfWeaponRolls(2)
+                .setExperience(1350);
 }

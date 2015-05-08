@@ -48,6 +48,8 @@ public enum Area {
     TOFT1_ZONE("toft1_zone"),
     TOFT2_ZONE("toft2_zone"),
     TOFT3_ZONE("toft3_zone"),
+    TOFT4_ZONE("toft4_zone"),
+    TOFT5_ZONE("toft5_zone"),
     TISLAND1_ZONE("tisland1_zone"),
     TISLAND2_ZONE("tisland2_zone"),
     TISLAND3_ZONE("tisland3_zone"),

@@ -100,6 +100,23 @@ public class ConfigureNpc {
         entityManager.addEntity(new NpcSpawner(razorClawWolf, Sets.newHashSet(Area.TOFT2_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
         entityManager.addEntity(new NpcSpawner(razorClawWolf, Sets.newHashSet(Area.TOFT3_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
 
+
+        Main.startUpMessage("Adding Black-hooded Wizards");
+        BlackHoodedWizard blackHoodedWizard = new BlackHoodedWizard(gameManager, new Loot(44, 55, Sets.<Item>newHashSet()));
+        entityManager.addEntity(new NpcSpawner(blackHoodedWizard, Sets.newHashSet(Area.TISLAND4_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
+        entityManager.addEntity(new NpcSpawner(blackHoodedWizard, Sets.newHashSet(Area.TISLAND3_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
+
+
+        Main.startUpMessage("Adding Tunnel Cobras");
+        TunnelCobra tunnelCobra = new TunnelCobra(gameManager, new Loot(40, 52, Sets.<Item>newHashSet()));
+        entityManager.addEntity(new NpcSpawner(tunnelCobra, Sets.newHashSet(Area.TISLAND3_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
+        entityManager.addEntity(new NpcSpawner(tunnelCobra, Sets.newHashSet(Area.TISLAND4_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
+
+        Main.startUpMessage("Adding Stone Giants");
+        StoneGiant stoneGiant = new StoneGiant(gameManager, new Loot(55, 69, Sets.<Item>newHashSet()));
+        entityManager.addEntity(new NpcSpawner(stoneGiant, Sets.newHashSet(Area.TISLAND4_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
+        entityManager.addEntity(new NpcSpawner(stoneGiant, Sets.newHashSet(Area.TISLAND5_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
+
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newHashMap();
         itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 1));
         itemsForSale.put(2, new MerchantItemForSale(ItemType.BROAD_SWORD, 1000));

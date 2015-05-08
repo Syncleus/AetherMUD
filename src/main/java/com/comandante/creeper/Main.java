@@ -63,7 +63,6 @@ public class Main {
         EntityManager entityManager = new EntityManager(roomManager, playerManager, db, channelUtils);
         GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
 
-
         startUpMessage("Reading world from disk.");
         WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager);
         worldExporter.readWorldFromDisk();
@@ -85,7 +84,6 @@ public class Main {
 
         creeperServer.run(gameManager);
         startUpMessage("Creeper MUD engine online");
-
 
         if (creeperConfiguration.isIrcEnabled) {
             startUpMessage("Starting irc server.");
