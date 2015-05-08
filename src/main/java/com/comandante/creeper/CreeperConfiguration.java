@@ -52,6 +52,10 @@ public class CreeperConfiguration {
     public static final boolean IS_IRC_ENABLED_DEFAULT = true;
     public final boolean isIrcEnabled;
 
+    public static final String DEFAULT_MAP_SIZE = "map.size.default";
+    public static final int DEFAULT_MAP_SIZE_DEFAULT = 14;
+    public final int defaultMapSize;
+
     public CreeperConfiguration(Configuration configuration) {
         this.telnetPort = configuration.getInt(TELNET_PORT, TELNET_PORT_DEFAULT);
         this.databaseFileName = configuration.getString(DATABASE_FILE_NAME, DATABASE_FILE_NAME_DEFAULT);
@@ -65,5 +69,6 @@ public class CreeperConfiguration {
         this.ircChannel = configuration.getString(IRC_CHANNEL, IRC_CHANNEL_DEFAULT);
         this.isIrcEnabled = configuration.getBoolean(IS_IRC_ENABLED, IS_IRC_ENABLED_DEFAULT);
         this.ircBridgeRoomId = configuration.getInteger(IRC_BRIDGE_ROOM_ID, IRC_BRIDGE_ROOM_ID_DEFAULT);
+        this.defaultMapSize = configuration.getInteger(DEFAULT_MAP_SIZE, DEFAULT_MAP_SIZE_DEFAULT);
     }
 }

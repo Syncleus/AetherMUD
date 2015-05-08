@@ -36,6 +36,8 @@ public class EquipmentBuilder {
                     return getPhantomLeggings(item);
                 case PHANTOM_BRACERS:
                     return getPhantomBracers(item);
+                case MITHRIL_SWORD:
+                    return getMithrilSword(item);
             }
         }
         return null;
@@ -122,6 +124,13 @@ public class EquipmentBuilder {
     public static Item getPhantomLeggings(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(6).setStrength(4).setAgile(3).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getMithrilSword(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(10).setStrength(30).setWeaponRatingMax(10).setWeaponRatingMin(10).setNumberOfWeaponRolls(2).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
         item.setEquipment(equipment);
         return item;
     }

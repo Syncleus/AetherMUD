@@ -40,8 +40,8 @@ public class WhoCommand extends Command {
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
                 t.addCell(allPlayer.getChannel().getRemoteAddress().toString().substring(1).split(":")[0]);
-                t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerManager.getPlayerMetadata(playerId).getStats().getExperience())));
-                t.addCell(roomManager.getPlayerCurrentRoom(player).get().getRoomTitle());
+                t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
+                t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
             }
             write(t.render());
         } finally {

@@ -145,6 +145,15 @@ public enum ItemType {
             false,
             0,
             60,
+            true),
+
+    MITHRIL_SWORD(16, Arrays.asList("sword", "mithril sword", "mithril sword"),
+            Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
+            "a " + Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " sword" + Color.RESET + " is on the ground.",
+            "a " + Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
+            false,
+            0,
+            60,
             true);
 
     private final Integer itemTypeCode;

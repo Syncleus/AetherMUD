@@ -53,6 +53,7 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new QuitCommand(gameManager));
         creeperCommandRegistry.addCommand(new GiveGoldCommand(gameManager));
         creeperCommandRegistry.addCommand(new NexusCommand(gameManager));
+        creeperCommandRegistry.addCommand(new ColorsCommand(gameManager));
 
     }
 }

@@ -1,5 +1,6 @@
 package com.comandante.creeper.world;
 
+import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.server.Color;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -12,13 +13,17 @@ public class MapsManager {
 
     private final RoomManager roomManager;
     private final Map<Integer, MapMatrix> floorMatrixMaps;
+    private final CreeperConfiguration creeperConfiguration;
 
-    public MapsManager(RoomManager roomManager) {
+    public MapsManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager) {
         this.roomManager = roomManager;
         this.floorMatrixMaps = Maps.newHashMap();
+        this.creeperConfiguration = creeperConfiguration;
     }
 
-    public void generateAllMaps(int maxRows, int maxColumns) {
+    public void generateAllMaps() {
+        int maxRows = creeperConfiguration.defaultMapSize;
+        int maxColumns = creeperConfiguration.defaultMapSize;
         Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();

@@ -55,12 +55,10 @@ public class FightManager {
         if (damageToVictim > 0) {
             final String fightMsg = Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
             channelUtils.write(player.getPlayerId(), fightMsg, true);
-            sendMessageToIrc(fightMsg, roomId);
             doNpcDamage(npc.getEntityId(), damageToVictim, player.getPlayerId());
         } else {
             final String fightMsg = "You MISS " + npc.getName() + "!";
             channelUtils.write(player.getPlayerId(), fightMsg, true);
-            sendMessageToIrc(fightMsg, roomId);
         }
         try {
             Thread.sleep(600);
@@ -76,11 +74,9 @@ public class FightManager {
             doPlayerDamage(player, damageBack);
             final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
             channelUtils.write(player.getPlayerId(), fightMsg, true);
-            sendMessageToIrc(fightMsg, roomId);
         } else {
             final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
             channelUtils.write(player.getPlayerId(), fightMsg, true);
-            sendMessageToIrc(fightMsg, roomId);
         }
         try {
             Thread.sleep(600);
@@ -118,12 +114,6 @@ public class FightManager {
     public static boolean isActiveFight(CreeperSession session) {
         if (session == null) return false;
         return (session.getActiveFight().isPresent() && !session.getActiveFight().get().isDone());
-    }
-
-    private void sendMessageToIrc(String message, Integer roomId) {
-        if (gameManager.getCreeperConfiguration().isIrcEnabled && (Objects.equals(gameManager.getCreeperConfiguration().ircBridgeRoomId, roomId))) {
-            gameManager.getIrcBotService().getBot().getUserChannelDao().getChannel(gameManager.getCreeperConfiguration().ircChannel).send().message(message);
-        }
     }
 
 }

@@ -58,7 +58,7 @@ public class Main {
         playerManager.createAllGauges();
 
         startUpMessage("Configuring core systems.");
-        MapsManager mapsManager = new MapsManager(roomManager);
+        MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
         EntityManager entityManager = new EntityManager(roomManager, playerManager, db, channelUtils);
         GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
@@ -69,7 +69,7 @@ public class Main {
         worldExporter.readWorldFromDisk();
 
         startUpMessage("Generating map data.");
-        mapsManager.generateAllMaps(14, 14);
+        mapsManager.generateAllMaps();
 
         startUpMessage("Configuring commands");
         ConfigureCommands.configure(gameManager);
