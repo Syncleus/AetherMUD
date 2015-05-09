@@ -26,9 +26,14 @@ public class ConfigureNpc {
         entityManager.addEntity(new NpcSpawner(new StreetHustler(gameManager, new Loot(1, 3, Sets.<Item>newHashSet())), Sets.newHashSet(Area.NEWBIE_ZONE), gameManager, new SpawnRule(10, 5, 3, 100)));
 
         Main.startUpMessage("Adding beer");
-        ItemSpawner itemSpawner = new ItemSpawner(ItemType.BEER, Area.NEWBIE_ZONE, new SpawnRule(10, 50, 2, 25), gameManager);
+        ItemSpawner itemSpawner = new ItemSpawner(ItemType.BEER, Area.NEWBIE_ZONE, new SpawnRule(10, 100, 5, 40), gameManager);
+        ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.BEER, Area.FANCYHOUSE_ZONE, new SpawnRule(10, 12, 2, 50), gameManager);
+        ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.BEER, Area.HOUSE_ZONE, new SpawnRule(10, 12, 2, 50), gameManager);
 
         entityManager.addEntity(itemSpawner);
+        entityManager.addEntity(itemSpawner1);
+        entityManager.addEntity(itemSpawner2);
+
 
         Main.startUpMessage("Adding Tree Berserkers");
         entityManager.addEntity(new NpcSpawner(new TreeBerserker(gameManager, new Loot(2, 5, Sets.<Item>newHashSet())), Sets.newHashSet(Area.NEWBIE_ZONE, Area.NORTH1_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));

@@ -259,8 +259,8 @@ public class NpcStats {
                 .setMaxHealth(650)
                 .setWeaponRatingMin(22)
                 .setWeaponRatingMax(32)
-                .setNumberOfWeaponRolls(2)
-                .setExperience(1000);
+                .setNumberOfWeaponRolls(1)
+                .setExperience(1500);
 
         public final static StatsBuilder TUNNEL_COBRA = new StatsBuilder()
                 .setStrength(40)
