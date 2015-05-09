@@ -117,7 +117,7 @@ public class ConfigureNpc {
         entityManager.addEntity(new NpcSpawner(stoneGiant, Sets.newHashSet(Area.TISLAND4_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
         entityManager.addEntity(new NpcSpawner(stoneGiant, Sets.newHashSet(Area.TISLAND5_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
 
-        Map<Integer, MerchantItemForSale> itemsForSale = Maps.newHashMap();
+        Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
         itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 1));
         itemsForSale.put(2, new MerchantItemForSale(ItemType.BROAD_SWORD, 1000));
         itemsForSale.put(3, new MerchantItemForSale(ItemType.IRON_BOOTS, 800));
@@ -132,6 +132,11 @@ public class ConfigureNpc {
         itemsForSale.put(12, new MerchantItemForSale(ItemType.PHANTOM_BRACERS, 1500));
         itemsForSale.put(13, new MerchantItemForSale(ItemType.PHANTOM_LEGGINGS, 4000));
         itemsForSale.put(14, new MerchantItemForSale(ItemType.MITHRIL_SWORD, 14000));
+        itemsForSale.put(15, new MerchantItemForSale(ItemType.MITHRIL_HELMET, 7000));
+        itemsForSale.put(16, new MerchantItemForSale(ItemType.MITHRIL_CHESTPLATE, 10000));
+        itemsForSale.put(17, new MerchantItemForSale(ItemType.MITHRIL_BOOTS, 6000));
+        itemsForSale.put(18, new MerchantItemForSale(ItemType.MITHRIL_BRACERS, 4000));
+        itemsForSale.put(19, new MerchantItemForSale(ItemType.MITHRIL_LEGGINGS, 8000));
 
 
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);

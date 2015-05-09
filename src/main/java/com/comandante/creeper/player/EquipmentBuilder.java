@@ -38,6 +38,16 @@ public class EquipmentBuilder {
                     return getPhantomBracers(item);
                 case MITHRIL_SWORD:
                     return getMithrilSword(item);
+                case MITHRIL_CHESTPLATE:
+                    return getMithrilChestplate(item);
+                case MITHRIL_HELMET:
+                    return getMithrilHelmet(item);
+                case MITHRIL_BRACERS:
+                    return getMithrilBracers(item);
+                case MITHRIL_LEGGINGS:
+                    return getMithrilLeggings(item);
+                case MITHRIL_BOOTS:
+                    return getMithrilBoots(item);
             }
         }
         return null;
@@ -134,4 +144,41 @@ public class EquipmentBuilder {
         item.setEquipment(equipment);
         return item;
     }
+
+    public static Item getMithrilChestplate(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(18).setStrength(10).setAgile(7).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.CHEST, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+
+    public static Item getMithrilHelmet(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(9).setStrength(9).setAgile(7).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HEAD, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getMithrilBracers(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(6).setStrength(5).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.WRISTS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getMithrilLeggings(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(12).setStrength(8).setAgile(6).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getMithrilBoots(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(12).setStrength(6).setAgile(2).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
 }
