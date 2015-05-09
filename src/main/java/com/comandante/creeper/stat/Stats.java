@@ -99,10 +99,6 @@ public class Stats implements Serializable {
         this.currentHealth = currentHealth;
     }
 
-    synchronized  public void incrementHealth(int incrementHealth) {
-        this.currentHealth = currentHealth + incrementHealth;
-    }
-
     public int getMaxHealth() {
         return maxHealth;
     }

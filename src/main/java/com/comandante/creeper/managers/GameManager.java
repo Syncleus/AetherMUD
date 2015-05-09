@@ -263,7 +263,7 @@ public class GameManager {
         }
         if (room.getEnterExits() != null && room.getEnterExits().size() > 0) {
             List<RemoteExit> enters = room.getEnterExits();
-            for (RemoteExit enter: enters) {
+            for (RemoteExit enter : enters) {
                 sb.append("e-" + enter.getExitDetail() + " ");
                 numExits++;
             }
@@ -293,7 +293,7 @@ public class GameManager {
         sb.append(getExits(playerCurrentRoom, player)).append("\r\n");
 
         Set<Merchant> merchants = playerCurrentRoom.getMerchants();
-        for (Merchant merchant: merchants) {
+        for (Merchant merchant : merchants) {
             sb.append(merchant.getColorName()).append(" is here.").append(RESET).append("\r\n");
         }
         for (String searchPlayerId : playerCurrentRoom.getPresentPlayerIds()) {
@@ -374,6 +374,7 @@ public class GameManager {
         Stats modifiedStats = equipmentManager.getPlayerStatsWithEquipment(player);
         Stats diffStats = equipmentManager.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(player.getPlayerName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
+        sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
         sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildEquipmentString(player)).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
@@ -387,7 +388,7 @@ public class GameManager {
         t.setColumnWidth(0, 16, 20);
 
         List<EquipmentSlotType> all = EquipmentSlotType.getAll();
-        for (EquipmentSlotType slot: all) {
+        for (EquipmentSlotType slot : all) {
             t.addCell(capitalize(slot.getName()));
             Item slotItem = equipmentManager.getSlotItem(player, slot);
             if (slotItem != null) {
@@ -420,37 +421,43 @@ public class GameManager {
         StringBuilder sb = new StringBuilder();
         t.addCell("Strength");
         t.addCell(getFormattedNumber(stats.getStrength()));
-        if (diff.getStrength() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getStrength())).append(Color.RESET).append(")");
+        if (diff.getStrength() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getStrength())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();
         t.addCell("Willpower");
         t.addCell(getFormattedNumber(stats.getWillpower()));
-        if (diff.getWillpower() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getWillpower())).append(Color.RESET).append(")");
+        if (diff.getWillpower() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getWillpower())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();
         t.addCell("Aim");
         t.addCell(getFormattedNumber(stats.getAim()));
-        if (diff.getAim() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getAim())).append(Color.RESET).append(")");
+        if (diff.getAim() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getAim())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();
         t.addCell("Agile");
         t.addCell(getFormattedNumber(stats.getAgile()));
-        if (diff.getAgile() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getAgile())).append(Color.RESET).append(")");
+        if (diff.getAgile() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getAgile())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();
         t.addCell("Armor");
         t.addCell(getFormattedNumber(stats.getArmorRating()));
-        if (diff.getArmorRating() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getArmorRating())).append(Color.RESET).append(")");
+        if (diff.getArmorRating() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getArmorRating())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();
         t.addCell("Mele");
         t.addCell(getFormattedNumber(stats.getMeleSkill()));
-        if (diff.getMeleSkill() > 0) sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getMeleSkill())).append(Color.RESET).append(")");
+        if (diff.getMeleSkill() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getMeleSkill())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();
@@ -480,7 +487,7 @@ public class GameManager {
     }
 
     private String getFormattedNumber(Integer integer) {
-       return NumberFormat.getNumberInstance(Locale.US).format(integer);
+        return NumberFormat.getNumberInstance(Locale.US).format(integer);
     }
 
     public void writeToPlayerCurrentRoom(String playerId, String message) {
@@ -505,17 +512,40 @@ public class GameManager {
         }
     }
 
+    public void announceLevelUp(String playerName, int previousLevel, int newLevel) {
+        Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
+        while (players.hasNext()) {
+            Map.Entry<String, Player> next = players.next();
+            channelUtils.write(next.getValue().getPlayerId(), playerName + Color.BOLD_ON + Color.GREEN + " has reached LEVEL " + newLevel + Color.RESET + "\r\n");
+        }
+    }
+
+    public void addExperience(Player player, int exp) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+            int currentExperience = playerMetadata.getStats().getExperience();
+            int currentLevel = Levels.getLevel(currentExperience);
+            playerMetadata.getStats().setExperience(currentExperience + exp);
+            int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
+            if (newLevel > currentLevel) {
+                announceLevelUp(player.getPlayerName(), currentLevel, newLevel);
+            }
+            playerManager.savePlayerMetadata(playerMetadata);
+        }
+    }
+
 
     public void updateNpcHealth(String npcId, int amt, String playerId) {
         Player player = playerManager.getPlayer(playerId);
         Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(npcId)){
+        synchronized (interner.intern(npcId)) {
             Npc npc = entityManager.getNpcEntity(npcId);
             if (npc != null) {
                 npc.getStats().setCurrentHealth(npc.getStats().getCurrentHealth() + amt);
                 if (npc.getStats().getCurrentHealth() <= 0) {
                     playerManager.getSessionManager().getSession(playerId).setActiveFight(Optional.<Future<FightResults>>absent());
-                    playerManager.addExperience(player, npc.getStats().getExperience());
+                    addExperience(player, npc.getStats().getExperience());
                     writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
                     channelUtils.write(playerId, "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + npc.getStats().getExperience() + Color.RESET + " experience points." + "\r\n", true);
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());

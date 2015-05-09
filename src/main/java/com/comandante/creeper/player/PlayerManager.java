@@ -158,15 +158,6 @@ public class PlayerManager {
         }
     }
 
-    public void addExperience(Player player, int exp) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
-            playerMetadata.getStats().setExperience(playerMetadata.getStats().getExperience() + exp);
-            savePlayerMetadata(playerMetadata);
-        }
-    }
-
     public Player addPlayer(Player player) {
         return players.putIfAbsent(player.getPlayerId(), player);
     }

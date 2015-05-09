@@ -1,6 +1,7 @@
 package com.comandante.creeper.command;
 
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.player.Levels;
 import com.comandante.creeper.player.Player;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -31,15 +32,16 @@ public class WhoCommand extends Command {
             Table t = new Table(4, BorderStyle.CLASSIC_COMPATIBLE,
                     ShownBorders.HEADER_AND_COLUMNS);
             t.setColumnWidth(0, 8, 14);
-            t.setColumnWidth(1, 14, 16);
-            t.addCell("player");
-            t.addCell("ip address");
+            t.setColumnWidth(1, 8, 8);
+            t.setColumnWidth(2, 9, 9);
+            t.addCell("Player");
+            t.addCell("Level");
             t.addCell("XP");
             t.addCell("Location");
             Set<Player> allPlayers = gameManager.getAllPlayers();
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
-                t.addCell(allPlayer.getChannel().getRemoteAddress().toString().substring(1).split(":")[0]);
+                t.addCell(Integer.toString(Levels.getLevel(playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
                 t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
                 t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
             }
