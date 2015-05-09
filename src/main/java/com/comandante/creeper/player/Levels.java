@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 import java.text.DecimalFormat;
 
+import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;
 
 public class Levels {
@@ -30,7 +31,7 @@ public class Levels {
     }
 
     public static int getXp(int level) {
-        double v = Math.pow(level, 2) / Math.pow(CONSTANT_MODIFIER, 2);
+        double v = pow(level, 2) / pow(CONSTANT_MODIFIER, 2);
         return (int) Math.ceil(v);
     }
 

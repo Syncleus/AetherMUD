@@ -9,7 +9,6 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
 
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +49,7 @@ public class FightManager {
         int chanceToHit = getChanceToHit(challenger, victim);
         int damageToVictim = 0;
         if (randInt(0, 100) < chanceToHit) {
-            damageToVictim = getAttack(challenger, victim);
+            damageToVictim = getAttackAmt(challenger, victim);
         }
         if (damageToVictim > 0) {
             final String fightMsg = Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
@@ -69,7 +68,7 @@ public class FightManager {
             return;
         }
         int chanceToHitBack = getChanceToHit(victim, challenger);
-        int damageBack = getAttack(victim, challenger);
+        int damageBack = getAttackAmt(victim, challenger);
         if (randInt(0, 100) < chanceToHitBack) {
             doPlayerDamage(player, damageBack);
             final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
@@ -97,14 +96,19 @@ public class FightManager {
         return (challenger.getStrength() + challenger.getMeleSkill()) * 5 - victim.getAgile() * 5;
     }
 
-    private static int getAttack(Stats challenger, Stats victim) {
+    private static int getAttackAmt(Stats challenger, Stats victim) {
         int rolls = 0;
         int totDamage = 0;
         while (rolls <= challenger.getNumberOfWeaponRolls()) {
             rolls++;
             totDamage = totDamage + randInt(challenger.getWeaponRatingMin(), challenger.getWeaponRatingMax());
         }
-        return challenger.getStrength() + totDamage - victim.getArmorRating();
+        int i = challenger.getStrength() + totDamage - victim.getArmorRating();
+        if (i < 0) {
+            return 0;
+        } else {
+            return i;
+        }
     }
 
     private static int randInt(int min, int max) {
