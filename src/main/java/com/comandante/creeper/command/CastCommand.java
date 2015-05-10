@@ -10,6 +10,7 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.LightningSpell;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -33,15 +34,19 @@ public class CastCommand extends Command {
         configure(e);
         try {
             if (originalMessageParts.size() == 1) {
-                write("You need to specify who you want to fight.");
+                LightningSpell lightningSpell = new LightningSpell(gameManager);
+                lightningSpell.attackSpell(currentRoom.getNpcIds(), player);
                 return;
             }
             originalMessageParts.remove(0);
             String target = Joiner.on(" ").join(originalMessageParts);
-
-            LightningSpell lightningSpell = new LightningSpell(gameManager);
-            lightningSpell.attackSpell(currentRoom.getNpcIds(), player);
-
+            for (String npcId : currentRoom.getNpcIds()) {
+                Npc npcEntity = entityManager.getNpcEntity(npcId);
+                if (npcEntity.getValidTriggers().contains(target)) {
+                    LightningSpell lightningSpell = new LightningSpell(gameManager);
+                    lightningSpell.attackSpell(Sets.newHashSet(npcId), player);
+                }
+            }
         } finally {
             super.messageReceived(ctx, e);
         }
