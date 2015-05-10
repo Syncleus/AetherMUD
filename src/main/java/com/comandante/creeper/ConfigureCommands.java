@@ -55,6 +55,8 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new NexusCommand(gameManager));
         creeperCommandRegistry.addCommand(new ColorsCommand(gameManager));
         creeperCommandRegistry.addCommand(new XpCommand(gameManager));
+        creeperCommandRegistry.addCommand(new CastCommand(gameManager));
+
 
 
     }

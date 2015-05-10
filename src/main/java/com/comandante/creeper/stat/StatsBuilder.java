@@ -13,7 +13,8 @@ public class StatsBuilder {
     private int weaponRatingMin;
     private int numberOfWeaponRolls;
     private int experience;
-    private int goldDrop;
+    private int currentMana;
+    private int maxMana;
 
     public StatsBuilder setStrength(int strength) {
         this.strength = strength;
@@ -75,12 +76,17 @@ public class StatsBuilder {
         return this;
     }
 
-    public StatsBuilder setGoldDrop(int gold) {
-        this.goldDrop = gold;
+    public StatsBuilder setCurrentMana(int currentMana) {
+        this.currentMana = currentMana;
+        return this;
+    }
+
+    public StatsBuilder setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
         return this;
     }
 
     public Stats createStats() {
-        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, goldDrop);
+        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana);
     }
 }

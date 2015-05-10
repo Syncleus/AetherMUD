@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 
 import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stat.StatsBuilder;
 import com.google.common.collect.Sets;
 
 import java.io.Serializable;

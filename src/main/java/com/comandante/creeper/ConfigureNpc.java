@@ -107,7 +107,7 @@ public class ConfigureNpc {
 
 
         Main.startUpMessage("Adding Black-hooded Wizards");
-        BlackHoodedWizard blackHoodedWizard = new BlackHoodedWizard(gameManager, new Loot(44, 55, Sets.<Item>newHashSet()));
+        BlackHoodedWizard blackHoodedWizard = new BlackHoodedWizard(gameManager, new Loot(55, 74, Sets.<Item>newHashSet()));
         entityManager.addEntity(new NpcSpawner(blackHoodedWizard, Sets.newHashSet(Area.TISLAND4_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
         entityManager.addEntity(new NpcSpawner(blackHoodedWizard, Sets.newHashSet(Area.TISLAND3_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
 

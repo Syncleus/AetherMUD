@@ -49,9 +49,11 @@ public class Player extends CreeperEntity {
 
     @Override
     public void run() {
-
         if (gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId()).getStats().getCurrentHealth() < 100) {
             gameManager.getPlayerManager().updatePlayerHealth(this, 10);
+        }
+        if (gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId()).getStats().getCurrentMana() < 100) {
+            gameManager.getPlayerManager().updatePlayerMana(this, 2);
         }
     }
 }

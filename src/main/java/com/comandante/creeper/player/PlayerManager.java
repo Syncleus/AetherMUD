@@ -196,6 +196,16 @@ public class PlayerManager {
         }
     }
 
+    public void updatePlayerMana(Player player, int amount) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
+            Stats stats = playerMetadata.getStats();
+            stats.setCurrentMana(stats.getCurrentMana() + amount);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
 
     public boolean hasRole(Player player, PlayerRole playerRole) {
         PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
@@ -229,13 +239,17 @@ public class PlayerManager {
         PlayerMetadata playerMetadata = getPlayerMetadata(playerId);
         int currentHealth = playerMetadata.getStats().getCurrentHealth();
         int maxHealth = playerMetadata.getStats().getMaxHealth();
+        int currentMana = playerMetadata.getStats().getCurrentMana();
+        int maxMana = playerMetadata.getStats().getMaxMana();
         StringBuilder sb = new StringBuilder()
                 .append("[")
                 .append(player.getPlayerName())
                 .append("@")
                 .append("creeper")
                 .append(" ")
-                .append(currentHealth).append("/").append(maxHealth);
+                .append(currentHealth).append("/").append(maxHealth).append("h")
+                .append(" ")
+                .append(currentMana).append("/").append(maxMana).append("m");
         if (isFight) {
             sb.append(Color.RED + " ! " + Color.RESET);
         }

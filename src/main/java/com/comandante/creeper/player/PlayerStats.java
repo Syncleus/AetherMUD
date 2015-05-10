@@ -17,5 +17,7 @@ public class PlayerStats {
             .setWeaponRatingMin(10)
             .setWeaponRatingMax(20)
             .setNumberOfWeaponRolls(1)
-            .setExperience(0);
+            .setExperience(0)
+            .setCurrentMana(100)
+            .setMaxMana(100);
 }
