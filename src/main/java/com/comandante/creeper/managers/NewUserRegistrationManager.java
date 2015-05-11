@@ -38,14 +38,15 @@ public class NewUserRegistrationManager {
     }
 
     private boolean setDesiredUsername(CreeperSession session, MessageEvent e) {
-        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(Main.createPlayerId((String) e.getMessage()));
+        String name = (String) e.getMessage();
+        String username = name.replaceAll("[^a-zA-Z0-9]", "");
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(Main.createPlayerId(username));
         if (playerMetadata != null) {
             e.getChannel().write("Username is in use.\r\n");
             newUserRegistrationFlow(session, e);
             return false;
         }
-        String username = (String) e.getMessage();
-        session.setUsername(Optional.of(username.replaceAll("[^a-zA-Z0-9]", "")));
+        session.setUsername(Optional.of(username));
         return true;
     }
 
