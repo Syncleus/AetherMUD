@@ -10,6 +10,9 @@ import com.comandante.creeper.merchant.JimBanker;
 import com.comandante.creeper.merchant.LloydBartender;
 import com.comandante.creeper.merchant.MerchantItemForSale;
 import com.comandante.creeper.npc.*;
+import com.comandante.creeper.player.Player;
+import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -162,7 +165,5 @@ public class ConfigureNpc {
         JimBanker jimBanker = new JimBanker(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(65, jimBanker);
         gameManager.getRoomManager().addMerchant(209, jimBanker);
-
-
     }
 }

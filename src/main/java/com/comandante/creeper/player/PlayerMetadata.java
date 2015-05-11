@@ -14,7 +14,7 @@ import java.util.Set;
 public class PlayerMetadata implements Serializable {
 
     private final String playerName;
-    private final String password;
+    private String password;
     private final String playerId;
     private Stats stats;
     private String[] inventory;
@@ -149,5 +149,9 @@ public class PlayerMetadata implements Serializable {
 
     public String[] getPlayerEquipment() {
         return playerEquipment;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
