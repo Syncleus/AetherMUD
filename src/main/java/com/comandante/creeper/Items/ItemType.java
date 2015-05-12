@@ -199,6 +199,15 @@ public enum ItemType {
             false,
             0,
             60,
+            true),
+
+    PYAMITE_SWORD(22, Arrays.asList("sword", "pyamite sword", "pyamite sword"),
+            Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
+            "a " + Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " sword" + Color.RESET + " is on the ground.",
+            "a " + Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
+            false,
+            0,
+            60,
             true);
 
     private final Integer itemTypeCode;

@@ -145,6 +145,7 @@ public class ConfigureNpc {
         itemsForSale.put(17, new MerchantItemForSale(ItemType.MITHRIL_BOOTS, 6000));
         itemsForSale.put(18, new MerchantItemForSale(ItemType.MITHRIL_BRACERS, 4000));
         itemsForSale.put(19, new MerchantItemForSale(ItemType.MITHRIL_LEGGINGS, 8000));
+        itemsForSale.put(20, new MerchantItemForSale(ItemType.PYAMITE_SWORD, 20000));
 
 
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);

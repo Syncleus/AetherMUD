@@ -48,6 +48,8 @@ public class EquipmentBuilder {
                     return getMithrilLeggings(item);
                 case MITHRIL_BOOTS:
                     return getMithrilBoots(item);
+                case PYAMITE_SWORD:
+                    return getPyamiteSword(item);
             }
         }
         return null;
@@ -177,6 +179,13 @@ public class EquipmentBuilder {
     public static Item getMithrilBoots(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(12).setStrength(6).setAgile(2).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getPyamiteSword(Item item){
+        Stats stats = new StatsBuilder().setArmorRating(19).setStrength(44).setWeaponRatingMax(17).setWeaponRatingMin(28).setNumberOfWeaponRolls(2).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
         item.setEquipment(equipment);
         return item;
     }
