@@ -184,7 +184,7 @@ public class EquipmentBuilder {
     }
 
     public static Item getPyamiteSword(Item item){
-        Stats stats = new StatsBuilder().setArmorRating(19).setStrength(44).setWeaponRatingMax(17).setWeaponRatingMin(28).setNumberOfWeaponRolls(2).createStats();
+        Stats stats = new StatsBuilder().setArmorRating(19).setStrength(44).setWeaponRatingMax(28).setWeaponRatingMin(17).setNumberOfWeaponRolls(2).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
         item.setEquipment(equipment);
         return item;
