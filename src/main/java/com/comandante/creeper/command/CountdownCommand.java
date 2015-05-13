@@ -2,15 +2,14 @@ package com.comandante.creeper.command;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CountdownCommand extends Command {
 
@@ -28,7 +27,11 @@ public class CountdownCommand extends Command {
         try {
             ArrayList<String> strings = Lists.newArrayList("... ***** COUNTDOWN ***** ...", ".             5             .", ".             4             .", ".             3             .", ".             2             .", ".             1             .", "... *****   SMOKE!  ***** ...");
             for (String s: strings) {
-                write(Color.BOLD_ON + Color.GREEN + s + Color.RESET + "\r\n");
+                Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
+                while (players.hasNext()) {
+                    Map.Entry<String, Player> next = players.next();
+                    channelUtils.write(next.getValue().getPlayerId(), Color.BOLD_ON + Color.GREEN + s + Color.RESET + "\r\n");
+                }
                 Thread.sleep(900);
             }
 

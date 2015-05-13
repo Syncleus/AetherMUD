@@ -125,6 +125,11 @@ public class ConfigureNpc {
         entityManager.addEntity(new NpcSpawner(stoneGiant, Sets.newHashSet(Area.TISLAND4_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
         entityManager.addEntity(new NpcSpawner(stoneGiant, Sets.newHashSet(Area.TISLAND5_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
 
+        Main.startUpMessage("Adding Scaled Deathcrawlers");
+        ScaledDeathcrawler scaledDeathcrawler = new ScaledDeathcrawler(gameManager, new Loot(150, 300, Sets.<Item>newHashSet()));
+        entityManager.addEntity(new NpcSpawner(scaledDeathcrawler, Sets.newHashSet(Area.NORTH10_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
+        entityManager.addEntity(new NpcSpawner(scaledDeathcrawler, Sets.newHashSet(Area.NORTH11_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
+
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
         itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 1));
         itemsForSale.put(2, new MerchantItemForSale(ItemType.BROAD_SWORD, 1000));
@@ -146,6 +151,11 @@ public class ConfigureNpc {
         itemsForSale.put(18, new MerchantItemForSale(ItemType.MITHRIL_BRACERS, 4000));
         itemsForSale.put(19, new MerchantItemForSale(ItemType.MITHRIL_LEGGINGS, 8000));
         itemsForSale.put(20, new MerchantItemForSale(ItemType.PYAMITE_SWORD, 20000));
+        itemsForSale.put(21, new MerchantItemForSale(ItemType.PYAMITE_HELMET, 14000));
+        itemsForSale.put(22, new MerchantItemForSale(ItemType.PYAMITE_CHESTPLATE, 20000));
+        itemsForSale.put(23, new MerchantItemForSale(ItemType.PYAMITE_BOOTS, 12000));
+        itemsForSale.put(24, new MerchantItemForSale(ItemType.PYAMITE_BRACERS, 8000));
+        itemsForSale.put(25, new MerchantItemForSale(ItemType.PYAMITE_LEGGINGS, 16000));
 
 
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);

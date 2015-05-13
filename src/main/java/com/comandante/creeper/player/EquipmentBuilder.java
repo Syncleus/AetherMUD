@@ -50,6 +50,16 @@ public class EquipmentBuilder {
                     return getMithrilBoots(item);
                 case PYAMITE_SWORD:
                     return getPyamiteSword(item);
+                case PYAMITE_CHESTPLATE:
+                    return getPyamiteChestplate(item);
+                case PYAMITE_HELMET:
+                    return getPyamiteHelmet(item);
+                case PYAMITE_BRACERS:
+                    return getPyamiteBracers(item);
+                case PYAMITE_LEGGINGS:
+                    return getPyamiteLeggings(item);
+                case PYAMITE_BOOTS:
+                    return getPyamiteBoots(item);
             }
         }
         return null;
@@ -186,6 +196,42 @@ public class EquipmentBuilder {
     public static Item getPyamiteSword(Item item){
         Stats stats = new StatsBuilder().setArmorRating(19).setStrength(44).setWeaponRatingMax(28).setWeaponRatingMin(17).setNumberOfWeaponRolls(2).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getPyamiteChestplate(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(36).setStrength(20).setAgile(14).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.CHEST, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+
+    public static Item getPyamiteHelmet(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(18).setStrength(18).setAgile(14).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HEAD, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getPyamiteBracers(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(12).setStrength(10).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.WRISTS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getPyamiteLeggings(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(24).setStrength(16).setAgile(12).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getPyamiteBoots(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(24).setStrength(12).setAgile(24).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
         item.setEquipment(equipment);
         return item;
     }
