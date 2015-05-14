@@ -27,12 +27,12 @@ public class ItemSpawner extends CreeperEntity {
     private final Area spawnArea;
 
 
-    public ItemSpawner(ItemType spawnItemType, Area area, SpawnRule spawnRule, GameManager gameManager) {
+    public ItemSpawner(ItemType spawnItemType, SpawnRule spawnRule, GameManager gameManager) {
         this.spawnItemType = spawnItemType;
         this.spawnRule = spawnRule;
         this.gameManager = gameManager;
         this.noTicks = spawnRule.getSpawnIntervalTicks();
-        this.spawnArea = area;
+        this.spawnArea = spawnRule.getArea();
     }
 
     public void incTicks() {

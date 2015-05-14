@@ -26,4 +26,13 @@ public class Loot implements Serializable {
     public int getLootGoldMin() {
         return lootGoldMin;
     }
+
+    @Override
+    public String toString() {
+        return "Loot{" +
+                "items=" + items +
+                ", lootGoldMax=" + lootGoldMax +
+                ", lootGoldMin=" + lootGoldMin +
+                '}';
+    }
 }

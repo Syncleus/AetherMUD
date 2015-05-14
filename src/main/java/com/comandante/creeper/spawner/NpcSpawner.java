@@ -6,6 +6,7 @@ import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Predicate;
@@ -23,12 +24,10 @@ public class NpcSpawner extends CreeperEntity {
     private final SpawnRule spawnRule;
     private int noTicks;
     private final Random random = new Random();
-    private final Set<Area> spawnAreas;
 
 
-    public NpcSpawner(Npc npc, Set<Area> area, GameManager gameManager, SpawnRule spawnRule) {
+    public NpcSpawner(Npc npc, GameManager gameManager, SpawnRule spawnRule) {
         this.npc = npc;
-        this.spawnAreas = area;
         this.gameManager = gameManager;
         this.spawnRule = spawnRule;
         this.noTicks = spawnRule.getSpawnIntervalTicks();
@@ -42,13 +41,11 @@ public class NpcSpawner extends CreeperEntity {
     public void run() {
         incTicks();
         if (noTicks >= spawnRule.getSpawnIntervalTicks()) {
-            for (Area spawnArea : spawnAreas) {
-                int randomPercentage = spawnRule.getRandomChance();
-                int numberOfAttempts = spawnRule.getMaxInstances() - counterNumberInArea(spawnArea);
-                for (int i = 0; i < numberOfAttempts; i++) {
-                    if (random.nextInt(100) < randomPercentage || randomPercentage == 100) {
-                        createAndAddItem(spawnArea);
-                    }
+            int randomPercentage = spawnRule.getRandomChance();
+            int numberOfAttempts = spawnRule.getMaxInstances() - counterNumberInArea(spawnRule.getArea());
+            for (int i = 0; i < numberOfAttempts; i++) {
+                if (random.nextInt(100) < randomPercentage || randomPercentage == 100) {
+                    createAndAddItem(spawnRule.getArea());
                 }
             }
             noTicks = 0;
@@ -74,7 +71,8 @@ public class NpcSpawner extends CreeperEntity {
     private void createAndAddItem(Area spawnArea) {
         ArrayList<Room> rooms = Lists.newArrayList(Iterators.filter(gameManager.getRoomManager().getRoomsByArea(spawnArea).iterator(), getRoomsWithRoom()));
         Room room = rooms.get(random.nextInt(rooms.size()));
-        Npc newNpc = npc.create(gameManager, npc.getLoot());
+        NpcBuilder npcBuilder = new NpcBuilder(npc);
+        Npc newNpc = npcBuilder.createNpc();
         gameManager.getEntityManager().addEntity(newNpc);
         room.addPresentNpc(newNpc.getEntityId());
         Main.metrics.counter(MetricRegistry.name(NpcSpawner.class, npc.getName() + "-spawn")).inc();

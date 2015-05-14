@@ -119,4 +119,21 @@ public class Item implements Serializable {
     public Equipment getEquipment() {
         return equipment;
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "itemName='" + itemName + '\'' +
+                ", itemDescription='" + itemDescription + '\'' +
+                ", itemTriggers=" + itemTriggers +
+                ", restingName='" + restingName + '\'' +
+                ", itemId='" + itemId + '\'' +
+                ", itemTypeId=" + itemTypeId +
+                ", numberOfUses=" + numberOfUses +
+                ", isWithPlayer=" + isWithPlayer +
+                ", loot=" + loot +
+                ", itemHalfLifeTicks=" + itemHalfLifeTicks +
+                ", equipment=" + equipment +
+                '}';
+    }
 }

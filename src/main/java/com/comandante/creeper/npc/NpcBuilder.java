@@ -20,6 +20,22 @@ public class NpcBuilder {
     private Loot loot;
     private Set<SpawnRule> spawnRules;
 
+    public NpcBuilder() {
+    }
+
+    public NpcBuilder(Npc npc) {
+        this.name = npc.getName();
+        this.colorName = npc.getColorName();
+        this.lastPhraseTimestamp = npc.getLastPhraseTimestamp();
+        this.stats = npc.getStats();
+        this.dieMessage = npc.getDieMessage();
+        this.roamAreas = npc.getRoamAreas();
+        this.validTriggers = npc.getValidTriggers();
+        this.loot = npc.getLoot();
+        this.spawnRules = npc.getSpawnRules();
+        this.gameManager = npc.getGameManager();
+    }
+
     public NpcBuilder setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
         return this;
