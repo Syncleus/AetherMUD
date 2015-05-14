@@ -1,0 +1,50 @@
+{
+  "name": "street hustler",
+  "colorName": "street hustler",
+  "dieMessage": "street hustler dies in a pool of blood",
+  "loot": {
+    "lootGoldMin": 34,
+    "lootGoldMax": 55,
+    "lootItems": [
+      2
+    ]
+  },
+  "roamAreas": [
+    "bloodridge10_zone",
+    "bloodridge11_zone"
+  ],
+  "stats": {
+    "agile": 60,
+    "aim": 82,
+    "armorRating": 79,
+    "currentHealth": 72,
+    "currentMana": 17,
+    "experience": 30,
+    "maxHealth": 1,
+    "maxMana": 29,
+    "meleSkill": 6,
+    "numberOfWeaponRolls": 84,
+    "strength": 69,
+    "weaponRatingMax": 57,
+    "weaponRatingMin": 53,
+    "willPower": 8
+  },
+  "spawnAreas": {
+    "newbie_zone": {
+      "randomChance": 100,
+      "maxPerRoom": 5,
+      "spawnIntervalTicks": 10,
+      "maxInstances": 500
+    },
+    "bloodridge10_zone": {
+      "randomChance": 62,
+      "maxPerRoom": 46,
+      "spawnIntervalTicks": 87,
+      "maxInstances": 47
+    }
+  },
+  "validTriggers": [
+    "hustler",
+    "street hustler"
+  ]
+}
