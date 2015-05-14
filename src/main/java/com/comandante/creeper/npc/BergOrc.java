@@ -25,7 +25,7 @@ public class BergOrc extends Npc {
     private final static String dieMessage = "a " + colorName + " breathes his last breath in a pool of " + BOLD_ON + Color.RED + "blood" + RESET + ".";
 
     public BergOrc(GameManager gameManager, Loot loot) {
-        super(gameManager, NAME, colorName, 0, NpcStats.BERG_ORC.createStats(), dieMessage, Optional.of(Sets.newHashSet(Area.BLOODRIDGE1_ZONE)), validTriggers, loot);
+        super(gameManager, NAME, colorName, 0, NpcStats.BERG_ORC.createStats(), dieMessage, Sets.newHashSet(Area.BLOODRIDGE1_ZONE), validTriggers, loot);
     }
 
     @Override

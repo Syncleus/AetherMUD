@@ -6,6 +6,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,7 +26,7 @@ public class PhantomKnight extends Npc {
     private final static String dieMessage = "a " + colorName + " breathes his last breath in a pool of " + BOLD_ON + Color.RED + "blood" + RESET + ".";
 
     public PhantomKnight(GameManager gameManager, Loot loot) {
-        super(gameManager, NAME, colorName, 0, NpcStats.PHANTOM_KNIGHT.createStats(), dieMessage, Optional.<HashSet<Area>>absent(), validTriggers, loot);
+        super(gameManager, NAME, colorName, 0, NpcStats.PHANTOM_KNIGHT.createStats(), dieMessage, Sets.<Area>newHashSet(), validTriggers, loot);
     }
 
     @Override

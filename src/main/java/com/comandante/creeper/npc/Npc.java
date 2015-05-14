@@ -1,12 +1,14 @@
 package com.comandante.creeper.npc;
 
 
+import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.Area;
 import com.google.common.base.Optional;
+import com.google.gson.Gson;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -19,6 +21,14 @@ import static com.comandante.creeper.server.Color.RESET;
 
 public abstract class Npc extends CreeperEntity {
 
+    public static void main(String[] args) {
+        Gson gson = new Gson();
+
+        String s = gson.toJson(Item.class);
+        System.out.println(s);
+
+    }
+
     public void setLastPhraseTimestamp(long lastPhraseTimestamp) {
         this.lastPhraseTimestamp = lastPhraseTimestamp;
     }
@@ -29,7 +39,7 @@ public abstract class Npc extends CreeperEntity {
     private final String colorName;
     private final Stats stats;
     private final String dieMessage;
-    private Optional<HashSet<Area>> roamAreas;
+    private Set<Area> roamAreas;
     private final Set<String> validTriggers;
     private final Loot loot;
 
@@ -41,7 +51,7 @@ public abstract class Npc extends CreeperEntity {
     @Override
     public void run() {
         if (randInt(0, 100) < 1) {
-            if (!isInFight.get() && roamAreas.isPresent()) {
+            if (!isInFight.get() && roamAreas.size() > 0) {
                 NpcMover npcMover = new NpcMover();
                 npcMover.roam(getGameManager(), getEntityId());
             }
@@ -52,7 +62,7 @@ public abstract class Npc extends CreeperEntity {
         return colorName;
     }
 
-    protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Optional<HashSet<Area>> roamAreas, Set<String> validTriggers, Loot loot) {
+    protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Set<Area> roamAreas, Set<String> validTriggers, Loot loot) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
@@ -68,7 +78,7 @@ public abstract class Npc extends CreeperEntity {
         return validTriggers;
     }
 
-    public Optional<HashSet<Area>> getRoamAreas() {
+    public Set<Area> getRoamAreas() {
         return roamAreas;
     }
 
@@ -100,10 +110,6 @@ public abstract class Npc extends CreeperEntity {
         return dieMessage;
     }
 
-    public void setRoamAreas(Optional<HashSet<Area>> roamAreas) {
-        this.roamAreas = roamAreas;
-    }
-
     public void npcSay(Integer roomId, String message) {
         StringBuilder sb = new StringBuilder();
         sb.append(RED);
@@ -119,4 +125,7 @@ public abstract class Npc extends CreeperEntity {
         return random.nextInt((max - min) + 1) + min;
     }
 
+    public void setRoamAreas(Set<Area> roamAreas) {
+        this.roamAreas = roamAreas;
+    }
 }

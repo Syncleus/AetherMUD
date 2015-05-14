@@ -5,6 +5,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,7 +23,7 @@ public class ScaledDeathcrawler extends Npc {
     private final static String dieMessage = "a " + colorName + " breathes his last breath in a pool of " + Color.BOLD_ON + Color.RED + "blood" + Color.RESET + ".";
 
     public ScaledDeathcrawler(GameManager gameManager, Loot loot) {
-        super(gameManager, NAME, colorName, 0, NpcStats.SCALED_DEATHCRAWLER.createStats(), dieMessage, Optional.<HashSet<Area>>absent(), validTriggers, loot);
+        super(gameManager, NAME, colorName, 0, NpcStats.SCALED_DEATHCRAWLER.createStats(), dieMessage, Sets.<Area>newHashSet(), validTriggers, loot);
     }
 
     @Override

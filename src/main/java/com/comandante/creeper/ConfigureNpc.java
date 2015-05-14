@@ -84,7 +84,7 @@ public class ConfigureNpc {
         entityManager.addEntity(new NpcSpawner(phantomWizard, Sets.newHashSet(Area.BLOODRIDGE5_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
 
         Main.startUpMessage("Adding Demon Succubi");
-        DemonSuccubus demonSuccubus = new DemonSuccubus(gameManager, new Loot(80, 100, Sets.<Item>newHashSet()));
+        DemonSuccubus demonSuccubus = new DemonSuccubus(gameManager, new Loot(120, 180, Sets.<Item>newHashSet()));
         entityManager.addEntity(new NpcSpawner(demonSuccubus, Sets.newHashSet(Area.WESTERN9_ZONE), gameManager, new SpawnRule(10, 6, 2, 100)));
         entityManager.addEntity(new NpcSpawner(demonSuccubus, Sets.newHashSet(Area.WESTERN10_ZONE), gameManager, new SpawnRule(10, 14, 2, 100)));
 

@@ -26,7 +26,7 @@ public class NpcMover {
             public boolean apply(Integer roomId) {
                 Room room = gameManager.getRoomManager().getRoom(roomId);
                 for (Area roomArea : room.getAreas()) {
-                    if (npcEntity.getRoamAreas().get().contains(roomArea)) {
+                    if (npcEntity.getRoamAreas().contains(roomArea)) {
                         return true;
                     }
                 }
