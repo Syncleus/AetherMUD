@@ -1,6 +1,5 @@
 package com.comandante.creeper.stat;
 
-import com.comandante.creeper.npc.NpcStats;
 import com.comandante.creeper.player.PlayerStats;
 
 import java.util.Random;
@@ -23,7 +22,7 @@ public class StatsTester {
         for (int i = 0; i < NUM_EXECUTION; i++) {
             boolean results = fight(
                     PlayerStats.DEFAULT_PLAYER.createStats(),
-                    NpcStats.DERPER.createStats());
+                    PlayerStats.DEFAULT_PLAYER.createStats());
             //strength, willpower, aim, agile, armorRating, meleSkill, health, weaponRatingMin, weaponRatingMax, numberweaponOfRolls
             if (results) {
                 totalChallengerWin++;

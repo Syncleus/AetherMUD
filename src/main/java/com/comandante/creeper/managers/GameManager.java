@@ -6,6 +6,7 @@ import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.LootManager;
+import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.fight.FightResults;
@@ -16,6 +17,7 @@ import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.server.MultiLineInputManager;
+import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.*;
@@ -82,6 +84,7 @@ public class GameManager {
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
     }
+
 
     public IrcBotService getIrcBotService() {
         return ircBotService;
@@ -559,4 +562,24 @@ public class GameManager {
             }
         }
     }
+
+    public void removeAllNpcs() {
+        for (Npc npc : entityManager.getNpcs().values()) {
+            Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
+            while (rooms.hasNext()) {
+                Map.Entry<Integer, Room> next = rooms.next();
+                next.getValue().removePresentNpc(npc.getEntityId());
+            }
+            entityManager.getNpcs().remove(npc.getEntityId());
+            entityManager.getEntities().remove(npc.getEntityId());
+        }
+        for (CreeperEntity creeperEntity : entityManager.getNpcs().values()) {
+            if (creeperEntity instanceof NpcSpawner) {
+                entityManager.getNpcs().remove(creeperEntity.getEntityId());
+            }
+        }
+
+
+    }
 }
+

@@ -1,5 +1,7 @@
 package com.comandante.creeper.entity;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.UUID;
 
 public abstract class CreeperEntity implements Runnable {

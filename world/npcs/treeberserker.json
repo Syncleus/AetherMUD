@@ -1,0 +1,43 @@
+{
+  "name": "tree berserker",
+  "colorName": "tree \u001B[1m\u001B[35mberserker\u001B[0m",
+  "dieMessage": "a tree \u001B[1m\u001B[35mberserker\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
+  "loot": {
+    "lootGoldMin": 3,
+    "lootGoldMax": 10,
+    "lootItems": []
+  },
+  "roamAreas": [
+    "north1_zone"
+  ],
+  "stats": {
+    "agile": 1,
+    "aim": 1,
+    "armorRating": 8,
+    "currentHealth": 200,
+    "currentMana": 100,
+    "experience": 150,
+    "maxHealth": 150,
+    "maxMana": 100,
+    "meleSkill": 6,
+    "numberOfWeaponRolls": 1,
+    "strength": 5,
+    "weaponRatingMax": 13,
+    "weaponRatingMin": 8,
+    "willPower": 1
+  },
+  "spawnAreas": {
+    "north1_zone": {
+      "randomChance": 100,
+      "maxPerRoom": 3,
+      "spawnIntervalTicks": 10,
+      "maxInstances": 12
+    }
+  },
+  "validTriggers": [
+    "t",
+    "tree berserker",
+    "berserker",
+    "b"
+  ]
+}

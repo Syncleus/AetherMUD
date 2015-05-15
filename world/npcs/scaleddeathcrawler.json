@@ -1,0 +1,51 @@
+{
+  "name": "scaled deathcrawler",
+  "colorName": "scaled \u001B[1m\u001B[35mdeathcrawler\u001B[0m",
+  "dieMessage": "a scaled \u001B[1m\u001B[35mdeathcrawler\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
+  "loot": {
+    "lootGoldMin": 150,
+    "lootGoldMax": 300,
+    "lootItems": []
+  },
+  "roamAreas": [
+    "north10_zone",
+    "north11_zone"
+  ],
+  "stats": {
+    "agile": 5,
+    "aim": 32,
+    "armorRating": 30,
+    "currentHealth": 4000,
+    "currentMana": 100,
+    "experience": 5600,
+    "maxHealth": 4000,
+    "maxMana": 100,
+    "meleSkill": 8,
+    "numberOfWeaponRolls": 1,
+    "strength": 140,
+    "weaponRatingMax": 120,
+    "weaponRatingMin": 70,
+    "willPower": 9
+  },
+  "spawnAreas": {
+    "north10_zone": {
+      "randomChance": 100,
+      "maxPerRoom": 3,
+      "spawnIntervalTicks": 10,
+      "maxInstances": 6
+    }, 
+    "north11_zone": {
+      "randomChance": 100,
+      "maxPerRoom": 3,
+      "spawnIntervalTicks": 10,
+      "maxInstances": 14
+    }
+  },
+  "validTriggers": [
+    "scaled",
+    "s",
+    "scaled deathcrawler",
+    "deathcrawler",
+    "d"
+  ]
+}
