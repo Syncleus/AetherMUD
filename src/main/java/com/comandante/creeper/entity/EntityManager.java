@@ -8,6 +8,7 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.ChannelUtils;
+import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.collect.Sets;
@@ -50,6 +51,15 @@ public class EntityManager {
         this.channelUtils = channelUtils;
         this.itemDecayManager = new ItemDecayManager(this);
         addEntity(itemDecayManager);
+    }
+
+    public ConcurrentHashMap<String, Npc> getNpcs() {
+        return npcs;
+    }
+
+    public ConcurrentHashMap<String, CreeperEntity> getEntities() {
+
+        return entities;
     }
 
     public void addEntity(CreeperEntity creeperEntity) {
