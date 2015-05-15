@@ -8,11 +8,14 @@ import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Area;
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -95,8 +98,31 @@ public class NpcAdapterTest {
         assertEquals(originalItem.getItemDescription(), newItem.getItemDescription());
         assertEquals(npcOne.getRoamAreas(), npc.getRoamAreas());
 
+        assertEquals(npcOne.getStats().getWeaponRatingMax(), npc.getStats().getWeaponRatingMax());
+        assertEquals(npcOne.getStats().getWeaponRatingMin(), npc.getStats().getWeaponRatingMin());
+        assertEquals(npcOne.getStats().getStrength(), npc.getStats().getStrength());
+        assertEquals(npcOne.getStats().getAgile(), npc.getStats().getAgile());
+        assertEquals(npcOne.getStats().getCurrentHealth(), npc.getStats().getCurrentHealth());
+        assertEquals(npcOne.getStats().getCurrentMana(), npc.getStats().getCurrentMana());
+        assertEquals(npcOne.getStats().getExperience(), npc.getStats().getExperience());
+        assertEquals(npcOne.getStats().getAim(), npc.getStats().getAim());
+        assertEquals(npcOne.getStats().getArmorRating(), npc.getStats().getArmorRating());
+        assertEquals(npcOne.getStats().getMaxMana(), npc.getStats().getMaxMana());
+        assertEquals(npcOne.getStats().getMeleSkill(), npc.getStats().getMeleSkill());
+        assertEquals(npcOne.getStats().getNumberOfWeaponRolls(), npc.getStats().getNumberOfWeaponRolls());
+        assertEquals(npcOne.getStats().getWillpower(), npc.getStats().getWillpower());
 
         assertEquals(npcOne.getValidTriggers(), npc.getValidTriggers());
+
+    }
+
+    @Test
+    public void testRawJson() throws Exception {
+        String testJson = Files.toString(new File("/Users/kearney/Desktop/npcs/tunnelcobra.json"), Charset.defaultCharset());
+        System.out.println(testJson);
+
+        Npc npc = gson.fromJson(testJson, Npc.class);
+
 
     }
 }

@@ -27,17 +27,23 @@ import java.util.Set;
 
 public class ConfigureNpc {
 
-    public static void configure(EntityManager entityManager, GameManager gameManager) throws FileNotFoundException {
-
+    public static void configureAllNpcs(GameManager gameManager) throws FileNotFoundException {
+        EntityManager entityManager = gameManager.getEntityManager();
         List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
         for (Npc npc: npcsFromFile) {
-            System.out.println("added streethustlers");
+            Main.startUpMessage("Added " + npc.getName());
             entityManager.addEntity(npc);
             Set<SpawnRule> spawnRules = npc.getSpawnRules();
             for (SpawnRule spawnRule: spawnRules) {
                 entityManager.addEntity(new NpcSpawner(npc, gameManager, spawnRule));
             }
         }
+    }
+
+    public static void configure(EntityManager entityManager, GameManager gameManager) throws FileNotFoundException {
+
+        configureAllNpcs(gameManager);
+
 
         Main.startUpMessage("Adding beer");
         ItemSpawner itemSpawner = new ItemSpawner(ItemType.BEER, new SpawnRule(Area.NEWBIE_ZONE, 10, 100, 5, 40), gameManager);

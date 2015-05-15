@@ -27,7 +27,7 @@ public class NpcBuilder {
         this.name = npc.getName();
         this.colorName = npc.getColorName();
         this.lastPhraseTimestamp = npc.getLastPhraseTimestamp();
-        this.stats = npc.getStats();
+        this.stats = new Stats(npc.getStats());
         this.dieMessage = npc.getDieMessage();
         this.roamAreas = npc.getRoamAreas();
         this.validTriggers = npc.getValidTriggers();
