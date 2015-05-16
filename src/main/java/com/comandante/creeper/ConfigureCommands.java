@@ -58,5 +58,7 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new CastCommand(gameManager));
         creeperCommandRegistry.addCommand(new CountdownCommand(gameManager));
         creeperCommandRegistry.addCommand(new ReloadNpcsCommand(gameManager));
+        creeperCommandRegistry.addCommand(new UsersCommand(gameManager));
+
     }
 }
