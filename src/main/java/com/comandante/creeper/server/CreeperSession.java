@@ -21,6 +21,14 @@ public class CreeperSession {
     private Optional<CreeperEntry<UUID, Command>> grabMultiLineInput = Optional.absent();
     private Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant = Optional.absent();
     private String lastMessage;
+    private final Long initialLoginTime;
+    private Long lastActivity;
+
+    public CreeperSession() {
+        long currentTime = System.currentTimeMillis();
+        this.initialLoginTime = currentTime;
+        this.lastActivity = currentTime;
+    }
 
     State state;
 
@@ -111,5 +119,17 @@ public class CreeperSession {
 
     public void setGrabMerchant(Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant) {
         this.grabMerchant = grabMerchant;
+    }
+
+    public Long getInitialLoginTime() {
+        return initialLoginTime;
+    }
+
+    public Long getLastActivity() {
+        return lastActivity;
+    }
+
+    public void setLastActivity(Long lastActivity) {
+        this.lastActivity = lastActivity;
     }
 }

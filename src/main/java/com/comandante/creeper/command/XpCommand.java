@@ -1,5 +1,7 @@
 package com.comandante.creeper.command;
 
+import com.codahale.metrics.Meter;
+import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Levels;
 import com.comandante.creeper.player.Player;
@@ -10,6 +12,8 @@ import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -34,9 +38,30 @@ public class XpCommand extends Command {
             PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
             int nextLevel = Levels.getLevel(playerMetadata.getStats().getExperience()) + 1;
             int expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
-            write(expToNextLevel + " experience to level " + nextLevel + ".\r\n");
+            Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
+            StringBuilder sb = new StringBuilder();
+            sb.append(expToNextLevel).append(" experience to level ").append(nextLevel).append(".\r\n");
+
+            Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                    ShownBorders.HEADER_AND_COLUMNS);
+            t.addCell("time window");
+            t.addCell("rate");
+            t.addCell(" 1 min");
+            t.addCell(String.valueOf(round(meter.getOneMinuteRate())) + " xp/sec");
+            t.addCell(" 5 min");
+            t.addCell(String.valueOf(round(meter.getFiveMinuteRate())) + " xp/sec");
+            t.addCell("15 min");
+            t.addCell(String.valueOf(round(meter.getFifteenMinuteRate())) + " xp/sec");
+            write(sb.toString() + t.render());
         } finally {
             super.messageReceived(ctx, e);
         }
+    }
+
+    public static double round(double value) {
+        int places = 2;
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

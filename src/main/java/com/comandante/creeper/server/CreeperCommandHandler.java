@@ -30,6 +30,7 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         String rootCommand = getRootCommand(e);
         CreeperSession session = (CreeperSession) e.getChannel().getAttachment();
+        session.setLastActivity(System.currentTimeMillis());
         if (session.getGrabMultiLineInput().isPresent()) {
             e.getChannel().getPipeline().addLast("executed_command", new MultiLineInputHandler(gameManager));
             super.messageReceived(ctx, e);

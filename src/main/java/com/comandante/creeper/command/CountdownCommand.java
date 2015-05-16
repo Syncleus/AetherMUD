@@ -30,7 +30,7 @@ public class CountdownCommand extends Command {
                 Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
                 while (players.hasNext()) {
                     Map.Entry<String, Player> next = players.next();
-                    channelUtils.write(next.getValue().getPlayerId(), Color.BOLD_ON + Color.GREEN + s + Color.RESET + "\r\n");
+                    channelUtils.write(next.getValue().getPlayerId(), Color.BOLD_ON + Color.GREEN + s + Color.RESET + "\r\n", true);
                 }
                 Thread.sleep(900);
             }

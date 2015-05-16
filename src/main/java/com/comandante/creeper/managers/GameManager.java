@@ -1,11 +1,13 @@
 package com.comandante.creeper.managers;
 
 
+import com.codahale.metrics.Meter;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.LootManager;
+import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
@@ -525,11 +527,13 @@ public class GameManager {
 
     public void addExperience(Player player, int exp) {
         Interner<String> interner = Interners.newWeakInterner();
+        final Meter requests = Main.metrics.meter("experience-" + player.getPlayerName());
         synchronized (interner.intern(player.getPlayerId())) {
             PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
             int currentExperience = playerMetadata.getStats().getExperience();
             int currentLevel = Levels.getLevel(currentExperience);
             playerMetadata.getStats().setExperience(currentExperience + exp);
+            requests.mark(exp);
             int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
             if (newLevel > currentLevel) {
                 announceLevelUp(player.getPlayerName(), currentLevel, newLevel);
