@@ -1,16 +1,14 @@
 package com.comandante.creeper.command.admin;
 
-import com.comandante.creeper.ConfigureNpc;
 import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.npc.NpcExporter;
-import com.comandante.creeper.player.Levels;
-import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.Color;
-import com.comandante.creeper.stat.Stats;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -46,9 +44,12 @@ public class SpawnCommand  extends Command {
                 String targetNpc = Joiner.on(" ").join(originalMessageParts);
                 for (Npc npc: npcsFromFile) {
                     if (targetNpc.equals(npc.getName())) {
-                        gameManager.getEntityManager().addEntity(npc);
-                        currentRoom.addPresentNpc(npc.getEntityId());
-                        writeToRoom("A " + npc.getColorName() + " appears." + "\r\n");
+                        Loot loot = new Loot(0,0,Sets.<Item>newHashSet());
+                        Npc modifiedNpc = new NpcBuilder(npc).setSpawnRules(null).setLoot(loot).createNpc();
+                        modifiedNpc.getStats().setExperience(0);
+                        gameManager.getEntityManager().addEntity(modifiedNpc);
+                        currentRoom.addPresentNpc(modifiedNpc.getEntityId());
+                        writeToRoom("A " + modifiedNpc.getColorName() + " appears." + "\r\n");
                         return;
                     }
                 }

@@ -31,8 +31,10 @@ public class LootCommand extends Command {
                         if (loot != null) {
                             int gold = lootManager.lootGoldAmountReturn(loot);
                             if (gold > 0) {
-                                write("You looted " + gold + Color.YELLOW + " gold." + Color.RESET);
+                                write("You looted " + gold + Color.YELLOW + " gold" + Color.RESET + " from a " + item.getItemName() + ".\r\n");
                                 playerManager.incrementGold(player, gold);
+                            } else {
+                                write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
                         }
                         playerManager.removeInventoryId(player, item.getItemId());
