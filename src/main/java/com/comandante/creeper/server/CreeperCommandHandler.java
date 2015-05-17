@@ -12,6 +12,7 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommandHandler;
 import com.comandante.creeper.player.Player;
+import org.apache.log4j.Logger;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
@@ -21,6 +22,7 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
 
     private final GameManager gameManager;
     private final Meter commandMeter = Main.metrics.meter(MetricRegistry.name(CreeperCommandHandler.class, "commands"));
+    private static final Logger log = Logger.getLogger(CreeperCommandHandler.class);
 
     public CreeperCommandHandler(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -68,12 +70,14 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-        e.getCause().printStackTrace();
-        e.getChannel().close();
         CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
+        log.error("Error in the Command Handler!, last message:" + creeperSession.getLastMessage() + " from " + creeperSession.getUsername());
+        log.error(e.getCause());
+        e.getChannel().close();
         gameManager.setPlayerAfk(creeperSession.getUsername().get());
         gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
     }
+
 
     private String getRootCommand(MessageEvent e) {
         String origMessage = (String) e.getMessage();

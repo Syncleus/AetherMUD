@@ -13,10 +13,8 @@ import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.world.*;
 import com.google.common.collect.Sets;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.apache.log4j.Logger;
+import org.jboss.netty.channel.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +45,9 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public List<String> originalMessageParts;
     public WorldExporter worldExporter;
     public EquipmentManager equipmentManager;
+
+    private static final Logger log = Logger.getLogger(Command.class);
+
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
         this(gameManager, validTriggers, description, correctUsage, Sets.<PlayerRole>newHashSet());
