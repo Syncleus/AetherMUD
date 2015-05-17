@@ -16,6 +16,7 @@ import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,11 +49,9 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     private static final Logger log = Logger.getLogger(Command.class);
 
-
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
         this(gameManager, validTriggers, description, correctUsage, Sets.<PlayerRole>newHashSet());
     }
-
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage, Set<PlayerRole> roles) {
         this.gameManager = gameManager;
@@ -133,6 +132,10 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         gameManager.currentRoomLogic(playerId);
     }
 
+    public void currentRoomLogic(Room playerCurrentRoom) {
+        gameManager.currentRoomLogic(playerId, playerCurrentRoom);
+    }
+
     public String getPrompt() {
         return playerManager.buildPrompt(playerId);
     }
@@ -151,5 +154,14 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         }
         // only got here if we didn't return false
         return true;
+    }
+
+    public <T> T createObj(String nameclass) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+
+        Class<T> clazz = (Class<T>) Class.forName(nameclass);
+
+        // assumes the target class has a no-args Constructor
+        return clazz.getConstructor(GameManager.class).newInstance(gameManager);
     }
 }

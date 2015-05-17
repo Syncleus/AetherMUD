@@ -49,6 +49,7 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
             return;
         }
         Command commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand);
+
         Player player = gameManager.getPlayerManager().getPlayerByUsername(session.getUsername().get());
         if ((commandByTrigger.roles != null) && commandByTrigger.roles.size() > 0) {
             boolean roleMatch = gameManager.getPlayerManager().hasAnyOfRoles(player, commandByTrigger.roles);
@@ -63,7 +64,8 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
             CommandAuditLog.logCommand((String) e.getMessage(), session.getUsername().get());
         }
         commandMeter.mark();
-        e.getChannel().getPipeline().addLast("executed_command", commandByTrigger);
+        Command obj = (Command) commandByTrigger.createObj(commandByTrigger.getClass().getName());
+        e.getChannel().getPipeline().addLast("executed_command", obj);
         super.messageReceived(ctx, e);
     }
 
@@ -71,8 +73,8 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
-        log.error("Error in the Command Handler!, last message:" + creeperSession.getLastMessage() + " from " + creeperSession.getUsername());
-        log.error(e.getCause());
+        log.error("Error in the Command Handler!, last message:" + creeperSession.getLastMessage() + " from " + creeperSession.getUsername().get());
+        e.getCause().printStackTrace();
         e.getChannel().close();
         gameManager.setPlayerAfk(creeperSession.getUsername().get());
         gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());

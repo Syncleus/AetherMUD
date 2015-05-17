@@ -25,7 +25,8 @@ public class BankCommandHandler extends SimpleChannelUpstreamHandler {
         String rootCommand = getRootCommand(e);
         CreeperSession session = (CreeperSession) e.getChannel().getAttachment();
         BankCommand commandByTrigger = ConfigureCommands.bankCommandRegistry.getCommandByTrigger(rootCommand);
-        e.getChannel().getPipeline().addLast("executed_bank_command", commandByTrigger);
+        BankCommand cmd = commandByTrigger.createObj(commandByTrigger.getClass().getName());
+        e.getChannel().getPipeline().addLast("executed_bank_command", cmd);
         super.messageReceived(ctx, e);
     }
 

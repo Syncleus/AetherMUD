@@ -46,6 +46,7 @@ public class GossipCommand extends Command {
                 if (next.getPlayerId().equals(playerId)) {
                     write(gossipMessage);
                 } else {
+                    System.out.println("writing gossip message to playerId: " + next.getPlayerId());
                     channelUtils.write(next.getPlayerId(), gossipMessage + "\r\n", true);
                 }
             }

@@ -78,7 +78,7 @@ public class MovementCommand extends Command {
             gameManager.movePlayer(playerMovement);
             if (playerMovement != null) {
                 player.setReturnDirection(Optional.of(playerMovement.getReturnDirection()));
-                currentRoomLogic();
+                currentRoomLogic(roomManager.getRoom(playerMovement.getDestinationRoomId()));
             }
         } finally {
             super.messageReceived(ctx, e);

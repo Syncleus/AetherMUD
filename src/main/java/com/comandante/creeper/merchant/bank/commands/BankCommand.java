@@ -12,6 +12,7 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,6 +89,15 @@ public class BankCommand extends SimpleChannelUpstreamHandler {
 
     public static String getPrompt() {
         return "[The Bank - withdrawal | deposit | query | done] ";
+    }
+
+    public <T> T createObj(String nameclass) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+
+        Class<T> clazz = (Class<T>) Class.forName(nameclass);
+
+        // assumes the target class has a no-args Constructor
+        return clazz.getConstructor(GameManager.class).newInstance(gameManager);
     }
 
 }

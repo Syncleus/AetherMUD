@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.log4j.Logger;
 import org.jboss.netty.channel.MessageEvent;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
@@ -68,6 +69,9 @@ public class GameManager {
     private final EquipmentManager equipmentManager;
     private final IrcBotService ircBotService;
     private final CreeperConfiguration creeperConfiguration;
+
+    private static final Logger log = Logger.getLogger(GameManager.class);
+
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -163,13 +167,22 @@ public class GameManager {
 
     public void setPlayerAfk(String username) {
         Player playerByUsername = playerManager.getPlayerByUsername(username);
-        Optional<Room> playerCurrentRoom = roomManager.getPlayerCurrentRoom(playerByUsername);
-        playerCurrentRoom.get().getPresentPlayerIds().remove(playerByUsername.getPlayerId());
-        playerCurrentRoom.get().addAfkPlayer(playerByUsername.getPlayerId());
+        if (playerByUsername != null) {
+            Optional<Room> playerCurrentRoom = roomManager.getPlayerCurrentRoom(playerByUsername);
+            if (playerCurrentRoom.isPresent()) {
+                playerCurrentRoom.get().getPresentPlayerIds().remove(playerByUsername.getPlayerId());
+                playerCurrentRoom.get().addAfkPlayer(playerByUsername.getPlayerId());
+            } else {
+                log.error("Player was not found, could not set to AFK!: " + username);
+            }
+        } else {
+            log.error("Player is null, can't set AFK!");
+        }
     }
 
     public void movePlayer(PlayerMovement playerMovement) {
-        synchronized (Interners.newStrongInterner()) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(playerMovement.getPlayer().getPlayerId())) {
             Room sourceRoom = roomManager.getRoom(playerMovement.getSourceRoomId());
             Room destinationRoom = roomManager.getRoom(playerMovement.getDestinationRoomId());
             sourceRoom.removePresentPlayer(playerMovement.getPlayer().getPlayerId());
@@ -179,10 +192,13 @@ public class GameManager {
                 sb.append(" ").append(playerMovement.getRoomExitMessage());
                 channelUtils.write(next.getPlayerId(), sb.toString(), true);
             }
+            destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
             for (Player next : playerManager.getPresentPlayers(destinationRoom)) {
+                if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
+                    continue;
+                }
                 channelUtils.write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
             }
-            destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
         }
     }
 
@@ -286,6 +302,11 @@ public class GameManager {
     public void currentRoomLogic(String playerId) {
         Player player = playerManager.getPlayer(playerId);
         final Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
+        currentRoomLogic(playerId, playerCurrentRoom);
+    }
+
+    public void currentRoomLogic(String playerId, Room playerCurrentRoom) {
+        Player player = playerManager.getPlayer(playerId);
         StringBuilder sb = new StringBuilder();
         sb.append(Color.BOLD_ON + Color.GREEN);
         sb.append(playerCurrentRoom.getRoomTitle()).append("\r\n\r\n");
