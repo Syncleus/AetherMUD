@@ -359,10 +359,10 @@ public class GameManager {
     }
 
     public void placeItemInRoom(Integer roomId, String itemId) {
-        roomManager.getRoom(roomId).addPresentItem(entityManager.getItemEntity(itemId).getItemId());
+            roomManager.getRoom(roomId).addPresentItem(entityManager.getItemEntity(itemId).getItemId());
     }
 
-    public void acquireItem(Player player, String itemId) {
+    public boolean acquireItem(Player player, String itemId) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
             Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
@@ -372,8 +372,10 @@ public class GameManager {
                 Item itemEntity = entityManager.getItemEntity(itemId);
                 itemEntity.setWithPlayer(true);
                 entityManager.saveItem(itemEntity);
+                return true;
             }
         }
+        return false;
     }
 
     public void roomSay(Integer roomId, String message, String sourcePlayerId) {
@@ -591,7 +593,7 @@ public class GameManager {
         }
     }
 
-    public void removeAllNpcs() {
+    public synchronized void removeAllNpcs() {
         for (Npc npc : entityManager.getNpcs().values()) {
             Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
             while (rooms.hasNext()) {
