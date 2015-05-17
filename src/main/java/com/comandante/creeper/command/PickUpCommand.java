@@ -30,7 +30,7 @@ public class PickUpCommand extends Command {
             for (String next : itemIds) {
                 Item itemEntity = entityManager.getItemEntity(next);
                 if (itemEntity.getItemTriggers().contains(desiredPickUpItem)) {
-                    if (gameManager.acquireItem(player, next)) {
+                    if (gameManager.acquireItemFromRoom(player, next)) {
                         String playerName = player.getPlayerName();
                         gameManager.roomSay(currentRoom.getRoomId(), playerName + " picked up " + itemEntity.getItemName(), playerId);
                         return;

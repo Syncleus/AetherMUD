@@ -46,29 +46,4 @@ public class MerchantManager {
             context.stop();
         }
     }
-
-    public void purchaseItems(Merchant merchant, int itemNo, Player player, int amt) {
-        final Timer.Context context = responses.time();
-        try {
-            Iterator<Map.Entry<Integer, MerchantItemForSale>> merchantItemForSales = merchant.getMerchantItemForSales().entrySet().iterator();
-            while (merchantItemForSales.hasNext()) {
-                Map.Entry<Integer, MerchantItemForSale> next = merchantItemForSales.next();
-                if (next.getKey().equals(itemNo)) {
-                    int price = next.getValue().getCost() * amt;
-                    int availableGold = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getGold();
-                    if (availableGold >= price) {
-                        Item item = next.getValue().getItem().create();
-                        gameManager.getEntityManager().saveItem(item);
-                        gameManager.acquireItem(player, item.getItemId());
-                        gameManager.getPlayerManager().incrementGold(player, -price);
-                        gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
-                    } else {
-                        gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + next.getValue().getItem().getItemName() + "\r\n");
-                    }
-                }
-            }
-        } finally {
-            context.stop();
-        }
-    }
 }
