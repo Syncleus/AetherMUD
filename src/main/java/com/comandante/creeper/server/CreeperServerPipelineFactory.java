@@ -20,11 +20,10 @@ public class CreeperServerPipelineFactory implements ChannelPipelineFactory {
 
     public ChannelPipeline getPipeline() {
         ChannelPipeline pipeline = new DefaultChannelPipeline();
-        pipeline.addLast("framer", new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-        pipeline.addLast("decoder", new StringDecoder());
+        pipeline.addLast("framer", new CreeperDelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+        pipeline.addLast("decoder", new CreeperStringDecoder());
         pipeline.addLast("encoder", new StringEncoder());
         pipeline.addLast("handler", handler);
-
         return pipeline;
     }
 }

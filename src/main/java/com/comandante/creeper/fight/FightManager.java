@@ -8,6 +8,7 @@ import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -27,7 +28,7 @@ public class FightManager {
         this.channelUtils = gameManager.getChannelUtils();
         this.playerManager = gameManager.getPlayerManager();
         this.gameManager = gameManager;
-        this.fightService = Executors.newFixedThreadPool(10);
+        this.fightService = Executors.newFixedThreadPool(100, new ThreadFactoryBuilder().setNameFormat("creeper-fight-thread-%d").build());
     }
 
 

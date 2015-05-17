@@ -83,6 +83,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+        System.out.println(e.getChannel().getPipeline());
         try {
             CreeperSession creeperSession = extractCreeperSession(e.getChannel());
             e.getChannel().getPipeline().remove(ctx.getHandler());
