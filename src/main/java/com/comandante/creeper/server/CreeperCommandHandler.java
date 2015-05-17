@@ -74,9 +74,8 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
-        log.error("Error in the Command Handler!, last message:" + creeperSession.getLastMessage() + " from " + creeperSession.getUsername().get());
+        log.error("Error in the Command Handler!, last message: \"" + creeperSession.getLastMessage() + "\" - from username:" + creeperSession.getUsername().get(), e.getCause());
         gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
-        e.getCause().printStackTrace();
         e.getChannel().close();
     }
 
