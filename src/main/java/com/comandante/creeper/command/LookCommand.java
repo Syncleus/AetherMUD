@@ -38,7 +38,9 @@ public class LookCommand extends Command {
                 Player presentPlayer = gameManager.getPlayerManager().getPlayer(presentPlayerId);
                 if (presentPlayer.getPlayerName().equals(target)) {
                     write(gameManager.getLookString(presentPlayer) + "\r\n");
-                    channelUtils.write(presentPlayer.getPlayerId(), player.getPlayerName() + " looks at you.", true);
+                    if (!presentPlayer.getPlayerId().equals(playerId)) {
+                        channelUtils.write(presentPlayer.getPlayerId(), player.getPlayerName() + " looks at you.", true);
+                    }
                 }
             }
             Set<String> npcIds = currentRoom.getNpcIds();
