@@ -157,27 +157,12 @@ public class GameManager {
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             Room room = next.getValue();
-            Set<Player> presentPlayers = playerManager.getPresentPlayers(room);
+            Set<Player> presentPlayers = roomManager.getPresentPlayers(room);
             for (Player player : presentPlayers) {
                 builder.add(player);
             }
         }
         return builder.build();
-    }
-
-    public void setPlayerAfk(String username) {
-        Player playerByUsername = playerManager.getPlayerByUsername(username);
-        if (playerByUsername != null) {
-            Optional<Room> playerCurrentRoom = roomManager.getPlayerCurrentRoom(playerByUsername);
-            if (playerCurrentRoom.isPresent()) {
-                playerCurrentRoom.get().getPresentPlayerIds().remove(playerByUsername.getPlayerId());
-                playerCurrentRoom.get().addAfkPlayer(playerByUsername.getPlayerId());
-            } else {
-                log.error("Player was not found, could not set to AFK!: " + username);
-            }
-        } else {
-            log.error("Player is null, can't set AFK!");
-        }
     }
 
     public void movePlayer(PlayerMovement playerMovement) {
@@ -186,14 +171,15 @@ public class GameManager {
             Room sourceRoom = roomManager.getRoom(playerMovement.getSourceRoomId());
             Room destinationRoom = roomManager.getRoom(playerMovement.getDestinationRoomId());
             sourceRoom.removePresentPlayer(playerMovement.getPlayer().getPlayerId());
-            for (Player next : playerManager.getPresentPlayers(sourceRoom)) {
+            for (Player next : roomManager.getPresentPlayers(sourceRoom)) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(playerMovement.getPlayer().getPlayerName());
                 sb.append(" ").append(playerMovement.getRoomExitMessage());
                 channelUtils.write(next.getPlayerId(), sb.toString(), true);
             }
             destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
-            for (Player next : playerManager.getPresentPlayers(destinationRoom)) {
+            playerMovement.getPlayer().setCurrentRoom(destinationRoom);
+            for (Player next : roomManager.getPresentPlayers(destinationRoom)) {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
                     continue;
                 }
@@ -205,7 +191,8 @@ public class GameManager {
     public void placePlayerInLobby(Player player) {
         Room room = roomManager.getRoom(LOBBY_ID);
         room.addPresentPlayer(player.getPlayerId());
-        for (Player next : playerManager.getPresentPlayers(room)) {
+        player.setCurrentRoom(room);
+        for (Player next : roomManager.getPresentPlayers(room)) {
             if (next.getPlayerId().equals(player.getPlayerId())) {
                 continue;
             }
@@ -322,12 +309,11 @@ public class GameManager {
         for (Merchant merchant : merchants) {
             sb.append(merchant.getColorName()).append(" is here.").append(RESET).append("\r\n");
         }
-        for (String searchPlayerId : playerCurrentRoom.getPresentPlayerIds()) {
-            if (searchPlayerId.equals(player.getPlayerId())) {
+        for (Player searchPlayer : roomManager.getPresentPlayers(playerCurrentRoom)) {
+            if (searchPlayer.getPlayerId().equals(player.getPlayerId())) {
                 continue;
             }
-            Player searchPlayer = playerManager.getPlayer(searchPlayerId);
-            sb.append(searchPlayer.getPlayerName()).append(" is here.").append(RESET).append("\r\n");
+                sb.append(searchPlayer.getPlayerName()).append(" is here.").append(RESET).append("\r\n");
         }
 
         for (String itemId : playerCurrentRoom.getItemIds()) {
@@ -390,11 +376,10 @@ public class GameManager {
     }
 
     public void roomSay(Integer roomId, String message, String sourcePlayerId) {
-        Set<String> presentPlayerIds = roomManager.getRoom(roomId).getPresentPlayerIds();
-        for (String playerId : presentPlayerIds) {
-            Player player = playerManager.getPlayer(playerId);
+        Set<Player> presentPlayers = roomManager.getPresentPlayers(roomManager.getRoom(roomId));
+        for (Player player : presentPlayers) {
             if (player.getPlayerId().equals(sourcePlayerId)) {
-                channelUtils.write(playerId, message, false);
+                channelUtils.write(player.getPlayerId(), message, false);
                 continue;
             }
             channelUtils.write(player.getPlayerId(), message, true);
@@ -538,18 +523,16 @@ public class GameManager {
         }
         Player player = playerManager.getPlayer(playerId);
         Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
-        Set<String> presentPlayerIds = playerCurrentRoom.getPresentPlayerIds();
-        for (String id : presentPlayerIds) {
-            Player presentPlayer = playerManager.getPlayer(id);
+        Set<Player> presentPlayers = roomManager.getPresentPlayers(playerCurrentRoom);
+        for (Player presentPlayer : presentPlayers) {
             channelUtils.write(presentPlayer.getPlayerId(), message, true);
         }
     }
 
     public void writeToRoom(Integer roomId, String message) {
         Room room = roomManager.getRoom(roomId);
-        Set<String> presentPlayerIds = room.getPresentPlayerIds();
-        for (String id : presentPlayerIds) {
-            Player presentPlayer = playerManager.getPlayer(id);
+        Set<Player> presentPlayers = roomManager.getPresentPlayers(room);
+        for (Player presentPlayer : presentPlayers) {
             channelUtils.write(presentPlayer.getPlayerId(), message, true);
         }
     }

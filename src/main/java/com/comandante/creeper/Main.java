@@ -53,9 +53,10 @@ public class Main {
 
         DB db = DBMaker.newFileDB(new File("world/" + creeperConfiguration.databaseFileName)).closeOnJvmShutdown().make();
 
-        RoomManager roomManager = new RoomManager();
         PlayerManager playerManager = new PlayerManager(db, new SessionManager());
         playerManager.createAllGauges();
+
+        RoomManager roomManager = new RoomManager(playerManager);
 
         startUpMessage("Configuring core systems.");
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);

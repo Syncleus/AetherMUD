@@ -34,7 +34,6 @@ public abstract class Room extends CreeperEntity {
     private List<RemoteExit> enterExits = Lists.newArrayList();
     private String roomDescription;
     private final Set<String> presentPlayerIds = Sets.<String>newConcurrentHashSet();
-    private final Set<String> afkPlayerIds = Sets.<String>newConcurrentHashSet();
     private final Set<String> npcIds = Sets.newConcurrentHashSet();
     private final Set<String> itemIds = Sets.newConcurrentHashSet();
     private List<ItemSpawner> itemSpawners = Lists.newArrayList();
@@ -166,12 +165,10 @@ public abstract class Room extends CreeperEntity {
         return npcIds;
     }
 
-    public java.util.Set<String> getPresentPlayerIds() {
+    protected java.util.Set<String> getPresentPlayerIds() {
+        // terrible null pointers will result if you call this shit directly.
+        // People sign off and cause problems
         return presentPlayerIds;
-    }
-
-    public Set<String> getAfkPlayerIds() {
-        return afkPlayerIds;
     }
 
     public void addPresentPlayer(String playerId) {
@@ -180,14 +177,6 @@ public abstract class Room extends CreeperEntity {
 
     public void removePresentPlayer(String playerId) {
         presentPlayerIds.remove(playerId);
-    }
-
-    public void addAfkPlayer(String playerId) {
-        afkPlayerIds.add(playerId);
-    }
-
-    public void removeAfkPlayer(String playerId) {
-        afkPlayerIds.remove(playerId);
     }
 
     public String getRoomDescription() {

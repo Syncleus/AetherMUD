@@ -36,7 +36,6 @@ public class BankCommandHandler extends SimpleChannelUpstreamHandler {
         e.getCause().printStackTrace();
         e.getChannel().close();
         CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
-        gameManager.setPlayerAfk(creeperSession.getUsername().get());
         gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
     }
 

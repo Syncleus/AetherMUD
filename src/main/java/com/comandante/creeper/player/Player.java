@@ -3,6 +3,7 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
 import org.apache.commons.codec.binary.Base64;
 import org.jboss.netty.channel.Channel;
@@ -13,6 +14,7 @@ public class Player extends CreeperEntity {
     private Channel channel;
     private Optional<String> returnDirection = Optional.absent();
     private final GameManager gameManager;
+    private Room currentRoom;
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -45,6 +47,14 @@ public class Player extends CreeperEntity {
 
     public void setReturnDirection(Optional<String> returnDirection) {
         this.returnDirection = returnDirection;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
     }
 
     @Override

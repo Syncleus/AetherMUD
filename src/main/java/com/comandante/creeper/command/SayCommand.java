@@ -30,7 +30,7 @@ public class SayCommand extends Command {
         try {
             originalMessageParts.remove(0);
             String message = Joiner.on(" ").join(originalMessageParts);
-            Set<Player> presentPlayers = playerManager.getPresentPlayers(currentRoom);
+            Set<Player> presentPlayers = roomManager.getPresentPlayers(currentRoom);
             for (Player presentPlayer : presentPlayers) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(RED);

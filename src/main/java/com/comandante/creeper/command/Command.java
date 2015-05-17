@@ -83,7 +83,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        System.out.println(e.getChannel().getPipeline());
         try {
             CreeperSession creeperSession = extractCreeperSession(e.getChannel());
             e.getChannel().getPipeline().remove(ctx.getHandler());
@@ -155,6 +154,12 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         }
         // only got here if we didn't return false
         return true;
+    }
+
+    public Command copy() throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        Class<Command> clazz = (Class<Command>) this.getClass();
+        return clazz.getConstructor(GameManager.class).newInstance(gameManager);
     }
 
     public <T> T createObj(String nameclass) throws ClassNotFoundException,

@@ -8,11 +8,8 @@ import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.world.Room;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
-import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -45,15 +42,6 @@ public class PlayerManager {
         MapDbAutoCommitService mapDbAutoCommitService = new MapDbAutoCommitService(db);
         mapDbAutoCommitService.startAsync();
         this.sessionManager = sessionManager;
-    }
-
-    public Set<Player> getPresentPlayers(Room room) {
-        Set<String> presentPlayerIds = room.getPresentPlayerIds();
-        Set<Player> players = Sets.newHashSet();
-        for (String playerId : presentPlayerIds) {
-            players.add(getPlayer(playerId));
-        }
-        return ImmutableSet.copyOf(players);
     }
 
     public void addInventoryId(Player player, String inventoryId) {

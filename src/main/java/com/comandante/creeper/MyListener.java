@@ -25,7 +25,6 @@ public class MyListener extends ListenerAdapter {
 
     @Override
     public void onGenericMessage(GenericMessageEvent event) throws Exception {
-        //When someone says ?helloworld respond with "Hello World"'
         PlayerManager playerManager = gameManager.getPlayerManager();
         if (event.getMessage().startsWith("?gossip")) {
             ArrayList<String> originalMessageParts = Lists.newArrayList(Arrays.asList(event.getMessage().split(" ")));
@@ -44,7 +43,7 @@ public class MyListener extends ListenerAdapter {
             return;
         }
         Room bridgeRoom = gameManager.getRoomManager().getRoom(bridgeRoomId);
-        Set<Player> presentPlayers = gameManager.getPlayerManager().getPresentPlayers(bridgeRoom);
+        Set<Player> presentPlayers = gameManager.getRoomManager().getPresentPlayers(bridgeRoom);
         for (Player presentPlayer : presentPlayers) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(RED);
