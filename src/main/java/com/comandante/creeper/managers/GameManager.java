@@ -363,14 +363,17 @@ public class GameManager {
     }
 
     public void acquireItem(Player player, String itemId) {
-        Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
-        if (playerCurrentRoom.getItemIds().contains(itemId)) {
-            playerCurrentRoom.getItemIds().remove(itemId);
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(itemId)) {
+            Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
+            if (playerCurrentRoom.getItemIds().contains(itemId)) {
+                playerCurrentRoom.getItemIds().remove(itemId);
+                playerManager.addInventoryId(player, itemId);
+                Item itemEntity = entityManager.getItemEntity(itemId);
+                itemEntity.setWithPlayer(true);
+                entityManager.saveItem(itemEntity);
+            }
         }
-        playerManager.addInventoryId(player, itemId);
-        Item itemEntity = entityManager.getItemEntity(itemId);
-        itemEntity.setWithPlayer(true);
-        entityManager.saveItem(itemEntity);
     }
 
     public void roomSay(Integer roomId, String message, String sourcePlayerId) {
