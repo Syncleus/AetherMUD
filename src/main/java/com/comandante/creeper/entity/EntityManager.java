@@ -8,17 +8,15 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.ChannelUtils;
-import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -86,9 +84,9 @@ public class EntityManager {
         npcs.remove(npcId);
     }
 
-    public Set<Item> getInventory(Player player) {
+    public List<Item> getInventory(Player player) {
         PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-        Set<Item> inventoryItems = Sets.newHashSet();
+        List<Item> inventoryItems = Lists.newArrayList();
         String[] inventory = playerMetadata.getInventory();
         if (inventory != null) {
             for (String itemId : inventory) {
@@ -100,6 +98,12 @@ public class EntityManager {
                 inventoryItems.add(itemEntity);
             }
         }
+        Collections.sort(inventoryItems, new Comparator<Item>() {
+            @Override
+            public int compare(final Item object1, final Item object2) {
+                return object1.getItemName().compareTo(object2.getItemName());
+            }
+        });
         return inventoryItems;
     }
 

@@ -259,7 +259,7 @@ public enum ItemType {
             Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET,
             "some " + Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET + " are here on the ground.",
             "some " + Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET,
-            false,
+            true,
             0,
             60,
             false);

@@ -121,6 +121,13 @@ public class ForageManager {
             int xp = getXp(level);
             System.out.println("level: " + level + " is " + xp + "exp.");
         }
+
+        level = 0;
+        while (level < 60) {
+            level++;
+            int xp = getPctSuccessBoostForLevel(level);
+            System.out.println("level: " + level + " is bosted by " + xp + "pct.");
+        }
     }
 
 

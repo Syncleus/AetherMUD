@@ -11,7 +11,6 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class UseCommand extends Command {
 
@@ -33,7 +32,7 @@ public class UseCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            Set<Item> inventory = entityManager.getInventory(player);
+            List<Item> inventory = entityManager.getInventory(player);
             if (inventory != null) {
                 for (Item item : inventory) {
                     if (item.getItemTriggers().contains(itemTarget)) {

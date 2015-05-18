@@ -4,12 +4,12 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.managers.GameManager;
+import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import static com.comandante.creeper.server.Color.RESET;
 
@@ -27,7 +27,7 @@ public class InventoryCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            Set<Item> inventory = entityManager.getInventory(player);
+            List<Item> inventory = entityManager.getInventory(player);
             if (inventory == null) {
                 write("You aren't carrying anything.");
                 return;
@@ -35,6 +35,7 @@ public class InventoryCommand extends Command {
             StringBuilder sb = new StringBuilder();
             sb.append("You are carrying:\r\n");
             sb.append(RESET);
+            List<String> invStrings = Lists.newArrayList();
             for (Item item : inventory) {
                 sb.append(item.getItemName());
                 int maxUses = ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses();
