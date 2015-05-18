@@ -37,19 +37,20 @@ public class ForageManager {
             for (Forage forage : room.getForages().values()) {
                 int foragingLevel = getLevel(gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getForaging());
                 if (forage.getMinLevel() > foragingLevel) {
-                    System.out.println("Foraging level not high enough.");
+                   // System.out.println("Foraging level not high enough.");
                     return;
                 }
                 if (forage.getCoolDownTicksLeft() > 0) {
-                    System.out.println("Forage is still cooling down. Ticks left: " + forage.getCoolDownTicksLeft());
+                    //System.out.println("Forage is still cooling down. Ticks left: " + forage.getCoolDownTicksLeft());
                     return;
                 }
                 forage.setCoolDownTicksLeft(forage.getCoolDownTicks());
                 double foragePctOfSuccess = forage.getPctOfSuccess();
-                int pctSuccessBoostForLevel = getPctSuccessBoostForLevel(foragingLevel);
-                System.out.println("you get a boost of " + pctSuccessBoostForLevel);
+                int modifiedLevelForForage = getLevel(gameManager.getEquipmentManager().getPlayerStatsWithEquipment(player).getForaging());
+                int pctSuccessBoostForLevel = getPctSuccessBoostForLevel(modifiedLevelForForage);
+                //System.out.println("you get a boost of " + pctSuccessBoostForLevel);
                 foragePctOfSuccess = foragePctOfSuccess + pctSuccessBoostForLevel;
-                System.out.println("final pct of success for forage: " + foragePctOfSuccess);
+                //System.out.println("final pct of success for forage: " + foragePctOfSuccess);
                 if (getRandPercent(foragePctOfSuccess)) {
                     gameManager.getPlayerManager().updatePlayerForageExperience(player, forage.getForageExperience());
                     int numberToHarvest = randInt(forage.getMinAmt(), forage.getMaxAmt());
@@ -63,7 +64,7 @@ public class ForageManager {
                     gameManager.writeToRoom(room.getRoomId(), player.getPlayerName() + " foraged (" + numberToHarvest + ") " + forage.getItemType().getItemName() + "\r\n");
                 } else {
                     gameManager.getChannelUtils().write(player.getPlayerId(), "Attempt to forage " + forage.getItemType().getItemName() + " failed.\r\n");
-                    System.out.println("failed to obtain forage, random pctsuccess failed.");
+                    //System.out.println("failed to obtain forage, random pctsuccess failed.");
                 }
             }
         } finally {
@@ -89,7 +90,7 @@ public class ForageManager {
     }
 
     private static double FORAGE_EXP_CONSTANT_MODIFIER = 0.05;
-    private static double FORAGE_LEVEL_PCT_BOOST_MODIFIER = 0.05;
+    private static double FORAGE_LEVEL_PCT_BOOST_MODIFIER = 3;
 
     public static int getPctSuccessBoostForLevel(int level) {
         double v = FORAGE_LEVEL_PCT_BOOST_MODIFIER * sqrt(level);

@@ -262,7 +262,16 @@ public enum ItemType {
             true,
             0,
             60,
-            false);
+            false),
+
+    TAPPERHET_SWORD(29, Arrays.asList("sword", "tapperhet sword"),
+            Color.BOLD_ON + Color.GREEN + "tapperhet" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
+            "a " + Color.BOLD_ON + Color.GREEN + "tapperhet" + Color.RESET + Color.YELLOW + " sword" + Color.RESET + " is on the ground.",
+            "a " + Color.BOLD_ON + Color.GREEN + "tapperhet" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
+            false,
+            0,
+            60,
+            true);
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;

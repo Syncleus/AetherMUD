@@ -450,6 +450,9 @@ public class GameManager {
         t.addCell(getFormattedNumber(stats.getCurrentHealth()));
         t.addCell("");
 
+        t.addCell("Mana");
+        t.addCell(getFormattedNumber(stats.getCurrentMana()));
+        t.addCell("");
 
         StringBuilder sb = new StringBuilder();
         t.addCell("Strength");

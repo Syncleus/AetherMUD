@@ -90,6 +90,7 @@ public class EquipmentManager {
         statsBuilder.setWillpower(modifiedStats.getWillpower() - origStats.getWillpower());
         statsBuilder.setCurrentMana(modifiedStats.getCurrentMana() - origStats.getCurrentMana());
         statsBuilder.setMaxMana(modifiedStats.getMaxMana() - origStats.getMaxMana());
+        statsBuilder.setForaging(modifiedStats.getForaging() - origStats.getForaging());
         return statsBuilder.createStats();
     }
 

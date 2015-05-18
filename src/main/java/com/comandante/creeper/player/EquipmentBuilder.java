@@ -60,6 +60,8 @@ public class EquipmentBuilder {
                     return getPyamiteLeggings(item);
                 case PYAMITE_BOOTS:
                     return getPyamiteBoots(item);
+                case TAPPERHET_SWORD:
+                    return getTapperhetSword(item);
             }
         }
         return null;
@@ -232,6 +234,13 @@ public class EquipmentBuilder {
     public static Item getPyamiteBoots(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(24).setStrength(12).setAgile(24).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getTapperhetSword(Item item){
+        Stats stats = new StatsBuilder().setAgile(40).setArmorRating(27).setStrength(64).setWeaponRatingMax(37).setWeaponRatingMin(28).setNumberOfWeaponRolls(2).setForaging(20000).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
         item.setEquipment(equipment);
         return item;
     }
