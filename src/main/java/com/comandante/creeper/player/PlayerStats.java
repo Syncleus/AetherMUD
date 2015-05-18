@@ -19,5 +19,6 @@ public class PlayerStats {
             .setNumberOfWeaponRolls(1)
             .setExperience(0)
             .setCurrentMana(100)
-            .setMaxMana(100);
+            .setMaxMana(100)
+            .setForaging(0);
 }

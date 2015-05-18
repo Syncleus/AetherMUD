@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
 
 public class FightKillCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("kill", "k", "fight", "f");
+    final static List<String> validTriggers = Arrays.asList("kill", "k", "fight");
     final static String description = "Initiate a fight with a mob.";
     final static String correctUsage = "kill <mob name>";
 

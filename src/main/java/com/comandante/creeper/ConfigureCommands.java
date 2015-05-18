@@ -60,5 +60,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new ReloadNpcsCommand(gameManager));
         creeperCommandRegistry.addCommand(new UsersCommand(gameManager));
         creeperCommandRegistry.addCommand(new SpawnCommand(gameManager));
+        creeperCommandRegistry.addCommand(new ForageCommand(gameManager));
     }
 }

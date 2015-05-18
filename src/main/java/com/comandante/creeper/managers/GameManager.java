@@ -4,6 +4,7 @@ package com.comandante.creeper.managers;
 import com.codahale.metrics.Meter;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
+import com.comandante.creeper.Items.ForageManager;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.LootManager;
@@ -69,6 +70,7 @@ public class GameManager {
     private final EquipmentManager equipmentManager;
     private final IrcBotService ircBotService;
     private final CreeperConfiguration creeperConfiguration;
+    private final ForageManager forageManager;
 
     private static final Logger log = Logger.getLogger(GameManager.class);
 
@@ -89,8 +91,12 @@ public class GameManager {
         this.fightManager = new FightManager(this);
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
+        this.forageManager = new ForageManager(this);
     }
 
+    public ForageManager getForageManager() {
+        return forageManager;
+    }
 
     public IrcBotService getIrcBotService() {
         return ircBotService;
@@ -505,6 +511,14 @@ public class GameManager {
             sb.append(Color.RESET).append(")");
         }
         t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Forage");
+        t.addCell(getFormattedNumber(stats.getForaging()));
+        if (diff.getForaging() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getForaging())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
         returnString.append(t.render());
         return returnString.toString();
     }

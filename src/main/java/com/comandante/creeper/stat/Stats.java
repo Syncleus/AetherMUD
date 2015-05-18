@@ -17,6 +17,7 @@ public class Stats implements Serializable {
     private int experience;
     private int currentMana;
     private int maxMana;
+    private int foraging;
 
     public Stats(Stats stats) {
         this.strength = stats.strength;
@@ -34,6 +35,7 @@ public class Stats implements Serializable {
         this.numberOfWeaponRolls = stats.numberOfWeaponRolls;
         this.experience = stats.experience;
         this.currentMana = stats.currentMana;
+        this.foraging = stats.foraging;
         this.maxMana = 100;
     }
 
@@ -50,7 +52,8 @@ public class Stats implements Serializable {
                  int numberOfWeaponRolls,
                  int experience,
                  int currentMana,
-                 int maxMana) {
+                 int maxMana,
+                 int foraging) {
         this.strength = strength;
         this.willpower = willpower;
         this.aim = aim;
@@ -65,6 +68,7 @@ public class Stats implements Serializable {
         this.experience = experience;
         this.currentMana = currentMana;
         this.maxMana = maxMana;
+        this.foraging = foraging;
     }
 
     public int getExperience() {
@@ -177,5 +181,13 @@ public class Stats implements Serializable {
 
     public void setMaxMana(int maxMana) {
         this.maxMana = maxMana;
+    }
+
+    public int getForaging() {
+        return foraging;
+    }
+
+    public void setForaging(int foraging) {
+        this.foraging = foraging;
     }
 }

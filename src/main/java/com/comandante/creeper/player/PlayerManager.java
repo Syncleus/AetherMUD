@@ -194,6 +194,16 @@ public class PlayerManager {
         }
     }
 
+    public void updatePlayerForageExperience(Player player, int amount) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
+            Stats stats = playerMetadata.getStats();
+            stats.setForaging(stats.getForaging() + amount);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
 
     public boolean hasRole(Player player, PlayerRole playerRole) {
         PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());

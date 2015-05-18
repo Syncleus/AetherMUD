@@ -253,7 +253,16 @@ public enum ItemType {
             false,
             0,
             60,
-            true);
+            true),
+
+    MARIJUANA(28, Arrays.asList("marijuana", "weed", "m", "w", "f", "flowers"),
+            Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET,
+            "some " + Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET + " are here on the ground.",
+            "some " + Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET,
+            false,
+            0,
+            60,
+            false);
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;

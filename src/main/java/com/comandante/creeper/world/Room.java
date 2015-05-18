@@ -1,14 +1,18 @@
 package com.comandante.creeper.world;
 
+import com.comandante.creeper.Items.Forage;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class Room extends CreeperEntity {
@@ -41,6 +45,7 @@ public abstract class Room extends CreeperEntity {
     private Optional<String> mapData = Optional.absent();
     private final Set<String> roomTags;
     private final Set<Merchant> merchants = Sets.newConcurrentHashSet();
+    private Map<ItemType, Forage> forages = Maps.newHashMap();
 
     public Room(Integer roomId,
                 String roomTitle,
@@ -227,7 +232,13 @@ public abstract class Room extends CreeperEntity {
         itemSpawners.add(itemSpawner);
     }
 
+    public Map<ItemType, Forage> getForages() {
+        return forages;
+    }
 
+    public void addForage(Forage forage) {
+        this.forages.put(forage.getItemType(), forage);
+    }
 
     @Override
     public void run() {

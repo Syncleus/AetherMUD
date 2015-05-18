@@ -13,7 +13,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -162,6 +161,8 @@ public class NpcAdapter extends TypeAdapter<Npc> {
                 statsBuilder.setWeaponRatingMin(jsonReader.nextInt());
             }else if (nextName.equals("willPower")) {
                 statsBuilder.setWillpower(jsonReader.nextInt());
+            }else if (nextName.equals("foraging")) {
+                statsBuilder.setForaging(jsonReader.nextInt());
             }
         }
         jsonReader.endObject();

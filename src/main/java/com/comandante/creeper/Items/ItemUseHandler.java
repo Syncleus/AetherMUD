@@ -5,6 +5,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 
 public class ItemUseHandler {
@@ -36,6 +37,16 @@ public class ItemUseHandler {
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-beer-drank")).inc();
     }
 
+    private void processMarijuana() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " blazes " + Color.GREEN + "marijuana" + Color.RESET + ".\r\n");
+        writeToPlayer("50 mana is restored." + "\r\n");
+        writeToPlayer("20 health is restored.");
+        gameManager.getPlayerManager().updatePlayerMana(player, 50);
+        gameManager.getPlayerManager().incrementHealth(player, 20);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-weed-smoked")).inc();
+    }
+
     private void processBook() {
         writeToPlayer("You crack open the book and immediately realize that you aren't familiar with it's written language.");
     }
@@ -51,6 +62,9 @@ public class ItemUseHandler {
                     break;
                 case BEER:
                     processBeer();
+                    break;
+                case MARIJUANA:
+                    processMarijuana();
                     break;
                 case UNKNOWN:
                     writeToPlayer("Item not found.");

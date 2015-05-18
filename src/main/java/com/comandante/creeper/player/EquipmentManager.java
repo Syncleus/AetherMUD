@@ -88,6 +88,8 @@ public class EquipmentManager {
         statsBuilder.setWeaponRatingMax(modifiedStats.getWeaponRatingMax() - origStats.getWeaponRatingMax());
         statsBuilder.setWeaponRatingMin(modifiedStats.getWeaponRatingMin() - origStats.getWeaponRatingMin());
         statsBuilder.setWillpower(modifiedStats.getWillpower() - origStats.getWillpower());
+        statsBuilder.setCurrentMana(modifiedStats.getCurrentMana() - origStats.getCurrentMana());
+        statsBuilder.setMaxMana(modifiedStats.getMaxMana() - origStats.getMaxMana());
         return statsBuilder.createStats();
     }
 
@@ -104,5 +106,8 @@ public class EquipmentManager {
         orig.setWeaponRatingMax(orig.getWeaponRatingMax() + combine.getWeaponRatingMax());
         orig.setWeaponRatingMin(orig.getWeaponRatingMin() + combine.getWeaponRatingMin());
         orig.setWillpower(orig.getWillpower() + combine.getWillpower());
+        orig.setCurrentMana(orig.getCurrentMana() + combine.getCurrentMana());
+        orig.setMaxMana(orig.getMaxMana() + combine.getMaxMana());
+        orig.setForaging(orig.getForaging() + combine.getForaging());
     }
 }

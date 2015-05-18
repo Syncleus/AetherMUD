@@ -15,6 +15,7 @@ public class StatsBuilder {
     private int experience;
     private int currentMana;
     private int maxMana;
+    private int foraging;
 
     public StatsBuilder setStrength(int strength) {
         this.strength = strength;
@@ -86,7 +87,12 @@ public class StatsBuilder {
         return this;
     }
 
+    public StatsBuilder setForaging(int foraging) {
+        this.foraging = foraging;
+        return this;
+    }
+
     public Stats createStats() {
-        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana);
+        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging);
     }
 }
