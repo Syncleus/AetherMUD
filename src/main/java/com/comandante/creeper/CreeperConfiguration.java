@@ -56,6 +56,11 @@ public class CreeperConfiguration {
     public static final int DEFAULT_MAP_SIZE_DEFAULT = 14;
     public final int defaultMapSize;
 
+
+    public static final String FORAGE_RATELIMIT_PER_SECOND = "forage.ratelimit.per.second";
+    public static final double FORAGE_RATELIMIT_PER_SECOND_DEFAULT = 1.5;
+    public final double forageRateLimitPerSecond;
+
     public CreeperConfiguration(Configuration configuration) {
         this.telnetPort = configuration.getInt(TELNET_PORT, TELNET_PORT_DEFAULT);
         this.databaseFileName = configuration.getString(DATABASE_FILE_NAME, DATABASE_FILE_NAME_DEFAULT);
@@ -70,5 +75,7 @@ public class CreeperConfiguration {
         this.isIrcEnabled = configuration.getBoolean(IS_IRC_ENABLED, IS_IRC_ENABLED_DEFAULT);
         this.ircBridgeRoomId = configuration.getInteger(IRC_BRIDGE_ROOM_ID, IRC_BRIDGE_ROOM_ID_DEFAULT);
         this.defaultMapSize = configuration.getInteger(DEFAULT_MAP_SIZE, DEFAULT_MAP_SIZE_DEFAULT);
+        this.forageRateLimitPerSecond = configuration.getDouble(FORAGE_RATELIMIT_PER_SECOND, FORAGE_RATELIMIT_PER_SECOND_DEFAULT);
+
     }
 }

@@ -5,7 +5,10 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
+import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.RateLimiter;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -16,6 +19,7 @@ public class ForageManager {
 
     public final GameManager gameManager;
     private static final Random random = new Random();
+    private final Map<String, RateLimiter> rateLimiterHashMap = Maps.newHashMap();
 
     public ForageManager(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -31,6 +35,12 @@ public class ForageManager {
     }
 
     public void getForageForRoom(Room room, Player player) {
+        RateLimiter rateLimiter = rateLimiterHashMap.get(player.getPlayerId());
+        if (rateLimiter == null) {
+            rateLimiter = RateLimiter.create(gameManager.getCreeperConfiguration().forageRateLimitPerSecond);
+            rateLimiterHashMap.put(player.getPlayerId(), rateLimiter);
+        }
+        rateLimiter.acquire();
         int countOfForagesFound = 0;
         int totalForageXp = 0;
         try {
