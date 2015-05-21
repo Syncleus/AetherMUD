@@ -33,7 +33,7 @@ public class WhoCommand extends Command {
                     ShownBorders.HEADER_AND_COLUMNS);
             t.setColumnWidth(0, 8, 14);
             t.setColumnWidth(1, 8, 8);
-            t.setColumnWidth(2, 9, 9);
+            t.setColumnWidth(2, 9, 14);
             t.addCell("Player");
             t.addCell("Level");
             t.addCell("XP");

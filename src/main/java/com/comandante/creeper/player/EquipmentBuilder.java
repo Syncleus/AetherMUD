@@ -62,6 +62,18 @@ public class EquipmentBuilder {
                     return getPyamiteBoots(item);
                 case TAPPERHET_SWORD:
                     return getTapperhetSword(item);
+                case VULCERIUM_SWORD:
+                    return getVulceriumSword(item);
+                case VULCERIUM_CHESTPLATE:
+                    return getVulceriumChestplate(item);
+                case VULCERIUM_HELMET:
+                    return getVulceriumHelmet(item);
+                case VULCERIUM_BRACERS:
+                    return getVulceriumBracers(item);
+                case VULCERIUM_LEGGINGS:
+                    return getVulceriumLeggings(item);
+                case VULCERIUM_BOOTS:
+                    return getVulceriumBoots(item);
             }
         }
         return null;
@@ -241,6 +253,48 @@ public class EquipmentBuilder {
     public static Item getTapperhetSword(Item item){
         Stats stats = new StatsBuilder().setAgile(40).setArmorRating(27).setStrength(64).setWeaponRatingMax(37).setWeaponRatingMin(28).setNumberOfWeaponRolls(2).setForaging(20000).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getVulceriumSword(Item item){
+        Stats stats = new StatsBuilder().setArmorRating(60).setStrength(120).setWeaponRatingMax(60).setWeaponRatingMin(50).setNumberOfWeaponRolls(3).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getVulceriumChestplate(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(100).setStrength(60).setAgile(45).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.CHEST, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getVulceriumHelmet(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(55).setStrength(55).setAgile(39).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HEAD, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getVulceriumBracers(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(38).setStrength(30).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.WRISTS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getVulceriumLeggings(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(72).setStrength(48).setAgile(36).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getVulceriumBoots(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(74).setStrength(37).setAgile(60).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
         item.setEquipment(equipment);
         return item;
     }

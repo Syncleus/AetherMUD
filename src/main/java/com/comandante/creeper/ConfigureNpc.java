@@ -60,7 +60,6 @@ public class ConfigureNpc {
         itemsForSale.put(7, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
         itemsForSale.put(8, new MerchantItemForSale(ItemType.PHANTOM_SWORD, 7000));
         itemsForSale.put(9, new MerchantItemForSale(ItemType.PHANTOM_HELMET, 3500));
-        itemsForSale.put(10, new MerchantItemForSale(ItemType.PHANTOM_CHESTPLATE, 5000));
         itemsForSale.put(11, new MerchantItemForSale(ItemType.PHANTOM_BOOTS, 3000));
         itemsForSale.put(12, new MerchantItemForSale(ItemType.PHANTOM_BRACERS, 1500));
         itemsForSale.put(13, new MerchantItemForSale(ItemType.PHANTOM_LEGGINGS, 4000));
@@ -77,6 +76,12 @@ public class ConfigureNpc {
         itemsForSale.put(24, new MerchantItemForSale(ItemType.PYAMITE_BRACERS, 8000));
         itemsForSale.put(25, new MerchantItemForSale(ItemType.PYAMITE_LEGGINGS, 16000));
         itemsForSale.put(26, new MerchantItemForSale(ItemType.TAPPERHET_SWORD, 60000));
+        itemsForSale.put(27, new MerchantItemForSale(ItemType.VULCERIUM_SWORD, 160000));
+        itemsForSale.put(28, new MerchantItemForSale(ItemType.VULCERIUM_HELMET, 37000));
+        itemsForSale.put(29, new MerchantItemForSale(ItemType.VULCERIUM_CHESTPLATE, 52000));
+        itemsForSale.put(30, new MerchantItemForSale(ItemType.VULCERIUM_BOOTS, 38000));
+        itemsForSale.put(31, new MerchantItemForSale(ItemType.VULCERIUM_BRACERS, 29000));
+        itemsForSale.put(32, new MerchantItemForSale(ItemType.VULCERIUM_LEGGINGS, 52000));
 
 
 
