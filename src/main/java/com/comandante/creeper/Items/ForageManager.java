@@ -5,10 +5,8 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
-import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.RateLimiter;
+import org.apache.log4j.Logger;
 
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -19,7 +17,7 @@ public class ForageManager {
 
     public final GameManager gameManager;
     private static final Random random = new Random();
-    private final Map<String, RateLimiter> rateLimiterHashMap = Maps.newHashMap();
+    private static final Logger log = Logger.getLogger(ForageManager.class);
 
     public ForageManager(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -34,13 +32,26 @@ public class ForageManager {
         }
     }
 
-    public void getForageForRoom(Room room, Player player) {
-        RateLimiter rateLimiter = rateLimiterHashMap.get(player.getPlayerId());
-        if (rateLimiter == null) {
-            rateLimiter = RateLimiter.create(gameManager.getCreeperConfiguration().forageRateLimitPerSecond);
-            rateLimiterHashMap.put(player.getPlayerId(), rateLimiter);
+    public void forageDelay(Player player) {
+        gameManager.getChannelUtils().write(player.getPlayerId(), "You scan the ground for plants, herbs and fungi...\r\n");
+        for (int i = 0; i < 3; i++) {
+            try {
+                Thread.sleep(1000);
+                if (i==0){
+                    gameManager.getChannelUtils().write(player.getPlayerId(), "\r\n");
+                } else if (i==1) {
+                    gameManager.getChannelUtils().write(player.getPlayerId(), "searching..." + "\r\n");
+                } else {
+                    gameManager.getChannelUtils().write(player.getPlayerId(), "\r\n");
+                }
+            } catch (InterruptedException e) {
+                log.error(e);
+            }
         }
-        rateLimiter.acquire();
+    }
+
+    public void getForageForRoom(Room room, Player player) {
+        forageDelay(player);
         int countOfForagesFound = 0;
         int totalForageXp = 0;
         try {
