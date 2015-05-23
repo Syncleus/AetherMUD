@@ -3,6 +3,7 @@ package com.comandante.creeper.entity;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.ItemSerializer;
+import com.comandante.creeper.Main;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
@@ -20,6 +21,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static com.codahale.metrics.MetricRegistry.name;
 
 public class EntityManager {
 
@@ -138,10 +141,14 @@ public class EntityManager {
     }
 
     class Ticker implements Runnable {
+
+        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "tick_time"));
+
         @Override
         public void run() {
             while (true) {
                 try {
+                    final com.codahale.metrics.Timer.Context context = ticktime.time();
                     Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
                     while (rooms.hasNext()) {
                         Map.Entry<Integer, Room> next = rooms.next();
@@ -155,11 +162,10 @@ public class EntityManager {
                     for (Map.Entry<String, Npc> next : npcs.entrySet()) {
                         ticketRunnerService.submit(next.getValue());
                     }
-                    Iterator<Map.Entry<String, CreeperEntity>> iterator = entities.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, CreeperEntity> next = iterator.next();
+                    for (Map.Entry<String, CreeperEntity> next : entities.entrySet()) {
                         ticketRunnerService.submit(next.getValue());
                     }
+                    context.stop();
                     Thread.sleep(10000);
                 } catch (InterruptedException ie) {
                     throw new RuntimeException("Problem with ticker.");
