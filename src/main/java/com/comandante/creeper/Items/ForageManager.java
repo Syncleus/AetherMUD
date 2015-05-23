@@ -34,9 +34,13 @@ public class ForageManager {
 
     public void forageDelay(Player player) {
         gameManager.getChannelUtils().write(player.getPlayerId(), "You scan the ground for plants, herbs and fungi...\r\n");
+        final int foragingLevel = getLevel(gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getForaging());
+        final int scourTime = 1000 - getForageDelayTime(foragingLevel);
         for (int i = 0; i < 3; i++) {
             try {
-                Thread.sleep(1000);
+                if (scourTime > 0) {
+                    Thread.sleep(scourTime);
+                }
                 if (i==0){
                     gameManager.getChannelUtils().write(player.getPlayerId(), "\r\n");
                 } else if (i==1) {
@@ -112,6 +116,8 @@ public class ForageManager {
 
     private static double FORAGE_EXP_CONSTANT_MODIFIER = 0.05;
     private static double FORAGE_LEVEL_PCT_BOOST_MODIFIER = 3;
+    private static double FORAGE_DELAY_TIME_CALCULATION_MODIFIER = 1.91;
+
 
     public static int getPctSuccessBoostForLevel(int level) {
         double v = FORAGE_LEVEL_PCT_BOOST_MODIFIER * sqrt(level);
@@ -128,8 +134,12 @@ public class ForageManager {
         return (int) Math.ceil(v);
     }
 
+    public static int getForageDelayTime(int level) {
+        double v = pow(level, 2) / pow(FORAGE_DELAY_TIME_CALCULATION_MODIFIER, 2);
+        return (int) Math.ceil(v);
+    }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         int i = 0;
         while (i < 1000000) {
             int level = getLevel(i);
@@ -150,6 +160,15 @@ public class ForageManager {
             int xp = getPctSuccessBoostForLevel(level);
             System.out.println("level: " + level + " is bosted by " + xp + "pct.");
         }
+
+        level = 0;
+        while (level < 60) {
+            level++;
+            int xp = getForageDelayTime(level);
+            System.out.println("level: " + level + " will delay by: " + xp + "ms");
+        }
+
+        Thread.sleep(-1000);
     }
 
 
