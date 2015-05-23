@@ -29,11 +29,13 @@ public class WhoCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            Table t = new Table(4, BorderStyle.CLASSIC_COMPATIBLE,
-                    ShownBorders.HEADER_AND_COLUMNS);
+            StringBuilder output = new StringBuilder();
+           // output.append(Color.MAGENTA + "Who--------------------------------" + Color.RESET).append("\r\n");
+            Table t = new Table(4, BorderStyle.BLANKS,
+                    ShownBorders.NONE);
             t.setColumnWidth(0, 8, 14);
-            t.setColumnWidth(1, 8, 8);
-            t.setColumnWidth(2, 9, 14);
+            t.setColumnWidth(1, 7, 7);
+            t.setColumnWidth(2, 15, 15);
             t.addCell("Player");
             t.addCell("Level");
             t.addCell("XP");
@@ -45,7 +47,8 @@ public class WhoCommand extends Command {
                 t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
                 t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
             }
-            write(t.render());
+            output.append(t.render());
+            write(output.toString());
         } finally {
             super.messageReceived(ctx, e);
         }

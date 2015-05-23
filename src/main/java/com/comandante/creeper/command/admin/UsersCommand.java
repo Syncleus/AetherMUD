@@ -14,7 +14,11 @@ import org.nocrala.tools.texttablefmt.Table;
 import java.net.InetSocketAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class UsersCommand extends Command {
 
@@ -31,13 +35,15 @@ public class UsersCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            Table t = new Table(4, BorderStyle.CLASSIC_COMPATIBLE,
-                    ShownBorders.HEADER_AND_COLUMNS);
+            Table t = new Table(4, BorderStyle.BLANKS,
+                    ShownBorders.NONE);
             t.setColumnWidth(0, 8, 14);
+            t.setColumnWidth(1, 18, 18);
+            t.setColumnWidth(2, 21, 21);
             t.addCell("Player");
             t.addCell("IP");
             t.addCell("Logged in since");
-            t.addCell("Last activity");
+            t.addCell("Idle");
             Set<Player> allPlayers = gameManager.getAllPlayers();
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
@@ -50,8 +56,14 @@ public class UsersCommand extends Command {
                 String loginTime = format.format(new Date(playerManager.getSessionManager().getSession(allPlayer.getPlayerId()).getInitialLoginTime()));
                 t.addCell(loginTime);
 
-                String lastActivity = format.format(new Date(playerManager.getSessionManager().getSession(allPlayer.getPlayerId()).getLastActivity()));
-                t.addCell(lastActivity);
+                long lastActivity = playerManager.getSessionManager().getSession(allPlayer.getPlayerId()).getLastActivity();
+                long idleTimeMs = System.currentTimeMillis() - lastActivity;
+                String idleTime = String.format("%d min, %d sec",
+                        TimeUnit.MILLISECONDS.toMinutes(idleTimeMs),
+                        TimeUnit.MILLISECONDS.toSeconds(idleTimeMs) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(idleTimeMs))
+                );
+                t.addCell(idleTime);
             }
             write(t.render());
         } finally {
