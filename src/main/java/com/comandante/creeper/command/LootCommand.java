@@ -9,6 +9,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class LootCommand extends Command {
 
@@ -33,7 +34,13 @@ public class LootCommand extends Command {
                             if (gold > 0) {
                                 write("You looted " + gold + Color.YELLOW + " gold" + Color.RESET + " from a " + item.getItemName() + ".\r\n");
                                 playerManager.incrementGold(player, gold);
-                            } else {
+                            }
+                            Set<Item> items = lootManager.lootItemsReturn(loot);
+                            for (Item i: items) {
+                                    gameManager.acquireItem(player, i.getItemId());
+                                    write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
+                                }
+                            if (gold < 0 && items.size() == 0) {
                                 write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
                         }

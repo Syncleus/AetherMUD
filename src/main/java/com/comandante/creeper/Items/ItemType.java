@@ -11,7 +11,7 @@ import static com.comandante.creeper.server.Color.*;
 
 public enum ItemType {
 
-    UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0, false),
+    UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0, false, Rarity.RARE),
     KEY(1, Arrays.asList("key", "gold key", "shiny gold key"),
             YELLOW + "a shiny gold key" + RESET,
             YELLOW + "a shiny gold key" + RESET + " catches your eye.",
@@ -19,7 +19,8 @@ public enum ItemType {
             false,
             0,
             60,
-            false),
+            false,
+            Rarity.BASIC),
 
     BEER(2, Arrays.asList("beer", "can of beer", "b"),
             "a dented can of " + CYAN + "beer" + RESET,
@@ -28,7 +29,8 @@ public enum ItemType {
             true,
             2,
             60,
-            false),
+            false,
+            Rarity.BASIC),
 
     BOOK(3, Arrays.asList("book", "used book"),
             MAGENTA + "a leather book" + RESET,
@@ -37,7 +39,8 @@ public enum ItemType {
             false,
             0,
             60,
-            false),
+            false,
+            Rarity.BASIC),
 
     BROAD_SWORD(4, Arrays.asList("sword", "broad", "a broad sword", "the broad sword"),
             Color.CYAN + "the broad sword" + Color.RESET,
@@ -46,7 +49,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     IRON_BOOTS(5, Arrays.asList("boots", "boot", "iron boots"),
     Color.CYAN + "iron boots" + Color.RESET,
@@ -55,7 +59,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     IRON_CHEST_PLATE(6, Arrays.asList("chest", "iron chest plate", "plate"),
             "iron chest plate",
@@ -64,7 +69,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     IRON_LEGGINGS(7, Arrays.asList("leggings", "iron leggings"),
             "iron leggings",
@@ -73,7 +79,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PHANTOM_SWORD(8, Arrays.asList("phantom", "phantom sword", "the phantom sword"),
             Color.YELLOW + "the " + Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -82,7 +89,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     IRON_BRACERS(9, Arrays.asList("bracers", "iron bracers"),
             "iron bracers",
@@ -91,7 +99,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PHANTOM_HELMET(10, Arrays.asList("helmet", "phantom helmet", "the phantom helmet"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -100,7 +109,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PHANTOM_CHESTPLATE(11, Arrays.asList("chestplate", "chest", "phantom chest plate", "the phantom chest plate"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " chest plate" + Color.RESET,
@@ -109,7 +119,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PHANTOM_BOOTS(12, Arrays.asList("boots", "phantom boots", "the phantom boots"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -118,7 +129,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PHANTOM_BRACERS(13, Arrays.asList("boots", "phantom bracers", "the phantom bracers"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -127,7 +139,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PHANTOM_LEGGINGS(14, Arrays.asList("leggings", "phantom leggings", "the phantom leggings"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -136,7 +149,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     IRON_HELMET(15, Arrays.asList("helmet", "iron helmet"),
             "iron helmet",
@@ -145,7 +159,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     MITHRIL_SWORD(16, Arrays.asList("sword", "mithril sword", "mithril sword"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -154,7 +169,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     MITHRIL_CHESTPLATE(17, Arrays.asList("chestplate", "a mithril chestplate", "mithril chestplate"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " chestplate" + Color.RESET,
@@ -163,7 +179,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     MITHRIL_HELMET(18, Arrays.asList("helmet", "a mithril helmet", "mithril helmet"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -172,7 +189,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     MITHRIL_BRACERS(19, Arrays.asList("helmet", "mithril bracers", "mithril bracers"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -181,7 +199,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     MITHRIL_LEGGINGS(20, Arrays.asList("helmet", "mithril leggings", "mithril leggings"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " leggings" + Color.RESET,
@@ -190,7 +209,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     MITHRIL_BOOTS(21, Arrays.asList("helmet", "mithril boots"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -199,7 +219,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PYAMITE_SWORD(22, Arrays.asList("sword", "pyamite sword", "pyamite sword"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -208,7 +229,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PYAMITE_CHESTPLATE(23, Arrays.asList("chestplate", "a pyamite chestplate", "pyamite chestplate"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " chestplate" + Color.RESET,
@@ -217,7 +239,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PYAMITE_HELMET(24, Arrays.asList("helmet", "a pyamite helmet", "pyamite helmet"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -226,7 +249,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PYAMITE_BRACERS(25, Arrays.asList("bracers", "pyamite bracers", "pyamite bracers"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -235,7 +259,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PYAMITE_LEGGINGS(26, Arrays.asList("leggings", "pyamite leggings", "pyamite leggings"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " leggings" + Color.RESET,
@@ -244,7 +269,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     PYAMITE_BOOTS(27, Arrays.asList("helmet", "pyamite boots"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -253,7 +279,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     MARIJUANA(28, Arrays.asList("marijuana", "weed", "m", "w", "f", "flowers"),
             Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET,
@@ -262,7 +289,8 @@ public enum ItemType {
             true,
             0,
             60,
-            false),
+            false,
+            Rarity.BASIC),
 
     TAPPERHET_SWORD(29, Arrays.asList("sword", "tapperhet sword"),
             Color.BOLD_ON + Color.GREEN + "tapperhet" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -271,7 +299,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     VULCERIUM_SWORD(30, Arrays.asList("sword", "vulcerium sword", "vulcerium sword"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -280,7 +309,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     VULCERIUM_CHESTPLATE(31, Arrays.asList("chestplate", "a vulcerium chestplate", "vulcerium chestplate"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " chestplate" + Color.RESET,
@@ -289,7 +319,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     VULCERIUM_HELMET(32, Arrays.asList("helmet", "a vulcerium helmet", "vulcerium helmet"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -298,7 +329,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     VULCERIUM_BRACERS(33, Arrays.asList("bracers", "vulcerium bracers", "vulcerium bracers"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -307,7 +339,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     VULCERIUM_LEGGINGS(34, Arrays.asList("leggings", "vulcerium leggings", "vulcerium leggings"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " leggings" + Color.RESET,
@@ -316,7 +349,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true),
+            true,
+            Rarity.BASIC),
 
     VULCERIUM_BOOTS(35, Arrays.asList("boots", "vulcerium boots"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -325,7 +359,8 @@ public enum ItemType {
             false,
             0,
             60,
-            true);
+            true,
+            Rarity.BASIC);
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
@@ -336,8 +371,9 @@ public enum ItemType {
     private final int maxUses;
     private final int itemHalfLifeTicks;
     private final boolean isEquipment;
+    private final Rarity rarity;
 
-    ItemType(Integer itemTypeCode, List<String> itemTriggers, String itemName, String restingName, String itemDescription, boolean isDisposable, int maxUses, int itemHalfLifeTicks, boolean isEquipment) {
+    ItemType(Integer itemTypeCode, List<String> itemTriggers, String itemName, String restingName, String itemDescription, boolean isDisposable, int maxUses, int itemHalfLifeTicks, boolean isEquipment, Rarity rarity) {
         this.itemTypeCode = itemTypeCode;
         this.itemTriggers = itemTriggers;
         this.itemName = itemName;
@@ -351,16 +387,20 @@ public enum ItemType {
         }
         this.itemHalfLifeTicks = itemHalfLifeTicks;
         this.isEquipment = isEquipment;
+        this.rarity = rarity;
     }
 
     public Item create() {
-        Item newItem = new Item(getItemName(), getItemDescription(), getItemTriggers(), getRestingName(), UUID.randomUUID().toString(), getItemTypeCode(), 0, false, itemHalfLifeTicks);
+        Item newItem = new Item(getItemName(), getItemDescription(), getItemTriggers(), getRestingName(), UUID.randomUUID().toString(), getItemTypeCode(), 0, false, itemHalfLifeTicks, getRarity());
         if (isEquipment) {
             return EquipmentBuilder.Build(newItem);
         }
         return newItem;
     }
 
+    public Rarity getRarity() {
+        return rarity;
+    }
 
     public String getRestingName() {
         return restingName;

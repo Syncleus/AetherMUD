@@ -1,6 +1,5 @@
 package com.comandante.creeper.npc;
 
-import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.managers.GameManager;
@@ -38,8 +37,8 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         jsonWriter.name("lootGoldMax").value(npc.getLoot().getLootGoldMax());
         jsonWriter.name("lootItems");
         jsonWriter.beginArray();
-        for (Item item : loot.getItems()) {
-            jsonWriter.value(item.getItemTypeId());
+        for (ItemType item : loot.getItems()) {
+            jsonWriter.value(item.getItemTypeCode());
         }
         jsonWriter.endArray();
         jsonWriter.endObject();
@@ -112,9 +111,9 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         final int lootGoldMax = jsonReader.nextInt();
         jsonReader.nextName();
         jsonReader.beginArray();
-        Set<Item> items = Sets.newHashSet();
+        Set<ItemType> items = Sets.newHashSet();
         while (jsonReader.hasNext()) {
-            items.add(ItemType.itemTypeFromCode(jsonReader.nextInt()).create());
+            items.add(ItemType.itemTypeFromCode(jsonReader.nextInt()));
         }
         jsonReader.endArray();
         Loot loot = new Loot(lootGoldMin, lootGoldMax, items);

@@ -85,7 +85,7 @@ public class ConfigureNpc {
 
 
 
-        LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), itemsForSale);
+        LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
 
         Map<Integer, MerchantItemForSale> blacksmithItems = Maps.newHashMap();
@@ -96,11 +96,11 @@ public class ConfigureNpc {
         blacksmithItems.put(5, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
         blacksmithItems.put(6, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
 
-        Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), blacksmithItems);
+        Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
         gameManager.getRoomManager().addMerchant(66, blacksmith);
         gameManager.getRoomManager().addMerchant(253, blacksmith);
 
-        JimBanker jimBanker = new JimBanker(gameManager, new Loot(18, 26, Sets.<Item>newHashSet()), null);
+        JimBanker jimBanker = new JimBanker(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(65, jimBanker);
         gameManager.getRoomManager().addMerchant(209, jimBanker);
 

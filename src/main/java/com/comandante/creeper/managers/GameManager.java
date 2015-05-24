@@ -4,10 +4,7 @@ package com.comandante.creeper.managers;
 import com.codahale.metrics.Meter;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
-import com.comandante.creeper.Items.ForageManager;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemDecayManager;
-import com.comandante.creeper.Items.LootManager;
+import com.comandante.creeper.Items.*;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
@@ -86,14 +83,13 @@ public class GameManager {
         this.mapsManager = mapsManager;
         this.floorManager = new FloorManager();
         this.channelUtils = channelUtils;
-        this.lootManager = new LootManager();
+        this.lootManager = new LootManager(this);
         this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager);
         this.fightManager = new FightManager(this);
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
         this.forageManager = new ForageManager(this);
     }
-
     public ForageManager getForageManager() {
         return forageManager;
     }
@@ -592,7 +588,7 @@ public class GameManager {
                     addExperience(player, npc.getStats().getExperience());
                     writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
                     channelUtils.write(playerId, "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + npc.getStats().getExperience() + Color.RESET + " experience points." + "\r\n", true);
-                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot());
+                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot(), Rarity.BASIC);
                     entityManager.saveItem(corpse);
                     Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
                     Room room = roomManager.getRoom(roomId);

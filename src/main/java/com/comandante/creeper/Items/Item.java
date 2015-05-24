@@ -19,11 +19,12 @@ public class Item implements Serializable {
     private final Loot loot;
     private final int itemHalfLifeTicks;
     private Equipment equipment;
+    private final Rarity rarity;
 
     public static final int CORPSE_ID_RESERVED = 100;
     public static final int EQUIPMENT_ID_RESERVED = 101;
 
-    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks) {
+    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks, Rarity rarity) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemTriggers = itemTriggers;
@@ -33,9 +34,11 @@ public class Item implements Serializable {
         this.numberOfUses = numberOfUses;
         this.loot = null;
         this.itemHalfLifeTicks = itemHalfLifeTicks;
+        this.isWithPlayer = isWithPlayer;
+        this.rarity = rarity;
     }
 
-    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer,int itemHalfLifeTicks, Loot loot) {
+    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer,int itemHalfLifeTicks, Loot loot, Rarity rarity) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemTriggers = itemTriggers;
@@ -46,6 +49,8 @@ public class Item implements Serializable {
         this.isWithPlayer = isWithPlayer;
         this.loot = loot;
         this.itemHalfLifeTicks = itemHalfLifeTicks;
+        this.rarity = rarity;
+
     }
 
     public Item(Item origItem) {
@@ -62,6 +67,7 @@ public class Item implements Serializable {
         if (origItem.equipment != null) {
             this.equipment = new Equipment(origItem.equipment);
         }
+        this.rarity = origItem.rarity;
     }
 
     public boolean isWithPlayer() {
@@ -120,6 +126,10 @@ public class Item implements Serializable {
         return equipment;
     }
 
+    public Rarity getRarity() {
+        return rarity;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -134,6 +144,7 @@ public class Item implements Serializable {
                 ", loot=" + loot +
                 ", itemHalfLifeTicks=" + itemHalfLifeTicks +
                 ", equipment=" + equipment +
+                ", rarity=" + rarity +
                 '}';
     }
 }

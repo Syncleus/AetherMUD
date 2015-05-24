@@ -55,7 +55,7 @@ public class NpcAdapterTest {
                 .setWillpower(randomGenerator.nextInt(100))
                 .createStats();
 
-        Loot npcOneLoot = new Loot(randomGenerator.nextInt(100), randomGenerator.nextInt(100), Sets.newHashSet(ItemType.BEER.create()));
+        Loot npcOneLoot = new Loot(randomGenerator.nextInt(100), randomGenerator.nextInt(100), Sets.newHashSet(ItemType.BEER));
         SpawnRule npcOneSpawnRule1 = new SpawnRule(Area.BLOODRIDGE10_ZONE, randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100));
         SpawnRule npcOneSpawnRule2 = new SpawnRule(Area.BLOODRIDGE10_ZONE, randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100));
         npcOne = new NpcBuilder()
@@ -85,15 +85,15 @@ public class NpcAdapterTest {
 
         assertEquals(npcOne.getLoot().getLootGoldMax(), npc.getLoot().getLootGoldMax());
         assertEquals(npcOne.getLoot().getLootGoldMin(), npc.getLoot().getLootGoldMin());
-        Set<Item> items = npcOne.getLoot().getItems();
+        Set<ItemType> items = npcOne.getLoot().getItems();
         Item originalItem = null;
         Item newItem = null;
-        for (Item item: items) {
-            originalItem = item;
+        for (ItemType item: items) {
+            originalItem = item.create();
         }
         items = npc.getLoot().getItems();
-        for (Item item: items) {
-            newItem = item;
+        for (ItemType item: items) {
+            newItem = item.create();
         }
         assertEquals(originalItem.getItemDescription(), newItem.getItemDescription());
         assertEquals(npcOne.getRoamAreas(), npc.getRoamAreas());

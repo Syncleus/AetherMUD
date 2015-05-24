@@ -1,6 +1,6 @@
 package com.comandante.creeper.command.admin;
 
-import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
@@ -44,7 +44,7 @@ public class SpawnCommand  extends Command {
                 String targetNpc = Joiner.on(" ").join(originalMessageParts);
                 for (Npc npc: npcsFromFile) {
                     if (targetNpc.equals(npc.getName())) {
-                        Loot loot = new Loot(0,0,Sets.<Item>newHashSet());
+                        Loot loot = new Loot(0,0,Sets.<ItemType>newHashSet());
                         Npc modifiedNpc = new NpcBuilder(npc).setSpawnRules(null).setLoot(loot).createNpc();
                         modifiedNpc.getStats().setExperience(0);
                         gameManager.getEntityManager().addEntity(modifiedNpc);

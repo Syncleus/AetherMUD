@@ -5,17 +5,17 @@ import java.util.Set;
 
 public class Loot implements Serializable {
 
-    private final Set<Item> items;
+    private final Set<ItemType> items;
     private final int lootGoldMax;
     private final int lootGoldMin;
 
-    public Loot(int lootGoldMin, int lootGoldMax, Set<Item> items) {
+    public Loot(int lootGoldMin, int lootGoldMax, Set<ItemType> items) {
         this.items = items;
         this.lootGoldMax = lootGoldMax;
         this.lootGoldMin = lootGoldMin;
     }
 
-    public Set<Item> getItems() {
+    public Set<ItemType> getItems() {
         return items;
     }
 
@@ -25,14 +25,5 @@ public class Loot implements Serializable {
 
     public int getLootGoldMin() {
         return lootGoldMin;
-    }
-
-    @Override
-    public String toString() {
-        return "Loot{" +
-                "items=" + items +
-                ", lootGoldMax=" + lootGoldMax +
-                ", lootGoldMin=" + lootGoldMin +
-                '}';
     }
 }
