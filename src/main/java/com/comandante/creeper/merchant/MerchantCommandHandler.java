@@ -38,9 +38,9 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
         Map<Integer, InventoryItemForSale> inventoryMenu = getInventoryMenu(playerByUsername);
         try {
             String message = (String) e.getMessage();
-            String cmd = message;
+            String cmd = message.replaceFirst("\\s+$", "");
             String[] split = null;
-            if (message.contains(" ")) {
+            if (cmd.contains(" ")) {
                 split = message.split(" ");
                 cmd = split[0];
             }
