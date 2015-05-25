@@ -397,7 +397,7 @@ public enum ItemType {
             Rarity.BASIC,
             7100),
 
-    DWARF_BOOTS_OF_AGILITY(27, Arrays.asList("dwarf boots", "boots"),
+    DWARF_BOOTS_OF_AGILITY(36, Arrays.asList("dwarf boots", "boots"),
             Color.BLUE + "dwarf" + Color.RESET + Color.RED + " boots" + Color.RESET,
             "a pair of " + Color.BLUE + "dwarf" + Color.RESET + Color.RED + " boots" + Color.RESET + " are on the ground.",
             "a pair of " + Color.BLUE + "dwarf" + Color.RESET + Color.RED + " boots" + Color.RESET,
@@ -405,8 +405,42 @@ public enum ItemType {
             0,
             60,
             true,
+            Rarity.UNCOMMON,
+            2500),
+
+    DEATHCRAWLER_SCALES(37, Arrays.asList("deathcrawler scales", "scales"),
+            Color.BOLD_ON + Color.MAGENTA + "deathcrawler" + Color.RESET + Color.RED + " scales" + Color.RESET,
+            "some " + Color.BOLD_ON + Color.MAGENTA + "deathcrawler" + Color.RESET + Color.RED + " scales" + Color.RESET + " are on the ground.",
+            "some " + Color.BOLD_ON + Color.MAGENTA + "deathcrawler" + Color.RESET + Color.RED + " scales" + Color.RESET,
+            false,
+            0,
+            60,
+            false,
             Rarity.BASIC,
-            3500);
+            700),
+
+
+    DWARVEN_PENDANT(38, Arrays.asList("dwarven pendant", "pendant"),
+            Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET,
+            "some " + Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET + " are on the ground.",
+            "some " + Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET,
+            false,
+            0,
+            60,
+            false,
+            Rarity.BASIC,
+            450),
+
+    BYSEN_BALLS(38, Arrays.asList("bysen balls", "balls"),
+            Color.BOLD_ON + Color.MAGENTA + "bysen" + Color.RESET + Color.RED + " balls" + Color.RESET,
+            "some " + Color.BOLD_ON + Color.MAGENTA + "bysen" + Color.RESET + Color.RED + " balls" + Color.RESET + " are on the ground.",
+            "some " + Color.BOLD_ON + Color.MAGENTA + "bysen" + Color.RESET + Color.RED + " balls" + Color.RESET,
+            false,
+            0,
+            60,
+            false,
+            Rarity.BASIC,
+            2000);
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;

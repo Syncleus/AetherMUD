@@ -37,7 +37,7 @@ public class UsersCommand extends Command {
         try {
             Table t = new Table(4, BorderStyle.BLANKS,
                     ShownBorders.NONE);
-            t.setColumnWidth(0, 8, 14);
+            t.setColumnWidth(0, 8, 24);
             t.setColumnWidth(1, 18, 18);
             t.setColumnWidth(2, 21, 21);
             t.addCell("Player");

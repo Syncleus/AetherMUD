@@ -2,6 +2,7 @@ package com.comandante.creeper.merchant;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.command.CommandAuditLog;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
@@ -38,6 +39,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
         Map<Integer, InventoryItemForSale> inventoryMenu = getInventoryMenu(playerByUsername);
         try {
             String message = (String) e.getMessage();
+            CommandAuditLog.logCommand(message, playerByUsername.getPlayerName());
             String cmd = message.replaceFirst("\\s+$", "");
             String[] split = null;
             if (cmd.contains(" ")) {
