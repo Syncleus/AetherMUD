@@ -74,6 +74,8 @@ public class EquipmentBuilder {
                     return getVulceriumLeggings(item);
                 case VULCERIUM_BOOTS:
                     return getVulceriumBoots(item);
+                case DWARF_BOOTS_OF_AGILITY:
+                    return getDwarfBootsOfAgility(item);
             }
         }
         return null;
@@ -294,6 +296,13 @@ public class EquipmentBuilder {
 
     public static Item getVulceriumBoots(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(74).setStrength(37).setAgile(60).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getDwarfBootsOfAgility(Item item) {
+        Stats stats = new StatsBuilder().setAgile(400).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
         item.setEquipment(equipment);
         return item;

@@ -41,7 +41,7 @@ public class TalkCommand extends Command {
                     write(merchant.getWelcomeMessage() + "\r\n");
                     if (merchant.getMerchantType() != Merchant.MerchantType.BANK) {
                         write(merchant.getMenu() + "\r\n");
-                        gameManager.getChannelUtils().write(playerId, "\r\n[" + merchant.getName() + " (done to exit, buy <itemNo>)] ");
+                        gameManager.getChannelUtils().write(playerId, "\r\n[" + merchant.getName() + " (done to exit, buy <itemNo>, sell <itemNo>)] ");
                     } else {
                        write(BankCommand.getPrompt());
                     }

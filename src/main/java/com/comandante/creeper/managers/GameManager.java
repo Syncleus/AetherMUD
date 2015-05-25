@@ -588,7 +588,7 @@ public class GameManager {
                     addExperience(player, npc.getStats().getExperience());
                     writeToPlayerCurrentRoom(playerId, npc.getDieMessage());
                     channelUtils.write(playerId, "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + npc.getStats().getExperience() + Color.RESET + " experience points." + "\r\n", true);
-                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, npc.getLoot(), Rarity.BASIC);
+                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, npc.getLoot());
                     entityManager.saveItem(corpse);
                     Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
                     Room room = roomManager.getRoom(roomId);
