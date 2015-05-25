@@ -10,7 +10,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -242,10 +241,5 @@ public abstract class Room extends CreeperEntity {
 
     @Override
     public void run() {
-        Iterator<ItemSpawner> iterator = itemSpawners.iterator();
-        while (iterator.hasNext()) {
-            ItemSpawner next = iterator.next();
-            next.run();
-        }
     }
 }
