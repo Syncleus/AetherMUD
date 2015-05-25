@@ -33,7 +33,7 @@ public class WhoCommand extends Command {
            // output.append(Color.MAGENTA + "Who--------------------------------" + Color.RESET).append("\r\n");
             Table t = new Table(4, BorderStyle.BLANKS,
                     ShownBorders.NONE);
-            t.setColumnWidth(0, 8, 24);
+            t.setColumnWidth(0, 14, 24);
             t.setColumnWidth(1, 7, 7);
             t.setColumnWidth(2, 15, 15);
             t.addCell("Player");
