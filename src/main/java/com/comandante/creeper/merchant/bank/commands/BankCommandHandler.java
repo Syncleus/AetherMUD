@@ -2,6 +2,7 @@ package com.comandante.creeper.merchant.bank.commands;
 
 
 import com.comandante.creeper.ConfigureCommands;
+import com.comandante.creeper.command.CommandAuditLog;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.server.CreeperSession;
@@ -24,6 +25,7 @@ public class BankCommandHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         String rootCommand = getRootCommand(e);
         CreeperSession session = (CreeperSession) e.getChannel().getAttachment();
+        CommandAuditLog.logCommand(rootCommand, session.getUsername().get());
         BankCommand commandByTrigger = ConfigureCommands.bankCommandRegistry.getCommandByTrigger(rootCommand);
         BankCommand cmd = commandByTrigger.createObj(commandByTrigger.getClass().getName());
         e.getChannel().getPipeline().addLast("executed_bank_command", cmd);
