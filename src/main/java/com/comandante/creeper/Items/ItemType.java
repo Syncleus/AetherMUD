@@ -440,7 +440,30 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            2000);
+            2000),
+
+    PLASMA_TV(39, Arrays.asList("plasma tv", "plasma"),
+            Color.BOLD_ON + Color.MAGENTA + "plasma" + Color.RESET + Color.RED + " tv" + Color.RESET,
+            "a " + Color.BOLD_ON + Color.MAGENTA + "plasma" + Color.RESET + Color.RED + " tv" + Color.RESET + " is on the ground.",
+            "a " + Color.BOLD_ON + Color.MAGENTA + "plasma" + Color.RESET + Color.RED + " tv" + Color.RESET,
+            false,
+            0,
+            60,
+            false,
+            Rarity.BASIC,
+            6000),
+
+    DOGDICKS(40, Arrays.asList("dog", "dick", "dog dick"),
+            Color.GREEN + "dog" + Color.RESET + " dick" + Color.RESET,
+            "a " + Color.GREEN + "dog" + Color.RESET + " dick" + Color.RESET + " is here on the ground.",
+            "a " + Color.GREEN + "dog" + Color.RESET + " dick" + Color.RESET,
+            true,
+            0,
+            60,
+            false,
+            Rarity.BASIC,
+            2500);
+
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;

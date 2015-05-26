@@ -47,6 +47,16 @@ public class ItemUseHandler {
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-weed-smoked")).inc();
     }
 
+    private void processDogdicks() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " eats a " + Color.GREEN + "dog dick." + Color.RESET + ".\r\n");
+        writeToPlayer("1000 mana is restored." + "\r\n");
+        writeToPlayer("1500 health is restored.");
+        gameManager.getPlayerManager().updatePlayerMana(player, 1000);
+        gameManager.getPlayerManager().incrementHealth(player, 1500);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-dogdick-smoked")).inc();
+    }
+
     private void processBook() {
         writeToPlayer("You crack open the book and immediately realize that you aren't familiar with it's written language.");
     }
@@ -65,6 +75,9 @@ public class ItemUseHandler {
                     break;
                 case MARIJUANA:
                     processMarijuana();
+                    break;
+                case DOGDICKS:
+                    processDogdicks();
                     break;
                 case UNKNOWN:
                     writeToPlayer("Item not found.");
