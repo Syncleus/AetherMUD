@@ -34,8 +34,8 @@ public class MovementCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
         try {
+            configure(e);
             if (FightManager.isActiveFight(creeperSession)) {
                 write("You can't move while in a fight!");
                 return;

@@ -147,7 +147,7 @@ public class PlayerManager {
     }
 
     public Player addPlayer(Player player) {
-        return players.putIfAbsent(player.getPlayerId(), player);
+        return players.put(player.getPlayerId(), player);
     }
 
     public Player getPlayerByUsername(String username) {

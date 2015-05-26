@@ -19,8 +19,8 @@ public class ForageCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
         try {
+            configure(e);
             gameManager.getForageManager().getForageForRoom(currentRoom, player);
         } finally {
             super.messageReceived(ctx, e);
