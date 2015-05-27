@@ -431,7 +431,7 @@ public enum ItemType {
             Rarity.BASIC,
             450),
 
-    BYSEN_BALLS(38, Arrays.asList("bysen balls", "balls"),
+    BYSEN_BALLS(39, Arrays.asList("bysen balls", "balls"),
             Color.BOLD_ON + Color.MAGENTA + "bysen" + Color.RESET + Color.RED + " balls" + Color.RESET,
             "some " + Color.BOLD_ON + Color.MAGENTA + "bysen" + Color.RESET + Color.RED + " balls" + Color.RESET + " are on the ground.",
             "some " + Color.BOLD_ON + Color.MAGENTA + "bysen" + Color.RESET + Color.RED + " balls" + Color.RESET,
@@ -442,7 +442,7 @@ public enum ItemType {
             Rarity.BASIC,
             2000),
 
-    PLASMA_TV(39, Arrays.asList("plasma tv", "plasma"),
+    PLASMA_TV(40, Arrays.asList("plasma tv", "plasma"),
             Color.BOLD_ON + Color.MAGENTA + "plasma" + Color.RESET + Color.RED + " tv" + Color.RESET,
             "a " + Color.BOLD_ON + Color.MAGENTA + "plasma" + Color.RESET + Color.RED + " tv" + Color.RESET + " is on the ground.",
             "a " + Color.BOLD_ON + Color.MAGENTA + "plasma" + Color.RESET + Color.RED + " tv" + Color.RESET,
@@ -453,7 +453,7 @@ public enum ItemType {
             Rarity.BASIC,
             6000),
 
-    DOGDICKS(40, Arrays.asList("dog", "dick", "dog dick"),
+    DOGDICKS(41, Arrays.asList("dog", "dick", "dog dick"),
             Color.GREEN + "dog" + Color.RESET + " dick" + Color.RESET,
             "a " + Color.GREEN + "dog" + Color.RESET + " dick" + Color.RESET + " is here on the ground.",
             "a " + Color.GREEN + "dog" + Color.RESET + " dick" + Color.RESET,
