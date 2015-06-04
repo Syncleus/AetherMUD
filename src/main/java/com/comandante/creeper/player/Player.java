@@ -3,6 +3,7 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
 import org.apache.commons.codec.binary.Base64;
@@ -59,11 +60,23 @@ public class Player extends CreeperEntity {
 
     @Override
     public void run() {
-        if (gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId()).getStats().getCurrentHealth() < 100) {
+        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId());
+        if (playerMetadata.getStats().getCurrentHealth() < 100) {
             gameManager.getPlayerManager().updatePlayerHealth(this, 10);
         }
-        if (gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId()).getStats().getCurrentMana() < 100) {
+        if (playerMetadata.getStats().getCurrentMana() < 100) {
             gameManager.getPlayerManager().updatePlayerMana(this, 2);
+        }
+        for (String effectId: playerMetadata.getEffects()) {
+            Effect effect = gameManager.getEntityManager().getEffect(effectId);
+            gameManager.getEffectsManager().applyEffectStatsOnTick(effect, playerMetadata);
+            effect.setTicks(effect.getTicks() + 1);
+            if (effect.getTicks() >= effect.getLifeSpanTicks()) {
+                gameManager.getEffectsManager().removeDurationStats(effect, playerMetadata);
+                gameManager.getEntityManager().removeEffect(effect);
+            } else {
+                gameManager.getEntityManager().saveEffect(effect);
+            }
         }
     }
 }

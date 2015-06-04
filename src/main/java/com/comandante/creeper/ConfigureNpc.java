@@ -12,6 +12,8 @@ import com.comandante.creeper.npc.NpcExporter;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
+import com.comandante.creeper.spells.LightningSpell;
+import com.comandante.creeper.spells.SpellRegistry;
 import com.comandante.creeper.world.Area;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -115,5 +117,7 @@ public class ConfigureNpc {
         gameManager.getForageManager().addForageToArea(Area.NORTH3_ZONE, forageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, forageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE1_ZONE, forageBuilder);
+
+        SpellRegistry.addSpell(Sets.newHashSet("l", "lightning", "lightning bolt"), new LightningSpell(gameManager));
     }
 }

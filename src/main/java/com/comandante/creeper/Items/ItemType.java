@@ -422,8 +422,8 @@ public enum ItemType {
 
     DWARVEN_PENDANT(38, Arrays.asList("dwarven pendant", "pendant"),
             Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET,
-            "some " + Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET + " are on the ground.",
-            "some " + Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET,
+            "a " + Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET + " are on the ground.",
+            "a " + Color.BOLD_ON + Color.MAGENTA + "dwarven" + Color.RESET + Color.RED + " pendant" + Color.RESET,
             false,
             0,
             60,

@@ -2,7 +2,6 @@ package com.comandante.creeper.player;
 
 
 import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
 import com.google.common.collect.Sets;
 
 import java.io.Serializable;
@@ -22,8 +21,9 @@ public class PlayerMetadata implements Serializable {
     private int goldInBank;
     private Set<PlayerRole> playerRoleSet;
     private String[] playerEquipment;
+    protected String[] effects;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] effects) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -32,6 +32,7 @@ public class PlayerMetadata implements Serializable {
         this.playerRoleSet = playerRoleSet;
         this.playerEquipment = playerEquipment;
         this.goldInBank = goldInBank;
+        this.effects = effects;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -49,6 +50,9 @@ public class PlayerMetadata implements Serializable {
         }
         if (playerMetadata.playerEquipment != null) {
             this.playerEquipment = Arrays.copyOf(playerMetadata.playerEquipment, playerMetadata.playerEquipment.length);
+        }
+        if (playerMetadata.effects != null) {
+            this.effects = Arrays.copyOf(playerMetadata.effects, playerMetadata.effects.length);
         }
     }
 
@@ -96,6 +100,27 @@ public class PlayerMetadata implements Serializable {
             i++;
         }
         this.playerEquipment = newItems;
+    }
+
+    protected void addEffectId(String effectId) {
+        if (effects == null) {
+            effects = new String[0];
+        }
+        String[] result = Arrays.copyOf(effects, effects.length + 1);
+        result[effects.length] = effectId;
+        this.effects = result;
+    }
+
+    protected void removeEffectId(String effectId) {
+        List<String> effectsKeep = new ArrayList<String>(Arrays.asList(effects));
+        effectsKeep.remove(effectId);
+        String[] newEffects = new String[effectId.length()];
+        int i = 0;
+        for (String id : effectsKeep) {
+            newEffects[i] = id;
+            i++;
+        }
+        this.effects = newEffects;
     }
 
     public String getPlayerName() {
@@ -153,5 +178,9 @@ public class PlayerMetadata implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String[] getEffects() {
+        return effects;
     }
 }

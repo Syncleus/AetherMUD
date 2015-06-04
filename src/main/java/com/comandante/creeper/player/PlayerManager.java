@@ -80,6 +80,24 @@ public class PlayerManager {
         }
     }
 
+    public void addEffect(Player player, String effectId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.addEffectId(effectId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void removeEffect(Player player, String effectId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.removeEffectId(effectId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
     public void incrementGold(Player player, int amt) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {

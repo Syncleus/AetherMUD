@@ -28,11 +28,22 @@ public class LightningSpell extends Spell {
             .setWeaponRatingMin(50)
             .setNumberOfWeaponRolls(4)
             .createStats();
+    private final static boolean isAreaSpell = false;
 
     private final static List<String> attackMessages = Lists.newArrayList("a broad stroke of " + BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolts across the sky");
     private static int manaCost = 60;
 
+    private static final Effect burnEffect = new EffectBuilder()
+            .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning"+ Color.RESET + " from the lightning strike!"))
+            .setEffectDescription(Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
+            .setEffectName("lightning fire")
+            .setDurationStats(new StatsBuilder().createStats())
+            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-20).createStats())
+            .setFrozenMovement(false)
+            .setLifeSpanTicks(20)
+            .createEffect();
+
     public LightningSpell(GameManager gameManager) {
-        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME);
+        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect), isAreaSpell);
     }
 }

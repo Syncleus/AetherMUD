@@ -18,8 +18,10 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
+import com.comandante.creeper.spells.EffectsManager;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
+import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.*;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
@@ -59,6 +61,7 @@ public class GameManager {
     private final IrcBotService ircBotService;
     private final CreeperConfiguration creeperConfiguration;
     private final ForageManager forageManager;
+    private final EffectsManager effectsManager;
 
     private static final Logger log = Logger.getLogger(GameManager.class);
 
@@ -80,7 +83,13 @@ public class GameManager {
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
         this.forageManager = new ForageManager(this);
+        this.effectsManager = new EffectsManager(this);
     }
+
+    public EffectsManager getEffectsManager() {
+        return effectsManager;
+    }
+
     public ForageManager getForageManager() {
         return forageManager;
     }
@@ -351,7 +360,6 @@ public class GameManager {
         }
     }
 
-
     public boolean acquireItemFromRoom(Player player, String itemId) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
@@ -392,7 +400,7 @@ public class GameManager {
         StringBuilder sb = new StringBuilder();
         Stats origStats = playerManager.getPlayerMetadata(player.getPlayerId()).getStats();
         Stats modifiedStats = equipmentManager.getPlayerStatsWithEquipment(player);
-        Stats diffStats = equipmentManager.getDifference(modifiedStats, origStats);
+        Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(player.getPlayerName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
         sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");

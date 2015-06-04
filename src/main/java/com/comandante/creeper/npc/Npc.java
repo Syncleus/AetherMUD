@@ -5,9 +5,12 @@ import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.spawner.SpawnRule;
+import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.Area;
+import com.google.common.collect.Lists;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,6 +33,7 @@ public class Npc extends CreeperEntity {
     private final Set<SpawnRule> spawnRules;
     private final AtomicBoolean isInFight = new AtomicBoolean(false);
     private final Random random = new Random();
+    private List<Effect> effects = Lists.newCopyOnWriteArrayList();
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
         this.gameManager = gameManager;
@@ -50,6 +54,16 @@ public class Npc extends CreeperEntity {
             if (!isInFight.get() && roamAreas.size() > 0) {
                 NpcMover npcMover = new NpcMover();
                 npcMover.roam(getGameManager(), getEntityId());
+            }
+        }
+        for (Effect effect: effects) {
+            gameManager.getEffectsManager().applyEffectStatsOnTick(effect, this);
+            effect.setTicks(effect.getTicks() + 1);
+            if (effect.getTicks() >= effect.getLifeSpanTicks()) {
+                gameManager.getEffectsManager().removeDurationStats(effect, this);
+                gameManager.getEntityManager().removeEffect(effect);
+            } else {
+                gameManager.getEntityManager().saveEffect(effect);
             }
         }
     }
@@ -115,5 +129,17 @@ public class Npc extends CreeperEntity {
 
     public Set<SpawnRule> getSpawnRules() {
         return spawnRules;
+    }
+
+    public void addEffect(Effect effect) {
+        effects.add(effect);
+    }
+
+    public void remoteEffect(Effect effect) {
+        effects.remove(effect);
+    }
+
+    public List<Effect> getEffects() {
+        return effects;
     }
 }

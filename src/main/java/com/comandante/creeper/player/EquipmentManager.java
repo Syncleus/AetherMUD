@@ -5,6 +5,7 @@ import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
+import com.comandante.creeper.stat.StatsHelper;
 
 
 public class EquipmentManager {
@@ -60,7 +61,7 @@ public class EquipmentManager {
         StatsBuilder statsBuilder = new StatsBuilder();
         Stats newStats = statsBuilder.createStats();
         Stats playerStats = playerMetadata.getStats();
-        combineStats(newStats, playerStats);
+        StatsHelper.combineStats(newStats, playerStats);
         String[] playerEquipment = playerMetadata.getPlayerEquipment();
         if (playerEquipment == null) {
             return playerStats;
@@ -69,46 +70,9 @@ public class EquipmentManager {
             Item itemEntity = entityManager.getItemEntity(equipId);
             Equipment equipment = itemEntity.getEquipment();
             Stats stats = equipment.getStats();
-            combineStats(newStats, stats);
+            StatsHelper.combineStats(newStats, stats);
         }
         return newStats;
     }
 
-    public Stats getDifference(Stats modifiedStats, Stats origStats) {
-        StatsBuilder statsBuilder = new StatsBuilder();
-        statsBuilder.setAgile(modifiedStats.getAgile() - origStats.getAgile());
-        statsBuilder.setAim(modifiedStats.getAim() - origStats.getAim());
-        statsBuilder.setArmorRating(modifiedStats.getArmorRating() - origStats.getArmorRating());
-        statsBuilder.setCurrentHealth(modifiedStats.getCurrentHealth() - origStats.getCurrentHealth());
-        statsBuilder.setMaxHealth(modifiedStats.getMaxHealth() - origStats.getMaxHealth());
-        statsBuilder.setExperience(modifiedStats.getExperience() - origStats.getExperience());
-        statsBuilder.setMeleSkill(modifiedStats.getMeleSkill() - origStats.getMeleSkill());
-        statsBuilder.setNumberOfWeaponRolls(modifiedStats.getNumberOfWeaponRolls() - origStats.getNumberOfWeaponRolls());
-        statsBuilder.setStrength(modifiedStats.getStrength() - origStats.getStrength());
-        statsBuilder.setWeaponRatingMax(modifiedStats.getWeaponRatingMax() - origStats.getWeaponRatingMax());
-        statsBuilder.setWeaponRatingMin(modifiedStats.getWeaponRatingMin() - origStats.getWeaponRatingMin());
-        statsBuilder.setWillpower(modifiedStats.getWillpower() - origStats.getWillpower());
-        statsBuilder.setCurrentMana(modifiedStats.getCurrentMana() - origStats.getCurrentMana());
-        statsBuilder.setMaxMana(modifiedStats.getMaxMana() - origStats.getMaxMana());
-        statsBuilder.setForaging(modifiedStats.getForaging() - origStats.getForaging());
-        return statsBuilder.createStats();
-    }
-
-    private void combineStats(Stats orig, Stats combine) {
-        orig.setAgile(orig.getAgile() + combine.getAgile());
-        orig.setAim(orig.getAim() + combine.getAim());
-        orig.setArmorRating(orig.getArmorRating() + combine.getArmorRating());
-        orig.setCurrentHealth(orig.getCurrentHealth() + combine.getCurrentHealth());
-        orig.setMaxHealth(orig.getMaxHealth() + combine.getMaxHealth());
-        orig.setExperience(orig.getExperience() + combine.getExperience());
-        orig.setMeleSkill(orig.getMeleSkill() + combine.getMeleSkill());
-        orig.setNumberOfWeaponRolls(orig.getNumberOfWeaponRolls() + combine.getNumberOfWeaponRolls());
-        orig.setStrength(orig.getStrength() + combine.getStrength());
-        orig.setWeaponRatingMax(orig.getWeaponRatingMax() + combine.getWeaponRatingMax());
-        orig.setWeaponRatingMin(orig.getWeaponRatingMin() + combine.getWeaponRatingMin());
-        orig.setWillpower(orig.getWillpower() + combine.getWillpower());
-        orig.setCurrentMana(orig.getCurrentMana() + combine.getCurrentMana());
-        orig.setMaxMana(orig.getMaxMana() + combine.getMaxMana());
-        orig.setForaging(orig.getForaging() + combine.getForaging());
-    }
 }

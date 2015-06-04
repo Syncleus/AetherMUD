@@ -1,5 +1,6 @@
 package com.comandante.creeper.entity;
 
+import com.comandante.creeper.Items.EffectSerializer;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.ItemSerializer;
@@ -9,6 +10,7 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.ChannelUtils;
+import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.collect.Lists;
@@ -28,6 +30,7 @@ public class EntityManager {
 
     private final ConcurrentHashMap<String, Npc> npcs = new ConcurrentHashMap<>();
     private final HTreeMap<String, Item> items;
+    private final HTreeMap<String, Effect> effects;
     private final ConcurrentHashMap<String, CreeperEntity> entities = new ConcurrentHashMap<>();
     private final ExecutorService tickService = Executors.newFixedThreadPool(1);
     private final ExecutorService ticketRunnerService = Executors.newFixedThreadPool(10);
@@ -45,6 +48,11 @@ public class EntityManager {
             this.items = db.get("itemMap");
         } else {
             this.items = db.createHashMap("itemMap").valueSerializer(new ItemSerializer()).make();
+        }
+        if (db.exists("effectsMap")) {
+            this.effects = db.get("effectsMap");
+        } else {
+            this.effects = db.createHashMap("effectsMap").valueSerializer(new EffectSerializer()).make();
         }
         this.playerManager = playerManager;
         this.db = db;
@@ -80,6 +88,14 @@ public class EntityManager {
 
     public void removeItem(Item item) {
         items.remove(item.getItemId());
+    }
+
+    public void saveEffect(Effect effect) {
+        effects.put(effect.getEntityId(), effect);
+    }
+
+    public void removeEffect(Effect effect) {
+        effects.remove(effect.getEntityId());
     }
 
     public void deleteNpcEntity(String npcId) {
@@ -127,6 +143,22 @@ public class EntityManager {
         return equipmentItems;
     }
 
+    public List<Effect> getEffects(Player player) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+        List<Effect> effectList = Lists.newArrayList();
+        String[] effects = playerMetadata.getEffects();
+        if (effects != null) {
+            for (String effectId : effects) {
+                Effect effect = getEffect(effectId);
+                if (effect == null) {
+                    log.info("Orphaned effectId:" + effectId + " player: " + player.getPlayerName());
+                    continue;
+                }
+                effectList.add(effect);
+            }
+        }
+        return effectList;
+    }
 
     public Npc getNpcEntity(String npcId) {
         return npcs.get(npcId);
@@ -139,6 +171,15 @@ public class EntityManager {
         }
         return new Item(item);
     }
+
+    public Effect getEffect(String effectId) {
+        Effect effect = effects.get(effectId);
+        if (effect == null) {
+            return effect;
+        }
+        return new Effect(effect);
+    }
+
 
     class Ticker implements Runnable {
 
@@ -165,8 +206,11 @@ public class EntityManager {
                     for (Map.Entry<String, CreeperEntity> next : entities.entrySet()) {
                         ticketRunnerService.submit(next.getValue());
                     }
+                    for (Map.Entry<String, Effect> next : effects.entrySet()) {
+                        ticketRunnerService.submit(next.getValue());
+                    }
                     context.stop();
-                    Thread.sleep(10000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException ie) {
                     throw new RuntimeException("Problem with ticker.");
                 }
