@@ -210,7 +210,7 @@ public class EntityManager {
                         ticketRunnerService.submit(next.getValue());
                     }
                     context.stop();
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException ie) {
                     throw new RuntimeException("Problem with ticker.");
                 }

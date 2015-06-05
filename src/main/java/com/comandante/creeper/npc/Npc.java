@@ -8,6 +8,8 @@ import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.Area;
+import com.comandante.creeper.world.Room;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -57,12 +59,18 @@ public class Npc extends CreeperEntity {
             }
         }
         for (Effect effect: effects) {
-            gameManager.getEffectsManager().applyEffectStatsOnTick(effect, this);
-            effect.setTicks(effect.getTicks() + 1);
             if (effect.getTicks() >= effect.getLifeSpanTicks()) {
+                Optional<Room> npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(this);
+                if (npcCurrentRoom.isPresent()) {
+                    Room room = npcCurrentRoom.get();
+                    gameManager.writeToRoom(room.getRoomId(), effect.getEffectName() + " has worn off of " + getName() + "\r\n");
+                }
                 gameManager.getEffectsManager().removeDurationStats(effect, this);
                 gameManager.getEntityManager().removeEffect(effect);
+                effects.remove(effect);
             } else {
+                effect.setTicks(effect.getTicks() + 1);
+                gameManager.getEffectsManager().applyEffectStatsOnTick(effect, this);
                 gameManager.getEntityManager().saveEffect(effect);
             }
         }

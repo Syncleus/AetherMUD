@@ -28,7 +28,7 @@ public class LightningSpell extends Spell {
             .setWeaponRatingMin(50)
             .setNumberOfWeaponRolls(4)
             .createStats();
-    private final static boolean isAreaSpell = false;
+    private final static boolean isAreaSpell = true;
 
     private final static List<String> attackMessages = Lists.newArrayList("a broad stroke of " + BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolts across the sky");
     private static int manaCost = 60;
@@ -38,9 +38,9 @@ public class LightningSpell extends Spell {
             .setEffectDescription(Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
             .setEffectName("lightning fire")
             .setDurationStats(new StatsBuilder().createStats())
-            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-20).createStats())
+            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-100).createStats())
             .setFrozenMovement(false)
-            .setLifeSpanTicks(20)
+            .setLifeSpanTicks(5)
             .createEffect();
 
     public LightningSpell(GameManager gameManager) {

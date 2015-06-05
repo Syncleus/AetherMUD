@@ -2,6 +2,7 @@ package com.comandante.creeper.spells;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
@@ -22,12 +23,13 @@ public class EffectsManager {
     }
 
     public void applyEffectStatsOnTick(Effect effect, Npc npc) {
+        Player player = gameManager.getPlayerManager().getPlayer(effect.getPlayerId());
         Stats applyStats = new Stats(effect.getApplyStatsOnTick());
         if (effect.getApplyStatsOnTick().getCurrentHealth() < 0) {
             Optional<Room> npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(npc);
             if (npcCurrentRoom.isPresent()) {
                 Room room = npcCurrentRoom.get();
-                gameManager.writeToRoom(room.getRoomId(), npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET);
+                gameManager.writeToRoom(room.getRoomId(), npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + " <" + Color.RESET + player.getPlayerName() + Color.CYAN + ">" + Color.RESET);
             }
             gameManager.updateNpcHealth(npc.getEntityId(), applyStats.getCurrentHealth(), effect.getPlayerId());
             // removing this because all health damage to an npc needs to flow through one method, i knwo its ghetto

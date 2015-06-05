@@ -110,7 +110,6 @@ public abstract class Spell {
                         gameManager.getPlayerManager().addEffect(targetPlayer, nEffect.getEntityId());
                     }
                 }
-                gameManager.getPlayerManager().updatePlayerMana(player, -manaCost);
             }
         }
     }
@@ -137,11 +136,10 @@ public abstract class Spell {
                             continue;
                         }
                         StatsHelper.combineStats(npc.getStats(), effect.getDurationStats());
-                        //gameManager.getChannelUtils().write(player.getPlayerId(), "You cast effect " + effect.getEffectName() + " on " + npc.getColorName() + "! " + effect.getEffectDescription() + "\r\n");
+                        gameManager.getEffectsManager().applyEffectStatsOnTick(nEffect, npc);
                         npc.addEffect(nEffect);
                     }
                 }
-                gameManager.getPlayerManager().updatePlayerMana(player, -manaCost);
             }
         }
     }
