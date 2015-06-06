@@ -29,7 +29,7 @@ public class CreeperConfiguration {
     public final int graphitePort;
 
     public static final String IRC_SERVER = "irc.server";
-    public static final String IRC_SERVER_DEFAULT = "epsilon.us.ix.undernet.org";
+    public static final String IRC_SERVER_DEFAULT = "Chicago.IL.US.Undernet.org";
     public final String ircServer;
 
     public static final String IRC_USERNAME = "irc.username";

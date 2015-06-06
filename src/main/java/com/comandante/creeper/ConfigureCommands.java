@@ -62,5 +62,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new SpawnCommand(gameManager));
         creeperCommandRegistry.addCommand(new ForageCommand(gameManager));
         creeperCommandRegistry.addCommand(new RecentChangesCommand(gameManager));
+        creeperCommandRegistry.addCommand(new BounceIrcBotCommand(gameManager));
     }
 }
