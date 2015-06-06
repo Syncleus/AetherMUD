@@ -584,12 +584,16 @@ public class GameManager {
             if (npc != null) {
                 int currentHealth = npc.getStats().getCurrentHealth();
                 int newAmt = currentHealth + amt;
-                int damageReportAmt = 0;
+                int damageReportAmt = -amt;
                 if (newAmt < 0) {
                     damageReportAmt = -amt + newAmt;
                 }
-                npc.getStats().setCurrentHealth(npc.getStats().getCurrentHealth() + amt);
-                npc.addDamageToMap(playerId, damageReportAmt);
+                npc.getStats().setCurrentHealth(newAmt);
+                int damage = 0;
+                if (npc.getPlayerDamageMap().containsKey(playerId)) {
+                    damage = npc.getPlayerDamageMap().get(playerId);
+                }
+                npc.addDamageToMap(playerId, damage + damageReportAmt);
                 if (npc.getStats().getCurrentHealth() <= 0) {
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, npc.getLoot());
                     processExperience(npc);
