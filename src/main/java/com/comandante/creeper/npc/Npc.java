@@ -10,9 +10,13 @@ import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,6 +40,8 @@ public class Npc extends CreeperEntity {
     private final AtomicBoolean isInFight = new AtomicBoolean(false);
     private final Random random = new Random();
     private List<Effect> effects = Lists.newCopyOnWriteArrayList();
+    private int maxEffects = 4;
+    private Map<String, Integer> playerDamageMap = Maps.newHashMap();
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
         this.gameManager = gameManager;
@@ -140,7 +146,14 @@ public class Npc extends CreeperEntity {
     }
 
     public void addEffect(Effect effect) {
-        effects.add(effect);
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getEntityId())) {
+            if (effects.size() >= maxEffects) {
+                return;
+            } else {
+                effects.add(effect);
+            }
+        }
     }
 
     public void remoteEffect(Effect effect) {
@@ -149,5 +162,25 @@ public class Npc extends CreeperEntity {
 
     public List<Effect> getEffects() {
         return effects;
+    }
+
+    public void setMaxEffects(int maxEffects) {
+        this.maxEffects = maxEffects;
+    }
+
+    public int getExperience(int playerLevel) {
+        return getStats().getExperience();
+    }
+
+    public double getPctOFExperience(double pct, int playerLevel) {
+        return getExperience(playerLevel) * pct;
+    }
+
+    public void addDamageToMap(String playerId, int amt) {
+        playerDamageMap.put(playerId, amt);
+    }
+
+    public Map<String, Integer> getPlayerDamageMap() {
+        return playerDamageMap;
     }
 }

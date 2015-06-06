@@ -38,9 +38,9 @@ public class LightningSpell extends Spell {
             .setEffectDescription(Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
             .setEffectName("lightning fire")
             .setDurationStats(new StatsBuilder().createStats())
-            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-100).createStats())
+            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-150).createStats())
             .setFrozenMovement(false)
-            .setLifeSpanTicks(5)
+            .setLifeSpanTicks(2)
             .createEffect();
 
     public LightningSpell(GameManager gameManager) {
