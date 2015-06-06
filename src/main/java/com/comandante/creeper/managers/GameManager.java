@@ -612,10 +612,17 @@ public class GameManager {
     private void processExperience(Npc npc) {
         Set<Map.Entry<String, Integer>> entries = npc.getPlayerDamageMap().entrySet();
         int totalDamageDone = 0;
+        Room npcCurrentRoom = getRoomManager().getNpcCurrentRoom(npc).get();
         for (Map.Entry<String, Integer> damageEntry : entries) {
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
             System.out.println(playerMetadata.getPlayerName() + " damage to " + npc.getName() + " was " + damageEntry.getValue());
+            Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
+            if (!playerCurrentRoom.isPresent()) {
+                entries.remove(damageEntry);
+            } else if (!Objects.equals(npcCurrentRoom.getRoomId(), playerCurrentRoom.get().getRoomId())) {
+                entries.remove(damageEntry);
+            }
         }
         Map<String, Double> damagePcts = Maps.newHashMap();
         for (Map.Entry<String, Integer> damageEntry : entries) {
@@ -636,6 +643,9 @@ public class GameManager {
         for (Map.Entry<String, Double> playerDamageExperience : damagePcts.entrySet()) {
             playerManager.getSessionManager().getSession(playerDamageExperience.getKey()).setActiveFight(Optional.<Future<FightResults>>absent());
             Player player = getPlayerManager().getPlayer(playerDamageExperience.getKey());
+            if (player == null) {
+                continue;
+            }
             int xpEarned = (int) Math.round(playerDamageExperience.getValue());
             addExperience(player, xpEarned);
             channelUtils.write(player.getPlayerId(), "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
