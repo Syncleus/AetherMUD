@@ -46,7 +46,7 @@ public class SpawnCommand  extends Command {
                     if (targetNpc.equals(npc.getName())) {
                         Loot loot = new Loot(0,0,Sets.<ItemType>newHashSet());
                         Npc modifiedNpc = new NpcBuilder(npc).setSpawnRules(null).setLoot(loot).createNpc();
-                        //modifiedNpc.getStats().setExperience(0);
+                        modifiedNpc.getStats().setExperience(0);
                         gameManager.getEntityManager().addEntity(modifiedNpc);
                         currentRoom.addPresentNpc(modifiedNpc.getEntityId());
                         writeToRoom("A " + modifiedNpc.getColorName() + " appears." + "\r\n");
