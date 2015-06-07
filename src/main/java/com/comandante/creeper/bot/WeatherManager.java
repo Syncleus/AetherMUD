@@ -10,6 +10,7 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.ArrayMap;
 import com.google.api.client.util.Lists;
 import org.apache.commons.lang.WordUtils;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,36 +20,55 @@ public class WeatherManager {
     private final CreeperConfiguration creeperConfiguration;
     private final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private final JsonFactory JSON_FACTORY = new JacksonFactory();
+    private final HttpRequestFactory requestFactory;
+
+    private static final Logger log = Logger.getLogger(WeatherManager.class);
+
 
     public WeatherManager(CreeperConfiguration creeperConfiguration) {
         this.creeperConfiguration = creeperConfiguration;
-    }
-
-    public List<String> getWeather(String cityName, String state) throws IOException {
-        HttpRequestFactory requestFactory =
+        this.requestFactory =
                 HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
                     @Override
                     public void initialize(HttpRequest request) {
                         request.setParser(new JsonObjectParser(JSON_FACTORY));
                     }
                 });
+    }
 
-        GenericUrl url = new GenericUrl("http://api.wunderground.com/api/62651e7a5762cda8/conditions/q/" + state.toUpperCase() + "/" + convertToUrlFriendly(cityName) + ".json");
+    public List<String> getWeather(String zipCode) throws IOException {
+        List<String> resp = Lists.newArrayList();
+        GenericUrl url = new GenericUrl("http://api.wunderground.com/api/" + creeperConfiguration.weatherUndergroundApiKey + "/conditions/q/" + zipCode + ".json");
         HttpRequest httpRequest = requestFactory.buildGetRequest(url);
         GenericJson content = httpRequest.execute().parseAs(GenericJson.class);
-        ArrayMap current_observation = (ArrayMap) content.get("current_observation");
-        Object weather = current_observation.get("weather");
-        Object temperature_string = current_observation.get("temperature_string");
-        Object wind_string = current_observation.get("wind_string");
-        Object relative_humidity = current_observation.get("relative_humidity");
-        Object feelslike_string = current_observation.get("feelslike_string");
+        resp.addAll(getForecastString(content));
+        return resp;
+    }
 
+    public List<String> getWeather(String cityName, String state) throws IOException {
+        List<String> resp = Lists.newArrayList();
+        GenericUrl url = new GenericUrl("http://api.wunderground.com/api/" + creeperConfiguration.weatherUndergroundApiKey + "/conditions/q/" + state.toUpperCase() + "/" + convertToUrlFriendly(cityName) + ".json");
+        HttpRequest httpRequest = requestFactory.buildGetRequest(url);
+        GenericJson content = httpRequest.execute().parseAs(GenericJson.class);
+        resp.addAll(getForecastString(content));
+        return resp;
+    }
+
+    private List<String> getForecastString(GenericJson content) {
         List<String> response = Lists.newArrayList();
-        response.add("Current Conditions: " + weather);
-        response.add("Temperature: " + temperature_string);
-        response.add("Wind: " + wind_string);
-        response.add("Humidity: " + relative_humidity);
-        response.add("Feels Like: " + feelslike_string);
+        try {
+            ArrayMap current_observation = (ArrayMap) content.get("current_observation");
+            Object weather = current_observation.get("weather");
+            Object temperature_string = current_observation.get("temperature_string");
+            Object wind_string = current_observation.get("wind_string");
+            Object relative_humidity = current_observation.get("relative_humidity");
+            Object feelslike_string = current_observation.get("feelslike_string");
+            ArrayMap display_location = (ArrayMap) current_observation.get("display_location");
+            Object full = display_location.get("full");
+            response.add(full.toString() + ": " + weather + " | Temperature: " + temperature_string + " | Humidity: " + relative_humidity + " | Feels Like: " + feelslike_string + " | Wind: " + wind_string);
+        } catch (Exception e) {
+            log.error("Error obtaining weather!", e);
+        }
         return response;
     }
 

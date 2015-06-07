@@ -62,7 +62,7 @@ public class CreeperConfiguration {
     public final double forageRateLimitPerSecond;
 
     public static final String WEATHER_UNDERGROUND_API_KEY = "weather.underground.api.key";
-    public static final String WEATHER_UNDERGROUND_API_KEY_DEFAULT = "";
+    public static final String WEATHER_UNDERGROUND_API_KEY_DEFAULT = "62651e7a5762cda8";
     public final String weatherUndergroundApiKey;
 
     public CreeperConfiguration(Configuration configuration) {

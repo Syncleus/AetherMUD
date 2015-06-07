@@ -2,6 +2,7 @@ package com.comandante.creeper.bot;
 
 import com.comandante.creeper.bot.commands.BotCommand;
 import com.comandante.creeper.bot.commands.WeatherBotCommand;
+import com.comandante.creeper.bot.commands.WhoBotCommand;
 import com.google.common.collect.Maps;
 
 import java.util.*;
@@ -12,6 +13,7 @@ public class BotCommandFactory {
 
     public BotCommandFactory(BotCommandManager botCommandManager) {
         addCommand(new WeatherBotCommand(botCommandManager));
+        addCommand(new WhoBotCommand(botCommandManager));
     }
 
     public BotCommand getCommand(String originalFullCmd) {

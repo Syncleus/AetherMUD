@@ -24,7 +24,11 @@ public class WeatherBotCommand extends BotCommand {
         ArrayList<String> resp = Lists.newArrayList();
         String argumentString = joinArgs(args);
         if (isNumeric(argumentString)) {
-            resp.add("Searching for weather based on zip code.");
+            try {
+                resp.addAll(botCommandManager.getWeatherManager().getWeather(argumentString));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             String[] split = argumentString.split(",");
             try {
