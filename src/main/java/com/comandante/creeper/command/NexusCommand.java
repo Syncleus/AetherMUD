@@ -25,7 +25,9 @@ public class NexusCommand extends Command {
             if (gameManager.getCreeperConfiguration().isIrcEnabled) {
                 originalMessageParts.remove(0);
                 String transferPhrase = Joiner.on(" ").join(originalMessageParts);
-                gameManager.getIrcBotService().getBot().getUserChannelDao().getChannel(gameManager.getCreeperConfiguration().ircChannel).send().message(player.getPlayerName() + ": " + transferPhrase);
+                if (gameManager.getIrcBotService().getBot().isConnected()) {
+                    gameManager.getIrcBotService().getBot().getUserChannelDao().getChannel(gameManager.getCreeperConfiguration().ircChannel).send().message(player.getPlayerName() + ": " + transferPhrase);
+                }
             }
         } finally {
             super.messageReceived(ctx, e);
