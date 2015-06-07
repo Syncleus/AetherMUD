@@ -47,7 +47,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public WorldExporter worldExporter;
     public EquipmentManager equipmentManager;
 
-    private static final Logger log = Logger.getLogger(Command.class);
+    public static final Logger log = Logger.getLogger(Command.class);
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
         this(gameManager, validTriggers, description, correctUsage, Sets.<PlayerRole>newHashSet());

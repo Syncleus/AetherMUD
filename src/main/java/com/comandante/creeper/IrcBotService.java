@@ -33,6 +33,7 @@ public class IrcBotService extends AbstractIdleService {
                 .setServerHostname(creeperConfiguration.ircServer)
                 .addAutoJoinChannel(creeperConfiguration.ircChannel)
                 .addListener(new MyListener(gameManager, 376))
+                .setVersion("Creeper MUD IRC But.")
                 .buildConfiguration();
         bot = new PircBotX(configuration);
         // bot.startBot();

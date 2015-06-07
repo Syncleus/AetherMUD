@@ -34,9 +34,13 @@ public class GossipCommand extends Command {
             }
             originalMessageParts.remove(0);
             String msg = Joiner.on(" ").join(originalMessageParts);
-            if (msg.startsWith("!!")) {
-                String botCommandOutput = getBotCommandOutput(msg);
-                msg = msg + "\r\n" + botCommandOutput;
+            try {
+                if (msg.startsWith("!!")) {
+                    String botCommandOutput = getBotCommandOutput(msg);
+                    msg = msg + "\r\n" + botCommandOutput;
+                }
+            } catch (Exception ex) {
+                log.error("Problem executing bot command from gossip channel!", ex);
             }
             Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
             while (players.hasNext()) {
