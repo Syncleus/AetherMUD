@@ -6,6 +6,8 @@ import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.Items.*;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.bot.BotCommandFactory;
+import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
@@ -63,6 +65,8 @@ public class GameManager {
     private final CreeperConfiguration creeperConfiguration;
     private final ForageManager forageManager;
     private final EffectsManager effectsManager;
+    private final BotCommandFactory botCommandFactory;
+    private final BotCommandManager botCommandManager;
 
     private static final Logger log = Logger.getLogger(GameManager.class);
 
@@ -85,6 +89,16 @@ public class GameManager {
         this.creeperConfiguration = creeperConfiguration;
         this.forageManager = new ForageManager(this);
         this.effectsManager = new EffectsManager(this);
+        botCommandManager = new BotCommandManager(this);
+        botCommandFactory = new BotCommandFactory(botCommandManager);
+    }
+
+    public BotCommandFactory getBotCommandFactory() {
+        return botCommandFactory;
+    }
+
+    public BotCommandManager getBotCommandManager() {
+        return botCommandManager;
     }
 
     public EffectsManager getEffectsManager() {
