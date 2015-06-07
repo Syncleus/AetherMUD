@@ -1,16 +1,15 @@
 package com.comandante.creeper.command;
 
 
+import com.comandante.creeper.bot.commands.BotCommand;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.comandante.creeper.server.Color.MAGENTA;
 import static com.comandante.creeper.server.Color.RESET;
@@ -34,7 +33,11 @@ public class GossipCommand extends Command {
                 return;
             }
             originalMessageParts.remove(0);
-            final String msg = Joiner.on(" ").join(originalMessageParts);
+            String msg = Joiner.on(" ").join(originalMessageParts);
+            if (msg.startsWith("!!")) {
+                String botCommandOutput = getBotCommandOutput(msg);
+                msg = msg + "\r\n" + botCommandOutput;
+            }
             Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
             while (players.hasNext()) {
                 final Player next = players.next().getValue();
@@ -51,6 +54,23 @@ public class GossipCommand extends Command {
             }
         } finally {
             super.messageReceived(ctx, e);
+        }
+    }
+
+    private String getBotCommandOutput(String cmd) {
+        ArrayList<String> originalMessageParts = Lists.newArrayList(Arrays.asList(cmd.split("!!")));
+        originalMessageParts.remove(0);
+        final String msg = Joiner.on(" ").join(originalMessageParts);
+        BotCommand command = gameManager.getBotCommandFactory().getCommand(msg);
+        if (command != null) {
+            List<String> process = command.process();
+            StringBuilder sb = new StringBuilder();
+            for (String line : process) {
+                sb.append(line).append("\r\n");
+            }
+            return sb.toString();
+        } else {
+            return "";
         }
     }
 }
