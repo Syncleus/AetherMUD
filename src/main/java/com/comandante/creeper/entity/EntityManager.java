@@ -13,6 +13,8 @@ import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
@@ -103,10 +105,28 @@ public class EntityManager {
         npcs.remove(npcId);
     }
 
+    public Item getInventoryItem(Player player, String itemKeyword) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+            for (String itemId : playerMetadata.getInventory()) {
+                Item itemEntity = getItemEntity(itemId);
+                if (itemEntity == null) {
+                    log.info("Orphaned inventoryId:" + itemId + " player: " + player.getPlayerName());
+                    continue;
+                }
+                if (itemEntity.getItemTriggers().contains(itemKeyword)) {
+                    return itemEntity;
+                }
+            }
+            return null;
+        }
+    }
+
     public List<Item> getInventory(Player player) {
         PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         List<Item> inventoryItems = Lists.newArrayList();
-        String[] inventory = playerMetadata.getInventory();
+        List<String> inventory = playerMetadata.getInventory();
         if (inventory != null) {
             for (String itemId : inventory) {
                 Item itemEntity = getItemEntity(itemId);

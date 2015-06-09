@@ -2,7 +2,6 @@ package com.comandante.creeper.command;
 
 
 import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseHandler;
 import com.comandante.creeper.managers.GameManager;
 import com.google.common.base.Joiner;
@@ -32,18 +31,12 @@ public class UseCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            List<Item> inventory = entityManager.getInventory(player);
-            if (inventory != null) {
-                for (Item item : inventory) {
-                    if (item.getItemTriggers().contains(itemTarget)) {
-                        new ItemUseHandler(item, creeperSession, gameManager, player).handle();
-                        return;
-                    }
-                }
-                new ItemUseHandler(ItemType.UNKNOWN.create(), creeperSession, gameManager, player).handle();
-            } else {
-                write("Your inventory is empty.");
+            Item inventoryItem = entityManager.getInventoryItem(player, itemTarget);
+            if (inventoryItem == null) {
+                write("Useable item is not found in your inventory.\r\n");
+                return;
             }
+            new ItemUseHandler(inventoryItem, creeperSession, gameManager, player).handle();
         } finally {
             super.messageReceived(ctx, e);
         }

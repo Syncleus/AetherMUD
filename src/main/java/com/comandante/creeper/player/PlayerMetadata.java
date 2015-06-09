@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 
 import com.comandante.creeper.stat.Stats;
+import com.google.api.client.util.Lists;
 import com.google.common.collect.Sets;
 
 import java.io.Serializable;
@@ -16,7 +17,7 @@ public class PlayerMetadata implements Serializable {
     private String password;
     private final String playerId;
     private Stats stats;
-    private String[] inventory;
+    private List<String> inventory;
     private int gold;
     private int goldInBank;
     private Set<PlayerRole> playerRoleSet;
@@ -41,7 +42,7 @@ public class PlayerMetadata implements Serializable {
         this.playerId = playerMetadata.playerId;
         this.stats = new Stats(playerMetadata.stats);
         if (playerMetadata.inventory != null) {
-            this.inventory = Arrays.copyOf(playerMetadata.inventory, playerMetadata.inventory.length);
+            this.inventory = Lists.newArrayList(playerMetadata.getInventory());
         }
         this.gold = new Integer(playerMetadata.gold);
         this.goldInBank = new Integer(playerMetadata.goldInBank);
@@ -56,29 +57,19 @@ public class PlayerMetadata implements Serializable {
         }
     }
 
-    public String[] getInventory() {
+    public List<String> getInventory() {
         return inventory;
     }
 
     protected void addInventoryEntityId(String newEntityId) {
         if (inventory == null) {
-            inventory = new String[0];
+            inventory = Lists.newArrayList();
         }
-        String[] result = Arrays.copyOf(inventory, inventory.length + 1);
-        result[inventory.length] = newEntityId;
-        this.inventory = result;
+        inventory.add(newEntityId);
     }
 
     protected void removeInventoryEntityId(String itemId) {
-        List<String> itemsIdKeep = new ArrayList<String>(Arrays.asList(inventory));
-        itemsIdKeep.remove(itemId);
-        String[] newItems = new String[itemsIdKeep.size()];
-        int i = 0;
-        for (String id : itemsIdKeep) {
-            newItems[i] = id;
-            i++;
-        }
-        this.inventory = newItems;
+        inventory.remove(itemId);
     }
 
     protected void addEquipmentEntityId(String equipmentItemId) {
