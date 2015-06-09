@@ -624,21 +624,23 @@ public class GameManager {
     }
 
     private void processExperience(Npc npc) {
-        Set<Map.Entry<String, Integer>> entries = npc.getPlayerDamageMap().entrySet();
+        Iterator<Map.Entry<String, Integer>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
         int totalDamageDone = 0;
         Room npcCurrentRoom = getRoomManager().getNpcCurrentRoom(npc).get();
-        for (Map.Entry<String, Integer> damageEntry : entries) {
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> damageEntry =  iterator.next();
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
             System.out.println(playerMetadata.getPlayerName() + " damage to " + npc.getName() + " was " + damageEntry.getValue());
             Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
             if (!playerCurrentRoom.isPresent()) {
-                entries.remove(damageEntry);
+                iterator.remove();
             } else if (!Objects.equals(npcCurrentRoom.getRoomId(), playerCurrentRoom.get().getRoomId())) {
-                entries.remove(damageEntry);
+                iterator.remove();
             }
         }
         Map<String, Double> damagePcts = Maps.newHashMap();
+        Set<Map.Entry<String, Integer>> entries = npc.getPlayerDamageMap().entrySet();
         for (Map.Entry<String, Integer> damageEntry : entries) {
             String playerId = damageEntry.getKey();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(playerId);

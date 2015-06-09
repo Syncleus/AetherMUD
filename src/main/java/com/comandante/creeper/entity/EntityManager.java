@@ -211,8 +211,8 @@ public class EntityManager {
                     }
                     context.stop();
                     Thread.sleep(5000);
-                } catch (InterruptedException ie) {
-                    throw new RuntimeException("Problem with ticker.");
+                } catch (Exception e) {
+                    throw new RuntimeException("Problem with ticker!", e);
                 }
             }
         }

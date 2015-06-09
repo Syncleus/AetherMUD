@@ -5,7 +5,7 @@
   "loot": {
     "lootGoldMin": 100,
     "lootGoldMax": 229,
-    "lootItems": []
+    "lootItems": [36, 38]
   },
   "roamAreas": [
     "north10_zone",
@@ -32,7 +32,7 @@
       "randomChance": 100,
       "maxPerRoom": 3,
       "spawnIntervalTicks": 10,
-      "maxInstances": 6
+      "maxInstances": 20
     },
     "north11_zone": {
       "randomChance": 100,
