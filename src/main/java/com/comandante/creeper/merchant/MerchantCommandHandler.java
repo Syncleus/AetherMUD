@@ -5,7 +5,6 @@ import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.command.CommandAuditLog;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.google.common.collect.Maps;
@@ -17,6 +16,7 @@ import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -90,12 +90,10 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
     }
 
     public Map<Integer, InventoryItemForSale> getInventoryMenu(Player player) {
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
         Map<Integer, InventoryItemForSale> inventoryItemsForSale = Maps.newHashMap();
-        String[] inventory = playerMetadata.getInventory();
+        List<Item> inventory = gameManager.getEntityManager().getInventory(player);
         int inv = 1;
-        for (String i : inventory) {
-            Item itemEntity = gameManager.getEntityManager().getItemEntity(i);
+        for (Item itemEntity : inventory) {
             int valueInGold = itemEntity.getValueInGold();
             if (valueInGold == 0) {
                 valueInGold = ItemType.itemTypeFromCode(itemEntity.getItemTypeId()).getValueInGold();
