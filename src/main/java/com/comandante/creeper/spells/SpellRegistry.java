@@ -4,14 +4,13 @@ package com.comandante.creeper.spells;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
-import java.util.Set;
 
 public class SpellRegistry {
 
     public static final Map<String, Spell> spellMap = Maps.newHashMap();
 
-    public static void addSpell(Set<String> triggers, Spell spell) {
-        for (String trigger : triggers) {
+    public static void addSpell(Spell spell) {
+        for (String trigger : spell.getValidTriggers()) {
             spellMap.put(trigger, spell);
         }
     }

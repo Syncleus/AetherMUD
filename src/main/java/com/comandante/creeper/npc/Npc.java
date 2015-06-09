@@ -35,7 +35,7 @@ public class Npc extends CreeperEntity {
     private final String dieMessage;
     private final Set<Area> roamAreas;
     private final Set<String> validTriggers;
-    private final Loot loot;
+    private Loot loot;
     private final Set<SpawnRule> spawnRules;
     private final AtomicBoolean isInFight = new AtomicBoolean(false);
     private final Random random = new Random();
@@ -182,5 +182,9 @@ public class Npc extends CreeperEntity {
 
     public Map<String, Integer> getPlayerDamageMap() {
         return playerDamageMap;
+    }
+
+    public void setLoot(Loot loot) {
+        this.loot = loot;
     }
 }

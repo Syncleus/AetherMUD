@@ -29,11 +29,12 @@ public abstract class Spell {
     private final GameManager gameManager;
     private final Set<Effect> effects;
     private final boolean isAreaSpell;
+    private final SpellExecute spellExecute;
 
     private static final Logger log = Logger.getLogger(Spell.class);
 
 
-    public Spell(GameManager gameManager, Set<String> validTriggers, int manaCost, Stats attackStats, List<String> attackMessages, String spellDescription, String spellName, Set<Effect> effects, boolean isAreaSpell) {
+    public Spell(GameManager gameManager, Set<String> validTriggers, int manaCost, Stats attackStats, List<String> attackMessages, String spellDescription, String spellName, Set<Effect> effects, boolean isAreaSpell, SpellExecute spellExecute) {
         this.gameManager = gameManager;
         this.validTriggers = validTriggers;
         this.manaCost = manaCost;
@@ -43,6 +44,7 @@ public abstract class Spell {
         this.spellName = spellName;
         this.effects = effects;
         this.isAreaSpell = isAreaSpell;
+        this.spellExecute = spellExecute;
     }
 
     private int getSpellAttack(Stats victim) {
@@ -63,7 +65,20 @@ public abstract class Spell {
     public String getAttackMessage(int amt) {
         int i = random.nextInt(attackMessages.size());
         String s = attackMessages.get(i);
-        return Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s;
+        if (amt == 0) {
+            return s;
+        } else {
+            return Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s;
+        }
+    }
+
+    private void applySpell(Set<String> npcIds, Player player) {
+        if (spellExecute != null) {
+            for (String npcId : npcIds) {
+                Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
+                spellExecute.executeNpc(gameManager, npc, player);
+            }
+        }
     }
 
     public void attackSpell(Set<String> npcIds, Player player) {
@@ -73,6 +88,7 @@ public abstract class Spell {
             if (availableMana < manaCost) {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Not enough mana!" + "\r\n");
             } else {
+                applySpell(npcIds, player);
                 for (String npcId: npcIds) {
                     Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
                     gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + spellName + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + npc.getColorName() + "! \r\n");
@@ -187,4 +203,13 @@ public abstract class Spell {
     public boolean isAreaSpell() {
         return isAreaSpell;
     }
+
+    public SpellExecute getSpellExecute() {
+        return spellExecute;
+    }
+
+    interface SpellExecute {
+        public void executeNpc(GameManager gameManager, Npc npc, Player player);
+    }
+
 }

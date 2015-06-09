@@ -44,6 +44,7 @@ public class LightningSpell extends Spell {
             .createEffect();
 
     public LightningSpell(GameManager gameManager) {
-        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect), isAreaSpell);
+        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect), isAreaSpell, null);
     }
+
 }
