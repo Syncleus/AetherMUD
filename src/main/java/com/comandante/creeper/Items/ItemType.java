@@ -28,7 +28,7 @@ public enum ItemType {
             "a " + CYAN + "beer" + RESET + " lies on the ground, unopened",
             "an ice cold " + CYAN + "beer" + RESET + " that restores 50 health" + RESET,
             true,
-            2,
+            0,
             60,
             false,
             Rarity.BASIC,
@@ -57,7 +57,7 @@ public enum ItemType {
             100),
 
     IRON_BOOTS(5, Arrays.asList("boots", "boot", "iron boots"),
-    Color.CYAN + "iron boots" + Color.RESET,
+            Color.CYAN + "iron boots" + Color.RESET,
             "a pair of iron boots are here on the ground.",
             "a pair of iron boots",
             false,
@@ -462,7 +462,18 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            2500);
+            2500),
+
+    PURPLE_DRANK(42, Arrays.asList("drank", "purple drank", "p", "purple", "lean", "sizzurp"),
+            "a double cup of " + MAGENTA + "purple" + RESET + " drank",
+            "a double cup of " + MAGENTA + "purple" + RESET + " drank rests on the ground.",
+            "a tonic called " + MAGENTA + "purple" + RESET + " drank that restores 500 health" + RESET,
+            true,
+            0,
+            60,
+            false,
+            Rarity.BASIC,
+            8);
 
 
     private final Integer itemTypeCode;

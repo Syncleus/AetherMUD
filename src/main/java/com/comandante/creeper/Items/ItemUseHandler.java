@@ -29,11 +29,19 @@ public class ItemUseHandler {
         writeToPlayer("There's no doors here to use this key on.");
     }
 
+    private void processPurpleDrank() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " sips some " + Color.MAGENTA + "purple" + Color.RESET + " drank." + "\r\n");
+        writeToPlayer("500 health is restored.");
+        gameManager.getPlayerManager().incrementHealth(player, 500);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-purple-drank")).inc();
+    }
+
     private void processBeer() {
         String playerName = player.getPlayerName();
         writeToRoom(playerName + " drinks an ice cold cruiser." + "\r\n");
-        writeToPlayer("50 health is restored.");
-        gameManager.getPlayerManager().incrementHealth(player, 50);
+        writeToPlayer("100 health is restored.");
+        gameManager.getPlayerManager().incrementHealth(player, 100);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-beer-drank")).inc();
     }
 
@@ -78,6 +86,9 @@ public class ItemUseHandler {
                     break;
                 case DOGDICKS:
                     processDogdicks();
+                    break;
+                case PURPLE_DRANK:
+                    processPurpleDrank();
                     break;
                 case UNKNOWN:
                     writeToPlayer("Item not found.");

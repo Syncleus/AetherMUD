@@ -49,12 +49,20 @@ public class ConfigureNpc {
         ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.BEER, new SpawnRule(Area.FANCYHOUSE_ZONE, 10, 12, 2, 50), gameManager);
         ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.BEER, new SpawnRule(Area.HOUSE_ZONE, 10, 12, 2, 50), gameManager);
 
+        ItemSpawner itemSpawner3 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRule(Area.FANCYHOUSE_ZONE, 10, 30, 5, 50), gameManager);
+        ItemSpawner itemSpawner4 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRule(Area.HOUSE_ZONE, 10, 30, 5, 50), gameManager);
+
+
+
         entityManager.addEntity(itemSpawner);
         entityManager.addEntity(itemSpawner1);
         entityManager.addEntity(itemSpawner2);
+        entityManager.addEntity(itemSpawner3);
+        entityManager.addEntity(itemSpawner4);
+
 
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
-        itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 1));
+        itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 8));
         itemsForSale.put(2, new MerchantItemForSale(ItemType.BROAD_SWORD, 1000));
         itemsForSale.put(3, new MerchantItemForSale(ItemType.IRON_BOOTS, 800));
         itemsForSale.put(4, new MerchantItemForSale(ItemType.IRON_BRACERS, 400));
@@ -85,6 +93,8 @@ public class ConfigureNpc {
         itemsForSale.put(30, new MerchantItemForSale(ItemType.VULCERIUM_BOOTS, 38000));
         itemsForSale.put(31, new MerchantItemForSale(ItemType.VULCERIUM_BRACERS, 29000));
         itemsForSale.put(32, new MerchantItemForSale(ItemType.VULCERIUM_LEGGINGS, 52000));
+        itemsForSale.put(33, new MerchantItemForSale(ItemType.PURPLE_DRANK, 80));
+
 
 
 
