@@ -33,7 +33,7 @@ public class ItemUseHandler {
         String playerName = player.getPlayerName();
         writeToRoom(playerName + " sips some " + Color.MAGENTA + "purple" + Color.RESET + " drank." + "\r\n");
         writeToPlayer("500 health is restored.");
-        gameManager.getPlayerManager().incrementHealth(player, 500);
+        gameManager.getPlayerManager().addHealth(player, 500);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-purple-drank")).inc();
     }
 
@@ -41,7 +41,7 @@ public class ItemUseHandler {
         String playerName = player.getPlayerName();
         writeToRoom(playerName + " drinks an ice cold cruiser." + "\r\n");
         writeToPlayer("100 health is restored.");
-        gameManager.getPlayerManager().incrementHealth(player, 100);
+        gameManager.getPlayerManager().addHealth(player, 100);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-beer-drank")).inc();
     }
 
@@ -50,8 +50,8 @@ public class ItemUseHandler {
         writeToRoom(playerName + " blazes " + Color.GREEN + "marijuana" + Color.RESET + ".\r\n");
         writeToPlayer("50 mana is restored." + "\r\n");
         writeToPlayer("20 health is restored.");
-        gameManager.getPlayerManager().updatePlayerMana(player, 50);
-        gameManager.getPlayerManager().incrementHealth(player, 20);
+        gameManager.getPlayerManager().addMana(player, 50);
+        gameManager.getPlayerManager().addHealth(player, 20);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-weed-smoked")).inc();
     }
 
@@ -60,8 +60,8 @@ public class ItemUseHandler {
         writeToRoom(playerName + " eats a " + Color.GREEN + "dog dick." + Color.RESET + ".\r\n");
         writeToPlayer("1000 mana is restored." + "\r\n");
         writeToPlayer("1500 health is restored.");
-        gameManager.getPlayerManager().updatePlayerMana(player, 1000);
-        gameManager.getPlayerManager().incrementHealth(player, 1500);
+        gameManager.getPlayerManager().addMana(player, 1000);
+        gameManager.getPlayerManager().addHealth(player, 1500);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-dogdick-smoked")).inc();
     }
 

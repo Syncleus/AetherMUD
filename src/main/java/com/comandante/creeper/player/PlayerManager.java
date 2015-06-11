@@ -134,6 +134,46 @@ public class PlayerManager {
         }
     }
 
+    public void addMana(Player player, int addAmt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            int currentMana = playerMetadata.getStats().getCurrentMana();
+            int maxMana = playerMetadata.getStats().getMaxMana();
+            int proposedNewAmt = currentMana + addAmt;
+            if (proposedNewAmt > maxMana) {
+                if (currentMana < maxMana) {
+                    int adjust = proposedNewAmt - maxMana;
+                    proposedNewAmt = proposedNewAmt - adjust;
+                } else {
+                    proposedNewAmt = proposedNewAmt - addAmt;
+                }
+            }
+            playerMetadata.getStats().setCurrentMana(proposedNewAmt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void addHealth(Player player, int addAmt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            int currentHealth = playerMetadata.getStats().getCurrentHealth();
+            int maxHealth = playerMetadata.getStats().getMaxHealth();
+            int proposedNewAmt = currentHealth + addAmt;
+            if (proposedNewAmt > maxHealth) {
+                if (currentHealth < maxHealth) {
+                    int adjust = proposedNewAmt - maxHealth;
+                    proposedNewAmt = proposedNewAmt - adjust;
+                } else {
+                    proposedNewAmt = proposedNewAmt - addAmt;
+                }
+            }
+            playerMetadata.getStats().setCurrentHealth(proposedNewAmt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
     public void incrementHealth(Player player, int amt) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {
