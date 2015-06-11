@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
@@ -13,11 +14,13 @@ public class EquipmentManager {
     private final EntityManager entityManager;
     private final ChannelUtils channelUtils;
     private final PlayerManager playerManager;
+    private final GameManager gameManager;
 
-    public EquipmentManager(EntityManager entityManager, ChannelUtils channelUtils, PlayerManager playerManager) {
+    public EquipmentManager(EntityManager entityManager, ChannelUtils channelUtils, PlayerManager playerManager, GameManager gameManager) {
         this.entityManager = entityManager;
         this.channelUtils = channelUtils;
         this.playerManager = playerManager;
+        this.gameManager = gameManager;
     }
 
     public void equip(Player player, Item item) {
@@ -56,11 +59,11 @@ public class EquipmentManager {
         playerManager.addInventoryId(player, item.getItemId());
     }
 
-    public Stats getPlayerStatsWithEquipment(Player player) {
+    public Stats getPlayerStatsWithEquipmentAndLevel(Player player) {
         PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
         StatsBuilder statsBuilder = new StatsBuilder();
         Stats newStats = statsBuilder.createStats();
-        Stats playerStats = playerMetadata.getStats();
+        Stats playerStats = gameManager.getStatsModifierFactory().getStatsModifier(player);
         StatsHelper.combineStats(newStats, playerStats);
         String[] playerEquipment = playerMetadata.getPlayerEquipment();
         if (playerEquipment == null) {

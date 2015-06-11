@@ -67,6 +67,7 @@ public class GameManager {
     private final EffectsManager effectsManager;
     private final BotCommandFactory botCommandFactory;
     private final BotCommandManager botCommandManager;
+    private final StatsModifierFactory statsModifierFactory;
 
     private static final Logger log = Logger.getLogger(GameManager.class);
 
@@ -83,14 +84,19 @@ public class GameManager {
         this.floorManager = new FloorManager();
         this.channelUtils = channelUtils;
         this.lootManager = new LootManager(this);
-        this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager);
+        this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager, this);
         this.fightManager = new FightManager(this);
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
         this.forageManager = new ForageManager(this);
         this.effectsManager = new EffectsManager(this);
-        botCommandManager = new BotCommandManager(this);
-        botCommandFactory = new BotCommandFactory(botCommandManager);
+        this.botCommandManager = new BotCommandManager(this);
+        this.botCommandFactory = new BotCommandFactory(botCommandManager);
+        this.statsModifierFactory = new StatsModifierFactory(this);
+    }
+
+    public StatsModifierFactory getStatsModifierFactory() {
+        return statsModifierFactory;
     }
 
     public BotCommandFactory getBotCommandFactory() {
@@ -413,8 +419,8 @@ public class GameManager {
 
     public String getLookString(Player player) {
         StringBuilder sb = new StringBuilder();
-        Stats origStats = playerManager.getPlayerMetadata(player.getPlayerId()).getStats();
-        Stats modifiedStats = equipmentManager.getPlayerStatsWithEquipment(player);
+        Stats origStats = statsModifierFactory.getStatsModifier(player);
+        Stats modifiedStats = getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player);
         Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(player.getPlayerName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
@@ -683,8 +689,75 @@ public class GameManager {
                 entityManager.getNpcs().remove(creeperEntity.getEntityId());
             }
         }
-
-
     }
+
+
+    public String buildPrompt(String playerId) {
+        boolean isFight = FightManager.isActiveFight(getPlayerManager().getSessionManager().getSession(playerId));
+        Player player = playerManager.getPlayer(playerId);
+        Stats stats = statsModifierFactory.getStatsModifier(player);
+        int currentHealth = stats.getCurrentHealth();
+        int maxHealth = stats.getMaxHealth();
+        int currentMana = stats.getCurrentMana();
+        int maxMana = stats.getMaxMana();
+        StringBuilder sb = new StringBuilder()
+                .append("[")
+                .append(player.getPlayerName())
+                .append("@")
+                .append("creeper")
+                .append(" ")
+                .append(currentHealth).append("/").append(maxHealth).append("h")
+                .append(" ")
+                .append(currentMana).append("/").append(maxMana).append("m");
+        if (isFight) {
+            sb.append(Color.RED + " ! " + Color.RESET);
+        }
+        sb.append("] ");
+        return sb.toString();
+    }
+
+    public void addHealth(Player player, int addAmt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(player.getPlayerId());
+            int currentHealth = playerMetadata.getStats().getCurrentHealth();
+            Stats statsModifier = getStatsModifierFactory().getStatsModifier(player);
+            int maxHealth = statsModifier.getMaxHealth();
+            int proposedNewAmt = currentHealth + addAmt;
+            if (proposedNewAmt > maxHealth) {
+                if (currentHealth < maxHealth) {
+                    int adjust = proposedNewAmt - maxHealth;
+                    proposedNewAmt = proposedNewAmt - adjust;
+                } else {
+                    proposedNewAmt = proposedNewAmt - addAmt;
+                }
+            }
+            playerMetadata.getStats().setCurrentHealth(proposedNewAmt);
+            getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+    }
+
+
+    public void addMana(Player player, int addAmt) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(player.getPlayerId());
+            int currentMana = playerMetadata.getStats().getCurrentMana();
+            Stats statsModifier = statsModifierFactory.getStatsModifier(player);
+            int maxMana = statsModifier.getMaxMana();
+            int proposedNewAmt = currentMana + addAmt;
+            if (proposedNewAmt > maxMana) {
+                if (currentMana < maxMana) {
+                    int adjust = proposedNewAmt - maxMana;
+                    proposedNewAmt = proposedNewAmt - adjust;
+                } else {
+                    proposedNewAmt = proposedNewAmt - addAmt;
+                }
+            }
+            playerMetadata.getStats().setCurrentMana(proposedNewAmt);
+            getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+    }
+
 }
 

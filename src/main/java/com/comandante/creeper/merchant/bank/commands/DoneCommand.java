@@ -28,7 +28,7 @@ public class DoneCommand extends BankCommand {
         creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>absent());
         e.getChannel().getPipeline().remove("executed_command");
         e.getChannel().getPipeline().remove("executed_bank_command");
-        String s = gameManager.getPlayerManager().buildPrompt(playerId);
+        String s = gameManager.buildPrompt(playerId);
         write(s);
     }
 }

@@ -29,7 +29,7 @@ public class FightRun implements Callable<FightResults> {
         FightResults fightResults = null;
         try {
             Stats npcStats = npc.getStats();
-            Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipment(player);
+            Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player);
             boolean playerDied = false;
             while (npcStats.getCurrentHealth() > 0 && !playerDied) {
                 if (getCurrentHealth() <= 0) {
@@ -38,7 +38,7 @@ public class FightRun implements Callable<FightResults> {
                 }
                 gameManager.getFightManager().fightTurn(playerStats, npcStats, 3, player, npc);
                 if (getCurrentHealth() > 0 && npcStats.getCurrentHealth() > 0) {
-                    String prompt = gameManager.getPlayerManager().buildPrompt(player.getPlayerId());
+                    String prompt = gameManager.buildPrompt(player.getPlayerId());
                     gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
                     gameManager.getPlayerManager().getSessionManager().getSession(player.getPlayerId()).setIsAbleToDoAbility(true);
                     try {
@@ -57,7 +57,7 @@ public class FightRun implements Callable<FightResults> {
                 PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
                 gameManager.movePlayer(playerMovement);
                 gameManager.currentRoomLogic(player.getPlayerId());
-                String prompt = gameManager.getPlayerManager().buildPrompt(player.getPlayerId());
+                String prompt = gameManager.buildPrompt(player.getPlayerId());
                 gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
                 npc.setIsInFight(false);
                 fightResults = new FightResultsBuilder().setNpcWon(true).setPlayerWon(false).createFightResults();

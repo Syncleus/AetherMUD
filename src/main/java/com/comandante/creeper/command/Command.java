@@ -90,7 +90,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
                 return;
             }
             String playerId = extractPlayerId(creeperSession);
-            String prompt = gameManager.getPlayerManager().buildPrompt(playerId);
+            String prompt = gameManager.buildPrompt(playerId);
             gameManager.getChannelUtils().write(playerId, prompt, true);
         } finally {
             super.messageReceived(ctx, e);
@@ -137,7 +137,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     }
 
     public String getPrompt() {
-        return playerManager.buildPrompt(playerId);
+        return gameManager.buildPrompt(playerId);
     }
 
     public String getDescription() {

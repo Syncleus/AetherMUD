@@ -4,9 +4,7 @@ package com.comandante.creeper.player;
 import com.codahale.metrics.Gauge;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.MapDbAutoCommitService;
-import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.SessionManager;
-import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
@@ -134,55 +132,6 @@ public class PlayerManager {
         }
     }
 
-    public void addMana(Player player, int addAmt) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
-            int currentMana = playerMetadata.getStats().getCurrentMana();
-            int maxMana = playerMetadata.getStats().getMaxMana();
-            int proposedNewAmt = currentMana + addAmt;
-            if (proposedNewAmt > maxMana) {
-                if (currentMana < maxMana) {
-                    int adjust = proposedNewAmt - maxMana;
-                    proposedNewAmt = proposedNewAmt - adjust;
-                } else {
-                    proposedNewAmt = proposedNewAmt - addAmt;
-                }
-            }
-            playerMetadata.getStats().setCurrentMana(proposedNewAmt);
-            savePlayerMetadata(playerMetadata);
-        }
-    }
-
-    public void addHealth(Player player, int addAmt) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
-            int currentHealth = playerMetadata.getStats().getCurrentHealth();
-            int maxHealth = playerMetadata.getStats().getMaxHealth();
-            int proposedNewAmt = currentHealth + addAmt;
-            if (proposedNewAmt > maxHealth) {
-                if (currentHealth < maxHealth) {
-                    int adjust = proposedNewAmt - maxHealth;
-                    proposedNewAmt = proposedNewAmt - adjust;
-                } else {
-                    proposedNewAmt = proposedNewAmt - addAmt;
-                }
-            }
-            playerMetadata.getStats().setCurrentHealth(proposedNewAmt);
-            savePlayerMetadata(playerMetadata);
-        }
-    }
-
-    public void incrementHealth(Player player, int amt) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
-            playerMetadata.getStats().setCurrentHealth(playerMetadata.getStats().getCurrentHealth() + amt);
-            savePlayerMetadata(playerMetadata);
-        }
-    }
-
     public PlayerMetadata getPlayerMetadata(String playerId) {
         PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
         if (playerMetadata == null) {
@@ -237,7 +186,11 @@ public class PlayerManager {
         synchronized (interner.intern(player.getPlayerId())) {
             PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
             Stats stats = playerMetadata.getStats();
-            stats.setCurrentHealth(stats.getCurrentHealth() + amount);
+            if ((stats.getCurrentHealth() + amount) < 0) {
+                stats.setCurrentHealth(0);
+            } else {
+                stats.setCurrentHealth(stats.getCurrentHealth() + amount);
+            }
             savePlayerMetadata(playerMetadata);
         }
     }
@@ -286,31 +239,6 @@ public class PlayerManager {
             return false;
         }
         return false;
-    }
-
-
-    public String buildPrompt(String playerId) {
-        boolean isFight = FightManager.isActiveFight(sessionManager.getSession(playerId));
-        Player player = getPlayer(playerId);
-        PlayerMetadata playerMetadata = getPlayerMetadata(playerId);
-        int currentHealth = playerMetadata.getStats().getCurrentHealth();
-        int maxHealth = playerMetadata.getStats().getMaxHealth();
-        int currentMana = playerMetadata.getStats().getCurrentMana();
-        int maxMana = playerMetadata.getStats().getMaxMana();
-        StringBuilder sb = new StringBuilder()
-                .append("[")
-                .append(player.getPlayerName())
-                .append("@")
-                .append("creeper")
-                .append(" ")
-                .append(currentHealth).append("/").append(maxHealth).append("h")
-                .append(" ")
-                .append(currentMana).append("/").append(maxMana).append("m");
-        if (isFight) {
-            sb.append(Color.RED + " ! " + Color.RESET);
-        }
-        sb.append("] ");
-        return sb.toString();
     }
 
     public void createGauges(final PlayerMetadata playerMetadata) {

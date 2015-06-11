@@ -17,6 +17,28 @@ public class StatsBuilder {
     private int maxMana;
     private int foraging;
 
+    public StatsBuilder() {
+    }
+
+    public StatsBuilder(Stats stats) {
+        this.strength = stats.getStrength();
+        this.willpower = stats.getWillpower();
+        this.aim = stats.getAim();
+        this.agile = stats.getAgile();
+        this.armorRating = stats.getArmorRating();
+        this.meleSkill = stats.getMeleSkill();
+        this.currentHealth = stats.getCurrentHealth();
+        this.maxHealth = stats.getMaxHealth();
+        this.weaponRatingMax = stats.getWeaponRatingMax();
+        this.weaponRatingMin = stats.getWeaponRatingMin();
+        this.numberOfWeaponRolls = stats.getNumberOfWeaponRolls();
+        this.experience = stats.getExperience();
+        this.currentHealth = stats.getCurrentHealth();
+        this.maxMana = stats.getMaxMana();
+        this.foraging = stats.getForaging();
+        this.currentMana = stats.getCurrentMana();
+    }
+
     public StatsBuilder setStrength(int strength) {
         this.strength = strength;
         return this;

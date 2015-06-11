@@ -71,7 +71,7 @@ public class ForageManager {
                 }
                 forage.setCoolDownTicksLeft(forage.getCoolDownTicks());
                 double foragePctOfSuccess = forage.getPctOfSuccess();
-                int modifiedLevelForForage = getLevel(gameManager.getEquipmentManager().getPlayerStatsWithEquipment(player).getForaging());
+                int modifiedLevelForForage = getLevel(gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player).getForaging());
                 int pctSuccessBoostForLevel = getPctSuccessBoostForLevel(modifiedLevelForForage);
                 //System.out.println("you get a boost of " + pctSuccessBoostForLevel);
                 foragePctOfSuccess = foragePctOfSuccess + pctSuccessBoostForLevel;
