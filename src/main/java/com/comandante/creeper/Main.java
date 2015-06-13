@@ -77,6 +77,9 @@ public class Main {
         startUpMessage("Configure Bank commands");
         ConfigureCommands.configureBankCommands(gameManager);
 
+        startUpMessage("Configure Locker commands");
+        ConfigureCommands.configureLockerCommands(gameManager);
+
         startUpMessage("Configuring npcs and merchants");
         ConfigureNpc.configure(entityManager, gameManager);
         CreeperServer creeperServer = new CreeperServer(creeperConfiguration.telnetPort);

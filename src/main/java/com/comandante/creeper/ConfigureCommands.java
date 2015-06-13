@@ -5,6 +5,8 @@ import com.comandante.creeper.command.UnknownCommand;
 import com.comandante.creeper.command.admin.*;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.bank.commands.*;
+import com.comandante.creeper.merchant.bank.commands.DoneCommand;
+import com.comandante.creeper.merchant.lockers.*;
 import com.comandante.creeper.server.CreeperCommandRegistry;
 
 public class ConfigureCommands {
@@ -20,6 +22,18 @@ public class ConfigureCommands {
         bankCommandRegistry.addCommand(new WithdrawalCommand(gameManager));
         bankCommandRegistry.addCommand(new DoneCommand(gameManager));
     }
+
+    public static LockerCommandRegistry lockerCommandRegistry;
+
+    public static void configureLockerCommands(GameManager gameManager) {
+        lockerCommandRegistry = new LockerCommandRegistry(new com.comandante.creeper.merchant.lockers.UnknownCommand(gameManager));
+        lockerCommandRegistry.addCommand(new DropOffCommand(gameManager));
+        lockerCommandRegistry.addCommand(new RetrieveCommand(gameManager));
+        lockerCommandRegistry.addCommand(new QueryCommand(gameManager));
+        lockerCommandRegistry.addCommand(new com.comandante.creeper.merchant.lockers.DoneCommand(gameManager));
+
+    }
+
 
     public static void configure(GameManager gameManager) {
         creeperCommandRegistry = new CreeperCommandRegistry(new UnknownCommand(gameManager));
@@ -63,5 +77,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new ForageCommand(gameManager));
         creeperCommandRegistry.addCommand(new RecentChangesCommand(gameManager));
         creeperCommandRegistry.addCommand(new BounceIrcBotCommand(gameManager));
+        creeperCommandRegistry.addCommand(new OpenCommand(gameManager));
     }
 }

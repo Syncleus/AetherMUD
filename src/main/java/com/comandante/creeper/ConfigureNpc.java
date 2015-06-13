@@ -3,10 +3,7 @@ package com.comandante.creeper;
 import com.comandante.creeper.Items.*;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.merchant.Blacksmith;
-import com.comandante.creeper.merchant.JimBanker;
-import com.comandante.creeper.merchant.LloydBartender;
-import com.comandante.creeper.merchant.MerchantItemForSale;
+import com.comandante.creeper.merchant.*;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcExporter;
 import com.comandante.creeper.spawner.ItemSpawner;
@@ -116,6 +113,9 @@ public class ConfigureNpc {
         JimBanker jimBanker = new JimBanker(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(65, jimBanker);
         gameManager.getRoomManager().addMerchant(209, jimBanker);
+
+        LockerRoomGuy lockerRoomGuy = new LockerRoomGuy(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
+        gameManager.getRoomManager().addMerchant(71, lockerRoomGuy);
 
         ForageBuilder forageBuilder = new ForageBuilder();
         forageBuilder.setItemType(ItemType.MARIJUANA);

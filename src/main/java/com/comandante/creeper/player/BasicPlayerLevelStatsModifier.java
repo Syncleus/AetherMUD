@@ -15,6 +15,7 @@ public class BasicPlayerLevelStatsModifier implements StatsModifier {
         this.gameManager = gameManager;
     }
 
+    private static double MELE_CONSTANT_MODIFIER = 1.01;
     private static double WILLPOWER_CONSTANT_MODIFIER = 1.01;
     private static double AGILE_CONSTANT_MODIFIER = 1.01;
     private static double AIM_CONSTANT_MODIFIER = 1.01;
@@ -23,8 +24,13 @@ public class BasicPlayerLevelStatsModifier implements StatsModifier {
     private static double STRENGTH_CONSTANT_MODIFIER = 1.4;
     private static double MANA_CONSTANT_MODIFIER = 2;
 
+    public static int getMeleForLevel(int baseStat, int level) {
+        double v = (level) * sqrt(pow(level, MELE_CONSTANT_MODIFIER));
+        return (int) Math.floor(v) + baseStat;
+    }
+
     public static int getWillpowerForLevel(int baseStat, int level) {
-        double v = (level) * sqrt(pow(level, AGILE_CONSTANT_MODIFIER));
+        double v = (level) * sqrt(pow(level, WILLPOWER_CONSTANT_MODIFIER));
         return (int) Math.floor(v) + baseStat;
     }
 
@@ -70,6 +76,7 @@ public class BasicPlayerLevelStatsModifier implements StatsModifier {
         int newAimRating = getAimForLevel(baseStats.getAim(), level);
         int newWillpowerRating = getWillpowerForLevel(baseStats.getWillpower(), level);
         int newAgileRating = getAgileForLevel(baseStats.getAgile(), level);
+        int newMeleRating = getMeleForLevel(baseStats.getMeleSkill(), level);
         StatsBuilder statsBuilder = new StatsBuilder(baseStats);
         statsBuilder.setMaxHealth(newMaxHealth);
         statsBuilder.setArmorRating(newArmorRating);
@@ -78,6 +85,7 @@ public class BasicPlayerLevelStatsModifier implements StatsModifier {
         statsBuilder.setAim(newAimRating);
         statsBuilder.setWillpower(newWillpowerRating);
         statsBuilder.setAgile(newAgileRating);
+        statsBuilder.setMeleSkill(newMeleRating);
         return statsBuilder.createStats();
     }
 }

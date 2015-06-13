@@ -51,6 +51,26 @@ public class PlayerManager {
         }
     }
 
+    public void transferItemToLocker(Player player, String inventoryId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.removeInventoryEntityId(inventoryId);
+            playerMetadata.addLockerEntityId(inventoryId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void transferItemFromLocker(Player player, String entityId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            playerMetadata.removeLockerEntityId(entityId);
+            playerMetadata.addInventoryEntityId(entityId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
     public void removeInventoryId(Player player, String inventoryId) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {

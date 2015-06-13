@@ -11,6 +11,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommandHandler;
+import com.comandante.creeper.merchant.lockers.LockerCommandHandler;
 import com.comandante.creeper.player.Player;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
@@ -39,6 +40,8 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
             Merchant merchant = session.getGrabMerchant().get().getKey();
             if (merchant.getMerchantType() == Merchant.MerchantType.BANK) {
                 addLastHandler(e, new BankCommandHandler(gameManager, merchant));
+            } else if (merchant.getMerchantType() == Merchant.MerchantType.LOCKER) {
+                addLastHandler(e, new LockerCommandHandler(gameManager, merchant));
             } else {
                 addLastHandler(e, new MerchantCommandHandler(gameManager, merchant));
             }

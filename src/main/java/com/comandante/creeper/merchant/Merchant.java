@@ -95,6 +95,7 @@ public abstract class Merchant extends CreeperEntity {
 
     public enum MerchantType {
         BANK,
+        LOCKER,
         BASIC
     }
 }

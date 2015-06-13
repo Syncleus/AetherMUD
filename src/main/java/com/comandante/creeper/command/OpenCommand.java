@@ -1,10 +1,8 @@
 package com.comandante.creeper.command;
 
-
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.merchant.bank.commands.BankCommand;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -16,13 +14,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class TalkCommand extends Command {
+/**
+ * Created by kearney on 6/12/15.
+ */
+public class OpenCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("talk");
-    final static String description = "Talk to a merchant.";
-    final static String correctUsage = "talk <merchant name>";
+    final static List<String> validTriggers = Arrays.asList("open", "o");
+    final static String description = "Open a locker.";
+    final static String correctUsage = "open lockers";
 
-    public TalkCommand(GameManager gameManager) {
+    public OpenCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description, correctUsage);
     }
 
@@ -38,16 +39,12 @@ public class TalkCommand extends Command {
             String desiredMerchantTalk = Joiner.on(" ").join(originalMessageParts);
             Set<Merchant> merchants = currentRoom.getMerchants();
             for (Merchant merchant : merchants) {
+                if (merchant.getMerchantType() != Merchant.MerchantType.LOCKER) {
+                    return;
+                }
                 if (merchant.getValidTriggers().contains(desiredMerchantTalk)) {
                     write(merchant.getWelcomeMessage() + "\r\n");
-                    if (merchant.getMerchantType() == Merchant.MerchantType.BASIC) {
-                        write(merchant.getMenu() + "\r\n");
-                        gameManager.getChannelUtils().write(playerId, "\r\n[" + merchant.getName() + " (done to exit, buy <itemNo>, sell <itemNo>)] ");
-                    } else if (merchant.getMerchantType() == Merchant.MerchantType.BANK) {
-                        write(BankCommand.getPrompt());
-                    } else if (merchant.getMerchantType() == Merchant.MerchantType.LOCKER) {
-                        write(LockerCommand.getPrompt());
-                    }
+                    write(LockerCommand.getPrompt());
                     creeperSession.setGrabMerchant(Optional.of(
                             new CreeperEntry<Merchant, SimpleChannelUpstreamHandler>(merchant, this)));
                 }

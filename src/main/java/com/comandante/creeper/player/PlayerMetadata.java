@@ -18,6 +18,7 @@ public class PlayerMetadata implements Serializable {
     private final String playerId;
     private Stats stats;
     private List<String> inventory;
+    private List<String> lockerInventory;
     private int gold;
     private int goldInBank;
     private Set<PlayerRole> playerRoleSet;
@@ -44,6 +45,9 @@ public class PlayerMetadata implements Serializable {
         if (playerMetadata.inventory != null) {
             this.inventory = Lists.newArrayList(playerMetadata.getInventory());
         }
+        if (playerMetadata.lockerInventory != null) {
+            this.lockerInventory = Lists.newArrayList(playerMetadata.getLockerInventory());
+        }
         this.gold = new Integer(playerMetadata.gold);
         this.goldInBank = new Integer(playerMetadata.goldInBank);
         if (playerMetadata.playerRoleSet != null) {
@@ -67,6 +71,23 @@ public class PlayerMetadata implements Serializable {
         }
         inventory.add(newEntityId);
     }
+
+    public List<String> getLockerInventory() {
+        return lockerInventory;
+    }
+
+    protected void addLockerEntityId(String newEntityId) {
+        if (lockerInventory == null) {
+            lockerInventory = Lists.newArrayList();
+        }
+        lockerInventory.add(newEntityId);
+    }
+
+
+    protected void removeLockerEntityId(String newEntityId) {
+        lockerInventory.remove(newEntityId);
+    }
+
 
     protected void removeInventoryEntityId(String itemId) {
         inventory.remove(itemId);
