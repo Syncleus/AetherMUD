@@ -78,6 +78,8 @@ public class EquipmentBuilder {
                     return getDwarfBootsOfAgility(item);
                 case LEATHER_SATCHEL:
                     return getLeatherSatchel(item);
+                case BIGGERS_SKIN_SATCHEL:
+                    return getBiggersSkinSatchel(item);
             }
         }
         return null;
@@ -312,6 +314,13 @@ public class EquipmentBuilder {
 
     public static Item getLeatherSatchel(Item item) {
         Stats stats = new StatsBuilder().setInventorySize(10).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.BAG, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getBiggersSkinSatchel(Item item) {
+        Stats stats = new StatsBuilder().setInventorySize(100).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.BAG, stats);
         item.setEquipment(equipment);
         return item;

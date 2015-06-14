@@ -20,7 +20,7 @@ public class LightningSpell extends Spell {
     private final static String NAME = BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolt";
     private final static String DESCRIPTION = "A powerful bolt of lightning.";
     private final static Set<String> validTriggers = new HashSet<String>(Arrays.asList(new String[]
-                    {"lightning", "lightning bolt", NAME}
+                    {"lightning", "lightning bolt", "l", NAME}
     ));
     private final static Stats attackStats = new StatsBuilder()
             .setStrength(180)

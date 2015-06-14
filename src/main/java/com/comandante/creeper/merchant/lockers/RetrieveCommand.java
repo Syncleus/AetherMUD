@@ -30,7 +30,7 @@ public class RetrieveCommand extends LockerCommand {
             for (String entityId: playerMetadata.getLockerInventory()) {
                 Item itemEntity = gameManager.getEntityManager().getItemEntity(entityId);
                 if (itemEntity.getItemTriggers().contains(desiredRetrieveOption)) {
-                    gameManager.getPlayerManager().transferItemFromLocker(player, entityId);
+                    gameManager.transferItemFromLocker(player, entityId);
                     write(itemEntity.getItemName() + " retrieved from locker.\r\n");
                     return;
                 }

@@ -24,14 +24,16 @@ public class EquipmentManager {
     }
 
     public void equip(Player player, Item item) {
-        if (item.getEquipment() == null){
+        if (item.getEquipment() == null) {
             return;
         }
         Equipment equipment = item.getEquipment();
         EquipmentSlotType equipmentSlotType = equipment.getEquipmentSlotType();
         Item slotItem = getSlotItem(player, equipmentSlotType);
-        if (slotItem != null){
-            unEquip(player, slotItem);
+        if (slotItem != null) {
+            if (!unEquip(player, slotItem)) {
+                return;
+            }
         }
         channelUtils.write(player.getPlayerId(), "Equipping " + item.getItemName() + "\r\n");
         playerManager.addEquipmentId(player, item.getItemId());
@@ -43,7 +45,7 @@ public class EquipmentManager {
         if (playerMetadata.getPlayerEquipment() == null) {
             return null;
         }
-        for (String item: playerMetadata.getPlayerEquipment()) {
+        for (String item : playerMetadata.getPlayerEquipment()) {
             Item itemEntity = entityManager.getItemEntity(item);
             EquipmentSlotType equipmentSlotType = itemEntity.getEquipment().getEquipmentSlotType();
             if (equipmentSlotType.equals(slot)) {
@@ -53,10 +55,13 @@ public class EquipmentManager {
         return null;
     }
 
-    public void unEquip(Player player, Item item) {
+    public boolean unEquip(Player player, Item item) {
         channelUtils.write(player.getPlayerId(), "Un-equipping " + item.getItemName() + "\r\n");
-        playerManager.removeEquipmentId(player, item.getItemId());
-        playerManager.addInventoryId(player, item.getItemId());
+        if(gameManager.acquireItem(player, item.getItemId())) {
+            playerManager.removeEquipmentId(player, item.getItemId());
+            return true;
+        }
+        return false;
     }
 
     public Stats getPlayerStatsWithEquipmentAndLevel(Player player) {
@@ -69,7 +74,7 @@ public class EquipmentManager {
         if (playerEquipment == null) {
             return playerStats;
         }
-        for (String equipId: playerEquipment) {
+        for (String equipId : playerEquipment) {
             Item itemEntity = entityManager.getItemEntity(equipId);
             Equipment equipment = itemEntity.getEquipment();
             Stats stats = equipment.getStats();

@@ -371,13 +371,37 @@ public class GameManager {
         roomManager.getRoom(roomId).addPresentItem(entityManager.getItemEntity(itemId).getItemId());
     }
 
-    public void acquireItem(Player player, String itemId) {
+    public boolean acquireItem(Player player, String itemId) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
-            playerManager.addInventoryId(player, itemId);
-            Item itemEntity = entityManager.getItemEntity(itemId);
-            itemEntity.setWithPlayer(true);
-            entityManager.saveItem(itemEntity);
+            Stats playerStatsWithEquipmentAndLevel = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
+            if (entityManager.getInventory(player).size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
+                playerManager.addInventoryId(player, itemId);
+                Item itemEntity = entityManager.getItemEntity(itemId);
+                itemEntity.setWithPlayer(true);
+                entityManager.saveItem(itemEntity);
+                return true;
+            } else {
+                channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
+                return false;
+            }
+        }
+    }
+
+    public void transferItemToLocker(Player player, String inventoryId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            getPlayerManager().removeInventoryId(player, inventoryId);
+            getPlayerManager().addLockerInventoryId(player, inventoryId);
+        }
+    }
+
+    public void transferItemFromLocker(Player player, String entityId) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            if (acquireItem(player, entityId)) {
+                getPlayerManager().removeLockerInventoryId(player, entityId);
+            }
         }
     }
 
@@ -386,9 +410,10 @@ public class GameManager {
         synchronized (interner.intern(itemId)) {
             Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
             if (playerCurrentRoom.getItemIds().contains(itemId)) {
-                playerCurrentRoom.getItemIds().remove(itemId);
-                acquireItem(player, itemId);
-                return true;
+                if (acquireItem(player, itemId)) {
+                    playerCurrentRoom.getItemIds().remove(itemId);
+                    return true;
+                }
             }
         }
         return false;

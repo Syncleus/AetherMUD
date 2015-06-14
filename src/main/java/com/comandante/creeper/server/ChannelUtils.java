@@ -25,9 +25,11 @@ public class ChannelUtils {
         Player player = playerManager.getPlayer(playerId);
         String lastMessage = playerManager.getSessionManager().getSession(playerId).getLastMessage();
         StringBuilder sb = new StringBuilder();
-        if (lastMessage != null && !lastMessage.substring(lastMessage.length() - 2).equals("\r\n")) {
-            if (leadingBlankLine) {
-                sb.append("\r\n");
+        if (lastMessage != null && (lastMessage.length() >= "\r\n".length())) {
+            if (!lastMessage.substring(lastMessage.length() - 2).equals("\r\n")) {
+                if (leadingBlankLine) {
+                    sb.append("\r\n");
+                }
             }
         }
         sb.append(message);

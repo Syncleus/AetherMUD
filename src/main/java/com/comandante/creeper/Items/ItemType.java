@@ -484,7 +484,18 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            800);
+            800),
+
+    BIGGERS_SKIN_SATCHEL(44, Arrays.asList("biggers skin satchel", "skin satchel"),
+            "a " + Color.GREEN + "biggers skin satchel" + Color.RESET,
+            "a " + Color.GREEN + "biggers skin satchel" + Color.RESET,
+            "a " + Color.GREEN + "biggers skin satchel" + Color.RESET + " with room to store 100 items.",
+            false,
+            0,
+            60,
+            true,
+            Rarity.BASIC,
+            3000);
 
 
     private final Integer itemTypeCode;
