@@ -73,6 +73,9 @@ public class PlayerMetadata implements Serializable {
     }
 
     public List<String> getLockerInventory() {
+        if (lockerInventory == null) {
+            lockerInventory = Lists.newArrayList();
+        }
         return lockerInventory;
     }
 

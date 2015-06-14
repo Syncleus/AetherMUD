@@ -66,6 +66,7 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         jsonWriter.name("weaponRatingMax").value(npc.getStats().getWeaponRatingMax());
         jsonWriter.name("weaponRatingMin").value(npc.getStats().getWeaponRatingMin());
         jsonWriter.name("willPower").value(npc.getStats().getWillpower());
+        jsonWriter.name("inventorySize").value(npc.getStats().getInventorySize());
         jsonWriter.endObject();
 
         jsonWriter.name("spawnAreas");
@@ -162,6 +163,8 @@ public class NpcAdapter extends TypeAdapter<Npc> {
                 statsBuilder.setWillpower(jsonReader.nextInt());
             }else if (nextName.equals("foraging")) {
                 statsBuilder.setForaging(jsonReader.nextInt());
+            }else if (nextName.equals("inventorySize")) {
+                statsBuilder.setInventorySize(jsonReader.nextInt());
             }
         }
         jsonReader.endObject();

@@ -84,6 +84,9 @@ public class Main {
         ConfigureNpc.configure(entityManager, gameManager);
         CreeperServer creeperServer = new CreeperServer(creeperConfiguration.telnetPort);
 
+        startUpMessage("Configuring default inventorySize limits");
+        BackportCommands.configureDefaultInventorySize(entityManager, gameManager);
+
         startUpMessage("Creeper MUD engine started");
 
         creeperServer.run(gameManager);

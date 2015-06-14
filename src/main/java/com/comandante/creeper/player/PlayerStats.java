@@ -20,5 +20,6 @@ public class PlayerStats {
             .setExperience(0)
             .setCurrentMana(100)
             .setMaxMana(100)
-            .setForaging(0);
+            .setForaging(0)
+            .setInventorySize(10);
 }

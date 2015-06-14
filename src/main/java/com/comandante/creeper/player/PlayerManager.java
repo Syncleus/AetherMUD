@@ -307,4 +307,8 @@ public class PlayerManager {
     private boolean doesGaugeExist(String name) {
         return Main.metrics.getGauges().containsKey(name);
     }
+
+    public HTreeMap<String, PlayerMetadata> getPlayerMetadataStore() {
+        return playerMetadataStore;
+    }
 }

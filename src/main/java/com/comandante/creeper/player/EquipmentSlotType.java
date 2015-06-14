@@ -12,7 +12,8 @@ public enum EquipmentSlotType {
     FEET("feet"),
     LEGS("legs"),
     WRISTS("wrists"),
-    CHEST("chest");
+    CHEST("chest"),
+    BAG("bag");
 
     private final String name;
 
@@ -42,6 +43,7 @@ public enum EquipmentSlotType {
         theName.add(EquipmentSlotType.HAND);
         theName.add(EquipmentSlotType.LEGS);
         theName.add(EquipmentSlotType.FEET);
+        theName.add(EquipmentSlotType.BAG);
         return theName;
     }
 }

@@ -473,7 +473,18 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            8);
+            8),
+
+    LEATHER_SATCHEL(43, Arrays.asList("leather satchel", "satchel"),
+            "a " + Color.GREEN + "leather satchel" + Color.RESET,
+            "a " + Color.GREEN + "leather satchel" + Color.RESET,
+            "a " + Color.GREEN + "leather satchel" + Color.RESET + " with room to store 10 items.",
+            false,
+            0,
+            60,
+            true,
+            Rarity.BASIC,
+            800);
 
 
     private final Integer itemTypeCode;

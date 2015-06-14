@@ -387,10 +387,7 @@ public class GameManager {
             Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
             if (playerCurrentRoom.getItemIds().contains(itemId)) {
                 playerCurrentRoom.getItemIds().remove(itemId);
-                playerManager.addInventoryId(player, itemId);
-                Item itemEntity = entityManager.getItemEntity(itemId);
-                itemEntity.setWithPlayer(true);
-                entityManager.saveItem(itemEntity);
+                acquireItem(player, itemId);
                 return true;
             }
         }
@@ -536,6 +533,13 @@ public class GameManager {
         t.addCell(getFormattedNumber(stats.getForaging()));
         if (diff.getForaging() > 0)
             sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getForaging())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Bag");
+        t.addCell(getFormattedNumber(stats.getInventorySize()));
+        if (diff.getInventorySize() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getInventorySize())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         returnString.append(t.render());

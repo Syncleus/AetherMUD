@@ -1,8 +1,5 @@
 package com.comandante.creeper.stat;
 
-/**
- * Created by kearney on 6/4/15.
- */
 public class StatsHelper {
 
     public static Stats getDifference(Stats modifiedStats, Stats origStats) {
@@ -22,6 +19,7 @@ public class StatsHelper {
         statsBuilder.setCurrentMana(modifiedStats.getCurrentMana() - origStats.getCurrentMana());
         statsBuilder.setMaxMana(modifiedStats.getMaxMana() - origStats.getMaxMana());
         statsBuilder.setForaging(modifiedStats.getForaging() - origStats.getForaging());
+        statsBuilder.setInventorySize(modifiedStats.getInventorySize() - origStats.getInventorySize());
         return statsBuilder.createStats();
     }
 
@@ -41,6 +39,7 @@ public class StatsHelper {
         orig.setCurrentMana(orig.getCurrentMana() + combine.getCurrentMana());
         orig.setMaxMana(orig.getMaxMana() + combine.getMaxMana());
         orig.setForaging(orig.getForaging() + combine.getForaging());
+        orig.setInventorySize(orig.getInventorySize() + combine.getInventorySize());
     }
 
     public static void inverseStats(Stats stats) {
@@ -59,6 +58,7 @@ public class StatsHelper {
         stats.setCurrentMana(-stats.getCurrentMana());
         stats.setMaxMana(-stats.getMaxMana());
         stats.setForaging(-stats.getForaging());
+        stats.setInventorySize(-stats.getInventorySize());
     }
 
 }
