@@ -64,10 +64,10 @@ public class Player extends CreeperEntity {
         PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId());
         Stats stats = gameManager.getStatsModifierFactory().getStatsModifier(this);
         if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-            gameManager.addHealth(this, 10);
+            gameManager.addHealth(this, (int) (playerMetadata.getStats().getMaxHealth() * .05));
         }
         if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
-            gameManager.addMana(this, 2);
+            gameManager.addMana(this, (int) (playerMetadata.getStats().getMaxMana() * .03));
         }
         for (String effectId: playerMetadata.getEffects()) {
             Effect effect = gameManager.getEntityManager().getEffect(effectId);
