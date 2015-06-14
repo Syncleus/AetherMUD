@@ -4,6 +4,7 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
+import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommand;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.google.common.base.Joiner;
@@ -42,7 +43,7 @@ public class TalkCommand extends Command {
                     write(merchant.getWelcomeMessage() + "\r\n");
                     if (merchant.getMerchantType() == Merchant.MerchantType.BASIC) {
                         write(merchant.getMenu() + "\r\n");
-                        gameManager.getChannelUtils().write(playerId, "\r\n[" + merchant.getName() + " (done to exit, buy <itemNo>, sell <itemNo>)] ");
+                        gameManager.getChannelUtils().write(playerId, "\r\n" + MerchantCommandHandler.buildPrompt());
                     } else if (merchant.getMerchantType() == Merchant.MerchantType.BANK) {
                         write(BankCommand.getPrompt());
                     } else if (merchant.getMerchantType() == Merchant.MerchantType.LOCKER) {

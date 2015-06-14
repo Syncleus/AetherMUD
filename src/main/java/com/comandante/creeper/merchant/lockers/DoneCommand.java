@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DoneCommand extends LockerCommand {
 
-    final static List<String> validTriggers = Arrays.asList("done");
+    final static List<String> validTriggers = Arrays.asList("done", "d");
     final static String description = "Complete transaction.";
 
     public DoneCommand(GameManager gameManager) {

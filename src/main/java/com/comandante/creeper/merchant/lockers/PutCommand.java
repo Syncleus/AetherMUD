@@ -9,12 +9,12 @@ import org.jboss.netty.channel.MessageEvent;
 import java.util.Arrays;
 import java.util.List;
 
-public class DropOffCommand extends LockerCommand {
+public class PutCommand extends LockerCommand {
 
-    final static List<String> validTriggers = Arrays.asList("drop", "d", "dropoff");
-    final static String description = "Drop off an item in your locker.";
+    final static List<String> validTriggers = Arrays.asList("put", "p");
+    final static String description = "Put an item in your locker.";
 
-    public DropOffCommand(GameManager gameManager) {
+    public PutCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description);
     }
 

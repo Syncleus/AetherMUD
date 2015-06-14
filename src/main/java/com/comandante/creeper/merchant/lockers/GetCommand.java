@@ -11,12 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class RetrieveCommand extends LockerCommand {
+public class GetCommand extends LockerCommand {
 
-    final static List<String> validTriggers = Arrays.asList("retrieve", "r");
-    final static String description = "Retrieve an item from your locker.";
+    final static List<String> validTriggers = Arrays.asList("get", "g");
+    final static String description = "Get an item from your locker.";
 
-    public RetrieveCommand(GameManager gameManager) {
+    public GetCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description);
     }
 

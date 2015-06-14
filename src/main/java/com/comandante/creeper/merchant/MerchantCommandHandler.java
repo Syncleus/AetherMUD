@@ -73,7 +73,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
                 e.getChannel().getPipeline().addLast(UUID.randomUUID().toString(), creeperSession.getGrabMerchant().get().getValue());
                 return;
             }
-            gameManager.getChannelUtils().write(playerByUsername.getPlayerId(), "\r\n[" + merchant.getName() + " (done to exit, buy <itemNo>, sell <itemNo>)] ");
+            gameManager.getChannelUtils().write(playerByUsername.getPlayerId(), "\r\n" + buildPrompt());
 
         } finally {
             e.getChannel().getPipeline().remove(ctx.getHandler());
@@ -153,5 +153,9 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
         public Item getItem() {
             return item;
         }
+    }
+
+    public static String buildPrompt() {
+        return "[" + Color.GREEN + "MERCHANT" + Color.RESET + " - BUY | SELL | DONE] ";
     }
 }

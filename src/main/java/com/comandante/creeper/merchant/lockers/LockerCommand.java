@@ -5,6 +5,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.server.ChannelUtils;
+import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.world.Room;
 import org.jboss.netty.channel.Channel;
@@ -88,7 +89,7 @@ public class LockerCommand extends SimpleChannelUpstreamHandler {
     }
 
     public static String getPrompt() {
-        return "[Lockers - dropoff | retrieve | query | done] ";
+        return "[" + Color.GREEN + "LOCKER" + Color.RESET + " - PUT | GET | QUERY | DONE] ";
     }
 
     public <T> T createObj(String nameclass) throws ClassNotFoundException,
