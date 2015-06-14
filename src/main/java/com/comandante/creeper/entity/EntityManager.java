@@ -141,6 +141,69 @@ public class EntityManager {
         return inventoryItems;
     }
 
+    public List<Item> getLockerInventory(Player player) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+        List<Item> inventoryItems = Lists.newArrayList();
+        List<String> inventory = playerMetadata.getLockerInventory();
+        if (inventory != null) {
+            for (String itemId : inventory) {
+                Item itemEntity = getItemEntity(itemId);
+                if (itemEntity == null) {
+                    log.info("Orphaned inventoryId:" + itemId + " player: " + player.getPlayerName());
+                    continue;
+                }
+                inventoryItems.add(itemEntity);
+            }
+        }
+        Collections.sort(inventoryItems, new Comparator<Item>() {
+            @Override
+            public int compare(final Item object1, final Item object2) {
+                return object1.getItemName().compareTo(object2.getItemName());
+            }
+        });
+        return inventoryItems;
+    }
+
+
+    public List<String> getRolledUpLockerInventory(Player player) {
+        List<String> rolledUp = Lists.newArrayList();
+        List<Item> inventory = getLockerInventory(player);
+        Map<String, Integer> itemAndCounts = Maps.newHashMap();
+        if (inventory != null) {
+            for (Item item : inventory) {
+                StringBuilder invItem = new StringBuilder();
+                invItem.append(item.getItemName());
+                int maxUses = ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses();
+                if (maxUses > 0) {
+                    int remainingUses = maxUses - item.getNumberOfUses();
+                    invItem.append(" - ").append(remainingUses);
+                    if (remainingUses == 1) {
+                        invItem.append(" use left.");
+                    } else {
+                        invItem.append(" uses left.");
+                    }
+                }
+                if (itemAndCounts.containsKey(invItem.toString())) {
+                    Integer integer = itemAndCounts.get(invItem.toString());
+                    integer = integer + 1;
+                    itemAndCounts.put(invItem.toString(), integer);
+                } else {
+                    itemAndCounts.put(invItem.toString(), 1);
+                }
+            }
+            StringBuilder inventoryLine = new StringBuilder();
+            for (Map.Entry<String, Integer> next : itemAndCounts.entrySet()) {
+                if (next.getValue() > 1) {
+                    inventoryLine.append(next.getKey()).append(" (").append(next.getValue()).append(")").append("\r\n");
+                } else {
+                    inventoryLine.append(next.getKey()).append("\r\n");
+                }
+            }
+            rolledUp.add(inventoryLine.toString());
+        }
+        return rolledUp;
+    }
+
     public List<String> getRolledUpIntentory(Player player) {
         List<String> rolledUp = Lists.newArrayList();
         List<Item> inventory = getInventory(player);
