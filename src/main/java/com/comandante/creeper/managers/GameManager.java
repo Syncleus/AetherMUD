@@ -605,7 +605,7 @@ public class GameManager {
         Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
         while (players.hasNext()) {
             Map.Entry<String, Player> next = players.next();
-            channelUtils.write(next.getValue().getPlayerId(), playerName + Color.BOLD_ON + Color.GREEN + " has reached LEVEL " + newLevel + Color.RESET + "\r\n");
+            channelUtils.write("\r\n" + next.getValue().getPlayerId(), playerName + Color.BOLD_ON + Color.GREEN + " has reached LEVEL " + newLevel + Color.RESET + "\r\n");
         }
     }
 
