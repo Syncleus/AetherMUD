@@ -69,6 +69,8 @@ public class GameManager {
     private final BotCommandManager botCommandManager;
     private final StatsModifierFactory statsModifierFactory;
 
+    public static final int MAX_LOCKER_SIZE = 500;
+
     private static final Logger log = Logger.getLogger(GameManager.class);
 
 

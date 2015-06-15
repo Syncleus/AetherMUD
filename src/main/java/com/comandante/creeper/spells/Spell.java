@@ -1,13 +1,17 @@
 package com.comandante.creeper.spells;
 
 
+import com.comandante.creeper.fight.FightResults;
+import com.comandante.creeper.fight.FightRun;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsHelper;
+import com.google.common.base.Optional;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import org.apache.log4j.Logger;
@@ -15,6 +19,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 
 public abstract class Spell {
@@ -95,6 +100,12 @@ public abstract class Spell {
                     int spellAttack = getSpellAttack(npc.getStats());
                     gameManager.getChannelUtils().write(player.getPlayerId(), getAttackMessage(spellAttack));
                     gameManager.updateNpcHealth(npc.getEntityId(), -spellAttack, player.getPlayerId());
+                    npc.setIsInFight(true);
+                    FightRun fightRun = new FightRun(player, npc, gameManager);
+                    gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " has attacked a " + npc.getColorName());
+                    Future<FightResults> fight = gameManager.getFightManager().fight(fightRun);
+                    CreeperSession creeperSession = (CreeperSession) player.getChannel().getAttachment();
+                    creeperSession.setActiveFight(Optional.of(fight));
                 }
                 applyEffectsToNpcs(npcIds, player);
                 gameManager.getPlayerManager().updatePlayerMana(player, -manaCost);

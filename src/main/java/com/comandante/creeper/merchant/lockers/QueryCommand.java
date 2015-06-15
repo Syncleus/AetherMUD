@@ -26,7 +26,7 @@ public class QueryCommand extends LockerCommand {
             for (String rolledUpInvLine: gameManager.getEntityManager().getRolledUpLockerInventory(player)) {
                 write(rolledUpInvLine);;
             }
-            write("----PERSONAL INVENTORY\r\n");
+            write("\r\n\r\n----PERSONAL INVENTORY\r\n");
             for (String rolledUpInvLine: gameManager.getEntityManager().getRolledUpIntentory(player)) {
                 write(rolledUpInvLine);
             }

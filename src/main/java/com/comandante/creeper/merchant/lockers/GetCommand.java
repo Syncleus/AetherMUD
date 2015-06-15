@@ -14,7 +14,7 @@ import java.util.List;
 public class GetCommand extends LockerCommand {
 
     final static List<String> validTriggers = Arrays.asList("get", "g");
-    final static String description = "Get an item from your locker.";
+    final static String description = "Get an item from your locker.t";
 
     public GetCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description);

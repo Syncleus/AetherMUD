@@ -17,6 +17,7 @@ public class Player extends CreeperEntity {
     private Optional<String> returnDirection = Optional.absent();
     private final GameManager gameManager;
     private Room currentRoom;
+    private String npcEntityCurrentlyInFightWith;
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -87,5 +88,13 @@ public class Player extends CreeperEntity {
 
        int result = (int) (2297 * .05);
         System.out.println(result);
+    }
+
+    public String getNpcEntityCurrentlyInFightWith() {
+        return npcEntityCurrentlyInFightWith;
+    }
+
+    public void setNpcEntityCurrentlyInFightWith(String npcEntityCurrentlyInFightWith) {
+        this.npcEntityCurrentlyInFightWith = npcEntityCurrentlyInFightWith;
     }
 }

@@ -48,25 +48,30 @@ public class FightManager {
     public void fightRound(Stats challenger, Stats victim, Player player, Npc npc) {
         Integer roomId = gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId();
         int chanceToHit = getChanceToHit(challenger, victim);
-        int damageToVictim = 0;
-        if (randInt(0, 100) < chanceToHit) {
-            damageToVictim = getAttackAmt(challenger, victim);
-        }
-        if (damageToVictim > 0) {
-            final String fightMsg = Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
-            channelUtils.write(player.getPlayerId(), fightMsg, true);
-            doNpcDamage(npc.getEntityId(), damageToVictim, player.getPlayerId());
+        if (isValidActiveFightForThisNpc(player, npc)) {
+            int damageToVictim = 0;
+            if (randInt(0, 100) < chanceToHit) {
+                damageToVictim = getAttackAmt(challenger, victim);
+            }
+            if (damageToVictim > 0) {
+                final String fightMsg = Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                channelUtils.write(player.getPlayerId(), fightMsg, true);
+                doNpcDamage(npc.getEntityId(), damageToVictim, player.getPlayerId());
+            } else {
+                final String fightMsg = "You MISS " + npc.getName() + "!";
+                channelUtils.write(player.getPlayerId(), fightMsg, true);
+            }
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (victim.getCurrentHealth() <= 0) {
+                return;
+            }
         } else {
-            final String fightMsg = "You MISS " + npc.getName() + "!";
-            channelUtils.write(player.getPlayerId(), fightMsg, true);
-        }
-        try {
-            Thread.sleep(600);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (victim.getCurrentHealth() <= 0) {
-            return;
+            channelUtils.write(player.getPlayerId(), "Can't attack this mob you are in combat with another.", true);
+
         }
         int chanceToHitBack = getChanceToHit(victim, challenger);
         int damageBack = getAttackAmt(victim, challenger);
@@ -119,6 +124,19 @@ public class FightManager {
     public static boolean isActiveFight(CreeperSession session) {
         if (session == null) return false;
         return (session.getActiveFight().isPresent() && !session.getActiveFight().get().isDone());
+    }
+
+    private boolean isValidActiveFightForThisNpc(Player player, Npc npc) {
+        if (player.getNpcEntityCurrentlyInFightWith() == null) {
+            player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
+            return true;
+        }
+        if (gameManager.getEntityManager().getNpcEntity(player.getNpcEntityCurrentlyInFightWith()) != null) {
+            return npc.getEntityId().equals(player.getNpcEntityCurrentlyInFightWith());
+        } else {
+            player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
+            return true;
+        }
     }
 
 }
