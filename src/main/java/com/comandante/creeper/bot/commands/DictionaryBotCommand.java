@@ -9,21 +9,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ChuckNorrisCommand extends BotCommand {
 
-    static Set<String> triggers = Sets.newHashSet("chuck");
-    static String helpUsage = "chuck";
-    static String helpDescription = "Random Chuck Norris Joke";
+public class DictionaryBotCommand extends BotCommand {
 
-    public ChuckNorrisCommand(BotCommandManager botCommandManager) {
+    static Set<String> triggers = Sets.newHashSet("dictionary", "define", "definition");
+    static String helpUsage = "dictionary irony";
+    static String helpDescription = "Obtain the definition for a word";
+
+    public DictionaryBotCommand(BotCommandManager botCommandManager) {
         super(botCommandManager, triggers, helpUsage, helpDescription);
     }
 
     @Override
     public List<String> process() {
         ArrayList<String> resp = Lists.newArrayList();
+        String argumentString = joinArgs(args);
         try {
-            resp.addAll(botCommandManager.getChuckNorrisManager().getRandomChuckNorrisJoke());
+            resp.addAll(botCommandManager.getDictionaryManager().getDefinitionForWord(argumentString));
         } catch (IOException e) {
             e.printStackTrace();
         }

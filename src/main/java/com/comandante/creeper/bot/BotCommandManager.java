@@ -8,11 +8,13 @@ public class BotCommandManager {
     private final GameManager gameManager;
     private final WeatherManager weatherManager;
     private final ChuckNorrisManager chuckNorrisManager;
+    private final DictionaryManager dictionaryManager;
 
     public BotCommandManager(GameManager gameManager) {
         this.gameManager = gameManager;
         this.weatherManager = new WeatherManager(gameManager.getCreeperConfiguration());
         this.chuckNorrisManager = new ChuckNorrisManager(gameManager.getCreeperConfiguration());
+        this.dictionaryManager = new DictionaryManager(gameManager.getCreeperConfiguration());
     }
 
     public GameManager getGameManager() {
@@ -25,5 +27,9 @@ public class BotCommandManager {
 
     public ChuckNorrisManager getChuckNorrisManager() {
         return chuckNorrisManager;
+    }
+
+    public DictionaryManager getDictionaryManager() {
+        return dictionaryManager;
     }
 }

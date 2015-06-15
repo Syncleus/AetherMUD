@@ -21,7 +21,7 @@ private final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 private final JsonFactory JSON_FACTORY = new JacksonFactory();
 private final HttpRequestFactory requestFactory;
 
-private static final Logger log = Logger.getLogger(WeatherManager.class);
+private static final Logger log = Logger.getLogger(ChuckNorrisManager.class);
 
 
         public ChuckNorrisManager(CreeperConfiguration creeperConfiguration) {
@@ -52,7 +52,7 @@ private static final Logger log = Logger.getLogger(WeatherManager.class);
                 Object joke = current_observation.get("joke");
                 response.add(joke.toString());
             } catch (Exception e) {
-                log.error("Error obtaining weather!", e);
+                log.error("Error obtaining chuck norris joke!", e);
             }
             return response;
         }
