@@ -69,9 +69,6 @@ public class FightManager {
             if (victim.getCurrentHealth() <= 0) {
                 return;
             }
-        } else {
-            channelUtils.write(player.getPlayerId(), "Can't attack this mob you are in combat with another.", true);
-
         }
         int chanceToHitBack = getChanceToHit(victim, challenger);
         int damageBack = getAttackAmt(victim, challenger);
