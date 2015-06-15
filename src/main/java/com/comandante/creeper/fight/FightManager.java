@@ -8,6 +8,8 @@ import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.Random;
@@ -124,17 +126,19 @@ public class FightManager {
     }
 
     private boolean isValidActiveFightForThisNpc(Player player, Npc npc) {
-        if (player.getNpcEntityCurrentlyInFightWith() == null) {
-            player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
-            return true;
-        }
-        if (gameManager.getEntityManager().getNpcEntity(player.getNpcEntityCurrentlyInFightWith()) != null) {
-            return npc.getEntityId().equals(player.getNpcEntityCurrentlyInFightWith());
-        } else {
-            player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
-            return true;
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            if (player.getNpcEntityCurrentlyInFightWith() == null) {
+                player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
+                return true;
+            }
+            if (gameManager.getEntityManager().getNpcEntity(player.getNpcEntityCurrentlyInFightWith()) != null) {
+                return npc.getEntityId().equals(player.getNpcEntityCurrentlyInFightWith());
+            } else {
+                player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
+                return true;
+            }
         }
     }
-
 }
 
