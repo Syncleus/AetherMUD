@@ -57,6 +57,7 @@ public class FightRun implements Callable<FightResults> {
                 PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
                 gameManager.movePlayer(playerMovement);
                 gameManager.currentRoomLogic(player.getPlayerId());
+                player.setNpcEntityCurrentlyInFightWith(null);
                 String prompt = gameManager.buildPrompt(player.getPlayerId());
                 gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
                 npc.setIsInFight(false);

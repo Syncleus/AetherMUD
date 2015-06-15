@@ -133,7 +133,11 @@ public class FightManager {
                 return true;
             }
             if (gameManager.getEntityManager().getNpcEntity(player.getNpcEntityCurrentlyInFightWith()) != null) {
-                return npc.getEntityId().equals(player.getNpcEntityCurrentlyInFightWith());
+                if (npc.getEntityId().equals(player.getNpcEntityCurrentlyInFightWith())) {
+                    return true;
+                } else {
+                    return !player.getCurrentRoom().getNpcIds().contains(player.getNpcEntityCurrentlyInFightWith());
+                }
             } else {
                 player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
                 return true;
