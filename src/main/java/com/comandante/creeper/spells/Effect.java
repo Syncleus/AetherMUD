@@ -30,6 +30,7 @@ public class Effect extends CreeperEntity {
     }
 
     public Effect(Effect effect) {
+        this.setEntityId(effect.getEntityId());
         this.effectName = effect.effectName;
         this.effectDescription = effect.effectDescription;
         this.effectApplyMessages = effect.effectApplyMessages;

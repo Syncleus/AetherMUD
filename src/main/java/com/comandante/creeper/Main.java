@@ -87,6 +87,9 @@ public class Main {
         startUpMessage("Configuring default inventorySize limits");
         BackportCommands.configureDefaultInventorySize(entityManager, gameManager);
 
+        startUpMessage("Configuring default maxEffects limits");
+        BackportCommands.configureDefaultMaxEffectSize(entityManager, gameManager);
+
         startUpMessage("Creeper MUD engine started");
 
         creeperServer.run(gameManager);

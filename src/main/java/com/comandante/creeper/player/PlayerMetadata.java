@@ -23,9 +23,9 @@ public class PlayerMetadata implements Serializable {
     private int goldInBank;
     private Set<PlayerRole> playerRoleSet;
     private String[] playerEquipment;
-    protected String[] effects;
+    private List<String> effects;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] effects) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -34,7 +34,6 @@ public class PlayerMetadata implements Serializable {
         this.playerRoleSet = playerRoleSet;
         this.playerEquipment = playerEquipment;
         this.goldInBank = goldInBank;
-        this.effects = effects;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -57,7 +56,7 @@ public class PlayerMetadata implements Serializable {
             this.playerEquipment = Arrays.copyOf(playerMetadata.playerEquipment, playerMetadata.playerEquipment.length);
         }
         if (playerMetadata.effects != null) {
-            this.effects = Arrays.copyOf(playerMetadata.effects, playerMetadata.effects.length);
+            this.effects = Lists.newArrayList(playerMetadata.getEffects());
         }
     }
 
@@ -119,23 +118,13 @@ public class PlayerMetadata implements Serializable {
 
     protected void addEffectId(String effectId) {
         if (effects == null) {
-            effects = new String[0];
+            effects = Lists.newArrayList();
         }
-        String[] result = Arrays.copyOf(effects, effects.length + 1);
-        result[effects.length] = effectId;
-        this.effects = result;
+        effects.add(effectId);
     }
 
     protected void removeEffectId(String effectId) {
-        List<String> effectsKeep = new ArrayList<String>(Arrays.asList(effects));
-        effectsKeep.remove(effectId);
-        String[] newEffects = new String[effectId.length()];
-        int i = 0;
-        for (String id : effectsKeep) {
-            newEffects[i] = id;
-            i++;
-        }
-        this.effects = newEffects;
+        effects.remove(effectId);
     }
 
     public String getPlayerName() {
@@ -191,11 +180,7 @@ public class PlayerMetadata implements Serializable {
         return playerEquipment;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String[] getEffects() {
+    public List<String> getEffects() {
         return effects;
     }
 }

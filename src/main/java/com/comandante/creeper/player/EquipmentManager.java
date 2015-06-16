@@ -4,6 +4,7 @@ import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.ChannelUtils;
+import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
@@ -79,6 +80,12 @@ public class EquipmentManager {
             Equipment equipment = itemEntity.getEquipment();
             Stats stats = equipment.getStats();
             StatsHelper.combineStats(newStats, stats);
+        }
+        if (playerMetadata.getEffects() != null) {
+            for (String effectId : playerMetadata.getEffects()) {
+                Effect effect = gameManager.getEntityManager().getEffect(effectId);
+                StatsHelper.combineStats(newStats, effect.getDurationStats());
+            }
         }
         return newStats;
     }

@@ -20,6 +20,7 @@ public class StatsHelper {
         statsBuilder.setMaxMana(modifiedStats.getMaxMana() - origStats.getMaxMana());
         statsBuilder.setForaging(modifiedStats.getForaging() - origStats.getForaging());
         statsBuilder.setInventorySize(modifiedStats.getInventorySize() - origStats.getInventorySize());
+        statsBuilder.setMaxEffects(modifiedStats.getMaxEffects() - origStats.getMaxEffects());
         return statsBuilder.createStats();
     }
 
@@ -40,6 +41,7 @@ public class StatsHelper {
         orig.setMaxMana(orig.getMaxMana() + combine.getMaxMana());
         orig.setForaging(orig.getForaging() + combine.getForaging());
         orig.setInventorySize(orig.getInventorySize() + combine.getInventorySize());
+        orig.setMaxEffects(orig.getMaxEffects() + combine.getMaxEffects());
     }
 
     public static void inverseStats(Stats stats) {
@@ -59,6 +61,7 @@ public class StatsHelper {
         stats.setMaxMana(-stats.getMaxMana());
         stats.setForaging(-stats.getForaging());
         stats.setInventorySize(-stats.getInventorySize());
+        stats.setMaxEffects(-stats.getMaxEffects());
     }
 
 }

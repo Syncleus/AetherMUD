@@ -1,12 +1,10 @@
 package com.comandante.creeper.entity;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.UUID;
 
 public abstract class CreeperEntity implements Runnable {
 
-    private final String entityId;
+    private String entityId;
 
     protected CreeperEntity() {
         this.entityId = UUID.randomUUID().toString();
@@ -18,5 +16,9 @@ public abstract class CreeperEntity implements Runnable {
 
     public String getEntityId() {
         return entityId;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
     }
 }

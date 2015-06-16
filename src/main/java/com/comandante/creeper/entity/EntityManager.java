@@ -260,23 +260,6 @@ public class EntityManager {
             return equipmentItems;
         }
 
-        public List<Effect> getEffects (Player player){
-            PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-            List<Effect> effectList = Lists.newArrayList();
-            String[] effects = playerMetadata.getEffects();
-            if (effects != null) {
-                for (String effectId : effects) {
-                    Effect effect = getEffect(effectId);
-                    if (effect == null) {
-                        log.info("Orphaned effectId:" + effectId + " player: " + player.getPlayerName());
-                        continue;
-                    }
-                    effectList.add(effect);
-                }
-            }
-            return effectList;
-        }
-
     public Npc getNpcEntity(String npcId) {
         return npcs.get(npcId);
     }

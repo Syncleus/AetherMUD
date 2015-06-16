@@ -17,6 +17,7 @@ public class StatsBuilder {
     private int maxMana;
     private int foraging;
     private int inventorySize;
+    private int maxEffects;
 
     public StatsBuilder() {
     }
@@ -39,6 +40,7 @@ public class StatsBuilder {
         this.foraging = stats.getForaging();
         this.currentMana = stats.getCurrentMana();
         this.inventorySize = stats.getInventorySize();
+        this.maxEffects = stats.getMaxEffects();
     }
 
     public StatsBuilder setStrength(int strength) {
@@ -121,7 +123,12 @@ public class StatsBuilder {
         return this;
     }
 
+    public StatsBuilder setMaxEffects(int maxEffects) {
+        this.maxEffects = maxEffects;
+        return this;
+    }
+
     public Stats createStats() {
-        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize);
+        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize, maxEffects);
     }
 }

@@ -40,10 +40,6 @@ public class Player extends CreeperEntity {
         this.channel = channel;
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
     public Optional<String> getReturnDirection() {
         return returnDirection;
     }
@@ -72,22 +68,16 @@ public class Player extends CreeperEntity {
         }
         for (String effectId: playerMetadata.getEffects()) {
             Effect effect = gameManager.getEntityManager().getEffect(effectId);
-            gameManager.getEffectsManager().applyEffectStatsOnTick(effect, playerMetadata);
-            effect.setTicks(effect.getTicks() + 1);
             if (effect.getTicks() >= effect.getLifeSpanTicks()) {
-                gameManager.getEffectsManager().removeDurationStats(effect, playerMetadata);
+                gameManager.getChannelUtils().write(getPlayerId(), effect.getEffectName() + " has worn off.\r\n", true);
                 gameManager.getEntityManager().removeEffect(effect);
+                gameManager.getPlayerManager().removeEffect(this, effectId);
             } else {
+                effect.setTicks(effect.getTicks() + 1);
+                gameManager.getEffectsManager().applyEffectStatsOnTick(effect, playerMetadata);
                 gameManager.getEntityManager().saveEffect(effect);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        int test = 2297;
-
-       int result = (int) (2297 * .05);
-        System.out.println(result);
     }
 
     public String getNpcEntityCurrentlyInFightWith() {

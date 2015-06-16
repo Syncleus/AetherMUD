@@ -495,7 +495,18 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            3000);
+            3000),
+
+    STRENGTH_ELIXIR(45, Arrays.asList("strength", "strength elixir", "elixir", "s", "e"),
+            "an elixir of " + RED + "strength" + RESET,
+            "an elixir of " + RED + "strength" + RESET + " is in an crystal vessel on the ground.",
+            "an elixir of " + RED + "strength" + RESET + " that increases your might.",
+            true,
+            0,
+            60,
+            true,
+            Rarity.BASIC,
+            300);
 
 
     private final Integer itemTypeCode;

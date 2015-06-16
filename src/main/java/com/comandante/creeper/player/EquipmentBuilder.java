@@ -3,8 +3,16 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.server.Color;
+import com.comandante.creeper.spells.Effect;
+import com.comandante.creeper.spells.EffectBuilder;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
+import com.google.api.client.util.Lists;
+import com.google.api.client.util.Sets;
+
+import java.util.List;
+import java.util.Set;
 
 public class EquipmentBuilder {
 
@@ -80,6 +88,8 @@ public class EquipmentBuilder {
                     return getLeatherSatchel(item);
                 case BIGGERS_SKIN_SATCHEL:
                     return getBiggersSkinSatchel(item);
+                case STRENGTH_ELIXIR:
+                    return getStrengthElixir(item);
             }
         }
         return null;
@@ -323,6 +333,27 @@ public class EquipmentBuilder {
         Stats stats = new StatsBuilder().setInventorySize(100).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.BAG, stats);
         item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getStrengthElixir(Item item) {
+        EffectBuilder effectBuilder = new EffectBuilder();
+
+        Stats durationStats = new StatsBuilder().setStrength(300).createStats();
+        List<String> applyMessage = Lists.newArrayList();
+        applyMessage.add("A sudden increase of strength is felt pulsing through your veins.");
+
+        Effect effect = effectBuilder.setApplyStatsOnTick(null)
+                .setDurationStats(durationStats)
+                .setEffectApplyMessages(applyMessage)
+                .setEffectDescription("Increase strength for a short period of time.")
+                .setEffectName(Color.RED + "strength" + Color.RESET + " elixir")
+                .setFrozenMovement(false)
+                .setLifeSpanTicks(36).createEffect();
+
+        Set<Effect> effectSet = Sets.newHashSet();
+        effectSet.add(effect);
+        item.setEffects(effectSet);
         return item;
     }
 

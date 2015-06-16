@@ -2,9 +2,11 @@ package com.comandante.creeper.Items;
 
 
 import com.comandante.creeper.player.Equipment;
+import com.comandante.creeper.spells.Effect;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 public class Item implements Serializable {
 
@@ -21,6 +23,7 @@ public class Item implements Serializable {
     private Equipment equipment;
     private final Rarity rarity;
     private final int valueInGold;
+    private Set<Effect> effects;
 
     public static final int CORPSE_ID_RESERVED = 100;
     public static final int EQUIPMENT_ID_RESERVED = 101;
@@ -72,6 +75,7 @@ public class Item implements Serializable {
         }
         this.rarity = origItem.rarity;
         this.valueInGold = origItem.valueInGold;
+        this.effects = origItem.effects;
     }
 
     public boolean isWithPlayer() {
@@ -136,6 +140,14 @@ public class Item implements Serializable {
 
     public int getValueInGold() {
         return valueInGold;
+    }
+
+    public void setEffects(Set<Effect> effects) {
+        this.effects = effects;
+    }
+
+    public Set<Effect> getEffects() {
+        return effects;
     }
 
     @Override

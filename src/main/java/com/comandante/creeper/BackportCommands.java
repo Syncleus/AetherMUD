@@ -24,4 +24,16 @@ public class BackportCommands {
             }
         }
     }
+
+    public static void configureDefaultMaxEffectSize(EntityManager entityManager, GameManager gameManager) {
+        for (Map.Entry<String, PlayerMetadata> next : gameManager.getPlayerManager().getPlayerMetadataStore().entrySet()) {
+            PlayerMetadata playerMetadata = next.getValue();
+            Stats stats = playerMetadata.getStats();
+            if (stats.getMaxEffects() == 0) {
+                playerMetadata.getStats().setMaxEffects(PlayerStats.DEFAULT_PLAYER.createStats().getMaxEffects());
+                gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+                log.info("Max Effects size for player: " + playerMetadata.getPlayerName() + " was zero, setting to the default of: " + PlayerStats.DEFAULT_PLAYER.createStats().getMaxEffects() + ".");
+            }
+        }
+    }
 }

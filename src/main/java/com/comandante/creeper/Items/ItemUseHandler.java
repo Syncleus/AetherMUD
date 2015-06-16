@@ -7,6 +7,10 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
+import com.comandante.creeper.spells.Effect;
+import org.apache.log4j.Logger;
+
+import java.util.Set;
 
 public class ItemUseHandler {
 
@@ -16,12 +20,39 @@ public class ItemUseHandler {
     private final Player player;
     private final ItemType itemType;
 
+    private static final Logger log = Logger.getLogger(ItemUseHandler.class);
+
+
     public ItemUseHandler(Item item, CreeperSession creeperSession, GameManager gameManager, Player player) {
         this.item = item;
         this.creeperSession = creeperSession;
         this.gameManager = gameManager;
         this.player = player;
         this.itemType = ItemType.itemTypeFromCode(item.getItemTypeId());
+    }
+
+    private void processEffects() {
+        Set<Effect> effects = item.getEffects();
+        if (effects == null) {
+            return;
+        }
+        for (Effect effect: effects) {
+            Effect nEffect = new Effect(effect);
+            nEffect.setPlayerId(player.getPlayerId());
+            gameManager.getEntityManager().saveEffect(nEffect);
+            boolean effectResult = gameManager.getPlayerManager().addEffect(player, nEffect.getEntityId());
+            if (effect.getDurationStats() != null) {
+                if (effect.getDurationStats().getCurrentHealth() < 0) {
+                    log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
+                    continue;
+                }
+            }
+            if (effectResult) {
+                writeToPlayer("You feel " + effect.getEffectName() + "\r\n");
+            } else {
+                writeToPlayer("Unable to apply effect.\r\n");
+            }
+        }
     }
 
     private void processKey() {
@@ -95,6 +126,7 @@ public class ItemUseHandler {
                     return;
             }
 
+            processEffects();
             incrementUses(item);
 
             if (itemType.isDisposable()) {
@@ -115,7 +147,6 @@ public class ItemUseHandler {
     private void writeToRoom(String message) {
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), message);
     }
-
 
     private void incrementUses(Item item) {
         item.setNumberOfUses(item.getNumberOfUses() + 1);

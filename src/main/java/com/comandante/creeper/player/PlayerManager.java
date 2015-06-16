@@ -96,12 +96,16 @@ public class PlayerManager {
         }
     }
 
-    public void addEffect(Player player, String effectId) {
+    public boolean addEffect(Player player, String effectId) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {
             PlayerMetadata playerMetadata = playerMetadataStore.get(player.getPlayerId());
+            if (playerMetadata.getEffects() != null && (playerMetadata.getEffects().size() >= playerMetadata.getStats().getMaxEffects())) {
+                return false;
+            }
             playerMetadata.addEffectId(effectId);
             savePlayerMetadata(playerMetadata);
+            return true;
         }
     }
 
