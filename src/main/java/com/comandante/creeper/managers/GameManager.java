@@ -605,7 +605,7 @@ public class GameManager {
         Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
         while (players.hasNext()) {
             Map.Entry<String, Player> next = players.next();
-            channelUtils.write("\r\n" + next.getValue().getPlayerId(), playerName + Color.BOLD_ON + Color.GREEN + " has reached LEVEL " + newLevel + Color.RESET + "\r\n");
+            channelUtils.write(next.getValue().getPlayerId(), "\r\n" + playerName + Color.BOLD_ON + Color.GREEN + " has reached LEVEL " + newLevel + Color.RESET + "\r\n");
         }
     }
 
@@ -726,7 +726,7 @@ public class GameManager {
     public String buildPrompt(String playerId) {
         boolean isFight = FightManager.isActiveFight(getPlayerManager().getSessionManager().getSession(playerId));
         Player player = playerManager.getPlayer(playerId);
-        Stats stats = statsModifierFactory.getStatsModifier(player);
+        Stats stats = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
         int currentHealth = stats.getCurrentHealth();
         int maxHealth = stats.getMaxHealth();
         int currentMana = stats.getCurrentMana();
@@ -752,7 +752,7 @@ public class GameManager {
         synchronized (interner.intern(player.getPlayerId())) {
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(player.getPlayerId());
             int currentHealth = playerMetadata.getStats().getCurrentHealth();
-            Stats statsModifier = getStatsModifierFactory().getStatsModifier(player);
+            Stats statsModifier = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
             int maxHealth = statsModifier.getMaxHealth();
             int proposedNewAmt = currentHealth + addAmt;
             if (proposedNewAmt > maxHealth) {
@@ -774,7 +774,7 @@ public class GameManager {
         synchronized (interner.intern(player.getPlayerId())) {
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(player.getPlayerId());
             int currentMana = playerMetadata.getStats().getCurrentMana();
-            Stats statsModifier = statsModifierFactory.getStatsModifier(player);
+            Stats statsModifier = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
             int maxMana = statsModifier.getMaxMana();
             int proposedNewAmt = currentMana + addAmt;
             if (proposedNewAmt > maxMana) {

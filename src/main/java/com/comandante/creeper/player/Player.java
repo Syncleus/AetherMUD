@@ -59,7 +59,7 @@ public class Player extends CreeperEntity {
     @Override
     public void run() {
         PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId());
-        Stats stats = gameManager.getStatsModifierFactory().getStatsModifier(this);
+        Stats stats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(this);
         if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
             gameManager.addHealth(this, (int) (stats.getMaxHealth() * .05));
         }

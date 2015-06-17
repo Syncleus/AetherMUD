@@ -86,6 +86,8 @@ public class BasicPlayerLevelStatsModifier implements StatsModifier {
         statsBuilder.setWillpower(newWillpowerRating);
         statsBuilder.setAgile(newAgileRating);
         statsBuilder.setMeleSkill(newMeleRating);
+        statsBuilder.setCurrentHealth(baseStats.getCurrentHealth());
+        statsBuilder.setCurrentMana(baseStats.getCurrentMana());
         return statsBuilder.createStats();
     }
 }

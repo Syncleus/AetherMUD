@@ -506,7 +506,18 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            300);
+            300),
+
+    CHRONIC_JOOSE(46, Arrays.asList("chronic", "chronic joose", "joose", "c", "j"),
+            "an elixir of " + GREEN + "chronic" + RESET + " joose",
+            "an elixir of " + GREEN + "chronic" + RESET + " joose is in an crystal vessel on the ground.",
+            "an elixir of " + GREEN + "chronic" + RESET + " joose that increases your chronic-ness.",
+            true,
+            0,
+            60,
+            true,
+            Rarity.BASIC,
+            1000);
 
 
     private final Integer itemTypeCode;

@@ -90,6 +90,8 @@ public class EquipmentBuilder {
                     return getBiggersSkinSatchel(item);
                 case STRENGTH_ELIXIR:
                     return getStrengthElixir(item);
+                case CHRONIC_JOOSE:
+                    return getChronicJoose(item);
             }
         }
         return null;
@@ -350,6 +352,27 @@ public class EquipmentBuilder {
                 .setEffectName(Color.RED + "strength" + Color.RESET + " elixir")
                 .setFrozenMovement(false)
                 .setLifeSpanTicks(36).createEffect();
+
+        Set<Effect> effectSet = Sets.newHashSet();
+        effectSet.add(effect);
+        item.setEffects(effectSet);
+        return item;
+    }
+
+    public static Item getChronicJoose(Item item) {
+        EffectBuilder effectBuilder = new EffectBuilder();
+
+        Stats durationStats = new StatsBuilder().setMaxHealth(2000).setMaxMana(1500).createStats();
+        List<String> applyMessage = Lists.newArrayList();
+        applyMessage.add("That " + Color.GREEN + " chronic " + Color.RESET + "joose is pumping through your veins.");
+
+        Effect effect = effectBuilder.setApplyStatsOnTick(null)
+                .setDurationStats(durationStats)
+                .setEffectApplyMessages(applyMessage)
+                .setEffectDescription("Increases mana and health for 10 minutes")
+                .setEffectName(Color.GREEN + "chronic" + Color.RESET + " joose elixir")
+                .setFrozenMovement(false)
+                .setLifeSpanTicks(120).createEffect();
 
         Set<Effect> effectSet = Sets.newHashSet();
         effectSet.add(effect);
