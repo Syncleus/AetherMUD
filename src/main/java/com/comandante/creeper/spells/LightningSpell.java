@@ -36,7 +36,7 @@ public class LightningSpell extends Spell {
     private static final Effect burnEffect = new EffectBuilder()
             .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning"+ Color.RESET + " from the lightning strike!"))
             .setEffectDescription(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
-            .setEffectName("lightning fire")
+            .setEffectName(Color.YELLOW + "lightning " + Color.RESET + Color.RED + "fire" + Color.RESET)
             .setDurationStats(new StatsBuilder().createStats())
             .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-150).createStats())
             .setFrozenMovement(false)

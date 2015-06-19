@@ -20,11 +20,13 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
+import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.*;
+import com.google.api.client.util.Lists;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
@@ -438,6 +440,8 @@ public class GameManager {
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(npc.getColorName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats())).append("\r\n");
+        sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(buldEffectsString(npc)).append("\r\n");
         return sb.toString();
     }
 
@@ -452,6 +456,8 @@ public class GameManager {
         sb.append(buildEquipmentString(player)).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildLookString(player.getPlayerName(), modifiedStats, diffStats)).append("\r\n");
+        sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(buldEffectsString(player)).append("\r\n");
         return sb.toString();
     }
 
@@ -471,6 +477,40 @@ public class GameManager {
             }
         }
         return t.render();
+    }
+
+    public String renderEffectsString(List<Effect> effects) {
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
+
+        t.setColumnWidth(0, 16, 20);
+        // t.setColumnWidth(1, 10, 13);
+
+        int i = 1;
+        for (Effect effect : effects) {
+            int percent = 100 - (int) ((effect.getTicks() * 100.0f) / effect.getLifeSpanTicks());
+            t.addCell(drawProgressBar(percent));
+            t.addCell(effect.getEffectName());
+            i++;
+        }
+        return t.render();
+    }
+
+    public String buldEffectsString(Npc npc) {
+        return renderEffectsString(npc.getEffects());
+
+    }
+
+    public String buldEffectsString(Player player) {
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+        List<Effect> effects = Lists.newArrayList();
+        if (playerMetadata.getEffects() != null) {
+            for (String effectId : playerMetadata.getEffects()) {
+                Effect effect = entityManager.getEffect(effectId);
+                effects.add(effect);
+            }
+        }
+        return renderEffectsString(effects);
     }
 
     public String buildLookString(String name, Stats stats, Stats diff) {
@@ -665,7 +705,7 @@ public class GameManager {
         int totalDamageDone = 0;
         Room npcCurrentRoom = getRoomManager().getNpcCurrentRoom(npc).get();
         while (iterator.hasNext()) {
-            Map.Entry<String, Integer> damageEntry =  iterator.next();
+            Map.Entry<String, Integer> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
             System.out.println(playerMetadata.getPlayerName() + " damage to " + npc.getName() + " was " + damageEntry.getValue());
@@ -788,6 +828,29 @@ public class GameManager {
             playerMetadata.getStats().setCurrentMana(proposedNewAmt);
             getPlayerManager().savePlayerMetadata(playerMetadata);
         }
+    }
+
+    public String drawProgressBar(int pct) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        int numberOfProgressBarNotches = getNumberOfProgressBarNotches(pct);
+        for (int i = 0; i < numberOfProgressBarNotches; i++) {
+            sb.append("+");
+        }
+        for (int i = numberOfProgressBarNotches; i < 10; i++) {
+            sb.append(" ");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    public int getNumberOfProgressBarNotches(int y) {
+        int x = (int) (Math.round(y / 10.0) * 10);
+        String str = Integer.toString(x);
+        if (str.length() > 1) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return Integer.parseInt(str);
     }
 
 }
