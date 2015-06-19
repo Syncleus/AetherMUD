@@ -440,8 +440,10 @@ public class GameManager {
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(npc.getColorName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats())).append("\r\n");
-        sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
-        sb.append(buldEffectsString(npc)).append("\r\n");
+        if (npc.getEffects() != null && npc.getEffects().size() > 0) {
+            sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
+            sb.append(buldEffectsString(npc)).append("\r\n");
+        }
         return sb.toString();
     }
 
@@ -456,8 +458,10 @@ public class GameManager {
         sb.append(buildEquipmentString(player)).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildLookString(player.getPlayerName(), modifiedStats, diffStats)).append("\r\n");
-        sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
-        sb.append(buldEffectsString(player)).append("\r\n");
+        if (playerManager.getPlayerMetadata(player.getPlayerId()).getEffects() != null && playerManager.getPlayerMetadata(player.getPlayerId()).getEffects().size() > 0) {
+            sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
+            sb.append(buldEffectsString(player)).append("\r\n");
+        }
         return sb.toString();
     }
 
