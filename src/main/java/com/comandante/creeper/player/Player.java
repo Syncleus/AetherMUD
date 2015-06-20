@@ -8,12 +8,12 @@ import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import org.apache.commons.codec.binary.Base64;
 import org.jboss.netty.channel.Channel;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 public class Player extends CreeperEntity {
 
@@ -22,11 +22,120 @@ public class Player extends CreeperEntity {
     private Optional<String> returnDirection = Optional.absent();
     private final GameManager gameManager;
     private Room currentRoom;
-    private Set<ActiveFight> activeFights = Collections.newSetFromMap(new ConcurrentHashMap<ActiveFight, Boolean>());;
+    private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
         this.gameManager = gameManager;
+    }
+
+    @Override
+    public void run() {
+        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId());
+        Stats stats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(this);
+        if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
+            gameManager.addHealth(this, (int) (stats.getMaxHealth() * .05));
+        }
+        if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
+            gameManager.addMana(this, (int) (stats.getMaxMana() * .03));
+        }
+        for (String effectId : playerMetadata.getEffects()) {
+            Effect effect = gameManager.getEntityManager().getEffect(effectId);
+            if (effect.getTicks() >= effect.getLifeSpanTicks()) {
+                gameManager.getChannelUtils().write(getPlayerId(), effect.getEffectName() + " has worn off.\r\n", true);
+                gameManager.getEntityManager().removeEffect(effect);
+                gameManager.getPlayerManager().removeEffect(this, effectId);
+            } else {
+                effect.setTicks(effect.getTicks() + 1);
+                gameManager.getEffectsManager().applyEffectStatsOnTick(effect, playerMetadata);
+                gameManager.getEntityManager().saveEffect(effect);
+            }
+        }
+    }
+
+    public void removeAllActiveFights() {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getPlayerId())) {
+            Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Long, ActiveFight> next = iterator.next();
+                iterator.remove();
+            }
+        }
+    }
+
+    public void removeActiveFight(Npc npc) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getPlayerId())) {
+            Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
+            boolean resetFights = false;
+            while (iterator.hasNext()) {
+                Map.Entry<Long, ActiveFight> next = iterator.next();
+                if (next.getValue().getNpcId().equals(npc.getEntityId())) {
+                    if (next.getValue().isPrimary) {
+                        resetFights = true;
+                    }
+                    iterator.remove();
+                }
+            }
+            if (resetFights) {
+                activateNextPrimaryActiveFight();
+            }
+        }
+    }
+
+    public void addActiveFight(Npc npc) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getPlayerId())) {
+            ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
+            activeFights.put(System.currentTimeMillis(), activeFight);
+            activateNextPrimaryActiveFight();
+        }
+    }
+
+    public boolean doesActiveFightExist(Npc npc) {
+        for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+            ActiveFight fight = entry.getValue();
+            if (fight.getNpcId().equals(npc.getEntityId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isActiveFights() {
+        return activeFights.size() > 0;
+    }
+
+    public boolean isValidPrimaryActiveFight(Npc npc) {
+        for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+            ActiveFight fight = entry.getValue();
+            if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getPrimaryActiveFight() {
+        for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+            ActiveFight fight = entry.getValue();
+            if (fight.isPrimary) {
+                return fight.getNpcId();
+            }
+        }
+        return null;
+    }
+
+    public void activateNextPrimaryActiveFight() {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getPlayerId())) {
+            if (getPrimaryActiveFight() == null) {
+                if (activeFights.size() > 0) {
+                    activeFights.get(activeFights.firstKey()).setIsPrimary(true);
+                }
+            }
+        }
     }
 
     public String getPlayerName() {
@@ -59,68 +168,6 @@ public class Player extends CreeperEntity {
 
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
-    }
-
-    @Override
-    public void run() {
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId());
-        Stats stats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(this);
-        if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-            gameManager.addHealth(this, (int) (stats.getMaxHealth() * .05));
-        }
-        if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
-            gameManager.addMana(this, (int) (stats.getMaxMana() * .03));
-        }
-        for (String effectId: playerMetadata.getEffects()) {
-            Effect effect = gameManager.getEntityManager().getEffect(effectId);
-            if (effect.getTicks() >= effect.getLifeSpanTicks()) {
-                gameManager.getChannelUtils().write(getPlayerId(), effect.getEffectName() + " has worn off.\r\n", true);
-                gameManager.getEntityManager().removeEffect(effect);
-                gameManager.getPlayerManager().removeEffect(this, effectId);
-            } else {
-                effect.setTicks(effect.getTicks() + 1);
-                gameManager.getEffectsManager().applyEffectStatsOnTick(effect, playerMetadata);
-                gameManager.getEntityManager().saveEffect(effect);
-            }
-        }
-    }
-
-    public void addActiveFight(Npc npc, boolean isPrimary) {
-        activeFights.add(new ActiveFight(npc.getEntityId(), isPrimary));
-        if (isPrimary) {
-            for (ActiveFight fight : activeFights) {
-                if (fight.isPrimary && !fight.getNpcId().equals(npc.getEntityId())) {
-                    fight.setIsPrimary(false);
-                }
-            }
-        }
-    }
-
-    public boolean isValidFight(Npc npc) {
-        for (ActiveFight fight: activeFights){
-            if (fight.getNpcId().equals(npc.getEntityId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isValidPrimaryFight(Npc npc) {
-        for (ActiveFight fight: activeFights){
-            if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public String getPrimaryFight(){
-        for (ActiveFight fight: activeFights) {
-            if (fight.isPrimary) {
-                return fight.getNpcId();
-            }
-        }
-        return null;
     }
 
     class ActiveFight {

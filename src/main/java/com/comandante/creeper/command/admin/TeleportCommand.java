@@ -34,6 +34,10 @@ public class TeleportCommand extends Command {
             if (originalMessageParts.size() <= 1) {
                 return;
             }
+            if (player.isActiveFights()) {
+                write("You can't teleport while in a fight!");
+                return;
+            }
             String desiredId = originalMessageParts.get(1);
             Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
             while (players.hasNext()) {

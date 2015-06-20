@@ -38,8 +38,10 @@ public class FightRun implements Callable<FightResults> {
                 }
                 gameManager.getFightManager().fightTurn(playerStats, npcStats, 3, player, npc);
                 if (getCurrentHealth() > 0 && npcStats.getCurrentHealth() > 0) {
-                    String prompt = gameManager.buildPrompt(player.getPlayerId());
-                    gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
+                    if (player.isValidPrimaryActiveFight(npc)) {
+                        String prompt = gameManager.buildPrompt(player.getPlayerId());
+                        gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
+                    }
                     gameManager.getPlayerManager().getSessionManager().getSession(player.getPlayerId()).setIsAbleToDoAbility(true);
                     try {
                         Thread.sleep(2200);
@@ -52,12 +54,12 @@ public class FightRun implements Callable<FightResults> {
 
             fightResults = new FightResultsBuilder().setNpcWon(false).setPlayerWon(false).createFightResults();
 
-            if (playerDied) {
+            if (playerDied && player.doesActiveFightExist(npc)) {
                 gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is now dead." + "\r\n");
                 PlayerMovement playerMovement = new PlayerMovement(player, gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
                 gameManager.movePlayer(playerMovement);
                 gameManager.currentRoomLogic(player.getPlayerId());
-                player.setNpcEntityCurrentlyInFightWith(null);
+                player.removeAllActiveFights();
                 String prompt = gameManager.buildPrompt(player.getPlayerId());
                 gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
                 npc.setIsInFight(false);

@@ -43,6 +43,7 @@ public class FightKillCommand extends Command {
             for (String npcId : npcIds) {
                 Npc npcEntity = entityManager.getNpcEntity(npcId);
                 if (npcEntity.getValidTriggers().contains(target)) {
+                    player.addActiveFight(npcEntity);
                     npcEntity.setIsInFight(true);
                     FightRun fightRun = new FightRun(player, npcEntity, gameManager);
                     writeToRoom(player.getPlayerName() + " has attacked a " + npcEntity.getColorName());

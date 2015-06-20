@@ -690,6 +690,7 @@ public class GameManager {
                 }
                 npc.addDamageToMap(playerId, damage + damageReportAmt);
                 if (npc.getStats().getCurrentHealth() <= 0) {
+                    player.removeActiveFight(npc);
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, npc.getLoot());
                     processExperience(npc);
                     writeToPlayerCurrentRoom(player.getPlayerId(), npc.getDieMessage());
@@ -768,8 +769,8 @@ public class GameManager {
 
 
     public String buildPrompt(String playerId) {
-        boolean isFight = FightManager.isActiveFight(getPlayerManager().getSessionManager().getSession(playerId));
         Player player = playerManager.getPlayer(playerId);
+        boolean isFight = player.isActiveFights();
         Stats stats = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
         int currentHealth = stats.getCurrentHealth();
         int maxHealth = stats.getMaxHealth();
