@@ -3,12 +3,17 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
 import org.apache.commons.codec.binary.Base64;
 import org.jboss.netty.channel.Channel;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Player extends CreeperEntity {
 
@@ -17,7 +22,7 @@ public class Player extends CreeperEntity {
     private Optional<String> returnDirection = Optional.absent();
     private final GameManager gameManager;
     private Room currentRoom;
-    private String npcEntityCurrentlyInFightWith;
+    private Set<ActiveFight> activeFights = Collections.newSetFromMap(new ConcurrentHashMap<ActiveFight, Boolean>());;
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -80,11 +85,63 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public String getNpcEntityCurrentlyInFightWith() {
-        return npcEntityCurrentlyInFightWith;
+    public void addActiveFight(Npc npc, boolean isPrimary) {
+        activeFights.add(new ActiveFight(npc.getEntityId(), isPrimary));
+        if (isPrimary) {
+            for (ActiveFight fight : activeFights) {
+                if (fight.isPrimary) {
+                    fight.setIsPrimary(false);
+                }
+            }
+        }
     }
 
-    public void setNpcEntityCurrentlyInFightWith(String npcEntityCurrentlyInFightWith) {
-        this.npcEntityCurrentlyInFightWith = npcEntityCurrentlyInFightWith;
+    public boolean isValidFight(Npc npc) {
+        for (ActiveFight fight: activeFights){
+            if (fight.getNpcId().equals(npc.getEntityId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isValidPrimaryFight(Npc npc) {
+        for (ActiveFight fight: activeFights){
+            if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getPrimaryFight(){
+        for (ActiveFight fight: activeFights) {
+            if (fight.isPrimary) {
+                return fight.getNpcId();
+            }
+        }
+        return null;
+    }
+
+    class ActiveFight {
+        private final String npcId;
+        private boolean isPrimary;
+
+        public ActiveFight(String npcId, boolean isPrimary) {
+            this.npcId = npcId;
+            this.isPrimary = isPrimary;
+        }
+
+        public String getNpcId() {
+            return npcId;
+        }
+
+        public boolean isPrimary() {
+            return isPrimary;
+        }
+
+        public void setIsPrimary(boolean isPrimary) {
+            this.isPrimary = isPrimary;
+        }
     }
 }
