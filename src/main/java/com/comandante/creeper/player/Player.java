@@ -89,7 +89,7 @@ public class Player extends CreeperEntity {
         activeFights.add(new ActiveFight(npc.getEntityId(), isPrimary));
         if (isPrimary) {
             for (ActiveFight fight : activeFights) {
-                if (fight.isPrimary) {
+                if (fight.isPrimary && !fight.getNpcId().equals(npc.getEntityId())) {
                     fight.setIsPrimary(false);
                 }
             }
