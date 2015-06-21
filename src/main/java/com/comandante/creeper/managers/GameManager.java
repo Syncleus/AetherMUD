@@ -690,16 +690,16 @@ public class GameManager {
                 }
                 npc.addDamageToMap(playerId, damage + damageReportAmt);
                 if (npc.getStats().getCurrentHealth() <= 0) {
-                    player.removeActiveFight(npc);
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, npc.getLoot());
                     processExperience(npc);
                     writeToPlayerCurrentRoom(player.getPlayerId(), npc.getDieMessage());
                     entityManager.saveItem(corpse);
-                    Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
+                    Integer roomId = roomManager.getNpcCurrentRoom(npc).get().getRoomId();
                     Room room = roomManager.getRoom(roomId);
                     room.addPresentItem(corpse.getItemId());
                     itemDecayManager.addItem(corpse);
                     entityManager.deleteNpcEntity(npc.getEntityId());
+                    player.removeActiveFight(npc);
                 }
             }
         }

@@ -101,13 +101,14 @@ public abstract class Spell {
                     gameManager.getChannelUtils().write(player.getPlayerId(), getAttackMessage(spellAttack));
                     gameManager.updateNpcHealth(npc.getEntityId(), -spellAttack, player.getPlayerId());
                     if (!player.doesActiveFightExist(npc)) {
-                        player.addActiveFight(npc);
-                        npc.setIsInFight(true);
-                        FightRun fightRun = new FightRun(player, npc, gameManager);
-                        gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " has attacked a " + npc.getColorName());
-                        Future<FightResults> fight = gameManager.getFightManager().fight(fightRun);
-                        CreeperSession creeperSession = (CreeperSession) player.getChannel().getAttachment();
-                        creeperSession.setActiveFight(Optional.of(fight));
+                        if (player.addActiveFight(npc)) {
+                            npc.setIsInFight(true);
+                            FightRun fightRun = new FightRun(player, npc, gameManager);
+                            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " has attacked a " + npc.getColorName());
+                            Future<FightResults> fight = gameManager.getFightManager().fight(fightRun);
+                            CreeperSession creeperSession = (CreeperSession) player.getChannel().getAttachment();
+                            creeperSession.setActiveFight(Optional.of(fight));
+                        }
                     }
                 }
                 applyEffectsToNpcs(npcIds, player);

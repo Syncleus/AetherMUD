@@ -70,8 +70,14 @@ public class FightManager {
             if (victim.getCurrentHealth() <= 0) {
                 return;
             }
+        } else {
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        if (player.getCurrentRoom().getRoomId().equals(gameManager.getRoomManager().getNpcCurrentRoom(npc).get().getRoomId())) {
+        if (player.getCurrentRoom().getNpcIds().contains(npc.getEntityId())) {
             if (!player.doesActiveFightExist(npc)) {
                 player.addActiveFight(npc);
             }
@@ -87,6 +93,12 @@ public class FightManager {
                 final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
                 channelUtils.write(player.getPlayerId(), fightMsg, true);
             }
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
             try {
                 Thread.sleep(600);
             } catch (InterruptedException e) {

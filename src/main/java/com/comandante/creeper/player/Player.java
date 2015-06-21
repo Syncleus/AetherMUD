@@ -2,6 +2,8 @@ package com.comandante.creeper.player;
 
 
 import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.fight.FightResults;
+import com.comandante.creeper.fight.FightResultsBuilder;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spells.Effect;
@@ -65,6 +67,7 @@ public class Player extends CreeperEntity {
     }
 
     public void removeActiveFight(Npc npc) {
+        System.out.println("Remove active fight!: " + npc.getName() +  npc.getEntityId());
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getPlayerId())) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
@@ -84,16 +87,22 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public void addActiveFight(Npc npc) {
+    public boolean addActiveFight(Npc npc) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getPlayerId())) {
-            ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
-            activeFights.put(System.currentTimeMillis(), activeFight);
-            activateNextPrimaryActiveFight();
+            if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) != null) {
+                System.out.println("Add Active Fight |" + npc.getName() + " " + npc.getEntityId());
+                ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
+                activeFights.put(System.currentTimeMillis(), activeFight);
+                activateNextPrimaryActiveFight();
+                return true;
+            }
         }
+        return false;
     }
 
     public boolean doesActiveFightExist(Npc npc) {
+        System.out.println("Does Active Fight Exist? " + npc.getName() + npc.getEntityId());
         for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.getNpcId().equals(npc.getEntityId())) {
@@ -104,10 +113,12 @@ public class Player extends CreeperEntity {
     }
 
     public boolean isActiveFights() {
+        System.out.println("Is Active Fights, current size: " + activeFights.size());
         return activeFights.size() > 0;
     }
 
     public boolean isValidPrimaryActiveFight(Npc npc) {
+        System.out.println("Is Valid Primary Active Fight?" + npc.getName() + npc.getEntityId());
         for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
@@ -118,6 +129,7 @@ public class Player extends CreeperEntity {
     }
 
     public String getPrimaryActiveFight() {
+        System.out.println("Is Primary Active Fight?");
         for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.isPrimary) {
@@ -128,12 +140,28 @@ public class Player extends CreeperEntity {
     }
 
     public void activateNextPrimaryActiveFight() {
+        System.out.println("Activate next primary active fight?");
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getPlayerId())) {
             if (getPrimaryActiveFight() == null) {
                 if (activeFights.size() > 0) {
                     activeFights.get(activeFights.firstKey()).setIsPrimary(true);
                 }
+            }
+        }
+    }
+
+    public void killPlayer(Npc npc) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getPlayerId())) {
+            if (doesActiveFightExist(npc)) {
+                removeAllActiveFights();
+                gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
+                PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
+                gameManager.movePlayer(playerMovement);
+                gameManager.currentRoomLogic(getPlayerId());
+                String prompt = gameManager.buildPrompt(getPlayerId());
+                gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
             }
         }
     }
