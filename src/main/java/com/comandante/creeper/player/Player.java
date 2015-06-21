@@ -67,7 +67,6 @@ public class Player extends CreeperEntity {
     }
 
     public void removeActiveFight(Npc npc) {
-        System.out.println("Remove active fight!: " + npc.getName() +  npc.getEntityId());
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getPlayerId())) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
@@ -91,7 +90,6 @@ public class Player extends CreeperEntity {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getPlayerId())) {
             if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) != null) {
-                System.out.println("Add Active Fight |" + npc.getName() + " " + npc.getEntityId());
                 ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
                 activeFights.put(System.currentTimeMillis(), activeFight);
                 activateNextPrimaryActiveFight();
@@ -102,7 +100,9 @@ public class Player extends CreeperEntity {
     }
 
     public boolean doesActiveFightExist(Npc npc) {
-        System.out.println("Does Active Fight Exist? " + npc.getName() + npc.getEntityId());
+        if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) == null) {
+            removeActiveFight(npc);
+        }
         for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.getNpcId().equals(npc.getEntityId())) {
@@ -113,12 +113,19 @@ public class Player extends CreeperEntity {
     }
 
     public boolean isActiveFights() {
-        System.out.println("Is Active Fights, current size: " + activeFights.size());
+        if (activeFights.size() > 0) {
+            Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Long, ActiveFight> next = iterator.next();
+                if (gameManager.getEntityManager().getNpcEntity(next.getValue().getNpcId()) == null) {
+                    iterator.remove();
+                }
+            }
+        }
         return activeFights.size() > 0;
     }
 
     public boolean isValidPrimaryActiveFight(Npc npc) {
-        System.out.println("Is Valid Primary Active Fight?" + npc.getName() + npc.getEntityId());
         for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
@@ -129,7 +136,6 @@ public class Player extends CreeperEntity {
     }
 
     public String getPrimaryActiveFight() {
-        System.out.println("Is Primary Active Fight?");
         for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.isPrimary) {
@@ -140,7 +146,6 @@ public class Player extends CreeperEntity {
     }
 
     public void activateNextPrimaryActiveFight() {
-        System.out.println("Activate next primary active fight?");
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getPlayerId())) {
             if (getPrimaryActiveFight() == null) {
