@@ -694,11 +694,12 @@ public class GameManager {
                     processExperience(npc);
                     writeToPlayerCurrentRoom(player.getPlayerId(), npc.getDieMessage());
                     entityManager.saveItem(corpse);
-                    Integer roomId = roomManager.getPlayerCurrentRoom(player).get().getRoomId();
+                    Integer roomId = roomManager.getNpcCurrentRoom(npc).get().getRoomId();
                     Room room = roomManager.getRoom(roomId);
                     room.addPresentItem(corpse.getItemId());
                     itemDecayManager.addItem(corpse);
                     entityManager.deleteNpcEntity(npc.getEntityId());
+                    player.removeActiveFight(npc);
                 }
             }
         }
@@ -768,8 +769,8 @@ public class GameManager {
 
 
     public String buildPrompt(String playerId) {
-        boolean isFight = FightManager.isActiveFight(getPlayerManager().getSessionManager().getSession(playerId));
         Player player = playerManager.getPlayer(playerId);
+        boolean isFight = player.isActiveFights();
         Stats stats = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
         int currentHealth = stats.getCurrentHealth();
         int maxHealth = stats.getMaxHealth();

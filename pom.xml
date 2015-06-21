@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.comandante</groupId>
     <artifactId>creeper</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <url>http://192.168.1.11:8081/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>http://192.168.1.11:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <url>https://github.com/chriskearney/github-maven-example</url>
+        <connection>scm:git:git://github.com/chriskearney/creeper.git</connection>
+        <developerConnection>scm:git:git@github.com:chriskearney/creeper.git</developerConnection>
+      <tag>creeper-0.1.0</tag>
+  </scm>
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -109,7 +126,7 @@
         <dependency>
             <groupId>com.github.dvdme</groupId>
             <artifactId>ForecastIOLib</artifactId>
-            <version>LATEST</version>
+            <version>1.5.2</version>
         </dependency>
     </dependencies>
 
@@ -126,6 +143,17 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                    <!--
+                      During release:perform, enable the "release" profile
+                     -->
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.3</version>
                 <executions>
@@ -137,8 +165,7 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>com.comandante.creeper.Main</Main-Class>
                                         <Build-Number>0.1.0-SNAPSHOT</Build-Number>

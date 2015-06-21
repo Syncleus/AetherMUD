@@ -48,9 +48,8 @@ public class FightManager {
     }
 
     public void fightRound(Stats challenger, Stats victim, Player player, Npc npc) {
-        Integer roomId = gameManager.getRoomManager().getPlayerCurrentRoom(player).get().getRoomId();
         int chanceToHit = getChanceToHit(challenger, victim);
-        if (isValidActiveFightForThisNpc(player, npc)) {
+        if (player.isValidPrimaryActiveFight(npc)) {
             int damageToVictim = 0;
             if (randInt(0, 100) < chanceToHit) {
                 damageToVictim = getAttackAmt(challenger, victim);
@@ -71,21 +70,40 @@ public class FightManager {
             if (victim.getCurrentHealth() <= 0) {
                 return;
             }
-        }
-        int chanceToHitBack = getChanceToHit(victim, challenger);
-        int damageBack = getAttackAmt(victim, challenger);
-        if (randInt(0, 100) < chanceToHitBack) {
-            doPlayerDamage(player, damageBack);
-            final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
-            channelUtils.write(player.getPlayerId(), fightMsg, true);
         } else {
-            final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
-            channelUtils.write(player.getPlayerId(), fightMsg, true);
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            Thread.sleep(600);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (player.getCurrentRoom().getNpcIds().contains(npc.getEntityId())) {
+            if (!player.doesActiveFightExist(npc)) {
+                player.addActiveFight(npc);
+            }
+        }
+        if (player.doesActiveFightExist(npc)) {
+            int chanceToHitBack = getChanceToHit(victim, challenger);
+            int damageBack = getAttackAmt(victim, challenger);
+            if (randInt(0, 100) < chanceToHitBack) {
+                doPlayerDamage(player, damageBack);
+                final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
+                channelUtils.write(player.getPlayerId(), fightMsg, true);
+            } else {
+                final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
+                channelUtils.write(player.getPlayerId(), fightMsg, true);
+            }
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -123,26 +141,6 @@ public class FightManager {
     public static boolean isActiveFight(CreeperSession session) {
         if (session == null) return false;
         return (session.getActiveFight().isPresent() && !session.getActiveFight().get().isDone());
-    }
-
-    private boolean isValidActiveFightForThisNpc(Player player, Npc npc) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            if (player.getNpcEntityCurrentlyInFightWith() == null) {
-                player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
-                return true;
-            }
-            if (gameManager.getEntityManager().getNpcEntity(player.getNpcEntityCurrentlyInFightWith()) != null) {
-                if (npc.getEntityId().equals(player.getNpcEntityCurrentlyInFightWith())) {
-                    return true;
-                } else {
-                    return !player.getCurrentRoom().getNpcIds().contains(player.getNpcEntityCurrentlyInFightWith());
-                }
-            } else {
-                player.setNpcEntityCurrentlyInFightWith(npc.getEntityId());
-                return true;
-            }
-        }
     }
 }
 

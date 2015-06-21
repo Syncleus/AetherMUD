@@ -36,7 +36,7 @@ public class MovementCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
             configure(e);
-            if (FightManager.isActiveFight(creeperSession)) {
+            if (player.isActiveFights()) {
                 write("You can't move while in a fight!");
                 return;
             }
