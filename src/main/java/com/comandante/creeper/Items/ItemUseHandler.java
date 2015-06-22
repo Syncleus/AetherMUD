@@ -64,7 +64,7 @@ public class ItemUseHandler {
         String playerName = player.getPlayerName();
         writeToRoom(playerName + " sips some " + Color.MAGENTA + "purple" + Color.RESET + " drank." + "\r\n");
         writeToPlayer("500 health is restored.");
-        gameManager.addHealth(player, 500);
+        player.updatePlayerHealth(500, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-purple-drank")).inc();
     }
 
@@ -72,7 +72,7 @@ public class ItemUseHandler {
         String playerName = player.getPlayerName();
         writeToRoom(playerName + " drinks an ice cold cruiser." + "\r\n");
         writeToPlayer("100 health is restored.");
-        gameManager.addHealth(player, 100);
+        player.updatePlayerHealth(100, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-beer-drank")).inc();
     }
 
@@ -82,7 +82,7 @@ public class ItemUseHandler {
         writeToPlayer("50 mana is restored." + "\r\n");
         writeToPlayer("20 health is restored.");
         gameManager.addMana(player, 50);
-        gameManager.addHealth(player, 20);
+        player.updatePlayerHealth(20, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-weed-smoked")).inc();
     }
 
@@ -92,7 +92,7 @@ public class ItemUseHandler {
         writeToPlayer("1000 mana is restored." + "\r\n");
         writeToPlayer("1500 health is restored.");
         gameManager.addMana(player, 1000);
-        gameManager.addHealth(player, 1500);
+        player.updatePlayerHealth(1500, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-dogdick-smoked")).inc();
     }
 

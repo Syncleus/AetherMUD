@@ -792,28 +792,6 @@ public class GameManager {
         return sb.toString();
     }
 
-    public void addHealth(Player player, int addAmt) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(player.getPlayerId());
-            int currentHealth = playerMetadata.getStats().getCurrentHealth();
-            Stats statsModifier = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
-            int maxHealth = statsModifier.getMaxHealth();
-            int proposedNewAmt = currentHealth + addAmt;
-            if (proposedNewAmt > maxHealth) {
-                if (currentHealth < maxHealth) {
-                    int adjust = proposedNewAmt - maxHealth;
-                    proposedNewAmt = proposedNewAmt - adjust;
-                } else {
-                    proposedNewAmt = proposedNewAmt - addAmt;
-                }
-            }
-            playerMetadata.getStats().setCurrentHealth(proposedNewAmt);
-            getPlayerManager().savePlayerMetadata(playerMetadata);
-        }
-    }
-
-
     public void addMana(Player player, int addAmt) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {

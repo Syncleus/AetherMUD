@@ -203,20 +203,6 @@ public class PlayerManager {
         return players.containsKey(new String(Base64.encodeBase64(username.getBytes())));
     }
 
-    public void updatePlayerHealth(Player player, int amount) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
-            Stats stats = playerMetadata.getStats();
-            if ((stats.getCurrentHealth() + amount) < 0) {
-                stats.setCurrentHealth(0);
-            } else {
-                stats.setCurrentHealth(stats.getCurrentHealth() + amount);
-            }
-            savePlayerMetadata(playerMetadata);
-        }
-    }
-
     public void updatePlayerMana(Player player, int amount) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {

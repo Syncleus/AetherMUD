@@ -2,8 +2,6 @@ package com.comandante.creeper.player;
 
 
 import com.comandante.creeper.entity.CreeperEntity;
-import com.comandante.creeper.fight.FightResults;
-import com.comandante.creeper.fight.FightResultsBuilder;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spells.Effect;
@@ -36,7 +34,7 @@ public class Player extends CreeperEntity {
         PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId());
         Stats stats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(this);
         if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-            gameManager.addHealth(this, (int) (stats.getMaxHealth() * .05));
+            updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
         }
         if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
             gameManager.addMana(this, (int) (stats.getMaxMana() * .03));
@@ -103,7 +101,7 @@ public class Player extends CreeperEntity {
         if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) == null) {
             removeActiveFight(npc);
         }
-        for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+        for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.getNpcId().equals(npc.getEntityId())) {
                 return true;
@@ -126,7 +124,7 @@ public class Player extends CreeperEntity {
     }
 
     public boolean isValidPrimaryActiveFight(Npc npc) {
-        for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+        for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
                 return true;
@@ -136,7 +134,7 @@ public class Player extends CreeperEntity {
     }
 
     public String getPrimaryActiveFight() {
-        for(Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+        for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
             ActiveFight fight = entry.getValue();
             if (fight.isPrimary) {
                 return fight.getNpcId();
@@ -169,6 +167,48 @@ public class Player extends CreeperEntity {
                 gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
             }
         }
+    }
+
+    public boolean updatePlayerHealth(int amount, Npc npc) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getPlayerId())) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(getPlayerId());
+            if (amount > 0) {
+                addHealth(amount, playerMetadata);
+                gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+                return false;
+            } else {
+                Stats stats = playerMetadata.getStats();
+                if ((stats.getCurrentHealth() + amount) < 0) {
+                    stats.setCurrentHealth(0);
+                } else {
+                    stats.setCurrentHealth(stats.getCurrentHealth() + amount);
+                }
+                gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+                playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(getPlayerId());
+                if (playerMetadata.getStats().getCurrentHealth() == 0 && npc != null) {
+                    killPlayer(npc);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void addHealth(int addAmt, PlayerMetadata playerMetadata) {
+        int currentHealth = playerMetadata.getStats().getCurrentHealth();
+        Stats statsModifier = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(this);
+        int maxHealth = statsModifier.getMaxHealth();
+        int proposedNewAmt = currentHealth + addAmt;
+        if (proposedNewAmt > maxHealth) {
+            if (currentHealth < maxHealth) {
+                int adjust = proposedNewAmt - maxHealth;
+                proposedNewAmt = proposedNewAmt - adjust;
+            } else {
+                proposedNewAmt = proposedNewAmt - addAmt;
+            }
+        }
+        playerMetadata.getStats().setCurrentHealth(proposedNewAmt);
     }
 
     public String getPlayerName() {
