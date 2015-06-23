@@ -28,9 +28,9 @@ public class GossipCache {
             String next = iterator.next();
             currentEntries.add(next);
         }
-       Collections.reverse(currentEntries);
+        Collections.reverse(currentEntries);
         int i = 0;
-        for (String s: currentEntries) {
+        for (String s : currentEntries) {
             if (i < size) {
                 recent.add(s);
                 i++;
