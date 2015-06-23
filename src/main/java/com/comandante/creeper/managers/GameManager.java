@@ -654,20 +654,17 @@ public class GameManager {
     }
 
     public void addExperience(Player player, int exp) {
-        Interner<String> interner = Interners.newWeakInterner();
         final Meter requests = Main.metrics.meter("experience-" + player.getPlayerName());
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-            int currentExperience = playerMetadata.getStats().getExperience();
-            int currentLevel = Levels.getLevel(currentExperience);
-            playerMetadata.getStats().setExperience(currentExperience + exp);
-            requests.mark(exp);
-            int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
-            if (newLevel > currentLevel) {
-                announceLevelUp(player.getPlayerName(), currentLevel, newLevel);
-            }
-            playerManager.savePlayerMetadata(playerMetadata);
+        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+        int currentExperience = playerMetadata.getStats().getExperience();
+        int currentLevel = Levels.getLevel(currentExperience);
+        playerMetadata.getStats().setExperience(currentExperience + exp);
+        requests.mark(exp);
+        int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
+        if (newLevel > currentLevel) {
+            announceLevelUp(player.getPlayerName(), currentLevel, newLevel);
         }
+        playerManager.savePlayerMetadata(playerMetadata);
     }
 
 

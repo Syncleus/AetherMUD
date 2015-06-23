@@ -48,6 +48,9 @@ public class FightManager {
 
     public void fightRound(Stats challenger, Stats victim, Player player, Npc npc) throws PlayerDeathException {
         try {
+            if (player.isActive(CoolDownType.DEATH)) {
+                throw new PlayerDeathException("Player died! Noticed he has a death cooldown.");
+            }
             int chanceToHit = getChanceToHit(challenger, victim);
             if (player.isValidPrimaryActiveFight(npc)) {
                 int damageToVictim = 0;
