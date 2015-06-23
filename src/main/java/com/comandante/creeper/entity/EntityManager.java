@@ -96,7 +96,6 @@ public class EntityManager {
     }
 
     public void deleteNpcEntity(String npcId) {
-        roomManager.getNpcCurrentRoom(getNpcEntity(npcId)).get().removePresentNpc(npcId);
         npcs.remove(npcId);
     }
 

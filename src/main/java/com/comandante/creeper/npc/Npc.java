@@ -42,6 +42,7 @@ public class Npc extends CreeperEntity {
     private List<Effect> effects = Lists.newCopyOnWriteArrayList();
     private int maxEffects = 4;
     private Map<String, Integer> playerDamageMap = Maps.newHashMap();
+    private Room currentRoom;
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
         this.gameManager = gameManager;
@@ -186,5 +187,13 @@ public class Npc extends CreeperEntity {
 
     public void setLoot(Loot loot) {
         this.loot = loot;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
     }
 }

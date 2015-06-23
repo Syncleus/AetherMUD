@@ -65,6 +65,10 @@ public class CreeperConfiguration {
     public static final String WEATHER_UNDERGROUND_API_KEY_DEFAULT = "62651e7a5762cda8";
     public final String weatherUndergroundApiKey;
 
+    public static final String MAX_GOSSIP_CACHE_SIZE = "max.gossip.cache.size";
+    public static final int MAX_GOSSIP_CACHE_SIZE_DEFAULT = 100;
+    public final int maxGossipCacheSize;
+
     public CreeperConfiguration(Configuration configuration) {
         this.telnetPort = configuration.getInt(TELNET_PORT, TELNET_PORT_DEFAULT);
         this.databaseFileName = configuration.getString(DATABASE_FILE_NAME, DATABASE_FILE_NAME_DEFAULT);
@@ -81,5 +85,6 @@ public class CreeperConfiguration {
         this.defaultMapSize = configuration.getInteger(DEFAULT_MAP_SIZE, DEFAULT_MAP_SIZE_DEFAULT);
         this.forageRateLimitPerSecond = configuration.getDouble(FORAGE_RATELIMIT_PER_SECOND, FORAGE_RATELIMIT_PER_SECOND_DEFAULT);
         this.weatherUndergroundApiKey = configuration.getString(WEATHER_UNDERGROUND_API_KEY, WEATHER_UNDERGROUND_API_KEY_DEFAULT);
+        this.maxGossipCacheSize = configuration.getInt(MAX_GOSSIP_CACHE_SIZE, MAX_GOSSIP_CACHE_SIZE_DEFAULT);
     }
 }

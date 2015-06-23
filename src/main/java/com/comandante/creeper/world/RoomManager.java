@@ -112,17 +112,7 @@ public class RoomManager {
     }
 
     public Optional<Room> getNpcCurrentRoom(Npc npc) {
-        Iterator<Map.Entry<Integer, Room>> rooms1 = getRooms();
-        while (rooms1.hasNext()) {
-            Map.Entry<Integer, Room> next = rooms1.next();
-            Room room = next.getValue();
-            for (String npcId : room.getNpcIds()) {
-                if (npcId.equals(npc.getEntityId())) {
-                    return Optional.of(next.getValue());
-                }
-            }
-        }
-        return Optional.absent();
+        return Optional.of(npc.getCurrentRoom());
     }
 
 

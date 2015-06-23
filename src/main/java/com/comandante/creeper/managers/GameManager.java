@@ -15,10 +15,7 @@ import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.*;
-import com.comandante.creeper.server.ChannelUtils;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.server.CreeperSession;
-import com.comandante.creeper.server.MultiLineInputManager;
+import com.comandante.creeper.server.*;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
@@ -70,6 +67,7 @@ public class GameManager {
     private final BotCommandFactory botCommandFactory;
     private final BotCommandManager botCommandManager;
     private final StatsModifierFactory statsModifierFactory;
+    private final GossipCache gossipCache;
 
     public static final int MAX_LOCKER_SIZE = 500;
 
@@ -97,6 +95,11 @@ public class GameManager {
         this.botCommandManager = new BotCommandManager(this);
         this.botCommandFactory = new BotCommandFactory(botCommandManager);
         this.statsModifierFactory = new StatsModifierFactory(this);
+        this.gossipCache = new GossipCache(this);
+    }
+
+    public GossipCache getGossipCache() {
+        return gossipCache;
     }
 
     public StatsModifierFactory getStatsModifierFactory() {
@@ -654,25 +657,31 @@ public class GameManager {
     }
 
     public void addExperience(Player player, int exp) {
-        final Meter requests = Main.metrics.meter("experience-" + player.getPlayerName());
-        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-        int currentExperience = playerMetadata.getStats().getExperience();
-        int currentLevel = Levels.getLevel(currentExperience);
-        playerMetadata.getStats().setExperience(currentExperience + exp);
-        requests.mark(exp);
-        int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
-        if (newLevel > currentLevel) {
-            announceLevelUp(player.getPlayerName(), currentLevel, newLevel);
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            final Meter requests = Main.metrics.meter("experience-" + player.getPlayerName());
+            PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+            int currentExperience = playerMetadata.getStats().getExperience();
+            int currentLevel = Levels.getLevel(currentExperience);
+            playerMetadata.getStats().setExperience(currentExperience + exp);
+            requests.mark(exp);
+            int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
+            if (newLevel > currentLevel) {
+                announceLevelUp(player.getPlayerName(), currentLevel, newLevel);
+            }
+            playerManager.savePlayerMetadata(playerMetadata);
         }
-        playerManager.savePlayerMetadata(playerMetadata);
     }
 
 
     public void updateNpcHealth(String npcId, int amt, String playerId) {
         Player player = playerManager.getPlayer(playerId);
         Interner<String> interner = Interners.newWeakInterner();
+        boolean didNpcDie = false;
+        Map<String, Double> xpProcessed = null;
+        Npc npc = null;
         synchronized (interner.intern(npcId)) {
-            Npc npc = entityManager.getNpcEntity(npcId);
+            npc = entityManager.getNpcEntity(npcId);
             if (npc != null) {
                 int currentHealth = npc.getStats().getCurrentHealth();
                 int newAmt = currentHealth + amt;
@@ -688,24 +697,37 @@ public class GameManager {
                 npc.addDamageToMap(playerId, damage + damageReportAmt);
                 if (npc.getStats().getCurrentHealth() <= 0) {
                     Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, npc.getLoot());
-                    processExperience(npc);
                     writeToPlayerCurrentRoom(player.getPlayerId(), npc.getDieMessage());
+                    xpProcessed = processExperience(npc, npc.getCurrentRoom());
                     entityManager.saveItem(corpse);
                     Integer roomId = roomManager.getNpcCurrentRoom(npc).get().getRoomId();
                     Room room = roomManager.getRoom(roomId);
                     room.addPresentItem(corpse.getItemId());
                     itemDecayManager.addItem(corpse);
+                    npc.getCurrentRoom().removePresentNpc(npc.getEntityId());
                     entityManager.deleteNpcEntity(npc.getEntityId());
-                    player.removeActiveFight(npc);
+                    didNpcDie = true;
                 }
+            }
+        }
+        if (npc != null && didNpcDie) {
+            player.removeActiveFight(npc);
+            for (Map.Entry<String, Double> playerDamageExperience : xpProcessed.entrySet()) {
+                playerManager.getSessionManager().getSession(playerDamageExperience.getKey()).setActiveFight(Optional.<Future<FightResults>>absent());
+                Player p = getPlayerManager().getPlayer(playerDamageExperience.getKey());
+                if (p == null) {
+                    continue;
+                }
+                int xpEarned = (int) Math.round(playerDamageExperience.getValue());
+                addExperience(player, xpEarned);
+                channelUtils.write(p.getPlayerId(), "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
             }
         }
     }
 
-    private void processExperience(Npc npc) {
+    private Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
         Iterator<Map.Entry<String, Integer>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
         int totalDamageDone = 0;
-        Room npcCurrentRoom = getRoomManager().getNpcCurrentRoom(npc).get();
         while (iterator.hasNext()) {
             Map.Entry<String, Integer> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
@@ -735,16 +757,7 @@ public class GameManager {
                 damagePcts.put(playerId, npc.getPctOFExperience(.25, Levels.getLevel(playerMetadata.getStats().getExperience())));
             }
         }
-        for (Map.Entry<String, Double> playerDamageExperience : damagePcts.entrySet()) {
-            playerManager.getSessionManager().getSession(playerDamageExperience.getKey()).setActiveFight(Optional.<Future<FightResults>>absent());
-            Player player = getPlayerManager().getPlayer(playerDamageExperience.getKey());
-            if (player == null) {
-                continue;
-            }
-            int xpEarned = (int) Math.round(playerDamageExperience.getValue());
-            addExperience(player, xpEarned);
-            channelUtils.write(player.getPlayerId(), "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
-        }
+        return damagePcts;
     }
 
     public synchronized void removeAllNpcs() {

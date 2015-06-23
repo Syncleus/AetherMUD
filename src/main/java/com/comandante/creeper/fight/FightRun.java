@@ -29,8 +29,7 @@ public class FightRun implements Callable<FightResults> {
         try {
             Stats npcStats = npc.getStats();
             Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player);
-            boolean playerDied = false;
-            while (npcStats.getCurrentHealth() > 0 && !playerDied) {
+            while (npcStats.getCurrentHealth() > 0) {
                 gameManager.getFightManager().fightTurn(playerStats, npcStats, 3, player, npc);
                 if (npcStats.getCurrentHealth() > 0) {
                     if (player.isValidPrimaryActiveFight(npc)) {
@@ -48,15 +47,12 @@ public class FightRun implements Callable<FightResults> {
             }
 
             fightResults = new FightResultsBuilder().setNpcWon(false).setPlayerWon(false).createFightResults();
-            if (playerDied) {
-                fightResults = new FightResultsBuilder().setNpcWon(true).setPlayerWon(false).createFightResults();
-            }
 
             if (npcStats.getCurrentHealth() <= 0) {
                 fightResults = new FightResultsBuilder().setNpcWon(false).setPlayerWon(true).createFightResults();
             }
         } catch (Exception e) {
-            log.error("Fight Failure!", e);
+            log.error("Fight has terminated.", e);
         }
         return fightResults;
     }

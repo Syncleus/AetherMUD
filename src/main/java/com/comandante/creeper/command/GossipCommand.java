@@ -43,19 +43,17 @@ public class GossipCommand extends Command {
                 log.error("Problem executing bot command from gossip channel!", ex);
             }
             Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
+            String gossipMessage = null;
             while (players.hasNext()) {
                 final Player next = players.next().getValue();
-                final String gossipMessage = new StringBuilder()
-                        .append(MAGENTA).append("[")
-                        .append(player.getPlayerName()).append("] ")
-                        .append(msg).append(RESET)
-                        .toString();
+                gossipMessage = MAGENTA + "[" + player.getPlayerName() + "] " + msg + RESET;
                 if (next.getPlayerId().equals(playerId)) {
                     write(gossipMessage);
                 } else {
                     channelUtils.write(next.getPlayerId(), gossipMessage + "\r\n", true);
                 }
             }
+            gameManager.getGossipCache().addGossipLine(gossipMessage);
         } finally {
             super.messageReceived(ctx, e);
         }

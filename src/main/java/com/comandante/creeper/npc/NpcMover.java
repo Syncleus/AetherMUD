@@ -38,7 +38,9 @@ public class NpcMover {
         String exitMessage = getExitMessage(npcCurrentRoom, destinationRoomId);
         npcCurrentRoom.getNpcIds().remove(npcId);
         gameManager.roomSay(npcCurrentRoom.getRoomId(), npcEntity.getColorName() + " " + exitMessage, "");
-        gameManager.getRoomManager().getRoom(destinationRoomId).getNpcIds().add(npcId);
+        Room destinationRoom = gameManager.getRoomManager().getRoom(destinationRoomId);
+        npcEntity.setCurrentRoom(destinationRoom);
+        destinationRoom.getNpcIds().add(npcId);
         gameManager.roomSay(destinationRoomId, npcEntity.getColorName() + " has arrived." , "");
     }
 
