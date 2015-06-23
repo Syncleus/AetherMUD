@@ -72,7 +72,7 @@ public class FightManager {
             if (player.getCurrentRoom().getNpcIds().contains(npc.getEntityId())) {
                 if (!player.doesActiveFightExist(npc) && !player.isActive(CoolDownType.DEATH)) {
                     player.addActiveFight(npc);
-remov                }
+                }
             }
             if (player.doesActiveFightExist(npc)) {
                 int chanceToHitBack = getChanceToHit(victim, challenger);
