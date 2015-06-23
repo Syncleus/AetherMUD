@@ -710,6 +710,7 @@ public class GameManager {
                 }
             }
         }
+        // this is so fucked up, but dont do this inside of the synchronized(npcId) block or you will most certainly dead lock.
         if (npc != null && didNpcDie) {
             player.removeActiveFight(npc);
             for (Map.Entry<String, Double> playerDamageExperience : xpProcessed.entrySet()) {
