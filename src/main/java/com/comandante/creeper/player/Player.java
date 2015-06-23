@@ -117,12 +117,15 @@ public class Player extends CreeperEntity {
     }
 
     public boolean isActiveFights() {
-        if (activeFights.size() > 0) {
-            Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Long, ActiveFight> next = iterator.next();
-                if (gameManager.getEntityManager().getNpcEntity(next.getValue().getNpcId()) == null) {
-                    iterator.remove();
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(playerId)) {
+            if (activeFights.size() > 0) {
+                Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<Long, ActiveFight> next = iterator.next();
+                    if (gameManager.getEntityManager().getNpcEntity(next.getValue().getNpcId()) == null) {
+                        iterator.remove();
+                    }
                 }
             }
         }
