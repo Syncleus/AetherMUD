@@ -69,12 +69,12 @@ public class FightManager {
             } else {
                 Thread.sleep(600);
             }
-           if (player.getCurrentRoom().getNpcIds().contains(npc.getEntityId())) {
-               if (!player.doesActiveFightExist(npc) && !player.isActive(CoolDownType.DEATH)) {
-                   player.addActiveFight(npc);
-                   System.out.println("RE ADDED THE FIGHT FOR WHATEVER REASON");
-        }
-           }
+            if (player.getCurrentRoom().getNpcIds().contains(npc.getEntityId())) {
+                if (!player.doesActiveFightExist(npc) && !player.isActive(CoolDownType.DEATH)) {
+                    player.addActiveFight(npc);
+                    System.out.println("RE ADDED THE FIGHT FOR WHATEVER REASON");
+                }
+            }
             if (player.doesActiveFightExist(npc)) {
                 int chanceToHitBack = getChanceToHit(victim, challenger);
                 int damageBack = getAttackAmt(victim, challenger);

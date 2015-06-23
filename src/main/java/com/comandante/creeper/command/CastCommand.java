@@ -28,6 +28,10 @@ public class CastCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
             configure(e);
+            if (player.getCurrentHealth() <= 0) {
+                write("You have no health and as such you can not attack.");
+                return;
+            }
             if (player.isActive(CoolDownType.DEATH)) {
                 write("You are dead and can not attack.");
                 return;

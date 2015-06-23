@@ -30,6 +30,10 @@ public class FightKillCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
+            if (player.getCurrentHealth() <= 0) {
+                write("You have no health and as such you can not attack.");
+                return;
+            }
             if (FightManager.isActiveFight(creeperSession)) {
                 write("You are already in a fight!");
                 return;

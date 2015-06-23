@@ -31,12 +31,8 @@ public class FightRun implements Callable<FightResults> {
             Stats playerStats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player);
             boolean playerDied = false;
             while (npcStats.getCurrentHealth() > 0 && !playerDied) {
-                if (getCurrentHealth() <= 0) {
-                    playerDied = true;
-                    continue;
-                }
                 gameManager.getFightManager().fightTurn(playerStats, npcStats, 3, player, npc);
-                if (getCurrentHealth() > 0 && npcStats.getCurrentHealth() > 0) {
+                if (npcStats.getCurrentHealth() > 0) {
                     if (player.isValidPrimaryActiveFight(npc)) {
                         String prompt = gameManager.buildPrompt(player.getPlayerId());
                         gameManager.getChannelUtils().write(player.getPlayerId(), prompt, true);
