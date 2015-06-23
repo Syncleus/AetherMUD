@@ -24,7 +24,7 @@ public class QuitCommand extends Command {
         if (FightManager.isActiveFight(creeperSession)) {
             write("You can't quit in the middle of a fight!");
         } else {
-            player.getChannel().disconnect();
+            gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
         }
     }
 }

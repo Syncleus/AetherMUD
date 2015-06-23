@@ -56,6 +56,7 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
                 e.getChannel().getPipeline().remove(this);
                 e.getChannel().getPipeline().addLast("server_handler", new CreeperCommandHandler(gameManager));
                 e.getChannel().setAttachment(creeperSession);
+                gameManager.announceConnect(creeperSession.getUsername().get());
                 gameManager.currentRoomLogic(Main.createPlayerId(creeperSession.getUsername().get()));
                 gameManager.getChannelUtils().write(Main.createPlayerId(creeperSession.getUsername().get()), "\r\n" + gameManager.buildPrompt(Main.createPlayerId(creeperSession.getUsername().get())));
             }

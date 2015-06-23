@@ -230,6 +230,20 @@ public class GameManager {
         }
     }
 
+    public void announceConnect(String userName) {
+        Set<Player> allPlayers = getAllPlayers();
+        for (Player p: allPlayers) {
+            getChannelUtils().write(p.getPlayerId(), Color.GREEN + userName + " has connected." + Color.RESET + "\r\n", true);
+        }
+    }
+
+    public void announceDisconnect(String userName) {
+        Set<Player> allPlayers = getAllPlayers();
+        for (Player p: allPlayers) {
+            getChannelUtils().write(p.getPlayerId(), Color.RED + userName + " has disconnected." + Color.RESET + "\r\n", true);
+        }
+    }
+
     private String getExits(Room room, Player player) {
         int numExits = 0;
         StringBuilder sb = new StringBuilder();
