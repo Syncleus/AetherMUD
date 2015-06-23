@@ -61,10 +61,6 @@ public class FightRun implements Callable<FightResults> {
         return fightResults;
     }
 
-    private int getCurrentHealth() {
-        return gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentHealth();
-    }
-
     public Player getPlayer() {
         return player;
     }

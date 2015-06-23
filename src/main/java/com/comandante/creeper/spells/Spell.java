@@ -111,8 +111,10 @@ public abstract class Spell {
                         }
                     }
                 }
-                applyEffectsToNpcs(npcIds, player);
-                gameManager.getPlayerManager().updatePlayerMana(player, -manaCost);
+                if (npcIds.size() > 0) {
+                    applyEffectsToNpcs(npcIds, player);
+                    gameManager.getPlayerManager().updatePlayerMana(player, -manaCost);
+                }
             }
         }
     }
