@@ -1,7 +1,7 @@
 package com.comandante.creeper.command;
 
-import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.world.RemoteExit;
 import com.comandante.creeper.world.Room;
@@ -38,6 +38,10 @@ public class MovementCommand extends Command {
             configure(e);
             if (player.isActiveFights()) {
                 write("You can't move while in a fight!");
+                return;
+            }
+            if (player.isActive(CoolDownType.DEATH)) {
+                write("You are dead and can not move.");
                 return;
             }
             final String command = getRootCommand(e);

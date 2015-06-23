@@ -23,26 +23,31 @@ public class Player extends CreeperEntity {
     private final GameManager gameManager;
     private Room currentRoom;
     private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
+    private final String playerId;
+    private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
+        this.playerId = new String(Base64.encodeBase64(playerName.getBytes()));
         this.gameManager = gameManager;
     }
 
     @Override
     public void run() {
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(this.getPlayerId());
+        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
         Stats stats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(this);
-        if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-            updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
-        }
-        if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
-            gameManager.addMana(this, (int) (stats.getMaxMana() * .03));
+        if (!isActive(CoolDownType.DEATH)) {
+            if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
+                updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
+            }
+            if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
+                gameManager.addMana(this, (int) (stats.getMaxMana() * .03));
+            }
         }
         for (String effectId : playerMetadata.getEffects()) {
             Effect effect = gameManager.getEntityManager().getEffect(effectId);
             if (effect.getTicks() >= effect.getLifeSpanTicks()) {
-                gameManager.getChannelUtils().write(getPlayerId(), effect.getEffectName() + " has worn off.\r\n", true);
+                gameManager.getChannelUtils().write(playerId, effect.getEffectName() + " has worn off.\r\n", true);
                 gameManager.getEntityManager().removeEffect(effect);
                 gameManager.getPlayerManager().removeEffect(this, effectId);
             } else {
@@ -51,11 +56,12 @@ public class Player extends CreeperEntity {
                 gameManager.getEntityManager().saveEffect(effect);
             }
         }
+        tickAllActiveCoolDowns();
     }
 
     public void removeAllActiveFights() {
         Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(getPlayerId())) {
+        synchronized (interner.intern(playerId)) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Long, ActiveFight> next = iterator.next();
@@ -66,7 +72,7 @@ public class Player extends CreeperEntity {
 
     public void removeActiveFight(Npc npc) {
         Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(getPlayerId())) {
+        synchronized (interner.intern(playerId)) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             boolean resetFights = false;
             while (iterator.hasNext()) {
@@ -86,7 +92,7 @@ public class Player extends CreeperEntity {
 
     public boolean addActiveFight(Npc npc) {
         Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(getPlayerId())) {
+        synchronized (interner.intern(playerId)) {
             if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) != null) {
                 ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
                 activeFights.put(System.currentTimeMillis(), activeFight);
@@ -145,7 +151,7 @@ public class Player extends CreeperEntity {
 
     public void activateNextPrimaryActiveFight() {
         Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(getPlayerId())) {
+        synchronized (interner.intern(playerId)) {
             if (getPrimaryActiveFight() == null) {
                 if (activeFights.size() > 0) {
                     activeFights.get(activeFights.firstKey()).setIsPrimary(true);
@@ -156,23 +162,27 @@ public class Player extends CreeperEntity {
 
     public void killPlayer(Npc npc) {
         Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(getPlayerId())) {
+        synchronized (interner.intern(playerId)) {
             if (doesActiveFightExist(npc)) {
                 removeAllActiveFights();
-                gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
-                PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
-                gameManager.movePlayer(playerMovement);
-                gameManager.currentRoomLogic(getPlayerId());
-                String prompt = gameManager.buildPrompt(getPlayerId());
-                gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
+                if (!isActive(CoolDownType.DEATH)) {
+                    CoolDown death = new CoolDown(CoolDownType.DEATH);
+                    addCoolDown(death);
+                    gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
+                    PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
+                    gameManager.movePlayer(playerMovement);
+                    gameManager.currentRoomLogic(getPlayerId());
+                    String prompt = gameManager.buildPrompt(getPlayerId());
+                    gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
+                }
             }
         }
     }
 
     public boolean updatePlayerHealth(int amount, Npc npc) {
         Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(getPlayerId())) {
-            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(getPlayerId());
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (amount > 0) {
                 addHealth(amount, playerMetadata);
                 gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
@@ -185,7 +195,7 @@ public class Player extends CreeperEntity {
                     stats.setCurrentHealth(stats.getCurrentHealth() + amount);
                 }
                 gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
-                playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(getPlayerId());
+                playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
                 if (playerMetadata.getStats().getCurrentHealth() == 0 && npc != null) {
                     killPlayer(npc);
                     return true;
@@ -211,12 +221,46 @@ public class Player extends CreeperEntity {
         playerMetadata.getStats().setCurrentHealth(proposedNewAmt);
     }
 
+    public int getCurrentHealth() {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(playerId)) {
+            return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentHealth();
+        }
+    }
+
+    public void addCoolDown(CoolDown coolDown) {
+        this.coolDowns.add(coolDown);
+    }
+
+    public boolean isActive(CoolDownType coolDownType) {
+        for (CoolDown c: coolDowns) {
+            if (c.getCoolDownType().equals(coolDownType)) {
+                if (c.isActive()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void tickAllActiveCoolDowns() {
+        Iterator<CoolDown> iterator = coolDowns.iterator();
+        while (iterator.hasNext()) {
+            CoolDown coolDown = iterator.next();
+            if (coolDown.isActive()) {
+                coolDown.decrementTick();
+            } else {
+                iterator.remove();
+            }
+        }
+    }
+
     public String getPlayerName() {
         return playerName;
     }
 
     public String getPlayerId() {
-        return new String(Base64.encodeBase64(playerName.getBytes()));
+        return playerId;
     }
 
     public Channel getChannel() {

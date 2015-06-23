@@ -5,6 +5,7 @@ import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.fight.FightRun;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.player.CoolDownType;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -31,6 +32,10 @@ public class FightKillCommand extends Command {
         try {
             if (FightManager.isActiveFight(creeperSession)) {
                 write("You are already in a fight!");
+                return;
+            }
+            if (player.isActive(CoolDownType.DEATH)) {
+                write("You are dead and can not attack.");
                 return;
             }
             if (originalMessageParts.size() == 1) {

@@ -788,6 +788,9 @@ public class GameManager {
         if (isFight) {
             sb.append(Color.RED + " ! " + Color.RESET);
         }
+        if (player.isActive(CoolDownType.DEATH)) {
+            sb.append(Color.RED + " ! DEAD ! " + Color.RESET);
+        }
         sb.append("] ");
         return sb.toString();
     }

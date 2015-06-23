@@ -2,11 +2,14 @@ package com.comandante.creeper.fight;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.log4j.Logger;
 
@@ -24,13 +27,11 @@ public class FightManager {
 
     private static final Logger log = Logger.getLogger(FightManager.class);
 
-
     public FightManager(GameManager gameManager) {
         this.channelUtils = gameManager.getChannelUtils();
         this.gameManager = gameManager;
         this.fightService = Executors.newFixedThreadPool(100, new ThreadFactoryBuilder().setNameFormat("creeper-fight-thread-%d").build());
     }
-
 
     public Future<FightResults> fight(FightRun fightRun) {
         return fightService.submit(fightRun);
@@ -68,19 +69,25 @@ public class FightManager {
             } else {
                 Thread.sleep(600);
             }
-            if (player.getCurrentRoom().getNpcIds().contains(npc.getEntityId())) {
-                if (!player.doesActiveFightExist(npc)) {
-                    player.addActiveFight(npc);
-                }
-            }
+           if (player.getCurrentRoom().getNpcIds().contains(npc.getEntityId())) {
+               if (!player.doesActiveFightExist(npc) && !player.isActive(CoolDownType.DEATH)) {
+                   player.addActiveFight(npc);
+                   System.out.println("RE ADDED THE FIGHT FOR WHATEVER REASON");
+        }
+           }
             if (player.doesActiveFightExist(npc)) {
                 int chanceToHitBack = getChanceToHit(victim, challenger);
                 int damageBack = getAttackAmt(victim, challenger);
                 if (randInt(0, 100) < chanceToHitBack) {
-                    final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
-                    channelUtils.write(player.getPlayerId(), fightMsg, true);
-                    if (doPlayerDamage(player, damageBack, npc)) {
-                        throw new PlayerDeathException(player.getPlayerName() + " has died at the hands of a " + npc.getName());
+                    Interner<String> interner = Interners.newWeakInterner();
+                    synchronized (interner.intern(player.getPlayerId())) {
+                        if (player.getCurrentHealth() > 0) {
+                            final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
+                            channelUtils.write(player.getPlayerId(), fightMsg, true);
+                        }
+                        if (doPlayerDamage(player, damageBack, npc)) {
+                            throw new PlayerDeathException(player.getPlayerName() + " has died at the hands of a " + npc.getName());
+                        }
                     }
                 } else {
                     final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
@@ -132,10 +139,21 @@ public class FightManager {
     }
 
     public class PlayerDeathException extends Exception {
-        public PlayerDeathException() { super(); }
-        public PlayerDeathException(String message) { super(message); }
-        public PlayerDeathException(String message, Throwable cause) { super(message, cause); }
-        public PlayerDeathException(Throwable cause) { super(cause); }
+        public PlayerDeathException() {
+            super();
+        }
+
+        public PlayerDeathException(String message) {
+            super(message);
+        }
+
+        public PlayerDeathException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public PlayerDeathException(Throwable cause) {
+            super(cause);
+        }
     }
 }
 

@@ -3,10 +3,7 @@ package com.comandante.creeper.fight;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.stat.Stats;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.Callable;
@@ -56,7 +53,6 @@ public class FightRun implements Callable<FightResults> {
 
             fightResults = new FightResultsBuilder().setNpcWon(false).setPlayerWon(false).createFightResults();
             if (playerDied) {
-                player.killPlayer(npc);
                 fightResults = new FightResultsBuilder().setNpcWon(true).setPlayerWon(false).createFightResults();
             }
 
@@ -71,5 +67,13 @@ public class FightRun implements Callable<FightResults> {
 
     private int getCurrentHealth() {
         return gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentHealth();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Npc getNpc() {
+        return npc;
     }
 }

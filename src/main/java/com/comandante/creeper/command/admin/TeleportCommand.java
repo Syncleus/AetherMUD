@@ -3,6 +3,7 @@ package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.player.PlayerRole;
@@ -36,6 +37,10 @@ public class TeleportCommand extends Command {
             }
             if (player.isActiveFights()) {
                 write("You can't teleport while in a fight!");
+                return;
+            }
+            if (player.isActive(CoolDownType.DEATH)) {
+                write("You are dead and can not move.");
                 return;
             }
             String desiredId = originalMessageParts.get(1);
