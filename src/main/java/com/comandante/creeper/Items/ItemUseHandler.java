@@ -40,7 +40,7 @@ public class ItemUseHandler {
             Effect nEffect = new Effect(effect);
             nEffect.setPlayerId(player.getPlayerId());
             gameManager.getEntityManager().saveEffect(nEffect);
-            boolean effectResult = gameManager.getPlayerManager().addEffect(player, nEffect.getEntityId());
+            boolean effectResult = player.addEffect(nEffect.getEntityId());
             if (effect.getDurationStats() != null) {
                 if (effect.getDurationStats().getCurrentHealth() < 0) {
                     log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
@@ -134,7 +134,7 @@ public class ItemUseHandler {
                     gameManager.getEntityManager().saveItem(item);
                     return;
                 }
-                gameManager.getPlayerManager().removeInventoryId(player, item.getItemId());
+                player.removeInventoryId(item.getItemId());
                 gameManager.getEntityManager().removeItem(item);
             }
         }

@@ -25,7 +25,7 @@ public class WithdrawalCommand extends BankCommand {
             if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
                 int withdrawalAmount = Integer.parseInt(originalMessageParts.get(1));
                 if (areBankFundsAvailable(withdrawalAmount)) {
-                    playerManager.transferBankGoldToPlayer(playerId, withdrawalAmount);
+                    player.transferBankGoldToPlayer(withdrawalAmount);
                     write("Your funds of " + withdrawalAmount + Color.YELLOW + " gold " + Color.RESET + "have been withdrawn from your bank account." + "\r\n");
                 } else {
                     write("You don't have enough" + Color.YELLOW + " gold "+ Color.RESET + "to cover the withdrawal amount." + "\r\n");

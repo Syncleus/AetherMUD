@@ -1,25 +1,20 @@
 package com.comandante.creeper.spells;
 
 
-import com.comandante.creeper.fight.FightResults;
-import com.comandante.creeper.fight.FightRun;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.Color;
-import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsHelper;
-import com.google.common.base.Optional;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 
 public abstract class Spell {
@@ -67,13 +62,13 @@ public abstract class Spell {
         }
     }
 
-    public String getAttackMessage(int amt) {
+    public String getAttackMessage(int amt, Npc npc) {
         int i = random.nextInt(attackMessages.size());
         String s = attackMessages.get(i);
         if (amt == 0) {
             return s;
         } else {
-            return Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s;
+            return Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s + Color.BOLD_ON + Color.RED + " >>>> " + Color.RESET + npc.getColorName();
         }
     }
 
@@ -98,50 +93,12 @@ public abstract class Spell {
                     Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
                     gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + spellName + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + npc.getColorName() + "! \r\n");
                     int spellAttack = getSpellAttack(npc.getStats());
-                    gameManager.getChannelUtils().write(player.getPlayerId(), getAttackMessage(spellAttack));
-                    gameManager.updateNpcHealth(npc.getEntityId(), -spellAttack, player.getPlayerId());
-                    if (!player.doesActiveFightExist(npc)) {
-                        if (player.addActiveFight(npc)) {
-                            npc.setIsInFight(true);
-                            FightRun fightRun = new FightRun(player, npc, gameManager);
-                            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " has attacked a " + npc.getColorName());
-                            Future<FightResults> fight = gameManager.getFightManager().fight(fightRun);
-                            CreeperSession creeperSession = (CreeperSession) player.getChannel().getAttachment();
-                            creeperSession.setActiveFight(Optional.of(fight));
-                        }
-                    }
+                    final String spellAttackStr = getAttackMessage(spellAttack, npc);
+                    npc.doHealthDamage(player, Arrays.asList(spellAttackStr), -spellAttack);
                 }
                 if (npcIds.size() > 0) {
                     applyEffectsToNpcs(npcIds, player);
                     gameManager.getPlayerManager().updatePlayerMana(player, -manaCost);
-                }
-            }
-        }
-    }
-
-    public void applyEffectsToPlayer(Set<String> playerIds, Player player) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            int availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
-            if (availableMana < manaCost) {
-                gameManager.getChannelUtils().write(player.getPlayerId(), "Not enough mana!" + "\r\n");
-            } else {
-                for (Effect effect : effects) {
-                    for (String playerId : playerIds) {
-                        Player targetPlayer = gameManager.getPlayerManager().getPlayer(playerId);
-                        PlayerMetadata targetPlayerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-                        Effect nEffect = new Effect(effect);
-                        nEffect.setPlayerId(player.getPlayerId());
-                        gameManager.getEntityManager().saveEffect(nEffect);
-                        if (effect.getDurationStats().getCurrentHealth() < 0) {
-                            log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
-                            continue;
-                        }
-                        StatsHelper.combineStats(targetPlayerMetadata.getStats(), effect.getDurationStats());
-                       // gameManager.getChannelUtils().write(playerId, player.getPlayerName() + " cast effect " + effect.getEffectName() + " on you! " + effect.getEffectDescription() + "\r\n");
-                        gameManager.getPlayerManager().savePlayerMetadata(targetPlayerMetadata);
-                        gameManager.getPlayerManager().addEffect(targetPlayer, nEffect.getEntityId());
-                    }
                 }
             }
         }

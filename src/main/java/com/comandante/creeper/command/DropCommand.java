@@ -33,7 +33,7 @@ public class DropCommand extends Command {
                 if (item.getItemTriggers().contains(itemTarget)) {
                     item.setWithPlayer(false);
                     gameManager.placeItemInRoom(currentRoom.getRoomId(), item.getItemId());
-                    playerManager.removeInventoryId(player, item.getItemId());
+                    player.removeInventoryId(item.getItemId());
                     gameManager.getItemDecayManager().addItem(item);
                     entityManager.saveItem(item);
                     gameManager.roomSay(currentRoom.getRoomId(), player.getPlayerName() + " dropped " + item.getItemName(), playerId);

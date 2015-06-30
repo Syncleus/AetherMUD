@@ -26,7 +26,7 @@ public class DepositCommand extends BankCommand {
             if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
                 int depositAmt = Integer.parseInt(originalMessageParts.get(1));
                 if (areFundsAvailable(depositAmt)) {
-                    playerManager.transferGoldToBank(playerId, depositAmt);
+                    player.transferGoldToBank(depositAmt);
                     write("Your funds of " + depositAmt + Color.YELLOW + " gold " + Color.RESET + "have been transferred to your bank account."+ "\r\n");
                 } else {
                     write("You don't have enough" + Color.YELLOW + " gold "+ Color.RESET + "to cover the deposit amount."+ "\r\n");

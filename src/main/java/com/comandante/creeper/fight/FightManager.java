@@ -6,13 +6,11 @@ import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
-import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.stat.Stats;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,9 +56,7 @@ public class FightManager {
                     damageToVictim = getAttackAmt(challenger, victim);
                 }
                 if (damageToVictim > 0) {
-                    final String fightMsg = Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
-                    channelUtils.write(player.getPlayerId(), fightMsg, true);
-                    doNpcDamage(npc.getEntityId(), damageToVictim, player.getPlayerId());
+                    doNpcDamage(npc, damageToVictim, player);
                 } else {
                     final String fightMsg = "You MISS " + npc.getName() + "!";
                     channelUtils.write(player.getPlayerId(), fightMsg, true);
@@ -76,26 +72,6 @@ public class FightManager {
                 if (!player.doesActiveFightExist(npc) && !player.isActive(CoolDownType.DEATH)) {
                     player.addActiveFight(npc);
                 }
-            }
-            if (player.doesActiveFightExist(npc)) {
-                int chanceToHitBack = getChanceToHit(victim, challenger);
-                int damageBack = getAttackAmt(victim, challenger);
-                if (randInt(0, 100) < chanceToHitBack) {
-                    Interner<String> interner = Interners.newWeakInterner();
-                    synchronized (interner.intern(player.getPlayerId())) {
-                        if (player.getCurrentHealth() > 0) {
-                            final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
-                            channelUtils.write(player.getPlayerId(), fightMsg, true);
-                        }
-                        if (doPlayerDamage(player, damageBack, npc)) {
-                            throw new PlayerDeathException(player.getPlayerName() + " has died at the hands of a " + npc.getName());
-                        }
-                    }
-                } else {
-                    final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
-                    channelUtils.write(player.getPlayerId(), fightMsg, true);
-                }
-                Thread.sleep(600);
             } else {
                 Thread.sleep(600);
             }
@@ -108,8 +84,9 @@ public class FightManager {
         return player.updatePlayerHealth(-damageAmount, npc);
     }
 
-    private void doNpcDamage(String npcId, int damageAmount, String playerId) {
-        gameManager.updateNpcHealth(npcId, -damageAmount, playerId);
+    private void doNpcDamage(Npc npc, int damageAmount, Player player) {
+        final String fightMsg = Color.YELLOW + "+" + damageAmount + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+        npc.doHealthDamage(player, Arrays.asList(fightMsg), damageAmount);
     }
 
     private static int getChanceToHit(Stats challenger, Stats victim) {
@@ -133,11 +110,6 @@ public class FightManager {
 
     private static int randInt(int min, int max) {
         return random.nextInt((max - min) + 1) + min;
-    }
-
-    public static boolean isActiveFight(CreeperSession session) {
-        if (session == null) return false;
-        return (session.getActiveFight().isPresent() && !session.getActiveFight().get().isDone());
     }
 
     public class PlayerDeathException extends Exception {

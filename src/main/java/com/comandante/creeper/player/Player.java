@@ -25,6 +25,7 @@ public class Player extends CreeperEntity {
     private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
     private final String playerId;
     private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
+    private final Interner<String> interner = Interners.newWeakInterner();
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -38,10 +39,10 @@ public class Player extends CreeperEntity {
         Stats stats = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(this);
         if (!isActive(CoolDownType.DEATH)) {
             if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-                updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
+                updatePlayerHealth((int) (stats.getMaxHealth() * .005), null);
             }
             if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
-                gameManager.addMana(this, (int) (stats.getMaxMana() * .03));
+                gameManager.addMana(this, (int) (stats.getMaxMana() * .003));
             }
         }
         for (String effectId : playerMetadata.getEffects()) {
@@ -49,7 +50,7 @@ public class Player extends CreeperEntity {
             if (effect.getTicks() >= effect.getLifeSpanTicks()) {
                 gameManager.getChannelUtils().write(playerId, effect.getEffectName() + " has worn off.\r\n", true);
                 gameManager.getEntityManager().removeEffect(effect);
-                gameManager.getPlayerManager().removeEffect(this, effectId);
+                removeEffect(effectId);
             } else {
                 effect.setTicks(effect.getTicks() + 1);
                 gameManager.getEffectsManager().applyEffectStatsOnTick(effect, playerMetadata);
@@ -60,7 +61,6 @@ public class Player extends CreeperEntity {
     }
 
     public void removeAllActiveFights() {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -71,7 +71,6 @@ public class Player extends CreeperEntity {
     }
 
     public void removeActiveFight(Npc npc) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             boolean resetFights = false;
@@ -91,7 +90,6 @@ public class Player extends CreeperEntity {
     }
 
     public boolean addActiveFight(Npc npc) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) != null) {
                 ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
@@ -104,20 +102,21 @@ public class Player extends CreeperEntity {
     }
 
     public boolean doesActiveFightExist(Npc npc) {
-        if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) == null) {
-            removeActiveFight(npc);
-        }
-        for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
-            ActiveFight fight = entry.getValue();
-            if (fight.getNpcId().equals(npc.getEntityId())) {
-                return true;
+        synchronized (interner.intern(playerId)) {
+            if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) == null) {
+                removeActiveFight(npc);
             }
+            for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+                ActiveFight fight = entry.getValue();
+                if (fight.getNpcId().equals(npc.getEntityId())) {
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
     }
 
     public boolean isActiveFights() {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             if (activeFights.size() > 0) {
                 Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
@@ -133,27 +132,30 @@ public class Player extends CreeperEntity {
     }
 
     public boolean isValidPrimaryActiveFight(Npc npc) {
-        for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
-            ActiveFight fight = entry.getValue();
-            if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
-                return true;
+        synchronized (interner.intern(playerId)) {
+            for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+                ActiveFight fight = entry.getValue();
+                if (fight.getNpcId().equals(npc.getEntityId()) && fight.isPrimary) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     }
 
     public String getPrimaryActiveFight() {
-        for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
-            ActiveFight fight = entry.getValue();
-            if (fight.isPrimary) {
-                return fight.getNpcId();
+        synchronized (interner.intern(playerId)) {
+            for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
+                ActiveFight fight = entry.getValue();
+                if (fight.isPrimary) {
+                    return fight.getNpcId();
+                }
             }
+            return null;
         }
-        return null;
     }
 
     public void activateNextPrimaryActiveFight() {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             if (getPrimaryActiveFight() == null) {
                 if (activeFights.size() > 0) {
@@ -164,7 +166,6 @@ public class Player extends CreeperEntity {
     }
 
     public void killPlayer(Npc npc) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             if (doesActiveFightExist(npc)) {
                 removeAllActiveFights();
@@ -183,7 +184,6 @@ public class Player extends CreeperEntity {
     }
 
     public boolean updatePlayerHealth(int amount, Npc npc) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (amount > 0) {
@@ -225,11 +225,131 @@ public class Player extends CreeperEntity {
     }
 
     public int getCurrentHealth() {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(playerId)) {
             return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentHealth();
         }
     }
+
+
+    public void transferGoldToBank(int amt) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.transferGoldToBank(amt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void transferBankGoldToPlayer(int amt) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.transferBankGoldToPlayer(amt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void incrementGold(int amt) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.incrementGold(amt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public boolean addEffect(String effectId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            if (playerMetadata.getEffects() != null && (playerMetadata.getEffects().size() >= playerMetadata.getStats().getMaxEffects())) {
+                return false;
+            }
+            playerMetadata.addEffectId(effectId);
+            savePlayerMetadata(playerMetadata);
+            return true;
+        }
+    }
+
+    public void removeEffect(String effectId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.removeEffectId(effectId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+
+    public void addLockerInventoryId(String entityId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.addLockerEntityId(entityId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void removeLockerInventoryId(String lockerInventoryId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.removeLockerEntityId(lockerInventoryId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void addEquipmentId(String equipmentId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.addEquipmentEntityId(equipmentId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void removeEquipmentId(String equipmentId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.removeEquipmentEntityId(equipmentId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+
+    public void addInventoryId(String inventoryId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.addInventoryEntityId(inventoryId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void removeInventoryId(String inventoryId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.removeInventoryEntityId(inventoryId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+
+    public void transferItemToLocker(String inventoryId) {
+        synchronized (interner.intern(playerId)) {
+            removeInventoryId(inventoryId);
+            addLockerInventoryId(inventoryId);
+        }
+    }
+
+    public void transferItemFromLocker(String entityId) {
+        synchronized (interner.intern(playerId)) {
+            if (gameManager.acquireItem(this, entityId)) {
+                removeLockerInventoryId(entityId);
+            }
+        }
+    }
+
+
+    private PlayerMetadata getPlayerMetadata() {
+        return gameManager.getPlayerManager().getPlayerMetadata(playerId);
+    }
+
+    private void savePlayerMetadata(PlayerMetadata playerMetadata) {
+        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+    }
+
 
     public void addCoolDown(CoolDown coolDown) {
         this.coolDowns.add(coolDown);
@@ -310,5 +430,9 @@ public class Player extends CreeperEntity {
         public void setIsPrimary(boolean isPrimary) {
             this.isPrimary = isPrimary;
         }
+    }
+
+    public SortedMap<Long, ActiveFight> getActiveFights() {
+        return activeFights;
     }
 }

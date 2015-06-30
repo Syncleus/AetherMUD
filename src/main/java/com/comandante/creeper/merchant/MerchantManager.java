@@ -40,7 +40,7 @@ public class MerchantManager {
                         Item item = next.getValue().getItem().create();
                         gameManager.getEntityManager().saveItem(item);
                         gameManager.acquireItem(player, item.getItemId());
-                        gameManager.getPlayerManager().incrementGold(player, -price);
+                        player.incrementGold(-price);
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
                     } else {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + next.getValue().getItem().getItemName() + "\r\n");

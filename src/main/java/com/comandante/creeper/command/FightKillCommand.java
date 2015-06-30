@@ -1,20 +1,15 @@
 package com.comandante.creeper.command;
 
-import com.comandante.creeper.fight.FightManager;
-import com.comandante.creeper.fight.FightResults;
-import com.comandante.creeper.fight.FightRun;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDownType;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 public class FightKillCommand extends Command {
 
@@ -34,7 +29,7 @@ public class FightKillCommand extends Command {
                 write("You have no health and as such you can not attack.");
                 return;
             }
-            if (FightManager.isActiveFight(creeperSession)) {
+            if (player.getActiveFights().size() > 0) {
                 write("You are already in a fight!");
                 return;
             }
@@ -54,10 +49,8 @@ public class FightKillCommand extends Command {
                 if (npcEntity.getValidTriggers().contains(target)) {
                     if (player.addActiveFight(npcEntity)) {
                         npcEntity.setIsInFight(true);
-                        FightRun fightRun = new FightRun(player, npcEntity, gameManager);
                         writeToRoom(player.getPlayerName() + " has attacked a " + npcEntity.getColorName());
-                        Future<FightResults> fight = fightManager.fight(fightRun);
-                        creeperSession.setActiveFight(Optional.of(fight));
+                        npcEntity.addFight(player);
                         return;
                     } else {
                         return;

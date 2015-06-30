@@ -1,6 +1,5 @@
 package com.comandante.creeper.command;
 
-import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.managers.GameManager;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -21,7 +20,7 @@ public class QuitCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
-        if (FightManager.isActiveFight(creeperSession)) {
+        if (player.getActiveFights().size() > 0) {
             write("You can't quit in the middle of a fight!");
         } else {
             gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());

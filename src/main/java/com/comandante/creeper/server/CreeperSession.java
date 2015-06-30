@@ -49,14 +49,6 @@ public class CreeperSession {
         this.lastMessage = lastMessage;
     }
 
-    public Optional<Future<FightResults>> getActiveFight() {
-        return activeFight;
-    }
-
-    public void setActiveFight(Optional<Future<FightResults>> activeFight) {
-        this.activeFight = activeFight;
-    }
-
     public Optional<String> getUsername() {
         return username;
     }

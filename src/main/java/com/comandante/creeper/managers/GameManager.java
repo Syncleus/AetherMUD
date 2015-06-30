@@ -11,7 +11,6 @@ import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.fight.FightManager;
-import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.*;
@@ -38,7 +37,6 @@ import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.concurrent.Future;
 
 import static com.comandante.creeper.server.Color.*;
 
@@ -397,7 +395,7 @@ public class GameManager {
         synchronized (interner.intern(itemId)) {
             Stats playerStatsWithEquipmentAndLevel = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
             if (entityManager.getInventory(player).size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
-                playerManager.addInventoryId(player, itemId);
+                player.addInventoryId(itemId);
                 Item itemEntity = entityManager.getItemEntity(itemId);
                 itemEntity.setWithPlayer(true);
                 entityManager.saveItem(itemEntity);
@@ -405,23 +403,6 @@ public class GameManager {
             } else {
                 channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
                 return false;
-            }
-        }
-    }
-
-    public void transferItemToLocker(Player player, String inventoryId) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            getPlayerManager().removeInventoryId(player, inventoryId);
-            getPlayerManager().addLockerInventoryId(player, inventoryId);
-        }
-    }
-
-    public void transferItemFromLocker(Player player, String entityId) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            if (acquireItem(player, entityId)) {
-                getPlayerManager().removeLockerInventoryId(player, entityId);
             }
         }
     }
@@ -728,19 +709,18 @@ public class GameManager {
         if (npc != null && didNpcDie) {
             player.removeActiveFight(npc);
             for (Map.Entry<String, Double> playerDamageExperience : xpProcessed.entrySet()) {
-                playerManager.getSessionManager().getSession(playerDamageExperience.getKey()).setActiveFight(Optional.<Future<FightResults>>absent());
                 Player p = getPlayerManager().getPlayer(playerDamageExperience.getKey());
                 if (p == null) {
                     continue;
                 }
                 int xpEarned = (int) Math.round(playerDamageExperience.getValue());
-                addExperience(player, xpEarned);
+                addExperience(p, xpEarned);
                 channelUtils.write(p.getPlayerId(), "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
             }
         }
     }
 
-    private Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
+    public Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
         Iterator<Map.Entry<String, Integer>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
         int totalDamageDone = 0;
         while (iterator.hasNext()) {

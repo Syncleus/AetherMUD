@@ -33,7 +33,7 @@ public class LootCommand extends Command {
                             int gold = lootManager.lootGoldAmountReturn(loot);
                             if (gold > 0) {
                                 write("You looted " + gold + Color.YELLOW + " gold" + Color.RESET + " from a " + item.getItemName() + ".\r\n");
-                                playerManager.incrementGold(player, gold);
+                                player.incrementGold(gold);
                             }
                             Set<Item> items = lootManager.lootItemsReturn(loot);
                             for (Item i: items) {
@@ -44,7 +44,7 @@ public class LootCommand extends Command {
                                 write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
                         }
-                        playerManager.removeInventoryId(player, item.getItemId());
+                        player.removeInventoryId(item.getItemId());
                         entityManager.removeItem(item);
                         return;
                     }

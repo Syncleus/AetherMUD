@@ -37,8 +37,8 @@ public class EquipmentManager {
             }
         }
         channelUtils.write(player.getPlayerId(), "Equipping " + item.getItemName() + "\r\n");
-        playerManager.addEquipmentId(player, item.getItemId());
-        playerManager.removeInventoryId(player, item.getItemId());
+        player.addEquipmentId(item.getItemId());
+        player.removeInventoryId(item.getItemId());
     }
 
     public Item getSlotItem(Player player, EquipmentSlotType slot) {
@@ -59,7 +59,7 @@ public class EquipmentManager {
     public boolean unEquip(Player player, Item item) {
         channelUtils.write(player.getPlayerId(), "Un-equipping " + item.getItemName() + "\r\n");
         if(gameManager.acquireItem(player, item.getItemId())) {
-            playerManager.removeEquipmentId(player, item.getItemId());
+            player.removeEquipmentId(item.getItemId());
             return true;
         }
         return false;
