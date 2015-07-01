@@ -77,7 +77,6 @@ public class Player extends CreeperEntity {
             for (ActiveFight activeFight : activeFights.values()) {
                 Npc npcEntity = gameManager.getEntityManager().getNpcEntity(activeFight.getNpcId());
                 if (npcEntity != null) {
-                    System.out.println("do fight for " + npcEntity.getColorName());
                     doFightRound(this, npcEntity);
                 }
             }

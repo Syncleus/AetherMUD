@@ -90,7 +90,6 @@ public class PlayerMetadata implements Serializable {
         lockerInventory.remove(newEntityId);
     }
 
-
     protected void removeInventoryEntityId(String itemId) {
         inventory.remove(itemId);
     }
