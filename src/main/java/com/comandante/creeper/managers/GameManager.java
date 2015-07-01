@@ -10,7 +10,6 @@ import com.comandante.creeper.bot.BotCommandFactory;
 import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.fight.FightManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.*;
@@ -52,7 +51,6 @@ public class GameManager {
     private final NewUserRegistrationManager newUserRegistrationManager;
     private final EntityManager entityManager;
     private final ItemDecayManager itemDecayManager;
-    private final FightManager fightManager;
     private final MultiLineInputManager multiLineInputManager;
     private final MapsManager mapsManager;
     private final FloorManager floorManager;
@@ -85,7 +83,6 @@ public class GameManager {
         this.channelUtils = channelUtils;
         this.lootManager = new LootManager(this);
         this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager, this);
-        this.fightManager = new FightManager(this);
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
         this.forageManager = new ForageManager(this);
@@ -146,10 +143,6 @@ public class GameManager {
 
     public MultiLineInputManager getMultiLineInputManager() {
         return multiLineInputManager;
-    }
-
-    public FightManager getFightManager() {
-        return fightManager;
     }
 
     public NewUserRegistrationManager getNewUserRegistrationManager() {
@@ -490,7 +483,7 @@ public class GameManager {
 
         int i = 1;
         for (Effect effect : effects) {
-            int percent = 100 - (int) ((effect.getTicks() * 100.0f) / effect.getLifeSpanTicks());
+            int percent = 100 - (int) ((effect.getEffectApplications() * 100.0f) / effect.getMaxEffectApplications());
             t.addCell(drawProgressBar(percent));
             t.addCell(effect.getEffectName());
             i++;

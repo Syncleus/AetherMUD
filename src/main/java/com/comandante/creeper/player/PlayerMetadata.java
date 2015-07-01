@@ -181,6 +181,9 @@ public class PlayerMetadata implements Serializable {
     }
 
     public List<String> getEffects() {
+        if (effects==null) {
+            effects = Lists.newArrayList();
+        }
         return effects;
     }
 }

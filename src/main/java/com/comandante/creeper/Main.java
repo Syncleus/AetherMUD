@@ -90,6 +90,8 @@ public class Main {
         startUpMessage("Configuring default maxEffects limits");
         BackportCommands.configureDefaultMaxEffectSize(entityManager, gameManager);
 
+        BackportCommands.configureFibsHealth(entityManager, gameManager);
+
         startUpMessage("Creeper MUD engine started");
 
         creeperServer.run(gameManager);

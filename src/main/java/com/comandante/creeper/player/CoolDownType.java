@@ -3,7 +3,7 @@ package com.comandante.creeper.player;
 
 public enum CoolDownType {
 
-    DEATH("death", 3);
+    DEATH("death", 30);
 
     private final String name;
     private final int ticks;

@@ -36,4 +36,20 @@ public class BackportCommands {
             }
         }
     }
+
+    public static void configureFibsHealth(EntityManager entityManager, GameManager gameManager) {
+        /*
+        for (Map.Entry<String, PlayerMetadata> next : gameManager.getPlayerManager().getPlayerMetadataStore().entrySet()) {
+            PlayerMetadata playerMetadata = next.getValue();
+            Stats stats = playerMetadata.getStats();
+            if (true) {
+                playerMetadata.getStats().setCurrentHealth(90000);
+                playerMetadata.getStats().setCurrentMana(90000);
+
+                gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+                log.info("Inventory size for player: " + playerMetadata.getPlayerName() + " was zero, setting to the default of: " + PlayerStats.DEFAULT_PLAYER.createStats().getInventorySize() + ".");
+            }
+        }
+        */
+    }
 }

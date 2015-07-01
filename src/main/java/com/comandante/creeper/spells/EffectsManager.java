@@ -16,14 +16,14 @@ public class EffectsManager {
         this.gameManager = gameManager;
     }
 
-    public void applyEffectStatsOnTick(Effect effect, PlayerMetadata playerMetadata) {
+    public void application(Effect effect, PlayerMetadata playerMetadata) {
         // if there are effecst that modify player health, deal with it here, you can't rely on combine stats.
         if (effect.getApplyStatsOnTick() != null) {
             StatsHelper.combineStats(playerMetadata.getStats(), effect.getApplyStatsOnTick());
         }
     }
 
-    public void applyEffectStatsOnTick(Effect effect, Npc npc) {
+    public void application(Effect effect, Npc npc) {
         Player player = gameManager.getPlayerManager().getPlayer(effect.getPlayerId());
         Stats applyStats = new Stats(effect.getApplyStatsOnTick());
         // if there are effecst that modify npc health, deal with it here, you can't rely on combine stats.

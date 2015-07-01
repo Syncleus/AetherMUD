@@ -2,13 +2,11 @@ package com.comandante.creeper.server;
 
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.command.Command;
-import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
 import com.google.common.base.Optional;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.UUID;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CreeperSession {
@@ -16,7 +14,6 @@ public class CreeperSession {
     private Optional<String> username = Optional.absent();
     private Optional<String> password = Optional.absent();
     private boolean isAuthed = false;
-    private Optional<Future<FightResults>> activeFight = Optional.absent();
     private AtomicBoolean isAbleToDoAbility = new AtomicBoolean(false);
     private Optional<CreeperEntry<UUID, Command>> grabMultiLineInput = Optional.absent();
     private Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant = Optional.absent();

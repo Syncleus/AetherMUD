@@ -50,7 +50,7 @@ public class FightKillCommand extends Command {
                     if (player.addActiveFight(npcEntity)) {
                         npcEntity.setIsInFight(true);
                         writeToRoom(player.getPlayerName() + " has attacked a " + npcEntity.getColorName());
-                        npcEntity.addFight(player);
+                        player.addActiveFight(npcEntity);
                         return;
                     } else {
                         return;

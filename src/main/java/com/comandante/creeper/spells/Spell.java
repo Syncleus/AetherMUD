@@ -94,6 +94,7 @@ public abstract class Spell {
                     gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + spellName + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + npc.getColorName() + "! \r\n");
                     int spellAttack = getSpellAttack(npc.getStats());
                     final String spellAttackStr = getAttackMessage(spellAttack, npc);
+                    player.addActiveFight(npc);
                     npc.doHealthDamage(player, Arrays.asList(spellAttackStr), -spellAttack);
                 }
                 if (npcIds.size() > 0) {
@@ -126,7 +127,7 @@ public abstract class Spell {
                             continue;
                         }
                         StatsHelper.combineStats(npc.getStats(), effect.getDurationStats());
-                        gameManager.getEffectsManager().applyEffectStatsOnTick(nEffect, npc);
+                       // gameManager.getEffectsManager().application(nEffect, npc);
                         npc.addEffect(nEffect);
                     }
                 }
