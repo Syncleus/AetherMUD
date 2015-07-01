@@ -81,7 +81,7 @@ public class ItemUseHandler {
         writeToRoom(playerName + " blazes " + Color.GREEN + "marijuana" + Color.RESET + ".\r\n");
         writeToPlayer("50 mana is restored." + "\r\n");
         writeToPlayer("20 health is restored.");
-        gameManager.addMana(player, 50);
+        player.addMana(50);
         player.updatePlayerHealth(20, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-weed-smoked")).inc();
     }
@@ -91,7 +91,7 @@ public class ItemUseHandler {
         writeToRoom(playerName + " eats a " + Color.GREEN + "dog dick." + Color.RESET + ".\r\n");
         writeToPlayer("1000 mana is restored." + "\r\n");
         writeToPlayer("1500 health is restored.");
-        gameManager.addMana(player, 1000);
+        player.addMana(1000);
         player.updatePlayerHealth(1500, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-dogdick-smoked")).inc();
     }

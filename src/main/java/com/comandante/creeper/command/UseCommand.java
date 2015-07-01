@@ -31,7 +31,7 @@ public class UseCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            Item inventoryItem = entityManager.getInventoryItem(player, itemTarget);
+            Item inventoryItem = player.getInventoryItem(itemTarget);
             if (inventoryItem == null) {
                 write("Useable item is not found in your inventory.\r\n");
                 return;

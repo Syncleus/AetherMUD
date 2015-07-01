@@ -91,7 +91,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
 
     public Map<Integer, InventoryItemForSale> getInventoryMenu(Player player) {
         Map<Integer, InventoryItemForSale> inventoryItemsForSale = Maps.newHashMap();
-        List<Item> inventory = gameManager.getEntityManager().getInventory(player);
+        List<Item> inventory = player.getInventory();
         int inv = 1;
         for (Item itemEntity : inventory) {
             int valueInGold = itemEntity.getValueInGold();

@@ -99,7 +99,7 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
         } else {
             creeperSession.setAuthed(true);
             creeperSession.setState(CreeperSession.State.authed);
-            e.getChannel().write("Welcome to creeper.\r\n");
+            e.getChannel().write("Welcome to creeper. (version: " + Main.CREEPER_VERSION + ")\r\n");
         }
     }
 

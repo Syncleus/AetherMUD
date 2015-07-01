@@ -4,7 +4,6 @@ import com.comandante.creeper.Items.LootManager;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.EquipmentManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerRole;
@@ -43,8 +42,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public Coords currentRoomCoords;
     public List<String> originalMessageParts;
     public WorldExporter worldExporter;
-    public EquipmentManager equipmentManager;
-
     public static final Logger log = Logger.getLogger(Command.class);
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
@@ -64,7 +61,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.channelUtils = gameManager.getChannelUtils();
         this.worldExporter = new WorldExporter(roomManager, mapsManager, floorManager, entityManager);
         this.lootManager = gameManager.getLootManager();
-        this.equipmentManager = gameManager.getEquipmentManager();
         this.roles = roles;
     }
 

@@ -29,7 +29,7 @@ public class EquipCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            List<Item> inventory = entityManager.getInventory(player);
+            List<Item> inventory = player.getInventory();
             if (inventory != null) {
                 for (Item item : inventory) {
                     if (item.getItemTriggers().contains(itemTarget)) {
@@ -37,7 +37,7 @@ public class EquipCommand extends Command {
                             write("Item is not equipable.");
                             return;
                         }
-                        equipmentManager.equip(player, item);
+                        player.equip(item);
                         return;
                     }
                 }

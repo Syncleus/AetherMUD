@@ -29,7 +29,7 @@ public class DropCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            for (Item item : entityManager.getInventory(player)) {
+            for (Item item : player.getInventory()) {
                 if (item.getItemTriggers().contains(itemTarget)) {
                     item.setWithPlayer(false);
                     gameManager.placeItemInRoom(currentRoom.getRoomId(), item.getItemId());

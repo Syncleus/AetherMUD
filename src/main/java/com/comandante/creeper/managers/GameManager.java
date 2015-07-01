@@ -13,7 +13,10 @@ import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.*;
-import com.comandante.creeper.server.*;
+import com.comandante.creeper.server.ChannelUtils;
+import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.GossipCache;
+import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
@@ -29,7 +32,6 @@ import com.google.common.collect.Interners;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.log4j.Logger;
-import org.jboss.netty.channel.MessageEvent;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
@@ -43,8 +45,6 @@ public class GameManager {
 
     public static String LOGO = "Creeper.";
 
-    public static String VERSION = "0.1-SNAPSHOT";
-
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private final ChannelUtils channelUtils;
@@ -55,7 +55,6 @@ public class GameManager {
     private final MapsManager mapsManager;
     private final FloorManager floorManager;
     private final LootManager lootManager;
-    private final EquipmentManager equipmentManager;
     private final IrcBotService ircBotService;
     private final CreeperConfiguration creeperConfiguration;
     private final ForageManager forageManager;
@@ -65,10 +64,7 @@ public class GameManager {
     private final StatsModifierFactory statsModifierFactory;
     private final GossipCache gossipCache;
 
-    public static final int MAX_LOCKER_SIZE = 500;
-
     private static final Logger log = Logger.getLogger(GameManager.class);
-
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -82,7 +78,6 @@ public class GameManager {
         this.floorManager = new FloorManager();
         this.channelUtils = channelUtils;
         this.lootManager = new LootManager(this);
-        this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager, this);
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
         this.forageManager = new ForageManager(this);
@@ -123,10 +118,6 @@ public class GameManager {
 
     public CreeperConfiguration getCreeperConfiguration() {
         return creeperConfiguration;
-    }
-
-    public EquipmentManager getEquipmentManager() {
-        return equipmentManager;
     }
 
     public LootManager getLootManager() {
@@ -225,13 +216,6 @@ public class GameManager {
         Set<Player> allPlayers = getAllPlayers();
         for (Player p: allPlayers) {
             getChannelUtils().write(p.getPlayerId(), Color.GREEN + userName + " has connected." + Color.RESET + "\r\n", true);
-        }
-    }
-
-    public void announceDisconnect(String userName) {
-        Set<Player> allPlayers = getAllPlayers();
-        for (Player p: allPlayers) {
-            getChannelUtils().write(p.getPlayerId(), Color.RED + userName + " has disconnected." + Color.RESET + "\r\n", true);
         }
     }
 
@@ -374,11 +358,6 @@ public class GameManager {
         channelUtils.write(player.getPlayerId(), msg);
     }
 
-    public void currentRoomLogic(CreeperSession creeperSession, MessageEvent e) {
-        final String player = playerManager.getPlayerByUsername(creeperSession.getUsername().get()).getPlayerId();
-        currentRoomLogic(player);
-    }
-
     public void placeItemInRoom(Integer roomId, String itemId) {
         roomManager.getRoom(roomId).addPresentItem(entityManager.getItemEntity(itemId).getItemId());
     }
@@ -386,8 +365,8 @@ public class GameManager {
     public boolean acquireItem(Player player, String itemId) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
-            Stats playerStatsWithEquipmentAndLevel = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
-            if (entityManager.getInventory(player).size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
+            Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
+            if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
                 player.addInventoryId(itemId);
                 Item itemEntity = entityManager.getItemEntity(itemId);
                 itemEntity.setWithPlayer(true);
@@ -441,7 +420,7 @@ public class GameManager {
     public String getLookString(Player player) {
         StringBuilder sb = new StringBuilder();
         Stats origStats = statsModifierFactory.getStatsModifier(player);
-        Stats modifiedStats = getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player);
+        Stats modifiedStats = player.getPlayerStatsWithEquipmentAndLevel();
         Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(player.getPlayerName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
@@ -464,7 +443,7 @@ public class GameManager {
         List<EquipmentSlotType> all = EquipmentSlotType.getAll();
         for (EquipmentSlotType slot : all) {
             t.addCell(capitalize(slot.getName()));
-            Item slotItem = equipmentManager.getSlotItem(player, slot);
+            Item slotItem = player.getSlotItem(slot);
             if (slotItem != null) {
                 t.addCell(slotItem.getItemName());
             } else {
@@ -501,7 +480,7 @@ public class GameManager {
         List<Effect> effects = Lists.newArrayList();
         if (playerMetadata.getEffects() != null) {
             for (String effectId : playerMetadata.getEffects()) {
-                Effect effect = entityManager.getEffect(effectId);
+                Effect effect = entityManager.getEffectEntity(effectId);
                 effects.add(effect);
             }
         }
@@ -769,7 +748,7 @@ public class GameManager {
     public String buildPrompt(String playerId) {
         Player player = playerManager.getPlayer(playerId);
         boolean isFight = player.isActiveFights();
-        Stats stats = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
+        Stats stats = player.getPlayerStatsWithEquipmentAndLevel();
         int currentHealth = stats.getCurrentHealth();
         int maxHealth = stats.getMaxHealth();
         int currentMana = stats.getCurrentMana();
@@ -791,27 +770,6 @@ public class GameManager {
         }
         sb.append("] ");
         return sb.toString();
-    }
-
-    public void addMana(Player player, int addAmt) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(player.getPlayerId());
-            int currentMana = playerMetadata.getStats().getCurrentMana();
-            Stats statsModifier = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
-            int maxMana = statsModifier.getMaxMana();
-            int proposedNewAmt = currentMana + addAmt;
-            if (proposedNewAmt > maxMana) {
-                if (currentMana < maxMana) {
-                    int adjust = proposedNewAmt - maxMana;
-                    proposedNewAmt = proposedNewAmt - adjust;
-                } else {
-                    proposedNewAmt = proposedNewAmt - addAmt;
-                }
-            }
-            playerMetadata.getStats().setCurrentMana(proposedNewAmt);
-            getPlayerManager().savePlayerMetadata(playerMetadata);
-        }
     }
 
     public String drawProgressBar(int pct) {

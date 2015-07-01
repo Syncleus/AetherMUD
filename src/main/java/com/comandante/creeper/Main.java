@@ -31,6 +31,8 @@ public class Main {
 
     final public static MetricRegistry metrics = new MetricRegistry();
 
+    final public static String CREEPER_VERSION = "0.5 ALPHA";
+
     public static void main(String[] args) throws Exception {
 
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(buildConfiguration(args));

@@ -26,7 +26,7 @@ public class LootCommand extends Command {
         configure(e);
         try {
             if (originalMessageParts.size() > 1) {
-                for (Item item : entityManager.getInventory(player)) {
+                for (Item item : player.getInventory()) {
                     if (item.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
                         Loot loot = item.getLoot();
                         if (loot != null) {

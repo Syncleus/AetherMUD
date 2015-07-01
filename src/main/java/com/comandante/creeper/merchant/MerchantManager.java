@@ -29,8 +29,8 @@ public class MerchantManager {
             while (merchantItemForSales.hasNext()) {
                 Map.Entry<Integer, MerchantItemForSale> next = merchantItemForSales.next();
                 if (next.getKey().equals(itemNo)) {
-                    int maxInventorySize = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player).getInventorySize();
-                    if (gameManager.getEntityManager().getInventory(player).size() >= maxInventorySize) {
+                    int maxInventorySize = player.getPlayerStatsWithEquipmentAndLevel().getInventorySize();
+                    if (player.getInventory().size() >= maxInventorySize) {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "Your inventory is full, drop some items and come back.\r\n");
                         return;
                     }
