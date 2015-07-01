@@ -109,12 +109,14 @@ public class Player extends CreeperEntity {
     private void processEffects() {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
-            for (String effectId : playerMetadata.getEffects()) {
+            Iterator<String> iterator = playerMetadata.getEffects().iterator();
+            while (iterator.hasNext()) {
+                String effectId =  iterator.next();
                 Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
                 if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
                     gameManager.getChannelUtils().write(playerId, effect.getEffectName() + " has worn off.\r\n", true);
                     gameManager.getEntityManager().removeEffect(effect);
-                    playerMetadata.removeEffectId(effectId);
+                    iterator.remove();
                 } else {
                     effect.setEffectApplications(effect.getEffectApplications() + 1);
                     gameManager.getEffectsManager().application(effect, playerMetadata);
@@ -646,7 +648,9 @@ public class Player extends CreeperEntity {
             if (playerMetadata.getEffects() != null) {
                 for (String effectId : playerMetadata.getEffects()) {
                     Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
-                    StatsHelper.combineStats(newStats, effect.getDurationStats());
+                    if (effect != null) {
+                        StatsHelper.combineStats(newStats, effect.getDurationStats());
+                    }
                 }
             }
             return newStats;

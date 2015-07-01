@@ -4,7 +4,6 @@ import com.codahale.metrics.Meter;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Levels;
-import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -18,7 +17,6 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 
 public class XpCommand extends Command {
@@ -40,12 +38,17 @@ public class XpCommand extends Command {
             int expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
             Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
             StringBuilder sb = new StringBuilder();
-            sb.append(expToNextLevel).append(" experience to level ").append(nextLevel).append(".\r\n");
+            sb.append(NumberFormat.getNumberInstance(Locale.US).format(expToNextLevel)).append(" experience to level ").append(nextLevel).append(".\r\n");
 
             Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                    ShownBorders.HEADER_AND_COLUMNS);
-            t.addCell("time window");
-            t.addCell("rate");
+                    ShownBorders.NONE);
+
+            t.setColumnWidth(0, 8, 20);
+            t.setColumnWidth(1, 10, 13);
+
+
+            t.addCell("Window");
+            t.addCell("Rate");
             t.addCell(" 1 min");
             t.addCell(String.valueOf(round(meter.getOneMinuteRate())) + " xp/sec");
             t.addCell(" 5 min");
