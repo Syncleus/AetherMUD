@@ -12,7 +12,7 @@
     "north11_zone"
   ],
   "stats": {
-    "agile": 5,
+    "agile": 750,
     "aim": 32,
     "armorRating": 30,
     "currentHealth": 4000,
@@ -20,11 +20,11 @@
     "experience": 5600,
     "maxHealth": 4000,
     "maxMana": 100,
-    "meleSkill": 8,
+    "meleSkill": 57,
     "numberOfWeaponRolls": 1,
-    "strength": 140,
-    "weaponRatingMax": 120,
-    "weaponRatingMin": 70,
+    "strength": 1000,
+    "weaponRatingMax": 240,
+    "weaponRatingMin": 140,
     "willPower": 9
   },
   "spawnAreas": {

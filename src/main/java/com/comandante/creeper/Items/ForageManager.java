@@ -77,7 +77,7 @@ public class ForageManager {
                 foragePctOfSuccess = foragePctOfSuccess + pctSuccessBoostForLevel;
                 //System.out.println("final pct of success for forage: " + foragePctOfSuccess);
                 if (getRandPercent(foragePctOfSuccess)) {
-                    gameManager.getPlayerManager().updatePlayerForageExperience(player, forage.getForageExperience());
+                    player.updatePlayerForageExperience(forage.getForageExperience());
                     int numberToHarvest = randInt(forage.getMinAmt(), forage.getMaxAmt());
                     totalForageXp += forage.getForageExperience();
                     for (int i = 0; i < numberToHarvest; i++) {

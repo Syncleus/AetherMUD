@@ -99,7 +99,7 @@ public abstract class Spell {
                 }
                 if (npcIds.size() > 0) {
                     applyEffectsToNpcs(npcIds, player);
-                    gameManager.getPlayerManager().updatePlayerMana(player, -manaCost);
+                    player.updatePlayerMana(-manaCost);
                 }
             }
         }

@@ -29,13 +29,9 @@ public class EntityManager {
     private final HTreeMap<String, Item> items;
     private final HTreeMap<String, Effect> effects;
     private final ConcurrentHashMap<String, CreeperEntity> entities = new ConcurrentHashMap<>();
-    private final ExecutorService tickService = Executors.newFixedThreadPool(1);
     private final ExecutorService ticketRunnerService = Executors.newFixedThreadPool(10);
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
-    private final DB db;
-    private final ChannelUtils channelUtils;
-    private final ItemDecayManager itemDecayManager;
     private static final Logger log = Logger.getLogger(EntityManager.class);
 
 
@@ -52,10 +48,9 @@ public class EntityManager {
             this.effects = db.createHashMap("effectsMap").valueSerializer(new EffectSerializer()).make();
         }
         this.playerManager = playerManager;
-        this.db = db;
+        ExecutorService tickService = Executors.newFixedThreadPool(1);
         tickService.submit(new Ticker());
-        this.channelUtils = channelUtils;
-        this.itemDecayManager = new ItemDecayManager(this);
+        ItemDecayManager itemDecayManager = new ItemDecayManager(this);
         addEntity(itemDecayManager);
     }
 

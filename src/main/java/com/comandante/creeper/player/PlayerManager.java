@@ -5,9 +5,6 @@ import com.codahale.metrics.Gauge;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.MapDbAutoCommitService;
 import com.comandante.creeper.managers.SessionManager;
-import com.comandante.creeper.stat.Stats;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -81,27 +78,6 @@ public class PlayerManager {
     public boolean doesPlayerExist(String username) {
         return players.containsKey(new String(Base64.encodeBase64(username.getBytes())));
     }
-
-    public void updatePlayerMana(Player player, int amount) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
-            Stats stats = playerMetadata.getStats();
-            stats.setCurrentMana(stats.getCurrentMana() + amount);
-            savePlayerMetadata(playerMetadata);
-        }
-    }
-
-    public void updatePlayerForageExperience(Player player, int amount) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
-            Stats stats = playerMetadata.getStats();
-            stats.setForaging(stats.getForaging() + amount);
-            savePlayerMetadata(playerMetadata);
-        }
-    }
-
 
     public boolean hasRole(Player player, PlayerRole playerRole) {
         PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
