@@ -134,7 +134,7 @@ public class Player extends CreeperEntity {
                     addCoolDown(death);
                     gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
                     PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
-                    gameManager.movePlayer(playerMovement);
+                    movePlayer(playerMovement);
                     gameManager.currentRoomLogic(getPlayerId());
                     String prompt = gameManager.buildPrompt(playerId);
                     gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
@@ -389,6 +389,28 @@ public class Player extends CreeperEntity {
 
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
+    }
+
+    public void movePlayer(PlayerMovement playerMovement) {
+        synchronized (interner.intern(playerId)) {
+            Room sourceRoom = gameManager.getRoomManager().getRoom(playerMovement.getSourceRoomId());
+            Room destinationRoom = gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
+            sourceRoom.removePresentPlayer(playerMovement.getPlayer().getPlayerId());
+            for (Player next : gameManager.getRoomManager().getPresentPlayers(sourceRoom)) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(playerMovement.getPlayer().getPlayerName());
+                sb.append(" ").append(playerMovement.getRoomExitMessage());
+                gameManager.getChannelUtils().write(next.getPlayerId(), sb.toString(), true);
+            }
+            destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
+            playerMovement.getPlayer().setCurrentRoom(destinationRoom);
+            for (Player next : gameManager.getRoomManager().getPresentPlayers(destinationRoom)) {
+                if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
+                    continue;
+                }
+                gameManager.getChannelUtils().write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
+            }
+        }
     }
 
     public Item getInventoryItem(String itemKeyword) {
@@ -664,7 +686,6 @@ public class Player extends CreeperEntity {
                 if (!doesActiveFightExist(npc)) {
                     ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
                     activeFights.put(System.nanoTime(), activeFight);
-                    System.out.println("Adding active fight for: " + npc.getColorName());
                     return true;
                 }
             }
@@ -751,11 +772,11 @@ public class Player extends CreeperEntity {
                 damageToVictim = getAttackAmt(playerStats, npcStats);
             }
             if (damageToVictim > 0) {
-                final String fightMsg = Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET +  Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             } else {
-                final String fightMsg = "You MISS " + npc.getName() + "!";
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + "You MISS " + npc.getName() + "!";
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             }
@@ -764,12 +785,12 @@ public class Player extends CreeperEntity {
             int chanceToHitBack = getChanceToHit(npcStats, playerStats);
             int damageBack = getAttackAmt(npcStats, playerStats);
             if (randInt(0, 100) < chanceToHitBack) {
-                final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());
                 npcStatsChangeBuilder.setPlayerDamageStrings(Arrays.asList(fightMsg));
 
             } else {
-                final String fightMsg = npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(0).createStats());
                 npcStatsChangeBuilder.setPlayerDamageStrings(Arrays.asList(fightMsg));
             }

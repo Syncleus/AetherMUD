@@ -29,7 +29,7 @@ public class EffectsManager {
         // if there are effecst that modify npc health, deal with it here, you can't rely on combine stats.
         if (effect.getApplyStatsOnTick().getCurrentHealth() < 0) {
             if (player.getCurrentRoom().getRoomId().equals(npc.getCurrentRoom().getRoomId())) {
-                gameManager.getChannelUtils().write(player.getPlayerId(), npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET + "\r\n", true);
+                gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET +  npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET + "\r\n", true);
             }
             gameManager.updateNpcHealth(npc.getEntityId(), applyStats.getCurrentHealth(), effect.getPlayerId());
             // removing this because all health damage to an npc needs to flow through one method, i knwo its ghetto

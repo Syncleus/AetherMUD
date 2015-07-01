@@ -68,7 +68,7 @@ public abstract class Spell {
         if (amt == 0) {
             return s;
         } else {
-            return Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s + Color.BOLD_ON + Color.RED + " >>>> " + Color.RESET + npc.getColorName();
+            return Color.BOLD_ON + Color.YELLOW + "[spell] " + Color.RESET +  Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s + Color.BOLD_ON + Color.RED + " >>>> " + Color.RESET + npc.getColorName();
         }
     }
 

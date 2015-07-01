@@ -79,7 +79,7 @@ public class MovementCommand extends Command {
                 write("There's no exit in that direction. (" + command + ")");
                 return;
             }
-            gameManager.movePlayer(playerMovement);
+            player.movePlayer(playerMovement);
             if (playerMovement != null) {
                 player.setReturnDirection(Optional.of(playerMovement.getReturnDirection()));
                 currentRoomLogic(roomManager.getRoom(playerMovement.getDestinationRoomId()));

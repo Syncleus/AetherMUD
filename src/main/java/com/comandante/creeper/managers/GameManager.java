@@ -63,7 +63,7 @@ public class GameManager {
     private final BotCommandManager botCommandManager;
     private final StatsModifierFactory statsModifierFactory;
     private final GossipCache gossipCache;
-
+    private final Interner<String> interner = Interners.newWeakInterner();
     private static final Logger log = Logger.getLogger(GameManager.class);
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
@@ -175,29 +175,6 @@ public class GameManager {
             }
         }
         return builder.build();
-    }
-
-    public void movePlayer(PlayerMovement playerMovement) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(playerMovement.getPlayer().getPlayerId())) {
-            Room sourceRoom = roomManager.getRoom(playerMovement.getSourceRoomId());
-            Room destinationRoom = roomManager.getRoom(playerMovement.getDestinationRoomId());
-            sourceRoom.removePresentPlayer(playerMovement.getPlayer().getPlayerId());
-            for (Player next : roomManager.getPresentPlayers(sourceRoom)) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(playerMovement.getPlayer().getPlayerName());
-                sb.append(" ").append(playerMovement.getRoomExitMessage());
-                channelUtils.write(next.getPlayerId(), sb.toString(), true);
-            }
-            destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
-            playerMovement.getPlayer().setCurrentRoom(destinationRoom);
-            for (Player next : roomManager.getPresentPlayers(destinationRoom)) {
-                if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
-                    continue;
-                }
-                channelUtils.write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
-            }
-        }
     }
 
     public void placePlayerInLobby(Player player) {
@@ -363,7 +340,6 @@ public class GameManager {
     }
 
     public boolean acquireItem(Player player, String itemId) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
             Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
             if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
@@ -380,7 +356,6 @@ public class GameManager {
     }
 
     public boolean acquireItemFromRoom(Player player, String itemId) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
             Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
             if (playerCurrentRoom.getItemIds().contains(itemId)) {
