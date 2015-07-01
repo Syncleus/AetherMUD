@@ -671,7 +671,6 @@ public class Player extends CreeperEntity {
 
     public void removeActiveFight(Npc npc) {
         synchronized (interner.intern(playerId)) {
-            System.out.println("Removing active fight for: " + npc.getColorName());
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Long, ActiveFight> next = iterator.next();

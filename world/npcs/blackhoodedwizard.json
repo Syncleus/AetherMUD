@@ -31,13 +31,13 @@
     "tisland4_zone": {
       "randomChance": 100,
       "maxPerRoom": 3,
-      "spawnIntervalTicks": 10,
+      "spawnIntervalTicks": 600,
       "maxInstances": 6
     }, 
     "tisland5_zone": {
       "randomChance": 100,
       "maxPerRoom": 3,
-      "spawnIntervalTicks": 10,
+      "spawnIntervalTicks": 600,
       "maxInstances": 14
     }
   },

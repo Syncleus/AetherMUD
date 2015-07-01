@@ -674,7 +674,6 @@ public class GameManager {
             Map.Entry<String, Integer> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
-            System.out.println(playerMetadata.getPlayerName() + " damage to " + npc.getName() + " was " + damageEntry.getValue());
             Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
             if (!playerCurrentRoom.isPresent()) {
                 iterator.remove();

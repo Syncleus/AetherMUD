@@ -4,6 +4,7 @@ import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.spawner.SpawnRule;
+import com.comandante.creeper.spawner.SpawnRuleBuilder;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Area;
 import com.google.common.collect.Sets;
@@ -188,7 +189,7 @@ public class NpcAdapter extends TypeAdapter<Npc> {
 
             int maxInstances = jsonReader.nextInt();
             jsonReader.endObject();
-            spawnRules.add(new SpawnRule(Area.getByName(spawnAreaName),spawnIntervalTicks, maxInstances, maxPerRoom, randomChance));
+            spawnRules.add(new SpawnRuleBuilder().setArea(Area.getByName(spawnAreaName)).setSpawnIntervalTicks(spawnIntervalTicks).setMaxInstances(maxInstances).setMaxPerRoom(maxPerRoom).setRandomPercent(randomChance).createSpawnRule());
         }
         jsonReader.endObject();
 

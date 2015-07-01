@@ -9,6 +9,7 @@ import com.comandante.creeper.npc.NpcExporter;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
+import com.comandante.creeper.spawner.SpawnRuleBuilder;
 import com.comandante.creeper.spells.ClumsinessSpell;
 import com.comandante.creeper.spells.LightningSpell;
 import com.comandante.creeper.spells.SpellRegistry;
@@ -41,12 +42,12 @@ public class ConfigureNpc {
         configureAllNpcs(gameManager);
 
         Main.startUpMessage("Adding beer");
-        ItemSpawner itemSpawner = new ItemSpawner(ItemType.BEER, new SpawnRule(Area.NEWBIE_ZONE, 10, 100, 5, 40), gameManager);
-        ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.BEER, new SpawnRule(Area.FANCYHOUSE_ZONE, 10, 12, 2, 50), gameManager);
-        ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.BEER, new SpawnRule(Area.HOUSE_ZONE, 10, 12, 2, 50), gameManager);
+        ItemSpawner itemSpawner = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.NEWBIE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(100).setMaxPerRoom(5).setRandomPercent(40).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
 
-        ItemSpawner itemSpawner3 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRule(Area.FANCYHOUSE_ZONE, 10, 30, 5, 50), gameManager);
-        ItemSpawner itemSpawner4 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRule(Area.HOUSE_ZONE, 10, 30, 5, 50), gameManager);
+        ItemSpawner itemSpawner3 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(30).setMaxPerRoom(5).setRandomPercent(50).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner4 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(30).setMaxPerRoom(5).setRandomPercent(50).createSpawnRule(), gameManager);
 
         entityManager.addEntity(itemSpawner);
         entityManager.addEntity(itemSpawner1);

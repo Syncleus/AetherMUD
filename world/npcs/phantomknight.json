@@ -32,20 +32,20 @@
     "bloodridge5_zone": {
       "randomChance": 100,
       "maxPerRoom": 3,
-      "spawnIntervalTicks": 10,
+      "spawnIntervalTicks": 600,
       "maxInstances": 6
     }, 
     "bloodridge6_zone": {
       "randomChance": 100,
       "maxPerRoom": 3,
-      "spawnIntervalTicks": 10,
+      "spawnIntervalTicks": 600,
       "maxInstances": 14
     }
     , 
     "bloodridge7_zone": {
       "randomChance": 100,
       "maxPerRoom": 3,
-      "spawnIntervalTicks": 10,
+      "spawnIntervalTicks": 600,
       "maxInstances": 14
     }
   },
