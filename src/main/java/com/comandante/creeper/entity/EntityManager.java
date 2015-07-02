@@ -5,6 +5,7 @@ import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.ItemSerializer;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
@@ -86,6 +87,10 @@ public class EntityManager {
         items.remove(item.getItemId());
     }
 
+    public void removeItem(String itemId) {
+        items.remove(itemId);
+    }
+
     public void saveEffect(Effect effect) {
         effects.put(effect.getEntityId(), effect);
     }
@@ -150,7 +155,8 @@ public class EntityManager {
                     context.stop();
                     Thread.sleep(500);
                 } catch (Exception e) {
-                   log.error("Problem with ticker!", e);
+                    log.error("Problem with ticker!", e);
+                    SentryManager.logSentry(this.getClass(), e, "Problem with ticker!");
                 }
             }
         }

@@ -5,6 +5,7 @@ import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.server.Color;
@@ -61,6 +62,8 @@ public class Player extends CreeperEntity {
             }
         } catch (Exception e) {
             log.error("Player ticker failed! + " + playerName, e);
+            SentryManager.logSentry(this.getClass(), e, "Player ticker problem!");
+
         }
     }
 

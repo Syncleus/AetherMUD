@@ -3,6 +3,8 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.player.Equipment;
 import com.comandante.creeper.spells.Effect;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,6 +26,7 @@ public class Item implements Serializable {
     private final Rarity rarity;
     private final int valueInGold;
     private Set<Effect> effects;
+    private final Interner<String> interner = Interners.newWeakInterner();
 
     public static final int CORPSE_ID_RESERVED = 100;
     public static final int EQUIPMENT_ID_RESERVED = 101;
@@ -79,11 +82,15 @@ public class Item implements Serializable {
     }
 
     public boolean isWithPlayer() {
-        return isWithPlayer;
+        synchronized (interner.intern(itemId)) {
+            return isWithPlayer;
+        }
     }
 
     public void setWithPlayer(boolean isWithPlayer) {
-        this.isWithPlayer = isWithPlayer;
+        synchronized (interner.intern(itemId)) {
+            this.isWithPlayer = isWithPlayer;
+        }
     }
 
     public int getNumberOfUses() {

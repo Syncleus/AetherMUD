@@ -1,6 +1,7 @@
 package com.comandante.creeper.Items;
 
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
@@ -50,6 +51,7 @@ public class ForageManager {
                 }
             } catch (InterruptedException e) {
                 log.error(e);
+                SentryManager.logSentry(this.getClass(), e, "problem with forage delay!");
             }
         }
     }

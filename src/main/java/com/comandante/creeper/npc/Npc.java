@@ -6,6 +6,7 @@ import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.Items.Rarity;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
@@ -97,6 +98,7 @@ public class Npc extends CreeperEntity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                SentryManager.logSentry(this.getClass(), e, "NPC Ticker Problem!");
             }
         }
     }
@@ -249,7 +251,8 @@ public class Npc extends CreeperEntity {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            SentryManager.logSentry(this.getClass(), e, "Problem processing NPC Stat Change!");
+
         }
     }
 

@@ -343,9 +343,9 @@ public class GameManager {
         synchronized (interner.intern(itemId)) {
             Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
             if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
-                player.addInventoryId(itemId);
                 Item itemEntity = entityManager.getItemEntity(itemId);
                 itemEntity.setWithPlayer(true);
+                player.addInventoryId(itemId);
                 entityManager.saveItem(itemEntity);
                 return true;
             } else {
