@@ -1,11 +1,9 @@
 package com.comandante.creeper.managers;
 
 
-import com.codahale.metrics.Meter;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.Items.*;
-import com.comandante.creeper.Main;
 import com.comandante.creeper.bot.BotCommandFactory;
 import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -598,23 +596,6 @@ public class GameManager {
         }
     }
 
-    public void addExperience(Player player, int exp) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            final Meter requests = Main.metrics.meter("experience-" + player.getPlayerName());
-            PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-            int currentExperience = playerMetadata.getStats().getExperience();
-            int currentLevel = Levels.getLevel(currentExperience);
-            playerMetadata.getStats().setExperience(currentExperience + exp);
-            requests.mark(exp);
-            int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
-            if (newLevel > currentLevel) {
-                announceLevelUp(player.getPlayerName(), currentLevel, newLevel);
-            }
-            playerManager.savePlayerMetadata(playerMetadata);
-        }
-    }
-
 
     public void updateNpcHealth(String npcId, int amt, String playerId) {
         Player player = playerManager.getPlayer(playerId);
@@ -661,7 +642,7 @@ public class GameManager {
                     continue;
                 }
                 int xpEarned = (int) Math.round(playerDamageExperience.getValue());
-                addExperience(p, xpEarned);
+                p.addExperience(xpEarned);
                 channelUtils.write(p.getPlayerId(), "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
             }
         }

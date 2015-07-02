@@ -18,7 +18,12 @@ import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
-import com.google.common.collect.*;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.ShownBorders;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -256,6 +261,33 @@ public class Npc extends CreeperEntity {
         }
     }
 
+    private String getBattleReport(int xpEarned) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Color.MAGENTA + "Battle Report----------------------------" + Color.RESET).append("\r\n");
+        sb.append("You killed a " + getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n");
+
+        Set<Map.Entry<String, Integer>> entries = getPlayerDamageMap().entrySet();
+        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
+
+        t.setColumnWidth(0, 14, 24);
+        t.setColumnWidth(1, 10, 13);
+        t.addCell("Player");
+        t.addCell("Damage");
+        for (Map.Entry<String, Integer> entry : entries) {
+            Player player = gameManager.getPlayerManager().getPlayer(entry.getKey());
+            String name = null;
+            if (player != null) {
+                name = player.getPlayerName();
+            }
+            String damageAmt = String.valueOf(entry.getValue());
+            t.addCell(name);
+            t.addCell(damageAmt);
+        }
+        sb.append(t.render());
+        return sb.toString();
+    }
+
     private void killNpc(Player player) {
         isAlive.set(false);
         Map<String, Double> xpProcessed = null;
@@ -276,8 +308,8 @@ public class Npc extends CreeperEntity {
                 continue;
             }
             int xpEarned = (int) Math.round(playerDamageExperience.getValue());
-            gameManager.addExperience(p, xpEarned);
-            gameManager.getChannelUtils().write(p.getPlayerId(), "You killed a " + getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
+            p.addExperience(xpEarned);
+            gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) +  "\r\n", true);
         }
     }
 

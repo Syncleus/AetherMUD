@@ -2,11 +2,16 @@ package com.comandante.creeper.spells;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.npc.NpcStatsChange;
+import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
+
+import java.util.Arrays;
 
 public class EffectsManager {
 
@@ -28,14 +33,17 @@ public class EffectsManager {
         Stats applyStats = new Stats(effect.getApplyStatsOnTick());
         // if there are effecst that modify npc health, deal with it here, you can't rely on combine stats.
         if (effect.getApplyStatsOnTick().getCurrentHealth() < 0) {
-            if (player.getCurrentRoom().getRoomId().equals(npc.getCurrentRoom().getRoomId())) {
-                gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET +  npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET + "\r\n", true);
-            }
-            gameManager.updateNpcHealth(npc.getEntityId(), applyStats.getCurrentHealth(), effect.getPlayerId());
-            // removing this because all health damage to an npc needs to flow through one method, i knwo its ghetto
-            applyStats.setCurrentHealth(0);
+            String s = Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET +  npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET;
+            NpcStatsChange npcStatsChange = new NpcStatsChangeBuilder()
+                    .setStats(applyStats)
+                    .setDamageStrings(Arrays.asList(s))
+                    .setPlayer(player)
+                    .createNpcStatsChange();
+            npc.addNpcDamage(npcStatsChange);
         }
-        StatsHelper.combineStats(npc.getStats(), applyStats);
+        // Remove any health mods, as it will screw things up.
+        Stats finalCombineWorthyStats = new StatsBuilder(applyStats).setCurrentHealth(0).createStats();
+        StatsHelper.combineStats(npc.getStats(), finalCombineWorthyStats);
     }
 
     public void removeDurationStats(Effect effect, Npc npc) {

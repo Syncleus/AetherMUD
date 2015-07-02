@@ -3,8 +3,6 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.player.Equipment;
 import com.comandante.creeper.spells.Effect;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,12 +24,11 @@ public class Item implements Serializable {
     private final Rarity rarity;
     private final int valueInGold;
     private Set<Effect> effects;
-    private final Interner<String> interner = Interners.newWeakInterner();
 
     public static final int CORPSE_ID_RESERVED = 100;
     public static final int EQUIPMENT_ID_RESERVED = 101;
 
-    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks, Rarity rarity,int valueInGold) {
+    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks, Rarity rarity, int valueInGold) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemTriggers = itemTriggers;
@@ -46,7 +43,7 @@ public class Item implements Serializable {
         this.valueInGold = valueInGold;
     }
 
-    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer,int itemHalfLifeTicks, Rarity rarity, int valueInGold, Loot loot) {
+    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks, Rarity rarity, int valueInGold, Loot loot) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemTriggers = itemTriggers;
@@ -82,15 +79,11 @@ public class Item implements Serializable {
     }
 
     public boolean isWithPlayer() {
-        synchronized (interner.intern(itemId)) {
-            return isWithPlayer;
-        }
+        return isWithPlayer;
     }
 
     public void setWithPlayer(boolean isWithPlayer) {
-        synchronized (interner.intern(itemId)) {
-            this.isWithPlayer = isWithPlayer;
-        }
+        this.isWithPlayer = isWithPlayer;
     }
 
     public int getNumberOfUses() {

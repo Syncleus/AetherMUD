@@ -1,8 +1,10 @@
 package com.comandante.creeper.player;
 
 
+import com.codahale.metrics.Meter;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
@@ -205,6 +207,22 @@ public class Player extends CreeperEntity {
                 }
             }
             playerMetadata.getStats().setCurrentMana(proposedNewAmt);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void addExperience(int exp) {
+        synchronized (interner.intern(playerId)) {
+            final Meter requests = Main.metrics.meter("experience-" + playerName);
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            int currentExperience = playerMetadata.getStats().getExperience();
+            int currentLevel = Levels.getLevel(currentExperience);
+            playerMetadata.getStats().setExperience(currentExperience + exp);
+            requests.mark(exp);
+            int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
+            if (newLevel > currentLevel) {
+                gameManager.announceLevelUp(playerName, currentLevel, newLevel);
+            }
             savePlayerMetadata(playerMetadata);
         }
     }
