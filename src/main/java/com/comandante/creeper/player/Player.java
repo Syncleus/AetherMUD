@@ -119,7 +119,7 @@ public class Player extends CreeperEntity {
                 String effectId =  iterator.next();
                 Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
                 if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
-                    gameManager.getChannelUtils().write(playerId, effect.getEffectName() + " has worn off.\r\n", true);
+                    gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
                     gameManager.getEntityManager().removeEffect(effect);
                     iterator.remove();
                 } else {

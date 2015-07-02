@@ -73,26 +73,28 @@ public class ItemDecayManager extends CreeperEntity {
             SentryManager.logSentry(this.getClass(), e, "Exception caught in item decay manager!");
         }
     }
+
+    class DecayProgress {
+        private final int numberOfTicks;
+        private int currentTicks = 0;
+
+        DecayProgress(int numberOfTicks) {
+            this.numberOfTicks = numberOfTicks;
+        }
+
+        public void incTick() {
+            this.currentTicks++;
+        }
+
+        public int getNumberOfTicks() {
+            return numberOfTicks;
+        }
+
+        public int getCurrentTicks() {
+            return currentTicks;
+        }
+    }
 }
 
-class DecayProgress {
-    private final int numberOfTicks;
-    private int currentTicks = 0;
 
-    DecayProgress(int numberOfTicks) {
-        this.numberOfTicks = numberOfTicks;
-    }
-
-    public void incTick() {
-        this.currentTicks++;
-    }
-
-    public int getNumberOfTicks() {
-        return numberOfTicks;
-    }
-
-    public int getCurrentTicks() {
-        return currentTicks;
-    }
-}
 

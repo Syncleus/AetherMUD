@@ -596,58 +596,6 @@ public class GameManager {
         }
     }
 
-
-    public void updateNpcHealth(String npcId, int amt, String playerId) {
-        Player player = playerManager.getPlayer(playerId);
-        Interner<String> interner = Interners.newWeakInterner();
-        boolean didNpcDie = false;
-        Map<String, Double> xpProcessed = null;
-        Npc npc = null;
-        synchronized (interner.intern(npcId)) {
-            npc = entityManager.getNpcEntity(npcId);
-            if (npc != null) {
-                int currentHealth = npc.getStats().getCurrentHealth();
-                int newAmt = currentHealth + amt;
-                int damageReportAmt = -amt;
-                if (newAmt < 0) {
-                    damageReportAmt = -amt + newAmt;
-                }
-                npc.getStats().setCurrentHealth(newAmt);
-                int damage = 0;
-                if (npc.getPlayerDamageMap().containsKey(playerId)) {
-                    damage = npc.getPlayerDamageMap().get(playerId);
-                }
-                npc.addDamageToMap(playerId, damage + damageReportAmt);
-                if (npc.getStats().getCurrentHealth() <= 0) {
-                    Item corpse = new Item(npc.getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, npc.getLoot());
-                    writeToPlayerCurrentRoom(player.getPlayerId(), npc.getDieMessage());
-                    xpProcessed = processExperience(npc, npc.getCurrentRoom());
-                    entityManager.saveItem(corpse);
-                    Integer roomId = roomManager.getNpcCurrentRoom(npc).get().getRoomId();
-                    Room room = roomManager.getRoom(roomId);
-                    room.addPresentItem(corpse.getItemId());
-                    itemDecayManager.addItem(corpse);
-                    npc.getCurrentRoom().removePresentNpc(npc.getEntityId());
-                    entityManager.deleteNpcEntity(npc.getEntityId());
-                    didNpcDie = true;
-                }
-            }
-        }
-        // this is so fucked up, but dont do this inside of the synchronized(npcId) block or you will most certainly dead lock.
-        if (npc != null && didNpcDie) {
-            player.removeActiveFight(npc);
-            for (Map.Entry<String, Double> playerDamageExperience : xpProcessed.entrySet()) {
-                Player p = getPlayerManager().getPlayer(playerDamageExperience.getKey());
-                if (p == null) {
-                    continue;
-                }
-                int xpEarned = (int) Math.round(playerDamageExperience.getValue());
-                p.addExperience(xpEarned);
-                channelUtils.write(p.getPlayerId(), "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
-            }
-        }
-    }
-
     public Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
         Iterator<Map.Entry<String, Integer>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
         int totalDamageDone = 0;

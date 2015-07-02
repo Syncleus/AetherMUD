@@ -2,7 +2,9 @@ package com.comandante.creeper.server;
 
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.google.common.base.Optional;
+import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
 
 import static com.comandante.creeper.server.Color.RESET;
@@ -11,6 +13,7 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
 
     private final GameManager gameManager;
     private final CreeperAuthenticator creeperAuthenticator;
+    private static final Logger log = Logger.getLogger(CreeperAuthenticationHandler.class);
 
     public CreeperAuthenticationHandler(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -71,7 +74,8 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-        super.exceptionCaught(ctx, e);
+        log.error("Authentication failure.", e.getCause());
+        SentryManager.logSentry(this.getClass(), e.getCause(), "Authentication failure.");
     }
 
 

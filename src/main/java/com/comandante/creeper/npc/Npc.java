@@ -79,7 +79,7 @@ public class Npc extends CreeperEntity {
                                 Optional<Room> npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(this);
                                 if (npcCurrentRoom.isPresent()) {
                                     Room room = npcCurrentRoom.get();
-                                    gameManager.writeToRoom(room.getRoomId(), effect.getEffectName() + " has worn off of " + getName() + "\r\n");
+                                    gameManager.writeToRoom(room.getRoomId(),Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off of " + getName() + "\r\n");
                                 }
                                 gameManager.getEffectsManager().removeDurationStats(effect, this);
                                 gameManager.getEntityManager().removeEffect(effect);
