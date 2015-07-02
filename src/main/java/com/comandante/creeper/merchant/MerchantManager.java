@@ -29,8 +29,8 @@ public class MerchantManager {
             while (merchantItemForSales.hasNext()) {
                 Map.Entry<Integer, MerchantItemForSale> next = merchantItemForSales.next();
                 if (next.getKey().equals(itemNo)) {
-                    int maxInventorySize = gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player).getInventorySize();
-                    if (gameManager.getEntityManager().getInventory(player).size() >= maxInventorySize) {
+                    int maxInventorySize = player.getPlayerStatsWithEquipmentAndLevel().getInventorySize();
+                    if (player.getInventory().size() >= maxInventorySize) {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "Your inventory is full, drop some items and come back.\r\n");
                         return;
                     }
@@ -40,7 +40,7 @@ public class MerchantManager {
                         Item item = next.getValue().getItem().create();
                         gameManager.getEntityManager().saveItem(item);
                         gameManager.acquireItem(player, item.getItemId());
-                        gameManager.getPlayerManager().incrementGold(player, -price);
+                        player.incrementGold(-price);
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
                     } else {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + next.getValue().getItem().getItemName() + "\r\n");

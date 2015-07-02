@@ -26,7 +26,7 @@ public class InventoryCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            List<Item> inventory = entityManager.getInventory(player);
+            List<Item> inventory = player.getInventory();
             if (inventory == null) {
                 write("You aren't carrying anything.");
                 return;
@@ -34,7 +34,7 @@ public class InventoryCommand extends Command {
             StringBuilder inventoryString = new StringBuilder();
             inventoryString.append("You are carrying:\r\n");
             inventoryString.append(RESET);
-            String join = StringUtils.join(entityManager.getRolledUpIntentory(player).toArray(), "\r\n");
+            String join = StringUtils.join(player.getRolledUpIntentory().toArray(), "\r\n");
             inventoryString.append(join);
             write(inventoryString.toString());
         } finally {

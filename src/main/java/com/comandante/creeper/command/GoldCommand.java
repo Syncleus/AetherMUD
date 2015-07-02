@@ -6,8 +6,10 @@ import com.comandante.creeper.server.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class GoldCommand extends Command {
 
@@ -23,7 +25,7 @@ public class GoldCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-          write("You have " + playerManager.getPlayerMetadata(playerId).getGold() + Color.YELLOW + " gold." + Color.RESET);
+          write("You have " + NumberFormat.getNumberInstance(Locale.US).format(playerManager.getPlayerMetadata(playerId).getGold()) + Color.YELLOW + " gold." + Color.RESET);
         } finally {
             super.messageReceived(ctx, e);
         }

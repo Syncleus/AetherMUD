@@ -8,6 +8,7 @@ import com.comandante.creeper.command.Command;
 import com.comandante.creeper.command.CommandAuditLog;
 import com.comandante.creeper.command.UnknownCommand;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommandHandler;
@@ -76,6 +77,7 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
+        SentryManager.logSentry(this.getClass(), e.getCause(), "Exception caught in command handler!");
         CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
         log.error("Error in the Command Handler!, last message: \"" + creeperSession.getLastMessage() + "\" - from username:" + creeperSession.getUsername().get(), e.getCause());
         gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());

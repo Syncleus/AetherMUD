@@ -1,6 +1,7 @@
 package com.comandante.creeper.world;
 
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
@@ -43,6 +44,7 @@ public class WorldExporter {
         try {
             Files.write(worldJson.getBytes(), new File(WORLD_DIR + "world.json"));
         } catch (IOException e) {
+            SentryManager.logSentry(this.getClass(), e, "Save world problem!");
             e.printStackTrace();
         }
     }

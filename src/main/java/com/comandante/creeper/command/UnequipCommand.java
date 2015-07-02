@@ -30,10 +30,10 @@ public class UnequipCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            Set<Item> equipment = entityManager.getEquipment(player);
+            Set<Item> equipment = player.getEquipment();
             for (Item item : equipment) {
                 if (item.getItemTriggers().contains(itemTarget)) {
-                    equipmentManager.unEquip(player, item);
+                    player.unEquip(item);
                     return;
                 }
             }

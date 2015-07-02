@@ -29,11 +29,11 @@ public class DropCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            for (Item item : entityManager.getInventory(player)) {
+            for (Item item : player.getInventory()) {
                 if (item.getItemTriggers().contains(itemTarget)) {
                     item.setWithPlayer(false);
                     gameManager.placeItemInRoom(currentRoom.getRoomId(), item.getItemId());
-                    playerManager.removeInventoryId(player, item.getItemId());
+                    player.removeInventoryId(item.getItemId());
                     gameManager.getItemDecayManager().addItem(item);
                     entityManager.saveItem(item);
                     gameManager.roomSay(currentRoom.getRoomId(), player.getPlayerName() + " dropped " + item.getItemName(), playerId);

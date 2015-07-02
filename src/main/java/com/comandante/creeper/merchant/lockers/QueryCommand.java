@@ -23,11 +23,11 @@ public class QueryCommand extends LockerCommand {
             configure(e);
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             write("----LOCKER ITEMS\r\n");
-            for (String rolledUpInvLine: gameManager.getEntityManager().getRolledUpLockerInventory(player)) {
+            for (String rolledUpInvLine: player.getRolledUpLockerInventory()) {
                 write(rolledUpInvLine);;
             }
             write("\r\n\r\n----PERSONAL INVENTORY\r\n");
-            for (String rolledUpInvLine: gameManager.getEntityManager().getRolledUpIntentory(player)) {
+            for (String rolledUpInvLine: player.getRolledUpIntentory()) {
                 write(rolledUpInvLine);
             }
         } finally {

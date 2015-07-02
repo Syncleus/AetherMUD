@@ -29,11 +29,13 @@ public class PickUpCommand extends Command {
             String desiredPickUpItem = Joiner.on(" ").join(originalMessageParts);
             for (String next : itemIds) {
                 Item itemEntity = entityManager.getItemEntity(next);
-                if (itemEntity.getItemTriggers().contains(desiredPickUpItem)) {
-                    if (gameManager.acquireItemFromRoom(player, next)) {
-                        String playerName = player.getPlayerName();
-                        gameManager.roomSay(currentRoom.getRoomId(), playerName + " picked up " + itemEntity.getItemName(), playerId);
-                        return;
+                if (itemEntity != null) {
+                    if (itemEntity.getItemTriggers().contains(desiredPickUpItem)) {
+                        if (gameManager.acquireItemFromRoom(player, next)) {
+                            String playerName = player.getPlayerName();
+                            gameManager.roomSay(currentRoom.getRoomId(), playerName + " picked up " + itemEntity.getItemName(), playerId);
+                            return;
+                        }
                     }
                 }
             }

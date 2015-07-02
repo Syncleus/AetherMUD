@@ -10,12 +10,13 @@ import com.comandante.creeper.bot.BotCommandFactory;
 import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.fight.FightManager;
-import com.comandante.creeper.fight.FightResults;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.*;
-import com.comandante.creeper.server.*;
+import com.comandante.creeper.server.ChannelUtils;
+import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.GossipCache;
+import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
@@ -31,14 +32,12 @@ import com.google.common.collect.Interners;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.log4j.Logger;
-import org.jboss.netty.channel.MessageEvent;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.concurrent.Future;
 
 import static com.comandante.creeper.server.Color.*;
 
@@ -46,20 +45,16 @@ public class GameManager {
 
     public static String LOGO = "Creeper.";
 
-    public static String VERSION = "0.1-SNAPSHOT";
-
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private final ChannelUtils channelUtils;
     private final NewUserRegistrationManager newUserRegistrationManager;
     private final EntityManager entityManager;
     private final ItemDecayManager itemDecayManager;
-    private final FightManager fightManager;
     private final MultiLineInputManager multiLineInputManager;
     private final MapsManager mapsManager;
     private final FloorManager floorManager;
     private final LootManager lootManager;
-    private final EquipmentManager equipmentManager;
     private final IrcBotService ircBotService;
     private final CreeperConfiguration creeperConfiguration;
     private final ForageManager forageManager;
@@ -68,11 +63,8 @@ public class GameManager {
     private final BotCommandManager botCommandManager;
     private final StatsModifierFactory statsModifierFactory;
     private final GossipCache gossipCache;
-
-    public static final int MAX_LOCKER_SIZE = 500;
-
+    private final Interner<String> interner = Interners.newWeakInterner();
     private static final Logger log = Logger.getLogger(GameManager.class);
-
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -86,8 +78,6 @@ public class GameManager {
         this.floorManager = new FloorManager();
         this.channelUtils = channelUtils;
         this.lootManager = new LootManager(this);
-        this.equipmentManager = new EquipmentManager(entityManager, channelUtils, playerManager, this);
-        this.fightManager = new FightManager(this);
         this.ircBotService = new IrcBotService(creeperConfiguration, this);
         this.creeperConfiguration = creeperConfiguration;
         this.forageManager = new ForageManager(this);
@@ -130,10 +120,6 @@ public class GameManager {
         return creeperConfiguration;
     }
 
-    public EquipmentManager getEquipmentManager() {
-        return equipmentManager;
-    }
-
     public LootManager getLootManager() {
         return lootManager;
     }
@@ -148,10 +134,6 @@ public class GameManager {
 
     public MultiLineInputManager getMultiLineInputManager() {
         return multiLineInputManager;
-    }
-
-    public FightManager getFightManager() {
-        return fightManager;
     }
 
     public NewUserRegistrationManager getNewUserRegistrationManager() {
@@ -195,29 +177,6 @@ public class GameManager {
         return builder.build();
     }
 
-    public void movePlayer(PlayerMovement playerMovement) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(playerMovement.getPlayer().getPlayerId())) {
-            Room sourceRoom = roomManager.getRoom(playerMovement.getSourceRoomId());
-            Room destinationRoom = roomManager.getRoom(playerMovement.getDestinationRoomId());
-            sourceRoom.removePresentPlayer(playerMovement.getPlayer().getPlayerId());
-            for (Player next : roomManager.getPresentPlayers(sourceRoom)) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(playerMovement.getPlayer().getPlayerName());
-                sb.append(" ").append(playerMovement.getRoomExitMessage());
-                channelUtils.write(next.getPlayerId(), sb.toString(), true);
-            }
-            destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
-            playerMovement.getPlayer().setCurrentRoom(destinationRoom);
-            for (Player next : roomManager.getPresentPlayers(destinationRoom)) {
-                if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
-                    continue;
-                }
-                channelUtils.write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
-            }
-        }
-    }
-
     public void placePlayerInLobby(Player player) {
         Room room = roomManager.getRoom(LOBBY_ID);
         room.addPresentPlayer(player.getPlayerId());
@@ -234,13 +193,6 @@ public class GameManager {
         Set<Player> allPlayers = getAllPlayers();
         for (Player p: allPlayers) {
             getChannelUtils().write(p.getPlayerId(), Color.GREEN + userName + " has connected." + Color.RESET + "\r\n", true);
-        }
-    }
-
-    public void announceDisconnect(String userName) {
-        Set<Player> allPlayers = getAllPlayers();
-        for (Player p: allPlayers) {
-            getChannelUtils().write(p.getPlayerId(), Color.RED + userName + " has disconnected." + Color.RESET + "\r\n", true);
         }
     }
 
@@ -383,23 +335,17 @@ public class GameManager {
         channelUtils.write(player.getPlayerId(), msg);
     }
 
-    public void currentRoomLogic(CreeperSession creeperSession, MessageEvent e) {
-        final String player = playerManager.getPlayerByUsername(creeperSession.getUsername().get()).getPlayerId();
-        currentRoomLogic(player);
-    }
-
     public void placeItemInRoom(Integer roomId, String itemId) {
         roomManager.getRoom(roomId).addPresentItem(entityManager.getItemEntity(itemId).getItemId());
     }
 
     public boolean acquireItem(Player player, String itemId) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
-            Stats playerStatsWithEquipmentAndLevel = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
-            if (entityManager.getInventory(player).size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
-                playerManager.addInventoryId(player, itemId);
+            Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
+            if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
                 Item itemEntity = entityManager.getItemEntity(itemId);
                 itemEntity.setWithPlayer(true);
+                player.addInventoryId(itemId);
                 entityManager.saveItem(itemEntity);
                 return true;
             } else {
@@ -409,25 +355,7 @@ public class GameManager {
         }
     }
 
-    public void transferItemToLocker(Player player, String inventoryId) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            getPlayerManager().removeInventoryId(player, inventoryId);
-            getPlayerManager().addLockerInventoryId(player, inventoryId);
-        }
-    }
-
-    public void transferItemFromLocker(Player player, String entityId) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            if (acquireItem(player, entityId)) {
-                getPlayerManager().removeLockerInventoryId(player, entityId);
-            }
-        }
-    }
-
     public boolean acquireItemFromRoom(Player player, String itemId) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(itemId)) {
             Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
             if (playerCurrentRoom.getItemIds().contains(itemId)) {
@@ -467,7 +395,7 @@ public class GameManager {
     public String getLookString(Player player) {
         StringBuilder sb = new StringBuilder();
         Stats origStats = statsModifierFactory.getStatsModifier(player);
-        Stats modifiedStats = getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player);
+        Stats modifiedStats = player.getPlayerStatsWithEquipmentAndLevel();
         Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(player.getPlayerName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
@@ -490,7 +418,7 @@ public class GameManager {
         List<EquipmentSlotType> all = EquipmentSlotType.getAll();
         for (EquipmentSlotType slot : all) {
             t.addCell(capitalize(slot.getName()));
-            Item slotItem = equipmentManager.getSlotItem(player, slot);
+            Item slotItem = player.getSlotItem(slot);
             if (slotItem != null) {
                 t.addCell(slotItem.getItemName());
             } else {
@@ -509,7 +437,7 @@ public class GameManager {
 
         int i = 1;
         for (Effect effect : effects) {
-            int percent = 100 - (int) ((effect.getTicks() * 100.0f) / effect.getLifeSpanTicks());
+            int percent = 100 - (int) ((effect.getEffectApplications() * 100.0f) / effect.getMaxEffectApplications());
             t.addCell(drawProgressBar(percent));
             t.addCell(effect.getEffectName());
             i++;
@@ -527,7 +455,7 @@ public class GameManager {
         List<Effect> effects = Lists.newArrayList();
         if (playerMetadata.getEffects() != null) {
             for (String effectId : playerMetadata.getEffects()) {
-                Effect effect = entityManager.getEffect(effectId);
+                Effect effect = entityManager.getEffectEntity(effectId);
                 effects.add(effect);
             }
         }
@@ -728,26 +656,24 @@ public class GameManager {
         if (npc != null && didNpcDie) {
             player.removeActiveFight(npc);
             for (Map.Entry<String, Double> playerDamageExperience : xpProcessed.entrySet()) {
-                playerManager.getSessionManager().getSession(playerDamageExperience.getKey()).setActiveFight(Optional.<Future<FightResults>>absent());
                 Player p = getPlayerManager().getPlayer(playerDamageExperience.getKey());
                 if (p == null) {
                     continue;
                 }
                 int xpEarned = (int) Math.round(playerDamageExperience.getValue());
-                addExperience(player, xpEarned);
+                addExperience(p, xpEarned);
                 channelUtils.write(p.getPlayerId(), "You killed a " + npc.getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n", true);
             }
         }
     }
 
-    private Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
+    public Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
         Iterator<Map.Entry<String, Integer>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
         int totalDamageDone = 0;
         while (iterator.hasNext()) {
             Map.Entry<String, Integer> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
-            System.out.println(playerMetadata.getPlayerName() + " damage to " + npc.getName() + " was " + damageEntry.getValue());
             Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
             if (!playerCurrentRoom.isPresent()) {
                 iterator.remove();
@@ -796,7 +722,7 @@ public class GameManager {
     public String buildPrompt(String playerId) {
         Player player = playerManager.getPlayer(playerId);
         boolean isFight = player.isActiveFights();
-        Stats stats = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
+        Stats stats = player.getPlayerStatsWithEquipmentAndLevel();
         int currentHealth = stats.getCurrentHealth();
         int maxHealth = stats.getMaxHealth();
         int currentMana = stats.getCurrentMana();
@@ -818,27 +744,6 @@ public class GameManager {
         }
         sb.append("] ");
         return sb.toString();
-    }
-
-    public void addMana(Player player, int addAmt) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(player.getPlayerId())) {
-            PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(player.getPlayerId());
-            int currentMana = playerMetadata.getStats().getCurrentMana();
-            Stats statsModifier = equipmentManager.getPlayerStatsWithEquipmentAndLevel(player);
-            int maxMana = statsModifier.getMaxMana();
-            int proposedNewAmt = currentMana + addAmt;
-            if (proposedNewAmt > maxMana) {
-                if (currentMana < maxMana) {
-                    int adjust = proposedNewAmt - maxMana;
-                    proposedNewAmt = proposedNewAmt - adjust;
-                } else {
-                    proposedNewAmt = proposedNewAmt - addAmt;
-                }
-            }
-            playerMetadata.getStats().setCurrentMana(proposedNewAmt);
-            getPlayerManager().savePlayerMetadata(playerMetadata);
-        }
     }
 
     public String drawProgressBar(int pct) {

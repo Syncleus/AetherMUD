@@ -2,6 +2,7 @@ package com.comandante.creeper;
 
 import com.comandante.creeper.bot.commands.BotCommand;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.world.Room;
@@ -67,6 +68,7 @@ public class MyListener extends ListenerAdapter {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            SentryManager.logSentry(this.getClass(), e, "IRC Listener Exception!");
         }
     }
 }

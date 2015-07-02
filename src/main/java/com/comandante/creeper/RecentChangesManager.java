@@ -1,6 +1,7 @@
 package com.comandante.creeper;
 
 
+import com.comandante.creeper.managers.SentryManager;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -40,7 +41,7 @@ public class RecentChangesManager {
                 i++;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            SentryManager.logSentry(RecentChangesManager.class, e, "Recent changes problem!");
         }
         return sb.toString();
     }

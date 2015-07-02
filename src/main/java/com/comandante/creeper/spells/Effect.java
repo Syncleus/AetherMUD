@@ -13,20 +13,20 @@ public class Effect extends CreeperEntity {
     private final List<String> effectApplyMessages;
     private final Stats applyStatsOnTick;
     private final Stats durationStats;
-    private final int lifeSpanTicks;
+    private final int maxEffectApplications;
     private final boolean frozenMovement;
-    private int ticks;
+    private int effectApplications;
     private String playerId;
 
-    public Effect(String effectName, String effectDescription, List<String> effectApplyMessages, Stats applyStatsOnTick, Stats durationStats, int lifeSpanTicks, boolean frozenMovement) {
+    public Effect(String effectName, String effectDescription, List<String> effectApplyMessages, Stats applyStatsOnTick, Stats durationStats, int maxEffectApplications, boolean frozenMovement) {
         this.effectName = effectName;
         this.effectDescription = effectDescription;
         this.effectApplyMessages = effectApplyMessages;
         this.applyStatsOnTick = applyStatsOnTick;
         this.durationStats = durationStats;
-        this.lifeSpanTicks = lifeSpanTicks;
+        this.maxEffectApplications = maxEffectApplications;
         this.frozenMovement = frozenMovement;
-        this.ticks = 0;
+        this.effectApplications = 0;
     }
 
     public Effect(Effect effect) {
@@ -36,9 +36,9 @@ public class Effect extends CreeperEntity {
         this.effectApplyMessages = effect.effectApplyMessages;
         this.applyStatsOnTick = effect.applyStatsOnTick;
         this.durationStats = effect.durationStats;
-        this.lifeSpanTicks = effect.lifeSpanTicks;
+        this.maxEffectApplications = effect.maxEffectApplications;
         this.frozenMovement = effect.frozenMovement;
-        this.ticks = effect.ticks;
+        this.effectApplications = effect.effectApplications;
     }
 
     @Override
@@ -62,20 +62,20 @@ public class Effect extends CreeperEntity {
         return applyStatsOnTick;
     }
 
-    public int getLifeSpanTicks() {
-        return lifeSpanTicks;
+    public int getMaxEffectApplications() {
+        return maxEffectApplications;
     }
 
     public boolean isFrozenMovement() {
         return frozenMovement;
     }
 
-    public int getTicks() {
-        return ticks;
+    public int getEffectApplications() {
+        return effectApplications;
     }
 
-    public void setTicks(int ticks) {
-        this.ticks = ticks;
+    public void setEffectApplications(int effectApplications) {
+        this.effectApplications = effectApplications;
     }
 
     public Stats getDurationStats() {

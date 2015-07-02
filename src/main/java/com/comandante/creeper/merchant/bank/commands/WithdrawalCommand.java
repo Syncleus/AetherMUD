@@ -6,8 +6,10 @@ import com.comandante.creeper.server.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class WithdrawalCommand extends BankCommand {
 
@@ -25,8 +27,8 @@ public class WithdrawalCommand extends BankCommand {
             if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
                 int withdrawalAmount = Integer.parseInt(originalMessageParts.get(1));
                 if (areBankFundsAvailable(withdrawalAmount)) {
-                    playerManager.transferBankGoldToPlayer(playerId, withdrawalAmount);
-                    write("Your funds of " + withdrawalAmount + Color.YELLOW + " gold " + Color.RESET + "have been withdrawn from your bank account." + "\r\n");
+                    player.transferBankGoldToPlayer(withdrawalAmount);
+                    write("Your funds of " + NumberFormat.getNumberInstance(Locale.US).format(withdrawalAmount) + Color.YELLOW + " gold " + Color.RESET + "have been withdrawn from your bank account." + "\r\n");
                 } else {
                     write("You don't have enough" + Color.YELLOW + " gold "+ Color.RESET + "to cover the withdrawal amount." + "\r\n");
                 }

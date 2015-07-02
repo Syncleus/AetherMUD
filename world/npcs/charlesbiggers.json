@@ -31,7 +31,7 @@
     "tisland10_zone": {
       "randomChance": 100,
       "maxPerRoom": 1,
-      "spawnIntervalTicks": 10,
+      "spawnIntervalTicks": 600,
       "maxInstances": 1
     } 
   },

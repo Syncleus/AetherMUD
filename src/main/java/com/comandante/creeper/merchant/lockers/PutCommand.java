@@ -24,10 +24,10 @@ public class PutCommand extends LockerCommand {
             configure(e);
             originalMessageParts.remove(0);
             String desiredDropOffItem = Joiner.on(" ").join(originalMessageParts);
-            for (Item item : gameManager.getEntityManager().getInventory(player)) {
+            for (Item item : player.getInventory()) {
                 if (item.getItemTriggers().contains(desiredDropOffItem)) {
                     item.setWithPlayer(false);
-                    gameManager.transferItemToLocker(player, item.getItemId());
+                    player.transferItemToLocker(item.getItemId());
                     gameManager.getEntityManager().saveItem(item);
                     write(item.getItemName() + " has been transfered to your locker.\r\n");
                     return;

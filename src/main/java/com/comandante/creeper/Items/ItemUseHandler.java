@@ -40,7 +40,7 @@ public class ItemUseHandler {
             Effect nEffect = new Effect(effect);
             nEffect.setPlayerId(player.getPlayerId());
             gameManager.getEntityManager().saveEffect(nEffect);
-            boolean effectResult = gameManager.getPlayerManager().addEffect(player, nEffect.getEntityId());
+            boolean effectResult = player.addEffect(nEffect.getEntityId());
             if (effect.getDurationStats() != null) {
                 if (effect.getDurationStats().getCurrentHealth() < 0) {
                     log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
@@ -81,7 +81,7 @@ public class ItemUseHandler {
         writeToRoom(playerName + " blazes " + Color.GREEN + "marijuana" + Color.RESET + ".\r\n");
         writeToPlayer("50 mana is restored." + "\r\n");
         writeToPlayer("20 health is restored.");
-        gameManager.addMana(player, 50);
+        player.addMana(50);
         player.updatePlayerHealth(20, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-weed-smoked")).inc();
     }
@@ -91,7 +91,7 @@ public class ItemUseHandler {
         writeToRoom(playerName + " eats a " + Color.GREEN + "dog dick." + Color.RESET + ".\r\n");
         writeToPlayer("1000 mana is restored." + "\r\n");
         writeToPlayer("1500 health is restored.");
-        gameManager.addMana(player, 1000);
+        player.addMana(1000);
         player.updatePlayerHealth(1500, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-dogdick-smoked")).inc();
     }
@@ -134,7 +134,7 @@ public class ItemUseHandler {
                     gameManager.getEntityManager().saveItem(item);
                     return;
                 }
-                gameManager.getPlayerManager().removeInventoryId(player, item.getItemId());
+                player.removeInventoryId(item.getItemId());
                 gameManager.getEntityManager().removeItem(item);
             }
         }

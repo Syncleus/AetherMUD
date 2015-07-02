@@ -6,8 +6,10 @@ import com.comandante.creeper.server.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class AccountQueryCommand extends BankCommand {
 
@@ -24,8 +26,8 @@ public class AccountQueryCommand extends BankCommand {
         try {
             int goldInBank = playerManager.getPlayerMetadata(playerId).getGoldInBank();
             int gold = playerManager.getPlayerMetadata(playerId).getGold();
-            write("You have " + goldInBank + Color.YELLOW + " gold" + Color.RESET + " in your bank account."+ "\r\n");
-            write("You have " + gold + Color.YELLOW + " gold" + Color.RESET + " in your inventory."+ "\r\n");
+            write("You have " + NumberFormat.getNumberInstance(Locale.US).format(goldInBank) + Color.YELLOW + " gold" + Color.RESET + " in your bank account."+ "\r\n");
+            write("You have " + NumberFormat.getNumberInstance(Locale.US).format(gold) + Color.YELLOW + " gold" + Color.RESET + " in your inventory."+ "\r\n");
         } finally {
             super.messageReceived(ctx, e);
         }

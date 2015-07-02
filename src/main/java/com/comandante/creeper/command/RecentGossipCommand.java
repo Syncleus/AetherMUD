@@ -7,9 +7,7 @@ import org.jboss.netty.channel.MessageEvent;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by kearney on 6/22/15.
- */
+
 public class RecentGossipCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("recentgossip", "rg");
@@ -30,7 +28,7 @@ public class RecentGossipCommand extends Command {
                 int i = Integer.parseInt(size);
                 recent = gameManager.getGossipCache().getRecent(i);
             } else {
-                recent = gameManager.getGossipCache().getRecent(10);
+                recent = gameManager.getGossipCache().getRecent(25);
             }
             for (String line: recent) {
                 write(line + "\r\n");

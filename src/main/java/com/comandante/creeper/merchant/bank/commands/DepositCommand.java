@@ -7,8 +7,10 @@ import com.comandante.creeper.server.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class DepositCommand extends BankCommand {
 
@@ -26,8 +28,8 @@ public class DepositCommand extends BankCommand {
             if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
                 int depositAmt = Integer.parseInt(originalMessageParts.get(1));
                 if (areFundsAvailable(depositAmt)) {
-                    playerManager.transferGoldToBank(playerId, depositAmt);
-                    write("Your funds of " + depositAmt + Color.YELLOW + " gold " + Color.RESET + "have been transferred to your bank account."+ "\r\n");
+                    player.transferGoldToBank(depositAmt);
+                    write("Your funds of " + NumberFormat.getNumberInstance(Locale.US).format(depositAmt) + Color.YELLOW + " gold " + Color.RESET + "have been transferred to your bank account."+ "\r\n");
                 } else {
                     write("You don't have enough" + Color.YELLOW + " gold "+ Color.RESET + "to cover the deposit amount."+ "\r\n");
                 }

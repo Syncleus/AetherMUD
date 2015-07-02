@@ -59,9 +59,9 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
                     if (inventoryMenu.containsKey(desiredItem)) {
                         InventoryItemForSale inventoryItemForSale = inventoryMenu.get(desiredItem);
                         Item item = inventoryItemForSale.getItem();
-                        gameManager.getPlayerManager().incrementGold(playerByUsername, inventoryItemForSale.getCost());
+                        playerByUsername.incrementGold(inventoryItemForSale.getCost());
                         gameManager.getChannelUtils().write(playerByUsername.getPlayerId(), "You have received: " + inventoryItemForSale.getCost() + Color.YELLOW + " gold" + Color.RESET + " for " + item.getItemName() + "\r\n");
-                        gameManager.getPlayerManager().removeInventoryId(playerByUsername, item.getItemId());
+                        playerByUsername.removeInventoryId(item.getItemId());
                         gameManager.getEntityManager().removeItem(item);
                         printInvMenu(playerByUsername, getInventoryMenu(playerByUsername));
                     }
@@ -91,7 +91,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
 
     public Map<Integer, InventoryItemForSale> getInventoryMenu(Player player) {
         Map<Integer, InventoryItemForSale> inventoryItemsForSale = Maps.newHashMap();
-        List<Item> inventory = gameManager.getEntityManager().getInventory(player);
+        List<Item> inventory = player.getInventory();
         int inv = 1;
         for (Item itemEntity : inventory) {
             int valueInGold = itemEntity.getValueInGold();

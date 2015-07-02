@@ -1,6 +1,7 @@
 package com.comandante.creeper.Items;
 
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
@@ -50,6 +51,7 @@ public class ForageManager {
                 }
             } catch (InterruptedException e) {
                 log.error(e);
+                SentryManager.logSentry(this.getClass(), e, "problem with forage delay!");
             }
         }
     }
@@ -71,13 +73,13 @@ public class ForageManager {
                 }
                 forage.setCoolDownTicksLeft(forage.getCoolDownTicks());
                 double foragePctOfSuccess = forage.getPctOfSuccess();
-                int modifiedLevelForForage = getLevel(gameManager.getEquipmentManager().getPlayerStatsWithEquipmentAndLevel(player).getForaging());
+                int modifiedLevelForForage = getLevel(player.getPlayerStatsWithEquipmentAndLevel().getForaging());
                 int pctSuccessBoostForLevel = getPctSuccessBoostForLevel(modifiedLevelForForage);
                 //System.out.println("you get a boost of " + pctSuccessBoostForLevel);
                 foragePctOfSuccess = foragePctOfSuccess + pctSuccessBoostForLevel;
                 //System.out.println("final pct of success for forage: " + foragePctOfSuccess);
                 if (getRandPercent(foragePctOfSuccess)) {
-                    gameManager.getPlayerManager().updatePlayerForageExperience(player, forage.getForageExperience());
+                    player.updatePlayerForageExperience(forage.getForageExperience());
                     int numberToHarvest = randInt(forage.getMinAmt(), forage.getMaxAmt());
                     totalForageXp += forage.getForageExperience();
                     for (int i = 0; i < numberToHarvest; i++) {

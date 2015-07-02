@@ -1,8 +1,8 @@
-package com.comandante.creeper.command;
+package com.comandante.creeper.command.admin;
 
-import com.comandante.creeper.Main;
+import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -39,12 +39,12 @@ public class GiveGoldCommand extends Command {
                     write("Third option to givegold needs to be an integer amount.");
                     return;
                 }
-                PlayerMetadata destinationPlayer = playerManager.getPlayerMetadata(Main.createPlayerId(destinationPlayerName));
-                if (destinationPlayer == null) {
+                Player playerByUsername = gameManager.getPlayerManager().getPlayerByUsername(destinationPlayerName);
+                if (playerByUsername == null) {
                     write("Player does not exist.");
                     return;
                 }
-                playerManager.incrementGold(destinationPlayer.getPlayerId(), Integer.parseInt(amt));
+                playerByUsername.incrementGold(Integer.parseInt(amt));
                 write("The amount of " + amt + " gold has been placed into " + destinationPlayerName + "'s inventory.");
             }
         } finally {

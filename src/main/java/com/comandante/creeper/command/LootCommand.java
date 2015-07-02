@@ -7,8 +7,10 @@ import com.comandante.creeper.server.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class LootCommand extends Command {
@@ -26,14 +28,14 @@ public class LootCommand extends Command {
         configure(e);
         try {
             if (originalMessageParts.size() > 1) {
-                for (Item item : entityManager.getInventory(player)) {
+                for (Item item : player.getInventory()) {
                     if (item.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
                         Loot loot = item.getLoot();
                         if (loot != null) {
                             int gold = lootManager.lootGoldAmountReturn(loot);
                             if (gold > 0) {
-                                write("You looted " + gold + Color.YELLOW + " gold" + Color.RESET + " from a " + item.getItemName() + ".\r\n");
-                                playerManager.incrementGold(player, gold);
+                                write("You looted " + NumberFormat.getNumberInstance(Locale.US).format(gold) + Color.YELLOW + " gold" + Color.RESET + " from a " + item.getItemName() + ".\r\n");
+                                player.incrementGold(gold);
                             }
                             Set<Item> items = lootManager.lootItemsReturn(loot);
                             for (Item i: items) {
@@ -44,7 +46,7 @@ public class LootCommand extends Command {
                                 write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
                         }
-                        playerManager.removeInventoryId(player, item.getItemId());
+                        player.removeInventoryId(item.getItemId());
                         entityManager.removeItem(item);
                         return;
                     }

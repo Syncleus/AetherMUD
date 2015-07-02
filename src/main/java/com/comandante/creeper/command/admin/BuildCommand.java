@@ -73,7 +73,7 @@ public class BuildCommand extends Command {
                         floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
                         mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
                         mapsManager.generateAllMaps();
-                        gameManager.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
+                        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
                         gameManager.currentRoomLogic(player.getPlayerId());
                         return;
                     }
@@ -96,7 +96,7 @@ public class BuildCommand extends Command {
                         floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
                         mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
                         mapsManager.generateAllMaps();
-                        gameManager.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
+                        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
                         gameManager.currentRoomLogic(player.getPlayerId());
                         return;
                     }
@@ -121,7 +121,7 @@ public class BuildCommand extends Command {
                     matrixFromCsv.addRemote(basicRoom.getRoomId(), returnRemoteExit);
                     mapsManager.addFloorMatrix(newFloorModel.getId(), matrixFromCsv);
                     mapsManager.generateAllMaps();
-                    gameManager.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
+                    player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
                     gameManager.currentRoomLogic(player.getPlayerId());
                     return;
                 }
@@ -167,7 +167,7 @@ public class BuildCommand extends Command {
         rebuildExits(currentRoom, mapMatrix);
         processExits(basicRoom, mapMatrix);
         mapsManager.generateAllMaps();
-        gameManager.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
+        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
         gameManager.currentRoomLogic(player.getPlayerId());
         write("Room Created.");
     }

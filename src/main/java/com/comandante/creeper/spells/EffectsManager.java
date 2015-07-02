@@ -16,20 +16,20 @@ public class EffectsManager {
         this.gameManager = gameManager;
     }
 
-    public void applyEffectStatsOnTick(Effect effect, PlayerMetadata playerMetadata) {
+    public void application(Effect effect, PlayerMetadata playerMetadata) {
         // if there are effecst that modify player health, deal with it here, you can't rely on combine stats.
         if (effect.getApplyStatsOnTick() != null) {
             StatsHelper.combineStats(playerMetadata.getStats(), effect.getApplyStatsOnTick());
         }
     }
 
-    public void applyEffectStatsOnTick(Effect effect, Npc npc) {
+    public void application(Effect effect, Npc npc) {
         Player player = gameManager.getPlayerManager().getPlayer(effect.getPlayerId());
         Stats applyStats = new Stats(effect.getApplyStatsOnTick());
         // if there are effecst that modify npc health, deal with it here, you can't rely on combine stats.
         if (effect.getApplyStatsOnTick().getCurrentHealth() < 0) {
-            if (player.doesActiveFightExist(npc)) {
-                gameManager.getChannelUtils().write(player.getPlayerId(), npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET + "\r\n", true);
+            if (player.getCurrentRoom().getRoomId().equals(npc.getCurrentRoom().getRoomId())) {
+                gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET +  npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET + "\r\n", true);
             }
             gameManager.updateNpcHealth(npc.getEntityId(), applyStats.getCurrentHealth(), effect.getPlayerId());
             // removing this because all health damage to an npc needs to flow through one method, i knwo its ghetto

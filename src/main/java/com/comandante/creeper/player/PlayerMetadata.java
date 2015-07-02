@@ -90,7 +90,6 @@ public class PlayerMetadata implements Serializable {
         lockerInventory.remove(newEntityId);
     }
 
-
     protected void removeInventoryEntityId(String itemId) {
         inventory.remove(itemId);
     }
@@ -121,10 +120,6 @@ public class PlayerMetadata implements Serializable {
             effects = Lists.newArrayList();
         }
         effects.add(effectId);
-    }
-
-    protected void removeEffectId(String effectId) {
-        effects.remove(effectId);
     }
 
     public String getPlayerName() {
@@ -181,6 +176,9 @@ public class PlayerMetadata implements Serializable {
     }
 
     public List<String> getEffects() {
+        if (effects==null) {
+            effects = Lists.newArrayList();
+        }
         return effects;
     }
 }

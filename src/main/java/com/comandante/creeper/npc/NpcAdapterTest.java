@@ -4,6 +4,7 @@ import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.spawner.SpawnRule;
+import com.comandante.creeper.spawner.SpawnRuleBuilder;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Area;
@@ -56,8 +57,8 @@ public class NpcAdapterTest {
                 .createStats();
 
         Loot npcOneLoot = new Loot(randomGenerator.nextInt(100), randomGenerator.nextInt(100), Sets.newHashSet(ItemType.BEER));
-        SpawnRule npcOneSpawnRule1 = new SpawnRule(Area.BLOODRIDGE10_ZONE, randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100));
-        SpawnRule npcOneSpawnRule2 = new SpawnRule(Area.BLOODRIDGE10_ZONE, randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100), randomGenerator.nextInt(100));
+        SpawnRule npcOneSpawnRule1 = new SpawnRuleBuilder().setArea(Area.BLOODRIDGE10_ZONE).setSpawnIntervalTicks(randomGenerator.nextInt(100)).setMaxInstances(randomGenerator.nextInt(100)).setMaxPerRoom(randomGenerator.nextInt(100)).setRandomPercent(randomGenerator.nextInt(100)).createSpawnRule();
+        SpawnRule npcOneSpawnRule2 = new SpawnRuleBuilder().setArea(Area.BLOODRIDGE10_ZONE).setSpawnIntervalTicks(randomGenerator.nextInt(100)).setMaxInstances(randomGenerator.nextInt(100)).setMaxPerRoom(randomGenerator.nextInt(100)).setRandomPercent(randomGenerator.nextInt(100)).createSpawnRule();
         npcOne = new NpcBuilder()
                 .setColorName(UUID.randomUUID().toString())
                 .setDieMessage(UUID.randomUUID().toString())
