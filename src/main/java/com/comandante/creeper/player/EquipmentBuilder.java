@@ -92,6 +92,20 @@ public class EquipmentBuilder {
                     return getStrengthElixir(item);
                 case CHRONIC_JOOSE:
                     return getChronicJoose(item);
+                case BISMUTH_BOOTS:
+                    return getBismuthBoots(item);
+                case BISMUTH_BRACERS:
+                    return getBismuthBracers(item);
+                case BISMUTH_CHESTPLATE:
+                    return getBismuthChestplate(item);
+                case BISMUTH_HELMET:
+                    return getBismuthHelmet(item);
+                case BISMUTH_LEGGINGS:
+                    return getBismuthLeggings(item);
+                case BISMUTH_SWORD:
+                    return getBismuthSword(item);
+                case GUCCI_PANTS:
+                    return getGucciPants(item);
             }
         }
         return null;
@@ -159,7 +173,6 @@ public class EquipmentBuilder {
         item.setEquipment(equipment);
         return item;
     }
-
 
     public static Item getPhantomBoots(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(6).setStrength(3).setAgile(1).createStats();
@@ -380,4 +393,52 @@ public class EquipmentBuilder {
         return item;
     }
 
+    public static Item getBismuthSword(Item item){
+        Stats stats = new StatsBuilder().setArmorRating(2400).setStrength(480).setWeaponRatingMax(2400).setWeaponRatingMin(200).setNumberOfWeaponRolls(6).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getBismuthChestplate(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(400).setStrength(2400).setAgile(120).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.CHEST, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getBismuthHelmet(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(220).setStrength(220).setAgile(87).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HEAD, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getBismuthBracers(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(90).setStrength(120).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.WRISTS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getBismuthLeggings(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(340).setStrength(160).setAgile(240).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getBismuthBoots(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(220).setStrength(120).setAgile(160).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getGucciPants(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(1000).setStrength(700).setAgile(900).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
 }
