@@ -25,6 +25,7 @@ import com.google.common.collect.Maps;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,7 +51,7 @@ public class Npc extends CreeperEntity {
     private int maxEffects = 4;
     private Map<String, Integer> playerDamageMap = Maps.newHashMap();
     private Room currentRoom;
-    private final ArrayBlockingQueue<NpcStatsChange> npcStatsChanges = new ArrayBlockingQueue<NpcStatsChange>(3000);
+    private final ArrayBlockingQueue<NpcStatsChange> npcStatsChanges = new ArrayBlockingQueue<>(3000);
     private int effectsTickBucket = 0;
     private final Interner<Npc> interner = Interners.newWeakInterner();
     private final AtomicBoolean isAlive = new AtomicBoolean(true);
@@ -79,7 +80,7 @@ public class Npc extends CreeperEntity {
                                 Optional<Room> npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(this);
                                 if (npcCurrentRoom.isPresent()) {
                                     Room room = npcCurrentRoom.get();
-                                    gameManager.writeToRoom(room.getRoomId(),Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off of " + getName() + "\r\n");
+                                    gameManager.writeToRoom(room.getRoomId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off of " + getName() + "\r\n");
                                 }
                                 gameManager.getEffectsManager().removeDurationStats(effect, this);
                                 gameManager.getEntityManager().removeEffect(effect);
@@ -171,7 +172,6 @@ public class Npc extends CreeperEntity {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getEntityId())) {
             if (effects.size() >= maxEffects) {
-                return;
             } else {
                 effects.add(effect);
             }
@@ -246,12 +246,11 @@ public class Npc extends CreeperEntity {
                         killNpc(npcStatsChange.getPlayer());
                         return;
                     }
-                } if (npcStatsChange.getPlayerStatsChange() != null) {
+                }
+                if (npcStatsChange.getPlayerStatsChange() != null) {
                     for (String message : npcStatsChange.getPlayerDamageStrings()) {
                         gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
-                        if (npcStatsChange.getPlayer().updatePlayerHealth(npcStatsChange.getPlayerStatsChange().getCurrentHealth(), this)) {
-
-                        }
+                        npcStatsChange.getPlayer().updatePlayerHealth(npcStatsChange.getPlayerStatsChange().getCurrentHealth(), this);
                     }
                 }
             }
@@ -263,8 +262,8 @@ public class Npc extends CreeperEntity {
 
     private String getBattleReport(int xpEarned) {
         StringBuilder sb = new StringBuilder();
-        sb.append(Color.MAGENTA + "Battle Report----------------------------" + Color.RESET).append("\r\n");
-        sb.append("You killed a " + getColorName() + " for " + Color.GREEN + "+" + xpEarned + Color.RESET + " experience points." + "\r\n");
+        sb.append(Color.MAGENTA).append("Battle Report----------------------------").append(Color.RESET).append("\r\n");
+        sb.append("You killed a ").append(getColorName()).append(" for ").append(Color.GREEN).append("+").append(xpEarned).append(Color.RESET).append(" experience points.").append("\r\n");
 
         Set<Map.Entry<String, Integer>> entries = getPlayerDamageMap().entrySet();
         org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
@@ -282,7 +281,7 @@ public class Npc extends CreeperEntity {
             }
             String damageAmt = String.valueOf(entry.getValue());
             t.addCell(name);
-            t.addCell(damageAmt);
+            t.addCell(NumberFormat.getNumberInstance(Locale.US).format(damageAmt));
         }
         sb.append(t.render());
         return sb.toString();
@@ -290,7 +289,7 @@ public class Npc extends CreeperEntity {
 
     private void killNpc(Player player) {
         isAlive.set(false);
-        Map<String, Double> xpProcessed = null;
+        Map<String, Double> xpProcessed;
         Item corpse = new Item(getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, getLoot());
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage());
         xpProcessed = gameManager.processExperience(this, getCurrentRoom());
@@ -309,7 +308,7 @@ public class Npc extends CreeperEntity {
             }
             int xpEarned = (int) Math.round(playerDamageExperience.getValue());
             p.addExperience(xpEarned);
-            gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) +  "\r\n", true);
+            gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) + "\r\n", true);
         }
     }
 

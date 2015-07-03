@@ -587,8 +587,8 @@ public enum ItemType {
 
     GUCCI_PANTS(53, Arrays.asList("pants", "gucci pants", "gucci pants"),
             Color.BOLD_ON + Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET,
-            "a " + Color.BOLD_ON +  Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET + " is on the ground.",
-            "a " + Color.BOLD_ON +  Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET,
+            "a " + Color.BOLD_ON + Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET + " is on the ground.",
+            "a " + Color.BOLD_ON + Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET,
             false,
             0,
             60,
@@ -616,11 +616,7 @@ public enum ItemType {
         this.restingName = restingName;
         this.itemDescription = itemDescription;
         this.maxUses = maxUses;
-        if (maxUses > 0) {
-            this.isDisposable = true;
-        } else {
-            this.isDisposable = isDisposable;
-        }
+        this.isDisposable = maxUses > 0 || isDisposable;
         this.itemHalfLifeTicks = itemHalfLifeTicks;
         this.isEquipment = isEquipment;
         this.rarity = rarity;
