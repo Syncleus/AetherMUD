@@ -279,7 +279,7 @@ public class Npc extends CreeperEntity {
             if (player != null) {
                 name = player.getPlayerName();
             }
-            String damageAmt = String.valueOf(entry.getValue());
+            int damageAmt = entry.getValue();
             t.addCell(name);
             t.addCell(NumberFormat.getNumberInstance(Locale.US).format(damageAmt));
         }

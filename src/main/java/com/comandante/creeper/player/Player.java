@@ -21,6 +21,8 @@ import com.google.common.collect.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.Channel;
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.ShownBorders;
 
 import java.util.*;
 
@@ -676,6 +678,60 @@ public class Player extends CreeperEntity {
             }
             return newStats;
         }
+    }
+
+    public String getLookString() {
+        StringBuilder sb = new StringBuilder();
+        Stats origStats = gameManager.getStatsModifierFactory().getStatsModifier(this);
+        Stats modifiedStats = getPlayerStatsWithEquipmentAndLevel();
+        Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
+        sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
+        sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
+        sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(buildEquipmentString()).append("\r\n");
+        sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(gameManager.buildLookString(playerName, modifiedStats, diffStats)).append("\r\n");
+        PlayerMetadata playerMetadata = getPlayerMetadata();
+        if (playerMetadata.getEffects() != null && playerMetadata.getEffects().size() > 0) {
+            sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
+            sb.append(buldEffectsString()).append("\r\n");
+        }
+        return sb.toString();
+    }
+
+    public String buildEquipmentString() {
+        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
+        t.setColumnWidth(0, 16, 20);
+
+        List<EquipmentSlotType> all = EquipmentSlotType.getAll();
+        for (EquipmentSlotType slot : all) {
+            t.addCell(capitalize(slot.getName()));
+            Item slotItem = getSlotItem(slot);
+            if (slotItem != null) {
+                t.addCell(slotItem.getItemName());
+            } else {
+                t.addCell("");
+            }
+        }
+        return t.render();
+    }
+
+
+    public String buldEffectsString() {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            List<Effect> effects = com.google.api.client.util.Lists.newArrayList();
+            if (playerMetadata.getEffects() != null) {
+                for (String effectId : playerMetadata.getEffects()) {
+                    Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
+                    effects.add(effect);
+                }
+            }
+            return gameManager.renderEffectsString(effects);
+    }
+
+    private String capitalize(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
     /* FIGHT FIGHT FIGHT FIGHT */

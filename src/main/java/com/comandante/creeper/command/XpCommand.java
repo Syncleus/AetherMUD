@@ -44,17 +44,17 @@ public class XpCommand extends Command {
                     ShownBorders.NONE);
 
             t.setColumnWidth(0, 8, 20);
-            t.setColumnWidth(1, 10, 13);
+            t.setColumnWidth(1, 10, 20);
 
 
             t.addCell("Window");
-            t.addCell("Rate");
+            t.addCell("XP/sec");
             t.addCell(" 1 min");
-            t.addCell(String.valueOf(round(meter.getOneMinuteRate())) + " xp/sec");
+            t.addCell(String.valueOf(round(meter.getOneMinuteRate())));
             t.addCell(" 5 min");
-            t.addCell(String.valueOf(round(meter.getFiveMinuteRate())) + " xp/sec");
+            t.addCell(String.valueOf(round(meter.getFiveMinuteRate())));
             t.addCell("15 min");
-            t.addCell(String.valueOf(round(meter.getFifteenMinuteRate())) + " xp/sec");
+            t.addCell(String.valueOf(round(meter.getFifteenMinuteRate())));
             write(sb.toString() + t.render());
         } finally {
             super.messageReceived(ctx, e);

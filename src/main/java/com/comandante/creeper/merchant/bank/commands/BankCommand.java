@@ -89,7 +89,7 @@ public class BankCommand extends SimpleChannelUpstreamHandler {
     }
 
     public static String getPrompt() {
-        return "[" + Color.GREEN + "BANK" + Color.RESET + " - WITHDRAWAWL | DEPOSIT | QUERY | DONE] ";
+        return "[" + Color.GREEN + "BANK" + Color.RESET + " - WITHDRAWAL | DEPOSIT | QUERY | DONE] ";
     }
 
     public <T> T createObj(String nameclass) throws ClassNotFoundException,

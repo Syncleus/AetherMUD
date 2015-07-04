@@ -5,7 +5,7 @@
   "loot": {
     "lootGoldMin": 15000,
     "lootGoldMax": 20000,
-    "lootItems": [40, 41]
+    "lootItems": [40, 41, 47, 48, 49, 50, 51, 52]
   },
   "roamAreas": [
     "tisland3_zone",

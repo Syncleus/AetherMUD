@@ -36,7 +36,7 @@ public class LookCommand extends Command {
             Set<Player> presentPlayers = roomManager.getPresentPlayers(currentRoom);
             for (Player presentPlayer : presentPlayers) {
                 if (presentPlayer != null && presentPlayer.getPlayerName().equals(target)) {
-                    write(gameManager.getLookString(presentPlayer) + "\r\n");
+                    write(presentPlayer.getLookString() + "\r\n");
                     if (!presentPlayer.getPlayerId().equals(playerId)) {
                         channelUtils.write(presentPlayer.getPlayerId(), player.getPlayerName() + " looks at you.", true);
                     }

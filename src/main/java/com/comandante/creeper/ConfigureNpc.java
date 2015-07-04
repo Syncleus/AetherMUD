@@ -92,6 +92,10 @@ public class ConfigureNpc {
         itemsForSale.put(34, new MerchantItemForSale(ItemType.BIGGERS_SKIN_SATCHEL, 250000));
         itemsForSale.put(35, new MerchantItemForSale(ItemType.STRENGTH_ELIXIR, 2000));
         itemsForSale.put(36, new MerchantItemForSale(ItemType.CHRONIC_JOOSE, 4000));
+        itemsForSale.put(37, new MerchantItemForSale(ItemType.BISMUTH_SWORD, 3000000));
+        itemsForSale.put(37, new MerchantItemForSale(ItemType.GUCCI_PANTS, 80000000));
+
+
 
 
 

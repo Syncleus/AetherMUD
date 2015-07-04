@@ -3,7 +3,11 @@ package com.comandante.creeper.managers;
 
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
-import com.comandante.creeper.Items.*;
+import com.comandante.creeper.Items.ForageManager;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemDecayManager;
+import com.comandante.creeper.Items.LootManager;
+import com.comandante.creeper.Main;
 import com.comandante.creeper.bot.BotCommandFactory;
 import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -20,9 +24,7 @@ import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
-import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.*;
-import com.google.api.client.util.Lists;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
@@ -321,7 +323,12 @@ public class GameManager {
 
         for (String npcId : playerCurrentRoom.getNpcIds()) {
             Npc npcEntity = entityManager.getNpcEntity(npcId);
-            sb.append("a ").append(npcEntity.getColorName()).append(" is here.\r\n");
+            if(Main.vowels.contains(Character.toLowerCase(npcEntity.getName().charAt(0)))) {
+                sb.append("an ");
+            } else {
+                sb.append("a ");
+            }
+            sb.append(npcEntity.getColorName()).append(" is here.\r\n");
         }
         String msg = null;
         if (sb.toString().substring(sb.toString().length() - 2).equals("\r\n")) {
@@ -390,44 +397,13 @@ public class GameManager {
         return sb.toString();
     }
 
-    public String getLookString(Player player) {
-        StringBuilder sb = new StringBuilder();
-        Stats origStats = statsModifierFactory.getStatsModifier(player);
-        Stats modifiedStats = player.getPlayerStatsWithEquipmentAndLevel();
-        Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
-        sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(player.getPlayerName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
-        sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
-        sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
-        sb.append(buildEquipmentString(player)).append("\r\n");
-        sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
-        sb.append(buildLookString(player.getPlayerName(), modifiedStats, diffStats)).append("\r\n");
-        if (playerManager.getPlayerMetadata(player.getPlayerId()).getEffects() != null && playerManager.getPlayerMetadata(player.getPlayerId()).getEffects().size() > 0) {
-            sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
-            sb.append(buldEffectsString(player)).append("\r\n");
-        }
-        return sb.toString();
-    }
+    public String buldEffectsString(Npc npc) {
+        return renderEffectsString(npc.getEffects());
 
-    public String buildEquipmentString(Player player) {
-        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.NONE);
-        t.setColumnWidth(0, 16, 20);
-
-        List<EquipmentSlotType> all = EquipmentSlotType.getAll();
-        for (EquipmentSlotType slot : all) {
-            t.addCell(capitalize(slot.getName()));
-            Item slotItem = player.getSlotItem(slot);
-            if (slotItem != null) {
-                t.addCell(slotItem.getItemName());
-            } else {
-                t.addCell("");
-            }
-        }
-        return t.render();
     }
 
     public String renderEffectsString(List<Effect> effects) {
-        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
         t.setColumnWidth(0, 16, 20);
@@ -441,23 +417,6 @@ public class GameManager {
             i++;
         }
         return t.render();
-    }
-
-    public String buldEffectsString(Npc npc) {
-        return renderEffectsString(npc.getEffects());
-
-    }
-
-    public String buldEffectsString(Player player) {
-        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-        List<Effect> effects = Lists.newArrayList();
-        if (playerMetadata.getEffects() != null) {
-            for (String effectId : playerMetadata.getEffects()) {
-                Effect effect = entityManager.getEffectEntity(effectId);
-                effects.add(effect);
-            }
-        }
-        return renderEffectsString(effects);
     }
 
     public String buildLookString(String name, Stats stats, Stats diff) {
@@ -558,10 +517,6 @@ public class GameManager {
 
         returnString.append(t.render());
         return returnString.toString();
-    }
-
-    private String capitalize(final String line) {
-        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
     private String getFormattedNumber(Integer integer) {

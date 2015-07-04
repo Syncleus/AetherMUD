@@ -527,7 +527,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.RARE,
+            Rarity.LEGENDARY,
             1000000),
 
     BISMUTH_CHESTPLATE(48, Arrays.asList("chestplate", "a bismuth chestplate", "bismuth chestplate"),
@@ -538,7 +538,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.RARE,
+            Rarity.LEGENDARY,
             800000),
 
     BISMUTH_HELMET(49, Arrays.asList("helmet", "a bismuth helmet", "bismuth helmet"),
@@ -549,7 +549,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.RARE,
+            Rarity.LEGENDARY,
             700000),
 
     BISMUTH_BRACERS(50, Arrays.asList("bracers", "bismuth bracers", "bismuth bracers"),
@@ -560,7 +560,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.RARE,
+            Rarity.LEGENDARY,
             650000),
 
     BISMUTH_LEGGINGS(51, Arrays.asList("leggings", "bismuth leggings", "vulcerium leggings"),
@@ -571,7 +571,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.RARE,
+            Rarity.LEGENDARY,
             900000),
 
     BISMUTH_BOOTS(52, Arrays.asList("boots", "bismuth boots"),
@@ -582,7 +582,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.RARE,
+            Rarity.LEGENDARY,
             800000),
 
     GUCCI_PANTS(53, Arrays.asList("pants", "gucci pants", "gucci pants"),
@@ -593,8 +593,8 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.LEGENDARY,
-            10000000);
+            Rarity.EXOTIC,
+            40000000);
 
 
     private final Integer itemTypeCode;

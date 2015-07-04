@@ -23,6 +23,9 @@ import org.mapdb.DBMaker;
 
 import java.io.File;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -32,6 +35,8 @@ public class Main {
     final public static MetricRegistry metrics = new MetricRegistry();
 
     final public static String CREEPER_VERSION = "0.5 ALPHA";
+
+    final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
 
     public static void main(String[] args) throws Exception {
 
