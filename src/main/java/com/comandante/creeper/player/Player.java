@@ -51,23 +51,24 @@ public class Player extends CreeperEntity {
 
     @Override
     public void run() {
-        try {
-            if (processTickBucket(10)) {
-                processRegens();
-                processEffects();
-                if (activeFights.size() > 0) {
-                    writePrompt();
+        synchronized (interner.intern(playerId)) {
+            try {
+                if (processTickBucket(10)) {
+                    processRegens();
+                    processEffects();
+                    if (activeFights.size() > 0) {
+                        writePrompt();
+                    }
                 }
+                tickAllActiveCoolDowns();
+                activateNextPrimaryActiveFight();
+                if (processFightTickBucket(4)) {
+                    processFightRounds();
+                }
+            } catch (Exception e) {
+                log.error("Player ticker failed! + " + playerName, e);
+                SentryManager.logSentry(this.getClass(), e, "Player ticker problem!");
             }
-            tickAllActiveCoolDowns();
-            activateNextPrimaryActiveFight();
-            if (processFightTickBucket(4)) {
-                processFightRounds();
-            }
-        } catch (Exception e) {
-            log.error("Player ticker failed! + " + playerName, e);
-            SentryManager.logSentry(this.getClass(), e, "Player ticker problem!");
-
         }
     }
 
@@ -118,7 +119,7 @@ public class Player extends CreeperEntity {
             PlayerMetadata playerMetadata = getPlayerMetadata();
             Iterator<String> iterator = playerMetadata.getEffects().iterator();
             while (iterator.hasNext()) {
-                String effectId =  iterator.next();
+                String effectId = iterator.next();
                 Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
                 if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
                     gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
@@ -587,7 +588,7 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public Set<Item> getEquipment(){
+    public Set<Item> getEquipment() {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
             Set<Item> equipmentItems = Sets.newHashSet();
@@ -719,15 +720,15 @@ public class Player extends CreeperEntity {
 
 
     public String buldEffectsString() {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
-            List<Effect> effects = com.google.api.client.util.Lists.newArrayList();
-            if (playerMetadata.getEffects() != null) {
-                for (String effectId : playerMetadata.getEffects()) {
-                    Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
-                    effects.add(effect);
-                }
+        PlayerMetadata playerMetadata = getPlayerMetadata();
+        List<Effect> effects = com.google.api.client.util.Lists.newArrayList();
+        if (playerMetadata.getEffects() != null) {
+            for (String effectId : playerMetadata.getEffects()) {
+                Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
+                effects.add(effect);
             }
-            return gameManager.renderEffectsString(effects);
+        }
+        return gameManager.renderEffectsString(effects);
     }
 
     private String capitalize(final String line) {
@@ -852,7 +853,7 @@ public class Player extends CreeperEntity {
                 damageToVictim = getAttackAmt(playerStats, npcStats);
             }
             if (damageToVictim > 0) {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET +  Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             } else {

@@ -29,13 +29,13 @@
   },
   "spawnAreas": {
     "north8_zone": {
-      "randomChance": 100,
+      "randomChance": 1,
       "maxPerRoom": 3,
       "spawnIntervalTicks": 600,
       "maxInstances": 6
     }, 
     "north9_zone": {
-      "randomChance": 100,
+      "randomChance": 1,
       "maxPerRoom": 3,
       "spawnIntervalTicks": 600,
       "maxInstances": 14
