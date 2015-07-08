@@ -135,6 +135,18 @@
             <version>4.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.omertron</groupId>
+            <artifactId>API-OMDB</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>
