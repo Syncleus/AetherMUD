@@ -75,9 +75,6 @@ public class Main {
         WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager);
         worldExporter.readWorldFromDisk();
 
-        startUpMessage("Generating map data.");
-        mapsManager.generateAllMaps();
-
         startUpMessage("Configuring commands");
         ConfigureCommands.configure(gameManager);
 
@@ -90,6 +87,9 @@ public class Main {
         startUpMessage("Configuring npcs and merchants");
         ConfigureNpc.configure(entityManager, gameManager);
         CreeperServer creeperServer = new CreeperServer(creeperConfiguration.telnetPort);
+
+        startUpMessage("Generating map data.");
+        mapsManager.generateAllMaps();
 
         startUpMessage("Configuring default inventorySize limits");
         BackportCommands.configureDefaultInventorySize(entityManager, gameManager);

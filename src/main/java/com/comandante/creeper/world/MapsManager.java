@@ -43,23 +43,25 @@ public class MapsManager {
         return new Function<Integer, String>() {
             @Override
             public String apply(Integer roomId) {
+                Room room = roomManager.getRoom(roomId);
                 if (roomId > 0) {
                     if (roomId.equals(currentroomId)) {
                         return "[" + Color.BOLD_ON + Color.RED + "*" + Color.RESET + "]";
                     } else if (roomId.equals(1)) {
                         return "[" + Color.BOLD_ON + Color.BLUE + "L" + Color.RESET + "]";
-                    } else if (roomManager.getRoom(roomId).getUpId().isPresent()) {
-                        return "[" + Color.GREEN + "^" + Color.RESET + "]";
-                    } else if (roomManager.getRoom(roomId).getDownId().isPresent()) {
-                        return "[" + Color.GREEN + "v" + Color.RESET + "]";
-                    } else if (roomManager.getRoom(roomId).getEnterExits().size() > 0) {
+                    } else if (room.getMerchants().size() > 0) {
+                        return "[" + Color.YELLOW + "m" + Color.RESET + "]";
+                    }  else if (room.getEnterExits().size() > 0) {
                         return "[" + Color.CYAN + "e" + Color.RESET + "]";
-                    }
-                    else {
+                    } else if (room.getUpId().isPresent()) {
+                        return "[" + Color.GREEN + "^" + Color.RESET + "]";
+                    } else if (room.getDownId().isPresent()) {
+                        return "[" + Color.GREEN + "v" + Color.RESET + "]";
+                    } else {
                         return "[ ]";
                     }
                 } else {
-                    return " - ";
+                    return "   ";
                 }
             }
         };
