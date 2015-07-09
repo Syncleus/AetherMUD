@@ -52,6 +52,8 @@ public class MapsManager {
                         return "[" + Color.GREEN + "^" + Color.RESET + "]";
                     } else if (roomManager.getRoom(roomId).getDownId().isPresent()) {
                         return "[" + Color.GREEN + "v" + Color.RESET + "]";
+                    } else if (roomManager.getRoom(roomId).getEnterExits().size() > 0) {
+                        return "[" + Color.CYAN + "e" + Color.RESET + "]";
                     }
                     else {
                         return "[ ]";
