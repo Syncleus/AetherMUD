@@ -4,6 +4,7 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDownType;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.Spell;
 import com.comandante.creeper.spells.SpellRegistry;
 import com.google.common.base.Joiner;
@@ -58,6 +59,12 @@ public class CastCommand extends Command {
             originalMessageParts.remove(0);
             originalMessageParts.remove(0);
             String target = Joiner.on(" ").join(originalMessageParts);
+            for (Player destinationPlayer : roomManager.getPresentPlayers(currentRoom)) {
+                if (destinationPlayer.getPlayerName().equalsIgnoreCase(target)) {
+                    spell.attackSpell(destinationPlayer, this.player);
+                    return;
+                }
+            }
             for (String npcId : currentRoom.getNpcIds()) {
                 Npc npcEntity = entityManager.getNpcEntity(npcId);
                 if (npcEntity.getValidTriggers().contains(target)) {

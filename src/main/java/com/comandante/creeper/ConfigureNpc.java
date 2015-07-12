@@ -12,6 +12,7 @@ import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.spawner.SpawnRuleBuilder;
 import com.comandante.creeper.spells.ClumsinessSpell;
 import com.comandante.creeper.spells.LightningSpell;
+import com.comandante.creeper.spells.RestoreSpell;
 import com.comandante.creeper.spells.SpellRegistry;
 import com.comandante.creeper.world.Area;
 import com.google.common.collect.Maps;
@@ -135,6 +136,7 @@ public class ConfigureNpc {
 
         SpellRegistry.addSpell(new LightningSpell(gameManager));
         SpellRegistry.addSpell(new ClumsinessSpell(gameManager));
+        SpellRegistry.addSpell(new RestoreSpell(gameManager));
 
     }
 }

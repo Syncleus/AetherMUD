@@ -35,8 +35,8 @@ public class LightningSpell extends Spell {
 
     private static final Effect burnEffect = new EffectBuilder()
             .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning"+ Color.RESET + " from the lightning strike!"))
-            .setEffectDescription(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
-            .setEffectName(Color.YELLOW + "lightning " + Color.RESET + Color.RED + "fire" + Color.RESET)
+            .setEffectDescription("Fire left over from the lightning strike.")
+            .setEffectName(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
             .setDurationStats(new StatsBuilder().createStats())
             .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-150).createStats())
             .setFrozenMovement(false)
@@ -46,5 +46,4 @@ public class LightningSpell extends Spell {
     public LightningSpell(GameManager gameManager) {
         super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect), isAreaSpell, null);
     }
-
 }

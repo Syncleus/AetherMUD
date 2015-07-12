@@ -27,7 +27,7 @@ public abstract class Spell {
     private final Set<String> validTriggers;
     private final static Random random = new Random();
     private final GameManager gameManager;
-    private final Set<Effect> effects;
+    private Set<Effect> effects;
     private final boolean isAreaSpell;
     private final SpellExecute spellExecute;
 
@@ -68,7 +68,7 @@ public abstract class Spell {
         if (amt == 0) {
             return s;
         } else {
-            return Color.BOLD_ON + Color.YELLOW + "[spell] " + Color.RESET +  Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s + Color.BOLD_ON + Color.RED + " >>>> " + Color.RESET + npc.getColorName();
+            return Color.BOLD_ON + Color.YELLOW + "[spell] " + Color.RESET + Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + s + Color.BOLD_ON + Color.RED + " >>>> " + Color.RESET + npc.getColorName();
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class Spell {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Not enough mana!" + "\r\n");
             } else {
                 applySpell(npcIds, player);
-                for (String npcId: npcIds) {
+                for (String npcId : npcIds) {
                     Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
                     gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + spellName + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + npc.getColorName() + "! \r\n");
                     int spellAttack = getSpellAttack(npc.getStats());
@@ -105,6 +105,47 @@ public abstract class Spell {
         }
     }
 
+    public void attackSpell(Player destinationPlayer, Player sourcePlayer) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(sourcePlayer.getPlayerId())) {
+            int availableMana = gameManager.getPlayerManager().getPlayerMetadata(sourcePlayer.getPlayerId()).getStats().getCurrentMana();
+            if (availableMana < manaCost) {
+                gameManager.getChannelUtils().write(sourcePlayer.getPlayerId(), "Not enough mana!" + "\r\n");
+            } else {
+                gameManager.writeToPlayerCurrentRoom(sourcePlayer.getPlayerId(), sourcePlayer.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + spellName + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + destinationPlayer.getPlayerName() + "! \r\n");
+                applyEffectsToPlayer(destinationPlayer, sourcePlayer);
+                sourcePlayer.updatePlayerMana(-manaCost);
+            }
+        }
+    }
+
+    public void applyEffectsToPlayer(Player destinationPlayer, Player player) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(player.getPlayerId())) {
+            int availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
+            if (availableMana < manaCost) {
+                gameManager.getChannelUtils().write(player.getPlayerId(), "Not enough mana!" + "\r\n");
+            } else {
+                for (Effect effect : effects) {
+                    Effect nEffect = new Effect(effect);
+                    nEffect.setPlayerId(player.getPlayerId());
+                    gameManager.getEntityManager().saveEffect(nEffect);
+                    if (effect.getDurationStats().getCurrentHealth() < 0) {
+                        log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
+                        continue;
+                    }
+                    String effectApplyMessage;
+                    if (destinationPlayer.addEffect(effect.getEntityId())) {
+                        effectApplyMessage = Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + nEffect.getEffectName() + " applied!" + "\r\n";
+                        gameManager.getChannelUtils().write(destinationPlayer.getPlayerId(), effectApplyMessage);
+                    } else {
+                        effectApplyMessage = Color.BOLD_ON + Color.GREEN + "[effect] "+ Color.RESET + Color.RED + "Unable to apply "  + nEffect.getEffectName() + "!" + "\r\n";
+                        gameManager.getChannelUtils().write(player.getPlayerId(), effectApplyMessage);
+                    }
+                }
+            }
+        }
+    }
 
     public void applyEffectsToNpcs(Set<String> npcIds, Player player) {
         Interner<String> interner = Interners.newWeakInterner();
@@ -127,7 +168,7 @@ public abstract class Spell {
                             continue;
                         }
                         StatsHelper.combineStats(npc.getStats(), effect.getDurationStats());
-                       // gameManager.getEffectsManager().application(nEffect, npc);
+                        // gameManager.getEffectsManager().application(nEffect, npc);
                         npc.addEffect(nEffect);
                     }
                 }
@@ -173,6 +214,10 @@ public abstract class Spell {
 
     public Set<Effect> getEffects() {
         return effects;
+    }
+
+    public void setEffects(Set<Effect> effects) {
+        this.effects = effects;
     }
 
     public boolean isAreaSpell() {

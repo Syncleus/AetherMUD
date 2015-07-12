@@ -116,8 +116,7 @@ public class Player extends CreeperEntity {
 
     private void processEffects() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
-            Iterator<String> iterator = playerMetadata.getEffects().iterator();
+            Iterator<String> iterator = getPlayerMetadata().getEffects().iterator();
             while (iterator.hasNext()) {
                 String effectId = iterator.next();
                 Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
@@ -127,11 +126,10 @@ public class Player extends CreeperEntity {
                     iterator.remove();
                 } else {
                     effect.setEffectApplications(effect.getEffectApplications() + 1);
-                    gameManager.getEffectsManager().application(effect, playerMetadata);
+                    gameManager.getEffectsManager().application(effect, this);
                     gameManager.getEntityManager().saveEffect(effect);
                 }
             }
-            savePlayerMetadata(playerMetadata);
         }
     }
 
