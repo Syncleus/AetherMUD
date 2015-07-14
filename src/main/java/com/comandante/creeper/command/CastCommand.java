@@ -59,6 +59,10 @@ public class CastCommand extends Command {
             originalMessageParts.remove(0);
             originalMessageParts.remove(0);
             String target = Joiner.on(" ").join(originalMessageParts);
+            if (player.getPlayerName().equals(target)) {
+                spell.attackSpell(this.player, this.player);
+                return;
+            }
             for (Player destinationPlayer : roomManager.getPresentPlayers(currentRoom)) {
                 if (destinationPlayer.getPlayerName().equalsIgnoreCase(target)) {
                     spell.attackSpell(destinationPlayer, this.player);

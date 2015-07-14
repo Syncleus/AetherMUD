@@ -2,6 +2,7 @@ package com.comandante.creeper.spells;
 
 
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
@@ -33,17 +34,25 @@ public class LightningSpell extends Spell {
     private final static List<String> attackMessages = Lists.newArrayList("a broad stroke of " + BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolts across the sky");
     private static int manaCost = 60;
 
-    private static final Effect burnEffect = new EffectBuilder()
-            .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning"+ Color.RESET + " from the lightning strike!"))
+    private static EffectBuilder burnEffect = new EffectBuilder()
+            .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning" + Color.RESET + " from the lightning strike!"))
             .setEffectDescription("Fire left over from the lightning strike.")
             .setEffectName(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
             .setDurationStats(new StatsBuilder().createStats())
             .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-150).createStats())
             .setFrozenMovement(false)
-            .setLifeSpanTicks(2)
-            .createEffect();
+            .setLifeSpanTicks(2);
 
     public LightningSpell(GameManager gameManager) {
-        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect), isAreaSpell, null);
+        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect.createEffect()), isAreaSpell, null);
+    }
+
+    @Override
+    public void attackSpell(Set<String> npcIds, Player player) {
+        Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
+        int willpower = playerStats.getWillpower();
+        int i = 500 + (willpower * 3);
+        this.setEffects(Sets.newHashSet(burnEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-i).createStats()).createEffect()));
+        super.attackSpell(npcIds, player);
     }
 }

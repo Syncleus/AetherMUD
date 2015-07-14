@@ -35,7 +35,7 @@ public class RestoreSpell extends Spell {
             .setDurationStats(new StatsBuilder().createStats())
             .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(400).createStats())
             .setFrozenMovement(false)
-            .setLifeSpanTicks(2);
+            .setLifeSpanTicks(6);
 
     public RestoreSpell(GameManager gameManager) {
         super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect.createEffect()), isAreaSpell, null);
@@ -43,7 +43,8 @@ public class RestoreSpell extends Spell {
 
     @Override
     public void attackSpell(Player destinationPlayer, Player sourcePlayer) {
-        this.setEffects(Sets.newHashSet(burnEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(800).createStats()).createEffect()));
+        Stats stats = sourcePlayer.getPlayerStatsWithEquipmentAndLevel();
+        this.setEffects(Sets.newHashSet(burnEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(400 + (stats.getWillpower() * 6)).createStats()).createEffect()));
         super.attackSpell(destinationPlayer, sourcePlayer);
     }
 }

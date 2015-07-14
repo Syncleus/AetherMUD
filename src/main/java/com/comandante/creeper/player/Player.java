@@ -117,19 +117,31 @@ public class Player extends CreeperEntity {
     private void processEffects() {
         synchronized (interner.intern(playerId)) {
             Iterator<String> iterator = getPlayerMetadata().getEffects().iterator();
+            List<String> effectIdsToRemove = Lists.newArrayList();
             while (iterator.hasNext()) {
                 String effectId = iterator.next();
                 Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
-                if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
-                    gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
-                    gameManager.getEntityManager().removeEffect(effect);
-                    iterator.remove();
+                if (effect == null) {
+                    effectIdsToRemove.add(effectId);
+                    continue;
                 } else {
-                    effect.setEffectApplications(effect.getEffectApplications() + 1);
-                    gameManager.getEffectsManager().application(effect, this);
-                    gameManager.getEntityManager().saveEffect(effect);
+                    if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
+                        gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
+                        gameManager.getEntityManager().removeEffect(effect);
+                        effectIdsToRemove.add(effectId);
+                        continue;
+                    } else {
+                        effect.setEffectApplications(effect.getEffectApplications() + 1);
+                        gameManager.getEffectsManager().application(effect, this);
+                        gameManager.getEntityManager().saveEffect(effect);
+                    }
                 }
             }
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            for (String effectId: effectIdsToRemove) {
+                playerMetadata.removeEffectID(effectId);
+            }
+            savePlayerMetadata(playerMetadata);
         }
     }
 
@@ -723,7 +735,9 @@ public class Player extends CreeperEntity {
         if (playerMetadata.getEffects() != null) {
             for (String effectId : playerMetadata.getEffects()) {
                 Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
-                effects.add(effect);
+                if (effect != null) {
+                    effects.add(effect);
+                }
             }
         }
         return gameManager.renderEffectsString(effects);

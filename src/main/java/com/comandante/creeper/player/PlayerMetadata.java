@@ -122,6 +122,10 @@ public class PlayerMetadata implements Serializable {
         effects.add(effectId);
     }
 
+    protected void removeEffectID(String effectId) {
+        effects.remove(effectId);
+    }
+
     public String getPlayerName() {
         return playerName;
     }
