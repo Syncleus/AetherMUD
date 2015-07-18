@@ -76,7 +76,7 @@ public class NpcSpawner extends CreeperEntity {
         newNpc.setCurrentRoom(room);
         gameManager.getEntityManager().addEntity(newNpc);
         room.addPresentNpc(newNpc.getEntityId());
-        gameManager.writeToRoom(room.getRoomId(), newNpc.getColorName() + " appears.");
+        gameManager.writeToRoom(room.getRoomId(), newNpc.getColorName() + " appears." + "\r\n");
         Main.metrics.counter(MetricRegistry.name(NpcSpawner.class, npc.getName() + "-spawn")).inc();
     }
 
