@@ -604,7 +604,7 @@ public enum ItemType {
             0,
             60,
             false,
-            Rarity.LEGENDARY,
+            Rarity.RARE,
             5000),
 
 
