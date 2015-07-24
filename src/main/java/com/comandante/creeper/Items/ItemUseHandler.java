@@ -96,6 +96,16 @@ public class ItemUseHandler {
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-dogdick-smoked")).inc();
     }
 
+    private void processHaze() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " smokes " + Color.GREEN + "haze." + Color.RESET + ".\r\n");
+        writeToPlayer("2000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(2000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-haze-smoked")).inc();
+    }
+    
     private void processBook() {
         writeToPlayer("You crack open the book and immediately realize that you aren't familiar with it's written language.");
     }
@@ -120,6 +130,9 @@ public class ItemUseHandler {
                     break;
                 case PURPLE_DRANK:
                     processPurpleDrank();
+                    break;
+                case HAZE:
+                    processHaze();
                     break;
                 case UNKNOWN:
                     writeToPlayer("Item not found.");
