@@ -8,8 +8,8 @@
     "lootItems": [57]
   },
   "roamAreas": [
-    "bloodridge8_zone",
-    "bloodridge9_zone"
+    "bloodridge9_zone",
+    "bloodridge10_zone"
   ],
   "stats": {
     "agile": 500,
@@ -28,7 +28,7 @@
     "willPower": 4000
   },
   "spawnAreas": {
-    "bloodridge8_zone": {
+    "bloodridge9_zone": {
       "randomChance": 90,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
@@ -36,6 +36,7 @@
     } 
   },
   "validTriggers": [
-    "amarok"
+    "amarok",
+    "a"
   ]
 }
