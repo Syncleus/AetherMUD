@@ -8,8 +8,8 @@
     "lootItems": []
   },
   "roamAreas": [
-    "bloodridge7_zone",
-    "bloodridge8_zone"
+    "bloodridge8_zone",
+    "bloodridge9_zone"
   ],
   "stats": {
     "agile": 100,
@@ -28,13 +28,13 @@
     "willPower": 1000
   },
   "spawnAreas": {
-    "bloodridge7_zone": {
+    "bloodridge8_zone": {
       "randomChance": 5,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
       "maxInstances": 1
     } 
-    "bloodridge8_zone": {
+    "bloodridge9_zone": {
       "randomChance": 5,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
