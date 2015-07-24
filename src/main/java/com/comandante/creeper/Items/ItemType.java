@@ -596,6 +596,17 @@ public enum ItemType {
             Rarity.EXOTIC,
             40000000);
 
+    HAZE(54, Arrays.asList("haze", "lemon", "h", "l"),
+            "lemon" + Color.GREEN + " haze" + Color.RESET,
+            "some lemon" + Color.GREEN + "haze" + Color.RESET + " flowers" + Color.RESET + " are here on the ground.",
+            "some lemon" + Color.GREEN + "haze" + Color.RESET + " flowers" + Color.RESET,
+            true,
+            0,
+            60,
+            false,
+            Rarity.LEGENDARY,
+            5000),
+
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
