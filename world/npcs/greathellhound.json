@@ -33,7 +33,7 @@
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
       "maxInstances": 1
-    } 
+    }, 
     "south3_zone": {
       "randomChance": 90,
       "maxPerRoom": 1,
