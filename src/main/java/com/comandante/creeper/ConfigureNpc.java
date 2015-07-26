@@ -128,7 +128,7 @@ public class ConfigureNpc {
         marijuanaForageBuilder.setMaxAmt(3);
         marijuanaForageBuilder.setPctOfSuccess(40);
         marijuanaForageBuilder.setForageExperience(4);
-        marijuanaForageBuilder.setCoolDownTicks(30);
+        marijuanaForageBuilder.setCoolDownTicks(600);
         gameManager.getForageManager().addForageToArea(Area.WESTERN9_ZONE, marijuanaForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.NORTH3_ZONE, marijuanaForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, marijuanaForageBuilder);
@@ -138,9 +138,9 @@ public class ConfigureNpc {
         hazeForageBuilder.setItemType(ItemType.HAZE);
         hazeForageBuilder.setMinAmt(1);
         hazeForageBuilder.setMaxAmt(3);
-        hazeForageBuilder.setPctOfSuccess(20);
+        hazeForageBuilder.setPctOfSuccess(5);
         hazeForageBuilder.setForageExperience(10);
-        hazeForageBuilder.setCoolDownTicks(30);
+        hazeForageBuilder.setCoolDownTicks(600);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE8_ZONE, hazeForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE9_ZONE, hazeForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE10_ZONE, hazeForageBuilder);

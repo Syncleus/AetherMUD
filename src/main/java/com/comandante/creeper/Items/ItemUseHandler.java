@@ -99,9 +99,9 @@ public class ItemUseHandler {
     private void processHaze() {
         String playerName = player.getPlayerName();
         writeToRoom(playerName + " smokes " + Color.GREEN + "haze." + Color.RESET + ".\r\n");
-        writeToPlayer("2000 mana is restored." + "\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
         writeToPlayer("3000 health is restored.");
-        player.addMana(2000);
+        player.addMana(5000);
         player.updatePlayerHealth(3000, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-haze-smoked")).inc();
     }
