@@ -574,6 +574,17 @@ public enum ItemType {
             Rarity.LEGENDARY,
             900000),
 
+    BISMUTH_BOOTS(52, Arrays.asList("boots", "bismuth boots"),
+            Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
+            "a pair of " + Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " boots" + Color.RESET + " are on the ground.",
+            "a pair of " + Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
+            false,
+            0,
+            60,
+            true,
+            Rarity.RARE,
+            800000),
+
     GUCCI_PANTS(53, Arrays.asList("pants", "gucci pants", "gucci pants"),
             Color.BOLD_ON + Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET,
             "a " + Color.BOLD_ON + Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET + " is on the ground.",
@@ -583,12 +594,12 @@ public enum ItemType {
             60,
             true,
             Rarity.EXOTIC,
-            40000000);
+            40000000),
 
     HAZE(54, Arrays.asList("haze", "lemon", "h", "l"),
-            "lemon" + Color.GREEN + " haze" + Color.RESET,
-            "some lemon" + Color.GREEN + "haze" + Color.RESET + " flowers" + Color.RESET + " are here on the ground.",
-            "some lemon" + Color.GREEN + "haze" + Color.RESET + " flowers" + Color.RESET,
+            Color.BOLD_ON + Color.YELLOW + "lemon" + Color.RESET + Color.GREEN + " haze" + Color.RESET,
+            "some " + Color.BOLD_ON + Color.YELLOW + "lemon" + Color.RESET + Color.GREEN + " haze" + Color.RESET + " flowers" + Color.RESET + " are here on the ground.",
+            "some " + Color.BOLD_ON + Color.YELLOW + "lemon" + Color.RESET + Color.GREEN + " haze" + Color.RESET + " flowers" + Color.RESET,
             true,
             0,
             60,
@@ -616,7 +627,7 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1400000),            
+            1400000),
 
     GOLDEN_WAND(57, Arrays.asList("golden wand", "golden"),
             Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.RED + " wand" + Color.RESET,
@@ -638,7 +649,7 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1000000),         
+            1000000),
 
     WOODEN_CHEST(59, Arrays.asList("wooden chest", "chest"),
             Color.BOLD_ON + "wooden" + Color.RESET + Color.RED + " chest" + Color.RESET,
@@ -649,8 +660,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1100000),      
-            
+            1100000),
+
     ENCHANTED_SHIELD(60, Arrays.asList("enchanted shield", "enchanted"),
             Color.BOLD_ON + Color.CYAN + "enchanted" + Color.RESET + Color.CYAN + " shield" + Color.RESET,
             "a " + Color.BOLD_ON + Color.CYAN + "enchanted" + Color.RESET + Color.CYAN + " shield" + Color.RESET + " is on the ground.",
@@ -660,8 +671,8 @@ public enum ItemType {
             60,
             false,
             Rarity.EXOTIC,
-            50000000),      
-            
+            50000000);
+
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
     private final String restingName;

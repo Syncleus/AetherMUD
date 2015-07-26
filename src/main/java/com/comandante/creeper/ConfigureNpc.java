@@ -122,21 +122,35 @@ public class ConfigureNpc {
         LockerRoomGuy lockerRoomGuy = new LockerRoomGuy(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(63, lockerRoomGuy);
 
-        ForageBuilder forageBuilder = new ForageBuilder();
-        forageBuilder.setItemType(ItemType.MARIJUANA);
-        forageBuilder.setMinAmt(1);
-        forageBuilder.setMaxAmt(3);
-        forageBuilder.setPctOfSuccess(40);
-        forageBuilder.setForageExperience(4);
-        forageBuilder.setCoolDownTicks(30);
-        gameManager.getForageManager().addForageToArea(Area.WESTERN9_ZONE, forageBuilder);
-        gameManager.getForageManager().addForageToArea(Area.NORTH3_ZONE, forageBuilder);
-        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, forageBuilder);
-        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE1_ZONE, forageBuilder);
+        ForageBuilder marijuanaForageBuilder = new ForageBuilder();
+        marijuanaForageBuilder.setItemType(ItemType.MARIJUANA);
+        marijuanaForageBuilder.setMinAmt(1);
+        marijuanaForageBuilder.setMaxAmt(3);
+        marijuanaForageBuilder.setPctOfSuccess(40);
+        marijuanaForageBuilder.setForageExperience(4);
+        marijuanaForageBuilder.setCoolDownTicks(30);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN9_ZONE, marijuanaForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH3_ZONE, marijuanaForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, marijuanaForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE1_ZONE, marijuanaForageBuilder);
+
+        ForageBuilder hazeForageBuilder = new ForageBuilder();
+        hazeForageBuilder.setItemType(ItemType.HAZE);
+        hazeForageBuilder.setMinAmt(1);
+        hazeForageBuilder.setMaxAmt(3);
+        hazeForageBuilder.setPctOfSuccess(20);
+        hazeForageBuilder.setForageExperience(10);
+        hazeForageBuilder.setCoolDownTicks(30);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE8_ZONE, hazeForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE9_ZONE, hazeForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE10_ZONE, hazeForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH12_ZONE, hazeForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.SOUTH2_ZONE, hazeForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.SOUTH3_ZONE, hazeForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.SOUTH4_ZONE, hazeForageBuilder);
 
         SpellRegistry.addSpell(new LightningSpell(gameManager));
         SpellRegistry.addSpell(new ClumsinessSpell(gameManager));
         SpellRegistry.addSpell(new RestoreSpell(gameManager));
-
     }
 }
