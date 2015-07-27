@@ -23,8 +23,8 @@
     "meleSkill": 1200,
     "numberOfWeaponRolls": 10,
     "strength": 14400,
-    "weaponRatingMax": 21000,
-    "weaponRatingMin": 15000,
+    "weaponRatingMax": 41000,
+    "weaponRatingMin": 35000,
     "willPower": 50
   },
   "spawnAreas": {
