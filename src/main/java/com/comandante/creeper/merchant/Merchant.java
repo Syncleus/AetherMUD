@@ -37,7 +37,7 @@ public abstract class Merchant extends CreeperEntity {
 
     public String getMenu() {
         Table t = new Table(3, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.HEADER_FIRST_AND_LAST_COLLUMN);
+                ShownBorders.NONE);
         t.setColumnWidth(0, 2, 5);
         t.setColumnWidth(1, 5, 8);
         t.setColumnWidth(2, 50, 69);

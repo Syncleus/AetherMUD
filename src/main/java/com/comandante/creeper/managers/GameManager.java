@@ -623,8 +623,14 @@ public class GameManager {
         if (isFight) {
             sb.append(Color.RED + " ! " + Color.RESET);
         }
-        if (player.isActive(CoolDownType.DEATH)) {
-            sb.append(Color.RED + " ! DEAD ! " + Color.RESET);
+        if (player.isActiveCoolDown()) {
+            sb.append(" ");
+            if (player.isActive(CoolDownType.DEATH)) {
+                sb.append(Color.RED + "D" + Color.RESET);
+            }
+            if (player.isActiveForageCoolDown()) {
+                sb.append(Color.GREEN + "F" + Color.RESET);
+            }
         }
         sb.append("] ");
         return sb.toString();
@@ -652,6 +658,5 @@ public class GameManager {
         }
         return Integer.parseInt(str);
     }
-
 }
 

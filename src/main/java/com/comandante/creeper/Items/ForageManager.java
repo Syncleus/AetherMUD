@@ -2,6 +2,8 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
+import com.comandante.creeper.player.CoolDown;
+import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
@@ -11,6 +13,7 @@ import org.apache.log4j.Logger;
 import java.util.Random;
 import java.util.Set;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;
 
@@ -26,45 +29,26 @@ public class ForageManager {
 
     public void addForageToArea(Area area, ForageBuilder forageBuilder) {
         Set<Room> roomsByArea = gameManager.getRoomManager().getRoomsByArea(area);
-        for (Room room: roomsByArea) {
+        for (Room room : roomsByArea) {
             Forage newForage = forageBuilder.createForage();
             room.addForage(newForage);
             gameManager.getEntityManager().addEntity(newForage);
         }
     }
 
-    public void forageDelay(Player player) {
-        gameManager.getChannelUtils().write(player.getPlayerId(), "You scan the ground for plants, herbs and fungi...\r\n");
-        final int foragingLevel = getLevel(gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getForaging());
-        final int scourTime = 1000 - getForageDelayTime(foragingLevel);
-        for (int i = 0; i < 3; i++) {
-            try {
-                if (scourTime > 0) {
-                    Thread.sleep(scourTime);
-                }
-                if (i==0){
-                    gameManager.getChannelUtils().write(player.getPlayerId(), "\r\n");
-                } else if (i==1) {
-                    gameManager.getChannelUtils().write(player.getPlayerId(), "searching..." + "\r\n");
-                } else {
-                    gameManager.getChannelUtils().write(player.getPlayerId(), "\r\n");
-                }
-            } catch (InterruptedException e) {
-                log.error(e);
-                SentryManager.logSentry(this.getClass(), e, "problem with forage delay!");
-            }
-        }
-    }
-
     public void getForageForRoom(Room room, Player player) {
-        forageDelay(player);
+       if (player.isActiveForageCoolDown()) {
+            gameManager.getChannelUtils().write(player.getPlayerId(), "Your forage cooldown is still active!\r\n");
+            return;
+        }
+        gameManager.getChannelUtils().write(player.getPlayerId(), "You scan the ground for plants, herbs and fungi...\r\n");
         int countOfForagesFound = 0;
         int totalForageXp = 0;
+        int foragingLevel = getLevel(gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getForaging());
         try {
             for (Forage forage : room.getForages().values()) {
-                int foragingLevel = getLevel(gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getForaging());
                 if (forage.getMinLevel() > foragingLevel) {
-                   // System.out.println("Foraging level not high enough.");
+                    // System.out.println("Foraging level not high enough.");
                     return;
                 }
                 if (forage.getCoolDownTicksLeft() > 0) {
@@ -100,7 +84,15 @@ public class ForageManager {
             }
             if (countOfForagesFound == 0) {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Nothing foraged." + "\r\n");
-                return;
+            }
+            if (foragingLevel <= 10) {
+                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_LONG));
+            } else if (foragingLevel > 10 && foragingLevel <= 30) {
+                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_MEDIUM));
+            } else if (foragingLevel > 30 && foragingLevel <= 40) {
+                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_SHORT));
+            } else if (foragingLevel > 40) {
+                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_SUPERSHORT));
             }
         }
     }
@@ -172,7 +164,6 @@ public class ForageManager {
 
         Thread.sleep(-1000);
     }
-
 
 
 }

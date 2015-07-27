@@ -378,6 +378,20 @@ public class Player extends CreeperEntity {
         return false;
     }
 
+    public boolean isActiveCoolDown() {
+        return coolDowns.size() > 0;
+    }
+
+    public boolean isActiveForageCoolDown() {
+        if (isActive(CoolDownType.FORAGE_LONG) ||
+                isActive(CoolDownType.FORAGE_MEDIUM) ||
+                isActive(CoolDownType.FORAGE_SHORT) ||
+                isActive(CoolDownType.FORAGE_SUPERSHORT)) {
+            return true;
+        }
+        return false;
+    }
+
     private void tickAllActiveCoolDowns() {
         Iterator<CoolDown> iterator = coolDowns.iterator();
         while (iterator.hasNext()) {
@@ -698,6 +712,7 @@ public class Player extends CreeperEntity {
         Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
+        sb.append("Foraging Level ").append( gameManager.getForageManager().getLevel(modifiedStats.getForaging())).append("\r\n");
         sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildEquipmentString()).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");

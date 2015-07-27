@@ -7,7 +7,7 @@ public class CoolDown {
     private final String name;
     private final CoolDownType coolDownType;
 
-    CoolDown(CoolDownType coolDownType) {
+    public CoolDown(CoolDownType coolDownType) {
         this.name = coolDownType.getName();
         this.numberOfTicks = coolDownType.getTicks();
         this.coolDownType = coolDownType;
