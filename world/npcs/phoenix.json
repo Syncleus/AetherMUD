@@ -8,8 +8,8 @@
     "lootItems": [65]
   },
   "roamAreas": [
-    "north4_zone",
-    "north5_zone"
+    "north12_zone",
+    "north13_zone"
   ],
   "stats": {
     "agile": 210,
@@ -17,24 +17,24 @@
     "armorRating": 1500,
     "currentHealth": 195000,
     "currentMana": 500,
-    "experience": 270000,
+    "experience": 1270000,
     "maxHealth": 195000,
     "maxMana": 300,
     "meleSkill": 1200,
     "numberOfWeaponRolls": 10,
-    "strength": 2400,
+    "strength": 14400,
     "weaponRatingMax": 2100,
     "weaponRatingMin": 1500,
     "willPower": 50
   },
   "spawnAreas": {
-    "north4_zone": {
+    "north12_zone": {
       "randomChance": 100,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
       "maxInstances": 3
     }, 
-    "north5_zone": {
+    "north13_zone": {
       "randomChance": 100,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
