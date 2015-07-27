@@ -1,6 +1,6 @@
 {
   "name": "silver wendigo",
-  "colorName": "alpine \u001B[1m\u001B[35myeti\u001B[0m",
+  "colorName": "silver \u001B[1m\u001B[35mwendigo\u001B[0m",
   "dieMessage": "a silver \u001B[1m\u001B[35mwendigo\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
   "loot": {
     "lootGoldMin": 2000000,
