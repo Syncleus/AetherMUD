@@ -21,7 +21,7 @@ public class BuildCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("build", "b");
     final static String description = "Build new rooms in the world.";
-    final static String correctUsage = "build [n|s|e|w|enter <name>]";
+    final static String correctUsage = "build [n|s|e|w|enter <name>|notable <name>]";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
     public BuildCommand(GameManager gameManager) {
@@ -34,6 +34,17 @@ public class BuildCommand extends Command {
         try {
             if (originalMessageParts.size() > 1) {
                 String desiredBuildDirection = originalMessageParts.get(1);
+                if (desiredBuildDirection.equalsIgnoreCase("notable")) {
+                    if (originalMessageParts.size() > 2) {
+                        String notableName = originalMessageParts.get(2);
+                        currentRoom.addNotable(notableName, "Set a description with the description command. (description <notableName> <description>");
+                        channelUtils.write(playerId, "Notable added.\r\n");
+                        return;
+                    } else {
+                        channelUtils.write(playerId, "Need to specify a valid notable name.\r\n");
+                        return;
+                    }
+                }
                 if (desiredBuildDirection.equalsIgnoreCase("n") | desiredBuildDirection.equalsIgnoreCase("north")) {
                     if (!currentRoom.getNorthId().isPresent() && mapMatrix.isNorthernMapSpaceEmpty(currentRoom.getRoomId())) {
                         buildBasicRoomAndProcessAllExits(mapMatrix.getNorthCords(currentRoomCoords));
@@ -106,7 +117,7 @@ public class BuildCommand extends Command {
                     Integer newFloorId = findUnusedFloorId();
                     RemoteExit remoteExit = new RemoteExit(RemoteExit.Direction.ENTER, newRoomId, enterName);
                     RemoteExit returnRemoteExit = new RemoteExit(RemoteExit.Direction.ENTER, currentRoom.getRoomId(), "Leave");
-                    mapMatrix.addRemote(currentRoom.getRoomId(),remoteExit );
+                    mapMatrix.addRemote(currentRoom.getRoomId(), remoteExit);
                     FloorModel newFloorModel = newFloorModel(newFloorId, newRoomId, currentRoom.getRoomId(), returnRemoteExit);
                     BasicRoom basicRoom = newBasic()
                             .setRoomId(newRoomId)
@@ -127,9 +138,12 @@ public class BuildCommand extends Command {
                 }
                 channelUtils.write(playerId, "Room already exists at that location.");
             }
-        } finally {
+        } finally
+
+        {
             super.messageReceived(ctx, e);
         }
+
     }
 
     private FloorModel newFloorModel(Integer floorId, Integer newRoomId, Integer currentRoomId, RemoteExit remoteExit) {

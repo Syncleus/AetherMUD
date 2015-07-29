@@ -5,15 +5,13 @@ import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.MultiLineInputManager;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class DescriptionCommand extends Command {
 
@@ -38,6 +36,21 @@ public class DescriptionCommand extends Command {
                 currentRoom.setRoomDescription(multiLineInput);
                 creeperSession.setGrabMultiLineInput(Optional.<CreeperEntry<UUID, Command>>absent());
                 return;
+            }
+            if (originalMessageParts.size() > 1) {
+                String possibleNotable = originalMessageParts.get(1);
+                for (Map.Entry<String, String> notable : currentRoom.getNotables().entrySet()) {
+                    if (notable.getKey().equalsIgnoreCase(possibleNotable)) {
+                        if (originalMessageParts.size() > 2) {
+                            originalMessageParts.remove(0);
+                            originalMessageParts.remove(0);
+                            String newDesc = Joiner.on(" ").join(originalMessageParts);
+                            notable.setValue(newDesc);
+                            write("Notable: "  + notable.getKey() + " description is set to: " + newDesc);
+                            return;
+                        }
+                    }
+                }
             }
             write("You are now in multi-line mode.  Type \"done\" on an empty line to exit and save.\r\n");
             creeperSession.setGrabMultiLineInput(Optional.of(

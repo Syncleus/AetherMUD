@@ -2,9 +2,11 @@ package com.comandante.creeper.world;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class BasicRoomBuilder {
@@ -21,6 +23,7 @@ public class BasicRoomBuilder {
     private String roomDescription;
     private Set<String> roomTags = Sets.newConcurrentHashSet();
     private Set<Area> areas = Sets.newConcurrentHashSet();
+    private Map<String, String> notables = Maps.newHashMap();
 
 
     public BasicRoomBuilder setRoomId(Integer roomId) {
@@ -87,8 +90,13 @@ public class BasicRoomBuilder {
         this.enterExits.add(remoteExit);
         return this;
     }
+    
+    public BasicRoomBuilder addNotable(String notableName, String description) {
+        this.notables.put(notableName, description);
+        return this;
+    }
 
     public BasicRoom createBasicRoom() {
-        return new BasicRoom(roomId, roomTitle, floorId, northId, southId, eastId, westId, upId, downId, enterExits, roomDescription, roomTags, areas);
+        return new BasicRoom(roomId, roomTitle, floorId, northId, southId, eastId, westId, upId, downId, enterExits, roomDescription, roomTags, areas, notables);
     }
 }

@@ -80,6 +80,9 @@ public class WorldExporter {
                 for (Area area : room.getAreas()) {
                     roomModelBuilder.addAreaName(area.getName());
                 }
+                for (Map.Entry<String, String> notable : room.getNotables().entrySet()) {
+                    roomModelBuilder.addNotable(notable.getKey(), notable.getValue());
+                }
                 return roomModelBuilder.build();
             }
         };
@@ -112,6 +115,14 @@ public class WorldExporter {
                         RemoteExit remoteExit = new RemoteExit(RemoteExit.Direction.ENTER, Integer.parseInt(next.getKey()), next.getValue());
                         basicRoomBuilder.addEnterExit(remoteExit);
                         mapMatrix.addRemote(roomModel.getRoomId(), remoteExit);
+                    }
+                }
+                Map<String, String> notables = roomModel.getNotables();
+                if (notables != null) {
+                    Iterator<Map.Entry<String, String>> iterator = notables.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, String> next = iterator.next();
+                        basicRoomBuilder.addNotable(next.getKey(), next.getValue());
                     }
                 }
                 configureExits(basicRoomBuilder, mapMatrix, roomModel.getRoomId());

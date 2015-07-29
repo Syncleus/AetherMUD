@@ -79,6 +79,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new BounceIrcBotCommand(gameManager));
         creeperCommandRegistry.addCommand(new OpenCommand(gameManager));
         creeperCommandRegistry.addCommand(new RecentGossipCommand(gameManager));
-
+        creeperCommandRegistry.addCommand(new NotablesCommand(gameManager));
     }
 }

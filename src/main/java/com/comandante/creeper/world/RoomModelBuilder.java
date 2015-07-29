@@ -13,7 +13,8 @@ public class RoomModelBuilder {
     private String roomTitle;
     private Set<String> roomTags = Sets.newHashSet();
     private Set<String> areaNames = Sets.newHashSet();
-    private Map<String, String> enterExitNames =Maps.newHashMap();
+    private Map<String, String> enterExitNames = Maps.newHashMap();
+    private Map<String, String> notables = Maps.newHashMap();
 
     public RoomModelBuilder setRoomId(int roomId) {
         this.roomId = roomId;
@@ -54,7 +55,13 @@ public class RoomModelBuilder {
         return this;
     }
 
+    public RoomModelBuilder addNotable(String notableName, String description) {
+        notables.put(notableName, description);
+        return this;
+    }
+
+
     public RoomModel build() {
-        return new RoomModel(roomId, floorId, roomDescription, roomTitle, roomTags, areaNames, enterExitNames);
+        return new RoomModel(roomId, floorId, roomDescription, roomTitle, notables, roomTags, areaNames, enterExitNames);
     }
 }

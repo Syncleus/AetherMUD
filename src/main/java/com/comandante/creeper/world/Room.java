@@ -45,6 +45,7 @@ public abstract class Room extends CreeperEntity {
     private final Set<String> roomTags;
     private final Set<Merchant> merchants = Sets.newConcurrentHashSet();
     private Map<ItemType, Forage> forages = Maps.newHashMap();
+    private final Map<String, String> notables;
 
     public Room(Integer roomId,
                 String roomTitle,
@@ -57,7 +58,8 @@ public abstract class Room extends CreeperEntity {
                 Optional<Integer> downId,
                 List<RemoteExit> enterExits,
                 String roomDescription, Set<String> roomTags,
-                Set<Area> areas) {
+                Set<Area> areas,
+                Map<String, String> notables) {
         this.roomId = roomId;
         this.roomTitle = roomTitle;
         this.floorId = floorId;
@@ -71,6 +73,7 @@ public abstract class Room extends CreeperEntity {
         this.roomTags = roomTags;
         this.areas = areas;
         this.enterExits = enterExits;
+        this.notables = notables;
     }
 
     public List<ItemSpawner> getItemSpawners() {
@@ -237,6 +240,14 @@ public abstract class Room extends CreeperEntity {
 
     public void addForage(Forage forage) {
         this.forages.put(forage.getItemType(), forage);
+    }
+
+    public Map<String, String> getNotables() {
+        return notables;
+    }
+
+    public void addNotable(String notableName, String description) {
+        notables.put(notableName, description);
     }
 
     @Override

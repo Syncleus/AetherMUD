@@ -14,8 +14,9 @@ public class RoomModel {
     Set<String> roomTags;
     Set<String> areaNames;
     Map<String, String> enterExitNames;
+    Map<String, String> notables;
 
-    public RoomModel(int roomId, int floorId, String roomDescription, String roomTitle, Set<String> roomTags, Set<String> areaNames, Map<String, String> enterExitNames) {
+    public RoomModel(int roomId, int floorId, String roomDescription, String roomTitle, Map<String, String> notables, Set<String> roomTags, Set<String> areaNames, Map<String, String> enterExitNames) {
         this.roomId = roomId;
         this.floorId = floorId;
         this.roomDescription = roomDescription;
@@ -23,6 +24,7 @@ public class RoomModel {
         this.roomTags = roomTags;
         this.areaNames = areaNames;
         this.enterExitNames = enterExitNames;
+        this.notables = notables;
     }
 
     public Set<String> getAreaNames() {
@@ -79,6 +81,10 @@ public class RoomModel {
 
     public void setEnterExitNames(Map<String, String> enterExitNames) {
         this.enterExitNames = enterExitNames;
+    }
+
+    public Map<String, String> getNotables() {
+        return notables;
     }
 
     public static void main(String[] args) {

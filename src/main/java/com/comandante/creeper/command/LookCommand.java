@@ -8,9 +8,7 @@ import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class LookCommand extends Command {
 
@@ -32,6 +30,12 @@ public class LookCommand extends Command {
             }
             originalMessageParts.remove(0);
             String target = Joiner.on(" ").join(originalMessageParts);
+            //Notables
+            for (Map.Entry<String, String> notable : currentRoom.getNotables().entrySet()) {
+                if (notable.getKey().equalsIgnoreCase(target)) {
+                    write(notable.getValue() + "\r\n");
+                }
+            }
             //Players
             Set<Player> presentPlayers = roomManager.getPresentPlayers(currentRoom);
             for (Player presentPlayer : presentPlayers) {
