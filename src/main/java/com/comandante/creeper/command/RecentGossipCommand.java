@@ -25,12 +25,17 @@ public class RecentGossipCommand extends Command {
             List<String> recent = null;
             if (originalMessageParts.size() > 1) {
                 String size = originalMessageParts.get(1);
-                int i = Integer.parseInt(size);
+                int i;
+                try {
+                    i = Integer.parseInt(size);
+                } catch (NumberFormatException ne) {
+                    return;
+                }
                 recent = gameManager.getGossipCache().getRecent(i);
             } else {
                 recent = gameManager.getGossipCache().getRecent(25);
             }
-            for (String line: recent) {
+            for (String line : recent) {
                 write(line + "\r\n");
             }
         } finally {
