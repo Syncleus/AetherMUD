@@ -8,8 +8,8 @@
     "lootItems": [72]
   },
   "roamAreas": [
-    "north3_zone",
-    "north4_zone"
+    "western3_zone",
+    "western4_zone"
   ],
   "stats": {
     "agile": 3000,
@@ -28,13 +28,13 @@
     "willPower": 16000
   },
   "spawnAreas": {
-    "north3_zone": {
+    "western3_zone": {
       "randomChance": 90,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
       "maxInstances": 1
     }, 
-    "north4_zone": {
+    "western4_zone": {
       "randomChance": 90,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
