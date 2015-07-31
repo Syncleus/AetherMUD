@@ -263,7 +263,15 @@ public class Npc extends CreeperEntity {
     private String getBattleReport(int xpEarned) {
         StringBuilder sb = new StringBuilder();
         sb.append(Color.MAGENTA).append("Battle Report----------------------------").append(Color.RESET).append("\r\n");
-        sb.append("You killed a ").append(getColorName()).append(" for ").append(Color.GREEN).append("+").append(xpEarned).append(Color.RESET).append(" experience points.").append("\r\n");
+        sb.append("You killed a ");
+        sb.append(getColorName());
+        sb.append(" for ");
+        sb.append(Color.GREEN);
+        sb.append("+");
+        sb.append(NumberFormat.getNumberInstance(Locale.US).format(xpEarned));
+        sb.append(Color.RESET);
+        sb.append(" experience points.");
+        sb.append("\r\n");
 
         Set<Map.Entry<String, Integer>> entries = getPlayerDamageMap().entrySet();
         org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,

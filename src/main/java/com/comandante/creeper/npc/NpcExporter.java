@@ -23,7 +23,6 @@ public class NpcExporter {
         for (File f : Files.fileTreeTraverser().preOrderTraversal(new File("world/npcs/"))) {
             Path relativePath = new File("world/npcs/").toPath().getParent().relativize(f.toPath());
             if (f.getName().contains(".json")) {
-                System.out.println("Processing json for NPC: " + f.getName());
                 npcs.add(gsonBuilder.create().fromJson(Files.newReader(f, Charset.defaultCharset()), Npc.class));
             }
         }

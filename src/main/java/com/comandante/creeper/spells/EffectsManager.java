@@ -11,7 +11,9 @@ import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class EffectsManager {
 
@@ -29,9 +31,9 @@ public class EffectsManager {
                 gameManager.getPlayerManager().getPlayer(player.getPlayerId()).updatePlayerHealth(effect.getApplyStatsOnTick().getCurrentHealth(), null);
                 for (String message : effect.getEffectApplyMessages()) {
                     if (effect.getApplyStatsOnTick().getCurrentHealth() > 0) {
-                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " +" + Color.GREEN + effect.getApplyStatsOnTick().getCurrentHealth() + Color.RESET + "\r\n", true);
+                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " +" + Color.GREEN + NumberFormat.getNumberInstance(Locale.US).format(effect.getApplyStatsOnTick().getCurrentHealth()) + Color.RESET + "\r\n", true);
                     } else {
-                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " -" + Color.RED + effect.getApplyStatsOnTick().getCurrentHealth() + Color.RESET + "\r\n", true);
+                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " -" + Color.RED + NumberFormat.getNumberInstance(Locale.US).format(effect.getApplyStatsOnTick().getCurrentHealth()) + Color.RESET + "\r\n", true);
                     }
                 }
                 //applyStatsOnTick = new StatsBuilder(applyStatsOnTick).setCurrentHealth(0).createStats();
