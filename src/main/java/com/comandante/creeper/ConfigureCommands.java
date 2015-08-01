@@ -81,5 +81,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new RecentGossipCommand(gameManager));
         creeperCommandRegistry.addCommand(new NotablesCommand(gameManager));
         creeperCommandRegistry.addCommand(new NpcLocationCommand(gameManager));
+        creeperCommandRegistry.addCommand(new TimeCommand(gameManager));
     }
 }

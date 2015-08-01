@@ -299,19 +299,6 @@ public class GameManager {
         StringBuilder sb = new StringBuilder();
         sb.append(Color.BOLD_ON + Color.GREEN);
         sb.append(playerCurrentRoom.getRoomTitle());
-        sb.append(" - ");
-        sb.append(Color.RESET);
-        TimeTracker.TimeOfDay timeOfDay = timeTracker.getTimeOfDay();
-        if (timeOfDay.equals(TimeTracker.TimeOfDay.MORNING)) {
-            sb.append(Color.YELLOW);
-        } else if (timeOfDay.equals(TimeTracker.TimeOfDay.AFTERNOON)) {
-            sb.append(Color.GREEN);
-        } else if (timeOfDay.equals(TimeTracker.TimeOfDay.EVENING)) {
-            sb.append(Color.RED);
-        } else if (timeOfDay.equals(TimeTracker.TimeOfDay.NIGHT)) {
-            sb.append(Color.CYAN);
-        }
-        sb.append(timeTracker.getTimeOfDay());
         sb.append(RESET);
         sb.append("\r\n\r\n");
         //java.lang.String wrap(java.lang.String str, int wrapLength, java.lang.String newLineStr, boolean wrapLongWords)

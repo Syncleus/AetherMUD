@@ -62,7 +62,7 @@ public class TimeTracker extends CreeperEntity {
         EVENING(Color.RED),
         NIGHT(Color.CYAN);
 
-        private String color;
+        public String color;
 
         TimeOfDay(String color) {
             this.color = color;
