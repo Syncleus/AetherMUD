@@ -25,7 +25,7 @@ public class TimeTracker extends CreeperEntity {
             currentTick = 0;
         }
         incrementTick();
-        TimeOfDay timeOfDay = getTimeOfDay();
+        TimeOfDay timeOfDay = determineTimeOfDay();
         if (timeOfDay != currentTimeOfDay) {
             announceChange(timeOfDay);
         }
@@ -45,6 +45,10 @@ public class TimeTracker extends CreeperEntity {
     }
 
     public TimeOfDay getTimeOfDay() {
+        return currentTimeOfDay;
+    }
+
+    public TimeOfDay determineTimeOfDay() {
         if (currentTick <= FULL_DAYS_WORTH_OF_TICKS / 4) {
             return TimeOfDay.MORNING;
         } else if (currentTick <= FULL_DAYS_WORTH_OF_TICKS / 2) {
