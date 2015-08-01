@@ -65,6 +65,7 @@ public class GameManager {
     private final GossipCache gossipCache;
     private final Interner<String> interner = Interners.newWeakInterner();
     private static final Logger log = Logger.getLogger(GameManager.class);
+    private final TimeTracker timeTracker;
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -86,6 +87,8 @@ public class GameManager {
         this.botCommandFactory = new BotCommandFactory(botCommandManager);
         this.statsModifierFactory = new StatsModifierFactory(this);
         this.gossipCache = new GossipCache(this);
+        this.timeTracker = new TimeTracker(this);
+        this.entityManager.addEntity(timeTracker);
     }
 
     public GossipCache getGossipCache() {
@@ -156,9 +159,12 @@ public class GameManager {
         return roomManager;
     }
 
-
     public PlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    public TimeTracker getTimeTracker() {
+        return timeTracker;
     }
 
     public static final Integer LOBBY_ID = 1;
@@ -292,8 +298,22 @@ public class GameManager {
         Player player = playerManager.getPlayer(playerId);
         StringBuilder sb = new StringBuilder();
         sb.append(Color.BOLD_ON + Color.GREEN);
-        sb.append(playerCurrentRoom.getRoomTitle()).append("\r\n\r\n");
+        sb.append(playerCurrentRoom.getRoomTitle());
+        sb.append(" - ");
+        sb.append(Color.RESET);
+        TimeTracker.TimeOfDay timeOfDay = timeTracker.getTimeOfDay();
+        if (timeOfDay.equals(TimeTracker.TimeOfDay.MORNING)) {
+            sb.append(Color.YELLOW);
+        } else if (timeOfDay.equals(TimeTracker.TimeOfDay.AFTERNOON)) {
+            sb.append(Color.GREEN);
+        } else if (timeOfDay.equals(TimeTracker.TimeOfDay.EVENING)) {
+            sb.append(Color.RED);
+        } else if (timeOfDay.equals(TimeTracker.TimeOfDay.NIGHT)) {
+            sb.append(Color.CYAN);
+        }
+        sb.append(timeTracker.getTimeOfDay());
         sb.append(RESET);
+        sb.append("\r\n\r\n");
         //java.lang.String wrap(java.lang.String str, int wrapLength, java.lang.String newLineStr, boolean wrapLongWords)
         sb.append(WordUtils.wrap(playerCurrentRoom.getRoomDescription(), 80, "\r\n", true)).append("\r\n").append("\r\n");
         //  if (playerCurrentRoom.getMapData().isPresent()) {

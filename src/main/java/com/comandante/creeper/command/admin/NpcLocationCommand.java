@@ -4,6 +4,7 @@ import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.PlayerRole;
+import com.comandante.creeper.server.Color;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
 import com.google.api.client.util.Maps;
@@ -48,9 +49,10 @@ public class NpcLocationCommand extends Command {
                     if (room != null) {
                         String areas = "";
                         for (Area area : room.getAreas()) {
-                            areas = area + "," + area.getName();
+                            areas = areas + "," + area.getName();
                         }
-                        resp.append("    ").append(room.getRoomTitle()).append(" - (").append(areas).append(") - ").append(room.getRoomId());
+                        areas = areas.startsWith(",") ? areas.substring(1) : areas;
+                        resp.append("    ").append(Color.GREEN + "room name: " + Color.RESET + room.getRoomTitle()).append(" - "+Color.GREEN + "room area: " + Color.RESET + "(").append(areas).append(") - ").append(room.getRoomId());
                     } else {
                         resp.append("    NULL ROOM");
                     }

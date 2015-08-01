@@ -24,6 +24,7 @@ import org.jboss.netty.channel.Channel;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 
+import java.text.NumberFormat;
 import java.util.*;
 
 public class Player extends CreeperEntity {
@@ -880,7 +881,7 @@ public class Player extends CreeperEntity {
                 damageToVictim = getAttackAmt(playerStats, npcStats);
             }
             if (damageToVictim > 0) {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + damageToVictim + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" +  NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             } else {
@@ -893,7 +894,7 @@ public class Player extends CreeperEntity {
             int chanceToHitBack = getChanceToHit(npcStats, playerStats);
             int damageBack = getAttackAmt(npcStats, playerStats);
             if (randInt(0, 100) < chanceToHitBack) {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + damageBack + Color.RESET;
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" +  NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());
                 npcStatsChangeBuilder.setPlayerDamageStrings(Arrays.asList(fightMsg));
 
