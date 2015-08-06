@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class TimeTracker extends CreeperEntity {
 
-    private static final int FULL_DAYS_WORTH_OF_TICKS = 14400;
+    private static final int FULL_DAYS_WORTH_OF_TICKS = 28800;
     private int currentTick = 0;
     private TimeOfDay currentTimeOfDay = TimeOfDay.MORNING;
     private final GameManager gameManager;
@@ -49,11 +49,11 @@ public class TimeTracker extends CreeperEntity {
     }
 
     public TimeOfDay determineTimeOfDay() {
-        if (currentTick <= FULL_DAYS_WORTH_OF_TICKS / 4) {
+        if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .25)) {
             return TimeOfDay.MORNING;
-        } else if (currentTick <= FULL_DAYS_WORTH_OF_TICKS / 2) {
+        } else if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .50)) {
             return TimeOfDay.AFTERNOON;
-        } else if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS - (FULL_DAYS_WORTH_OF_TICKS / 4))) {
+        } else if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .75)) {
             return TimeOfDay.EVENING;
         } else {
             return TimeOfDay.NIGHT;
