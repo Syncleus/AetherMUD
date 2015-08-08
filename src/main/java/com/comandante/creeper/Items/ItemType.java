@@ -16,8 +16,8 @@ public enum ItemType {
 
     UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0, false, Rarity.RARE, 0, Sets.<TimeTracker.TimeOfDay>newHashSet()),
     KEY(1, Arrays.asList("key", "gold key", "shiny gold key"),
-            YELLOW + "a shiny gold key" + RESET,
-            YELLOW + "a shiny gold key" + RESET + " catches your eye.",
+            "a shiny " + YELLOW + "gold key" + RESET,
+            "a shiny " + YELLOW + "gold key" + RESET + " catches your eye.",
             "A basic key with nothing really remarkable other than its made of gold.",
             false,
             0,

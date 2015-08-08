@@ -35,7 +35,7 @@ public class Main {
 
     final public static MetricRegistry metrics = new MetricRegistry();
 
-    final public static String CREEPER_VERSION = "0.5 ALPHA";
+    final public static String CREEPER_VERSION = "0.6 ALPHA";
 
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
 
