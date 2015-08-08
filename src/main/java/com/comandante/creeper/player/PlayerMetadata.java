@@ -152,6 +152,14 @@ public class PlayerMetadata implements Serializable {
         return goldInBank;
     }
 
+    protected void setGold(int amt) {
+        this.gold = amt;
+    }
+
+    protected void setGoldInBank(int amt) {
+        this.goldInBank = amt;
+    }
+
     protected void incrementGold(int amt) {
         this.gold = gold + amt;
     }

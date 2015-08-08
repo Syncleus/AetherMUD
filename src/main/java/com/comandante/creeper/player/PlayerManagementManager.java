@@ -1,13 +1,10 @@
-package com.comandante.creeper.jmx_management;
+package com.comandante.creeper.player;
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.PlayerMetadata;
 import org.apache.log4j.Logger;
 
 import javax.management.*;
 import java.lang.management.ManagementFactory;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class PlayerManagementManager {
