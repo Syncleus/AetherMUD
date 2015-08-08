@@ -48,15 +48,16 @@ public class ItemSpawner extends CreeperEntity {
             int numberOfAttempts = spawnRule.getMaxInstances() - counterNumberInArea();
             for (int i = 0; i < numberOfAttempts; i++) {
                 if (random.nextInt(100) < randomPercentage || randomPercentage == 100) {
-                    if (spawnItemType.getValidTimeOfDays().size() > 0 && spawnItemType.getValidTimeOfDays().contains(gameManager.getTimeTracker().getTimeOfDay())) {
-                        createAndAddItem();
+                    if (spawnItemType.getValidTimeOfDays().size() > 0) {
+                        if (spawnItemType.getValidTimeOfDays().contains(gameManager.getTimeTracker().getTimeOfDay())) {
+                            createAndAddItem();
+                        }
                     } else {
-                        continue;
+                        createAndAddItem();
                     }
                 }
-                createAndAddItem();
+                noTicks = 0;
             }
-            noTicks = 0;
         }
     }
 

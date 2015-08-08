@@ -26,7 +26,7 @@ public class TimeCommand extends Command {
         configure(e);
         try {
             TimeTracker.TimeOfDay timeOfDay = gameManager.getTimeTracker().getTimeOfDay();
-            write(timeOfDay.color + timeOfDay + Color.RESET + " (" + gameManager.getTimeTracker().getNumberOfTicksLeftTillChange() + " ticks left.)");
+            write(timeOfDay.color + timeOfDay + Color.RESET);
         } finally {
             super.messageReceived(ctx, e);
         }

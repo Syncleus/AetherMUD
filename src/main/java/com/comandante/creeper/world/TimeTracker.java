@@ -5,12 +5,13 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
 public class TimeTracker extends CreeperEntity {
 
-    private static final int FULL_DAYS_WORTH_OF_TICKS = 28800;
+    private static final int NUMBER_OF_MILLISECONDS_IN_A_DAY = 86400000;
     private int currentTick = 0;
     private TimeOfDay currentTimeOfDay = TimeOfDay.MORNING;
     private final GameManager gameManager;
@@ -21,10 +22,6 @@ public class TimeTracker extends CreeperEntity {
 
     @Override
     public void run() {
-        if (currentTick >= FULL_DAYS_WORTH_OF_TICKS) {
-            currentTick = 0;
-        }
-        incrementTick();
         TimeOfDay timeOfDay = determineTimeOfDay();
         if (timeOfDay != currentTimeOfDay) {
             announceChange(timeOfDay);
@@ -40,25 +37,17 @@ public class TimeTracker extends CreeperEntity {
         }
     }
 
-    public int getNumberOfTicksLeftTillChange() {
-        int fourthOfADay = FULL_DAYS_WORTH_OF_TICKS / 4;
-        return fourthOfADay - currentTick;
-    }
-
-    private void incrementTick() {
-        currentTick = currentTick + 1;
-    }
-
     public TimeOfDay getTimeOfDay() {
         return currentTimeOfDay;
     }
 
     private TimeOfDay determineTimeOfDay() {
-        if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .25)) {
+        long milliSecondsSinceMidnight = milliSecondsSinceMidnight();
+        if (milliSecondsSinceMidnight <= (NUMBER_OF_MILLISECONDS_IN_A_DAY * .25)) {
             return TimeOfDay.MORNING;
-        } else if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .50)) {
+        } else if (milliSecondsSinceMidnight <= (NUMBER_OF_MILLISECONDS_IN_A_DAY * .50)) {
             return TimeOfDay.AFTERNOON;
-        } else if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .75)) {
+        } else if (milliSecondsSinceMidnight <= (NUMBER_OF_MILLISECONDS_IN_A_DAY * .75)) {
             return TimeOfDay.EVENING;
         } else {
             return TimeOfDay.NIGHT;
@@ -76,5 +65,16 @@ public class TimeTracker extends CreeperEntity {
         TimeOfDay(String color) {
             this.color = color;
         }
+    }
+
+    private long milliSecondsSinceMidnight(){
+        Calendar c = Calendar.getInstance();
+        long now = c.getTimeInMillis();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        long passed = now - c.getTimeInMillis();
+        return passed / 1000;
     }
 }
