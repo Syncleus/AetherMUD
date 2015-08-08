@@ -24,9 +24,9 @@ public class Item implements Serializable {
     private final Rarity rarity;
     private final int valueInGold;
     private Set<Effect> effects;
+    private boolean hasBeenWithPlayer;
 
     public static final int CORPSE_ID_RESERVED = 100;
-    public static final int EQUIPMENT_ID_RESERVED = 101;
 
     public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks, Rarity rarity, int valueInGold) {
         this.itemName = itemName;
@@ -76,6 +76,7 @@ public class Item implements Serializable {
         this.rarity = origItem.rarity;
         this.valueInGold = origItem.valueInGold;
         this.effects = origItem.effects;
+        this.hasBeenWithPlayer = new Boolean(origItem.hasBeenWithPlayer);
     }
 
     public boolean isWithPlayer() {
@@ -83,6 +84,9 @@ public class Item implements Serializable {
     }
 
     public void setWithPlayer(boolean isWithPlayer) {
+        if (isWithPlayer) {
+            setHasBeenWithPlayer();
+        }
         this.isWithPlayer = isWithPlayer;
     }
 
@@ -150,6 +154,14 @@ public class Item implements Serializable {
         return effects;
     }
 
+    public void setHasBeenWithPlayer() {
+        hasBeenWithPlayer = true;
+    }
+
+    public boolean isHasBeenWithPlayer() {
+        return hasBeenWithPlayer;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -166,6 +178,8 @@ public class Item implements Serializable {
                 ", equipment=" + equipment +
                 ", rarity=" + rarity +
                 ", valueInGold=" + valueInGold +
+                ", effects=" + effects +
+                ", hasBeenWithPlayer=" + hasBeenWithPlayer +
                 '}';
     }
 }

@@ -1,8 +1,10 @@
 package com.comandante.creeper.world;
 
 import com.comandante.creeper.Items.Forage;
+import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.google.common.base.Optional;
@@ -10,6 +12,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import java.lang.reflect.GenericArrayType;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +50,7 @@ public abstract class Room extends CreeperEntity {
     private final Set<Merchant> merchants = Sets.newConcurrentHashSet();
     private Map<ItemType, Forage> forages = Maps.newHashMap();
     private final Map<String, String> notables;
+    private final GameManager gameManager;
 
     public Room(Integer roomId,
                 String roomTitle,
@@ -59,7 +64,8 @@ public abstract class Room extends CreeperEntity {
                 List<RemoteExit> enterExits,
                 String roomDescription, Set<String> roomTags,
                 Set<Area> areas,
-                Map<String, String> notables) {
+                Map<String, String> notables,
+                GameManager gameManager) {
         this.roomId = roomId;
         this.roomTitle = roomTitle;
         this.floorId = floorId;
@@ -74,6 +80,7 @@ public abstract class Room extends CreeperEntity {
         this.areas = areas;
         this.enterExits = enterExits;
         this.notables = notables;
+        this.gameManager = gameManager;
     }
 
     public List<ItemSpawner> getItemSpawners() {
@@ -250,7 +257,30 @@ public abstract class Room extends CreeperEntity {
         notables.put(notableName, description);
     }
 
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
     @Override
     public void run() {
+        for (String itemId : itemIds) {
+            Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
+            if (itemEntity == null) {
+                removePresentItem(itemId);
+                continue;
+            }
+            if (itemEntity.isHasBeenWithPlayer()) {
+                continue;
+            }
+            Integer itemTypeId = gameManager.getEntityManager().getItemEntity(itemId).getItemTypeId();
+            ItemType itemType = ItemType.itemTypeFromCode(itemTypeId);
+            Set<TimeTracker.TimeOfDay> itemValidTimeOfDays = itemType.getValidTimeOfDays();
+            TimeTracker.TimeOfDay timeOfDay = gameManager.getTimeTracker().getTimeOfDay();
+            if (itemValidTimeOfDays.size() > 0 && !itemValidTimeOfDays.contains(timeOfDay)) {
+                gameManager.getEntityManager().removeItem(itemId);
+                removePresentItem(itemId);
+                gameManager.writeToRoom(roomId, itemEntity.getItemName() + " turns to dust.\r\n");
+            }
+        }
     }
 }

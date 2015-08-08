@@ -1,5 +1,4 @@
 package com.comandante.creeper.spawner;
-
 import com.comandante.creeper.world.Area;
 
 public class SpawnRuleBuilder {
@@ -33,6 +32,7 @@ public class SpawnRuleBuilder {
         this.randomPercent = randomPercent;
         return this;
     }
+
 
     public SpawnRule createSpawnRule() {
         return new SpawnRule(area, spawnIntervalTicks, maxInstances, maxPerRoom, randomPercent);

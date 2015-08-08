@@ -46,15 +46,16 @@ public class ConfigureNpc {
         ItemSpawner itemSpawner = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.NEWBIE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(100).setMaxPerRoom(5).setRandomPercent(40).createSpawnRule(), gameManager);
         ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
         ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
-
         ItemSpawner itemSpawner3 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(30).setMaxPerRoom(5).setRandomPercent(50).createSpawnRule(), gameManager);
         ItemSpawner itemSpawner4 = new ItemSpawner(ItemType.PURPLE_DRANK, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(30).setMaxPerRoom(5).setRandomPercent(50).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner5 = new ItemSpawner(ItemType.KEY, new SpawnRuleBuilder().setArea(Area.LOBBY).setSpawnIntervalTicks(600).setMaxInstances(1).setMaxPerRoom(1).setRandomPercent(5).createSpawnRule(), gameManager);
 
         entityManager.addEntity(itemSpawner);
         entityManager.addEntity(itemSpawner1);
         entityManager.addEntity(itemSpawner2);
         entityManager.addEntity(itemSpawner3);
         entityManager.addEntity(itemSpawner4);
+        entityManager.addEntity(itemSpawner5);
 
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
         itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 8));

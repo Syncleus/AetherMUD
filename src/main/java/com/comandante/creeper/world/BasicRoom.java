@@ -1,5 +1,6 @@
 package com.comandante.creeper.world;
 
+import com.comandante.creeper.managers.GameManager;
 import com.google.common.base.Optional;
 
 import java.util.List;
@@ -26,7 +27,8 @@ public class BasicRoom extends Room {
                      String roomDescription,
                      Set<String> roomTags,
                      Set<Area> areas,
-                     Map<String, String> notables) {
-        super(roomId, roomTitle, floorId, northId, southId, eastId, westId, upId, downId, enterExits, roomDescription, roomTags, areas, notables);
+                     Map<String, String> notables,
+                     GameManager gameManager) {
+        super(roomId, roomTitle, floorId, northId, southId, eastId, westId, upId, downId, enterExits, roomDescription, roomTags, areas, notables, gameManager);
     }
 }

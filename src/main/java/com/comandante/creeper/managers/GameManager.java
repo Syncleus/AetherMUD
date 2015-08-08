@@ -71,8 +71,6 @@ public class GameManager {
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
-        this.itemDecayManager = new ItemDecayManager(entityManager);
-        this.entityManager.addEntity(itemDecayManager);
         this.newUserRegistrationManager = new NewUserRegistrationManager(playerManager);
         this.multiLineInputManager = new MultiLineInputManager();
         this.mapsManager = mapsManager;
@@ -89,6 +87,8 @@ public class GameManager {
         this.gossipCache = new GossipCache(this);
         this.timeTracker = new TimeTracker(this);
         this.entityManager.addEntity(timeTracker);
+        this.itemDecayManager = new ItemDecayManager(entityManager, this);
+        this.entityManager.addEntity(itemDecayManager);
     }
 
     public GossipCache getGossipCache() {

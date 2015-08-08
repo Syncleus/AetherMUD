@@ -2,11 +2,10 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,11 +13,13 @@ public class ItemDecayManager extends CreeperEntity {
 
     private final ConcurrentHashMap<String, DecayProgress> itemDecayTracker = new ConcurrentHashMap<String, DecayProgress>();
     private final EntityManager entityManager;
+    private final GameManager gameManager;
     private static final Logger log = Logger.getLogger(ItemDecayManager.class);
     private int tickBucket = 0;
 
-    public ItemDecayManager(EntityManager entityManager) {
+    public ItemDecayManager(EntityManager entityManager, GameManager gameManager) {
         this.entityManager = entityManager;
+        this.gameManager = gameManager;
     }
 
     public void addItem(Item item) {
@@ -26,7 +27,7 @@ public class ItemDecayManager extends CreeperEntity {
         itemDecayTracker.put(item.getItemId(), new DecayProgress(item.getItemHalfLifeTicks()));
     }
 
-    public void removeItem(String itemId) {
+    public void removeItemFromDecayManager(String itemId) {
         itemDecayTracker.remove(itemId);
     }
 
@@ -38,31 +39,24 @@ public class ItemDecayManager extends CreeperEntity {
     public void run() {
         try {
             if (tickBucket == 10) {
-                List<String> itemsToRemoveFromDecay = new ArrayList<>();
-                List<String> itemsToDestroy = new ArrayList<>();
                 ConcurrentHashMap<String, DecayProgress> itemDecayTracker1 = getItemDecayTracker();
                 for (Map.Entry<String, DecayProgress> next : itemDecayTracker1.entrySet()) {
                     DecayProgress decayProgress = next.getValue();
                     Item item = entityManager.getItemEntity(next.getKey());
                     if (item == null) {
-                        removeItem(next.getKey());
+                        removeItemFromDecayManager(next.getKey());
                         continue;
                     }
                     if (item.isWithPlayer()) {
-                        itemsToRemoveFromDecay.add(item.getItemId());
+                        removeItemFromDecayManager(item.getItemId());
                         continue;
                     }
                     decayProgress.incTick();
                     if (decayProgress.getCurrentTicks() >= decayProgress.getNumberOfTicks()) {
-                        itemsToDestroy.add(item.getItemId());
+                        removeItemFromDecayManager(item.getItemId());
+                        entityManager.removeItem(item.getItemId());
+                        gameManager.writeToRoom(gameManager.getRoomManager().getRoomByItemId(item.getItemId()).getRoomId(), item.getItemName() + " turns to dust.\r\n");
                     }
-                }
-                for (String itemId : itemsToRemoveFromDecay) {
-                    removeItem(itemId);
-                }
-                for (String itemId : itemsToDestroy) {
-                    removeItem(itemId);
-                    entityManager.removeItem(itemId);
                 }
                 tickBucket = 0;
             } else {

@@ -3,7 +3,7 @@ package com.comandante.creeper.Items;
 
 public enum Rarity {
 
-    BASIC("basic", 25.0),
+    BASIC("basic", 100.0),
     UNCOMMON("uncommon", 17.0),
     RARE("rare", 9.0),
     LEGENDARY("legendary", 2.0),

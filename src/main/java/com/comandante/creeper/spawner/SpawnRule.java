@@ -1,6 +1,10 @@
 package com.comandante.creeper.spawner;
 
 import com.comandante.creeper.world.Area;
+import com.comandante.creeper.world.TimeTracker;
+import com.google.common.base.Optional;
+
+import java.util.Set;
 
 public class SpawnRule {
 
@@ -36,17 +40,6 @@ public class SpawnRule {
 
     public Area getArea() {
         return area;
-    }
-
-    @Override
-    public String toString() {
-        return "SpawnRule{" +
-                "area=" + area +
-                ", randomChance=" + randomChance +
-                ", spawnIntervalTicks=" + spawnIntervalTicks +
-                ", maxInstances=" + maxInstances +
-                ", maxPerRoom=" + maxPerRoom +
-                '}';
     }
 }
 

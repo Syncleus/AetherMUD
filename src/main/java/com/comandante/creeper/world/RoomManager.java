@@ -140,4 +140,14 @@ public class RoomManager {
         return false;
     }
 
+    public Room getRoomByItemId(String itemId) {
+        Iterator<Map.Entry<Integer, Room>> rooms = getRooms();
+        while (rooms.hasNext()) {
+            Map.Entry<Integer, Room> next = rooms.next();
+            if (next.getValue().getItemIds().contains(itemId)) {
+                return next.getValue();
+            }
+        }
+        return null;
+    }
 }

@@ -40,6 +40,11 @@ public class TimeTracker extends CreeperEntity {
         }
     }
 
+    public int getNumberOfTicksLeftTillChange() {
+        int fourthOfADay = FULL_DAYS_WORTH_OF_TICKS / 4;
+        return fourthOfADay - currentTick;
+    }
+
     private void incrementTick() {
         currentTick = currentTick + 1;
     }
@@ -48,7 +53,7 @@ public class TimeTracker extends CreeperEntity {
         return currentTimeOfDay;
     }
 
-    public TimeOfDay determineTimeOfDay() {
+    private TimeOfDay determineTimeOfDay() {
         if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .25)) {
             return TimeOfDay.MORNING;
         } else if (currentTick <= (FULL_DAYS_WORTH_OF_TICKS * .50)) {

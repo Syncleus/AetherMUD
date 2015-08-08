@@ -1,5 +1,6 @@
 package com.comandante.creeper.world;
 
+import com.comandante.creeper.managers.GameManager;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -25,6 +26,11 @@ public class BasicRoomBuilder {
     private Set<Area> areas = Sets.newConcurrentHashSet();
     private Map<String, String> notables = Maps.newHashMap();
 
+    private final GameManager gameManager;
+
+    public BasicRoomBuilder(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
 
     public BasicRoomBuilder setRoomId(Integer roomId) {
         this.roomId = roomId;
@@ -97,6 +103,6 @@ public class BasicRoomBuilder {
     }
 
     public BasicRoom createBasicRoom() {
-        return new BasicRoom(roomId, roomTitle, floorId, northId, southId, eastId, westId, upId, downId, enterExits, roomDescription, roomTags, areas, notables);
+        return new BasicRoom(roomId, roomTitle, floorId, northId, southId, eastId, westId, upId, downId, enterExits, roomDescription, roomTags, areas, notables, gameManager);
     }
 }

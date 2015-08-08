@@ -1,6 +1,7 @@
 package com.comandante.creeper.world;
 
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -23,12 +24,14 @@ public class WorldExporter {
     private final MapsManager mapsManager;
     private final FloorManager floorManager;
     private final EntityManager entityManager;
+    private final GameManager gameManager;
 
-    public WorldExporter(RoomManager roomManager, MapsManager mapsManager, FloorManager floorManager, EntityManager entityManager) {
+    public WorldExporter(RoomManager roomManager, MapsManager mapsManager, FloorManager floorManager, EntityManager entityManager, GameManager gameManager) {
         this.roomManager = roomManager;
         this.mapsManager = mapsManager;
         this.floorManager = floorManager;
         this.entityManager = entityManager;
+        this.gameManager = gameManager;
     }
 
     public void saveWorld() {
@@ -92,7 +95,7 @@ public class WorldExporter {
         return new Function<RoomModel, BasicRoom>() {
             @Override
             public BasicRoom apply(RoomModel roomModel) {
-                BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder()
+                BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder(gameManager)
                         .setRoomId(roomModel.getRoomId())
                         .setFloorId(roomModel.getFloorId())
                         .setRoomDescription(roomModel.getRoomDescription())
@@ -170,7 +173,7 @@ public class WorldExporter {
                     if (roomId.equals(0)) {
                         continue;
                     }
-                    BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder();
+                    BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder(gameManager);
                     basicRoomBuilder.setFloorId(floorModel.getId());
                     basicRoomBuilder.setRoomId(roomId);
                     basicRoomBuilder.setRoomTitle("This is a blank title.");

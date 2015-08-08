@@ -8,6 +8,7 @@ import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
+import com.comandante.creeper.world.TimeTracker;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
@@ -47,8 +48,13 @@ public class ItemSpawner extends CreeperEntity {
             int numberOfAttempts = spawnRule.getMaxInstances() - counterNumberInArea();
             for (int i = 0; i < numberOfAttempts; i++) {
                 if (random.nextInt(100) < randomPercentage || randomPercentage == 100) {
-                    createAndAddItem();
+                    if (spawnItemType.getValidTimeOfDays().size() > 0 && spawnItemType.getValidTimeOfDays().contains(gameManager.getTimeTracker().getTimeOfDay())) {
+                        createAndAddItem();
+                    } else {
+                        continue;
+                    }
                 }
+                createAndAddItem();
             }
             noTicks = 0;
         }
@@ -60,7 +66,7 @@ public class ItemSpawner extends CreeperEntity {
         Item item = spawnItemType.create();
         gameManager.getEntityManager().saveItem(item);
         gameManager.placeItemInRoom(room.getRoomId(), item.getItemId());
-        Main.metrics.counter(MetricRegistry.name(ItemSpawner.class, item.getItemName()  + "-spawn")).inc();
+        Main.metrics.counter(MetricRegistry.name(ItemSpawner.class, item.getItemName() + "-spawn")).inc();
     }
 
     private int counterNumberInArea() {

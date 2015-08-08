@@ -2,7 +2,6 @@ package com.comandante.creeper.entity;
 
 import com.comandante.creeper.Items.EffectSerializer;
 import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemDecayManager;
 import com.comandante.creeper.Items.ItemSerializer;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.SentryManager;
@@ -37,10 +36,8 @@ public class EntityManager {
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private static final Logger log = Logger.getLogger(EntityManager.class);
-    private final Interner<String> interner = Interners.newWeakInterner();
 
-
-    public EntityManager(RoomManager roomManager, PlayerManager playerManager, DB db, ChannelUtils channelUtils) {
+    public EntityManager(RoomManager roomManager, PlayerManager playerManager, DB db) {
         this.roomManager = roomManager;
         if (db.exists("itemMap")) {
             this.items = db.get("itemMap");
@@ -55,8 +52,6 @@ public class EntityManager {
         this.playerManager = playerManager;
         ExecutorService tickService = Executors.newFixedThreadPool(1);
         tickService.submit(new Ticker());
-        ItemDecayManager itemDecayManager = new ItemDecayManager(this);
-        addEntity(itemDecayManager);
     }
 
     public ConcurrentHashMap<String, Npc> getNpcs() {

@@ -68,11 +68,11 @@ public class Main {
         startUpMessage("Configuring core systems.");
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
-        EntityManager entityManager = new EntityManager(roomManager, playerManager, db, channelUtils);
+        EntityManager entityManager = new EntityManager(roomManager, playerManager, db);
         GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
 
         startUpMessage("Reading world from disk.");
-        WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager);
+        WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.readWorldFromDisk();
 
         startUpMessage("Configuring commands");

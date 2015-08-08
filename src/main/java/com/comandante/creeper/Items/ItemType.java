@@ -2,16 +2,19 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.player.EquipmentBuilder;
 import com.comandante.creeper.server.Color;
+import com.comandante.creeper.world.TimeTracker;
+import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.comandante.creeper.server.Color.*;
 
 public enum ItemType {
 
-    UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0, false, Rarity.RARE, 0),
+    UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0, false, Rarity.RARE, 0, Sets.<TimeTracker.TimeOfDay>newHashSet()),
     KEY(1, Arrays.asList("key", "gold key", "shiny gold key"),
             YELLOW + "a shiny gold key" + RESET,
             YELLOW + "a shiny gold key" + RESET + " catches your eye.",
@@ -21,7 +24,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            10),
+            10, Sets.<TimeTracker.TimeOfDay>newHashSet(TimeTracker.TimeOfDay.NIGHT)),
 
     BEER(2, Arrays.asList("beer", "can of beer", "b"),
             "a dented can of " + CYAN + "beer" + RESET,
@@ -32,7 +35,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            1),
+            1, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BOOK(3, Arrays.asList("book", "used book"),
             MAGENTA + "a leather book" + RESET,
@@ -43,7 +46,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            1),
+            1, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BROAD_SWORD(4, Arrays.asList("sword", "broad", "a broad sword", "the broad sword"),
             Color.CYAN + "the broad sword" + Color.RESET,
@@ -54,7 +57,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            100),
+            100, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     IRON_BOOTS(5, Arrays.asList("boots", "boot", "iron boots"),
             Color.CYAN + "iron boots" + Color.RESET,
@@ -65,7 +68,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            50),
+            50, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     IRON_CHEST_PLATE(6, Arrays.asList("chest", "iron chest plate", "plate"),
             "iron chest plate",
@@ -76,7 +79,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            70),
+            70, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     IRON_LEGGINGS(7, Arrays.asList("leggings", "iron leggings"),
             "iron leggings",
@@ -87,7 +90,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            80),
+            80, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PHANTOM_SWORD(8, Arrays.asList("phantom", "phantom sword", "the phantom sword"),
             Color.YELLOW + "the " + Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -98,7 +101,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            500),
+            500, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     IRON_BRACERS(9, Arrays.asList("bracers", "iron bracers"),
             "iron bracers",
@@ -109,7 +112,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            40),
+            40, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PHANTOM_HELMET(10, Arrays.asList("helmet", "phantom helmet", "the phantom helmet"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -120,7 +123,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            250),
+            250, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PHANTOM_CHESTPLATE(11, Arrays.asList("chestplate", "chest", "phantom chest plate", "the phantom chest plate"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " chest plate" + Color.RESET,
@@ -131,7 +134,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            350),
+            350, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PHANTOM_BOOTS(12, Arrays.asList("boots", "phantom boots", "the phantom boots"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -142,7 +145,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            280),
+            280, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PHANTOM_BRACERS(13, Arrays.asList("boots", "phantom bracers", "the phantom bracers"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -153,7 +156,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            250),
+            250, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PHANTOM_LEGGINGS(14, Arrays.asList("leggings", "phantom leggings", "the phantom leggings"),
             Color.CYAN + "phantom" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -164,7 +167,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            290),
+            290, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     IRON_HELMET(15, Arrays.asList("helmet", "iron helmet"),
             "iron helmet",
@@ -175,7 +178,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            80),
+            80, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MITHRIL_SWORD(16, Arrays.asList("sword", "mithril sword", "mithril sword"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -186,7 +189,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            500),
+            500, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MITHRIL_CHESTPLATE(17, Arrays.asList("chestplate", "a mithril chestplate", "mithril chestplate"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " chestplate" + Color.RESET,
@@ -197,7 +200,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            400),
+            400, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MITHRIL_HELMET(18, Arrays.asList("helmet", "a mithril helmet", "mithril helmet"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -208,7 +211,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            280),
+            280, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MITHRIL_BRACERS(19, Arrays.asList("helmet", "mithril bracers", "mithril bracers"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -219,7 +222,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            300),
+            300, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MITHRIL_LEGGINGS(20, Arrays.asList("helmet", "mithril leggings", "mithril leggings"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " leggings" + Color.RESET,
@@ -230,7 +233,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            350),
+            350, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MITHRIL_BOOTS(21, Arrays.asList("helmet", "mithril boots"),
             Color.MAGENTA + "mithril" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -241,7 +244,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            190),
+            190, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PYAMITE_SWORD(22, Arrays.asList("sword", "pyamite sword", "pyamite sword"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -252,7 +255,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            3000),
+            3000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PYAMITE_CHESTPLATE(23, Arrays.asList("chestplate", "a pyamite chestplate", "pyamite chestplate"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " chestplate" + Color.RESET,
@@ -263,7 +266,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            2700),
+            2700, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PYAMITE_HELMET(24, Arrays.asList("helmet", "a pyamite helmet", "pyamite helmet"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -274,7 +277,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            2000),
+            2000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PYAMITE_BRACERS(25, Arrays.asList("bracers", "pyamite bracers", "pyamite bracers"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -285,7 +288,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            2100),
+            2100, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PYAMITE_LEGGINGS(26, Arrays.asList("leggings", "pyamite leggings", "pyamite leggings"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " leggings" + Color.RESET,
@@ -296,7 +299,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            2900),
+            2900, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PYAMITE_BOOTS(27, Arrays.asList("helmet", "pyamite boots"),
             Color.GREEN + "pyamite" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -307,7 +310,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            2000),
+            2000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MARIJUANA(28, Arrays.asList("marijuana", "weed", "m", "w", "f", "flowers"),
             Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET,
@@ -318,7 +321,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            80),
+            80, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     TAPPERHET_SWORD(29, Arrays.asList("sword", "tapperhet sword"),
             Color.BOLD_ON + Color.GREEN + "tapperhet" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -329,7 +332,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            7000),
+            7000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     VULCERIUM_SWORD(30, Arrays.asList("sword", "vulcerium sword", "vulcerium sword"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -340,7 +343,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            10000),
+            10000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     VULCERIUM_CHESTPLATE(31, Arrays.asList("chestplate", "a vulcerium chestplate", "vulcerium chestplate"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " chestplate" + Color.RESET,
@@ -351,7 +354,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            9000),
+            9000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     VULCERIUM_HELMET(32, Arrays.asList("helmet", "a vulcerium helmet", "vulcerium helmet"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -362,7 +365,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            6000),
+            6000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     VULCERIUM_BRACERS(33, Arrays.asList("bracers", "vulcerium bracers", "vulcerium bracers"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -373,7 +376,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            5900),
+            5900, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     VULCERIUM_LEGGINGS(34, Arrays.asList("leggings", "vulcerium leggings", "vulcerium leggings"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " leggings" + Color.RESET,
@@ -384,7 +387,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            7500),
+            7500, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     VULCERIUM_BOOTS(35, Arrays.asList("boots", "vulcerium boots"),
             Color.RED + "vulcerium" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -395,7 +398,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            7100),
+            7100, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     DWARF_BOOTS_OF_AGILITY(36, Arrays.asList("dwarf boots", "boots"),
             Color.BLUE + "dwarf" + Color.RESET + Color.RED + " boots" + Color.RESET,
@@ -406,7 +409,7 @@ public enum ItemType {
             60,
             true,
             Rarity.UNCOMMON,
-            2500),
+            2500, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     DEATHCRAWLER_SCALES(37, Arrays.asList("deathcrawler scales", "scales"),
             Color.BOLD_ON + Color.MAGENTA + "deathcrawler" + Color.RESET + Color.RED + " scales" + Color.RESET,
@@ -417,7 +420,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            700),
+            700, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
 
     DWARVEN_PENDANT(38, Arrays.asList("dwarven pendant", "pendant"),
@@ -429,7 +432,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            450),
+            450, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BYSEN_BALLS(39, Arrays.asList("bysen balls", "balls"),
             Color.BOLD_ON + Color.MAGENTA + "bysen" + Color.RESET + Color.RED + " balls" + Color.RESET,
@@ -440,7 +443,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            2000),
+            2000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PLASMA_TV(40, Arrays.asList("plasma tv", "plasma"),
             Color.BOLD_ON + Color.MAGENTA + "plasma" + Color.RESET + Color.RED + " tv" + Color.RESET,
@@ -451,7 +454,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            6000),
+            6000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     DOGDICKS(41, Arrays.asList("dog", "dick", "dog dick"),
             Color.GREEN + "dog" + Color.RESET + " dick" + Color.RESET,
@@ -462,7 +465,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            2500),
+            2500, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PURPLE_DRANK(42, Arrays.asList("drank", "purple drank", "p", "purple", "lean", "sizzurp"),
             "a double cup of " + MAGENTA + "purple" + RESET + " drank",
@@ -473,7 +476,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            8),
+            8, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     LEATHER_SATCHEL(43, Arrays.asList("leather satchel", "satchel"),
             "a " + Color.GREEN + "leather satchel" + Color.RESET,
@@ -484,7 +487,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            800),
+            800, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BIGGERS_SKIN_SATCHEL(44, Arrays.asList("biggers skin satchel", "skin satchel"),
             "a " + Color.GREEN + "biggers skin satchel" + Color.RESET,
@@ -495,7 +498,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            3000),
+            3000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     STRENGTH_ELIXIR(45, Arrays.asList("strength", "strength elixir", "elixir", "s", "e"),
             "an elixir of " + RED + "strength" + RESET,
@@ -506,7 +509,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            300),
+            300, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     CHRONIC_JOOSE(46, Arrays.asList("chronic", "chronic joose", "joose", "c", "j"),
             "an elixir of " + GREEN + "chronic" + RESET + " joose",
@@ -517,7 +520,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            1000),
+            1000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BISMUTH_SWORD(47, Arrays.asList("sword", "bismuth sword", "bismuth sword"),
             Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " sword" + Color.RESET,
@@ -528,7 +531,7 @@ public enum ItemType {
             60,
             true,
             Rarity.LEGENDARY,
-            1000000),
+            1000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BISMUTH_CHESTPLATE(48, Arrays.asList("chestplate", "a bismuth chestplate", "bismuth chestplate"),
             Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " chestplate" + Color.RESET,
@@ -539,7 +542,7 @@ public enum ItemType {
             60,
             true,
             Rarity.LEGENDARY,
-            800000),
+            800000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BISMUTH_HELMET(49, Arrays.asList("helmet", "a bismuth helmet", "bismuth helmet"),
             Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " helmet" + Color.RESET,
@@ -550,7 +553,7 @@ public enum ItemType {
             60,
             true,
             Rarity.LEGENDARY,
-            700000),
+            700000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BISMUTH_BRACERS(50, Arrays.asList("bracers", "bismuth bracers", "bismuth bracers"),
             Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " bracers" + Color.RESET,
@@ -561,7 +564,7 @@ public enum ItemType {
             60,
             true,
             Rarity.LEGENDARY,
-            650000),
+            650000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BISMUTH_LEGGINGS(51, Arrays.asList("leggings", "bismuth leggings", "vulcerium leggings"),
             Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " leggings" + Color.RESET,
@@ -572,7 +575,7 @@ public enum ItemType {
             60,
             true,
             Rarity.LEGENDARY,
-            900000),
+            900000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BISMUTH_BOOTS(52, Arrays.asList("boots", "bismuth boots"),
             Color.BOLD_ON + Color.MAGENTA + "bismuth" + Color.RESET + Color.YELLOW + " boots" + Color.RESET,
@@ -583,7 +586,7 @@ public enum ItemType {
             60,
             true,
             Rarity.RARE,
-            800000),
+            800000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     GUCCI_PANTS(53, Arrays.asList("pants", "gucci pants", "gucci pants"),
             Color.BOLD_ON + Color.CYAN + "gucci" + Color.RESET + Color.YELLOW + " pants" + Color.RESET,
@@ -594,7 +597,7 @@ public enum ItemType {
             60,
             true,
             Rarity.EXOTIC,
-            40000000),
+            40000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     HAZE(54, Arrays.asList("haze", "lemon", "h", "l"),
             Color.BOLD_ON + Color.YELLOW + "lemon" + Color.RESET + Color.GREEN + " haze" + Color.RESET,
@@ -605,7 +608,7 @@ public enum ItemType {
             60,
             false,
             Rarity.RARE,
-            5000),
+            5000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     YETI_CLAW(55, Arrays.asList("yeti claw", "yeti"),
             Color.BOLD_ON + "yeti" + Color.RESET + Color.RED + " claw" + Color.RESET,
@@ -616,7 +619,7 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1100000),
+            1100000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     CRYSTAL_DAGGER(56, Arrays.asList("crystal dagger", "dagger"),
             Color.BOLD_ON + Color.CYAN + "crystal" + Color.RESET + Color.RED + " dagger" + Color.RESET,
@@ -627,7 +630,7 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1400000),
+            1400000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     GOLDEN_WAND(57, Arrays.asList("golden wand", "golden"),
             Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.RED + " wand" + Color.RESET,
@@ -638,7 +641,7 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1200000),
+            1200000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     GLOWING_ORB(58, Arrays.asList("glowing orb", "orb"),
             Color.BOLD_ON + "glowing" + Color.RESET + Color.CYAN + " orb" + Color.RESET,
@@ -649,7 +652,7 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1000000),
+            1000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     WOODEN_CHEST(59, Arrays.asList("wooden chest", "chest"),
             Color.BOLD_ON + "wooden" + Color.RESET + Color.RED + " chest" + Color.RESET,
@@ -660,7 +663,7 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1100000),
+            1100000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     ENCHANTED_SHIELD(60, Arrays.asList("enchanted shield", "enchanted"),
             Color.BOLD_ON + Color.CYAN + "enchanted" + Color.RESET + Color.CYAN + " shield" + Color.RESET,
@@ -671,8 +674,8 @@ public enum ItemType {
             60,
             false,
             Rarity.EXOTIC,
-            50000000),
-    
+            50000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     AMETHYST_VIAL(61, Arrays.asList("amethyst vial", "vial"),
             Color.BOLD_ON + Color.MAGENTA + "amethyst" + Color.RESET + Color.CYAN + " vial" + Color.RESET,
             "a " + Color.BOLD_ON + Color.MAGENTA + "amethyst" + Color.RESET + Color.CYAN + " vial" + Color.RESET + " is on the ground.",
@@ -682,8 +685,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1500000),
-    
+            1500000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     AMETHYST_RING(62, Arrays.asList("amethyst ring", "ring"),
             Color.BOLD_ON + Color.MAGENTA + "amethyst" + Color.RESET + Color.CYAN + " ring" + Color.RESET,
             "a " + Color.BOLD_ON + Color.MAGENTA + "amethyst" + Color.RESET + Color.CYAN + " ring" + Color.RESET + " is on the ground.",
@@ -693,8 +696,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1800000),
-            
+            1800000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     VULCERIUM_CHAIN(63, Arrays.asList("vulcerium chain", "chain"),
             Color.RED + "vulcerium" + Color.RESET + Color.CYAN + " chain" + Color.RESET,
             "a " + Color.RED + "vulcerium" + Color.RESET + Color.CYAN + " chain" + Color.RESET + " is on the ground.",
@@ -704,8 +707,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            3000000),
-            
+            3000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     LION_TAIL(64, Arrays.asList("lion tail", "tail"),
             Color.BOLD_ON + "lion" + Color.RESET + Color.RED + " tail" + Color.RESET,
             "a " + Color.BOLD_ON + "lion" + Color.RESET + Color.RED + " tail" + Color.RESET + " is on the ground.",
@@ -715,8 +718,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            2200000),
-            
+            2200000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     SOLAR_PENDANT(65, Arrays.asList("solar pendant", "pendant"),
             Color.BOLD_ON + Color.YELLOW + "solar" + Color.RESET + " pendant" + Color.RESET,
             "a " + Color.BOLD_ON + "solar" + Color.RESET + " pendant" + Color.RESET + " is on the ground.",
@@ -726,8 +729,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1700000),
-            
+            1700000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     SILVER_STAR(66, Arrays.asList("silver star", "star"),
             Color.BOLD_ON + "silver" + Color.RESET + Color.CYAN + " star" + Color.RESET,
             "a " + Color.BOLD_ON + "silver" + Color.RESET + Color.CYAN + " star" + Color.RESET + " is on the ground.",
@@ -737,8 +740,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            1500000),
-    
+            1500000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     GOLDEN_AXE(67, Arrays.asList("golden axe", "axe"),
             Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.CYAN + " axe" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.CYAN + " axe" + Color.RESET + " is on the ground.",
@@ -748,8 +751,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            5000000),
-            
+            5000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     GOLDEN_PRISM(68, Arrays.asList("golden prism", "prism"),
             Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.CYAN + " prism" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.CYAN + " prism" + Color.RESET + " is on the ground.",
@@ -759,8 +762,8 @@ public enum ItemType {
             60,
             false,
             Rarity.EXOTIC,
-            100000000),
-    
+            100000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     OBSIDIAN_BLADE(69, Arrays.asList("obsidian blade", "blade"),
             Color.BOLD_ON + Color.BLUE + "obsidian" + Color.RESET + Color.CYAN + " blade" + Color.RESET,
             "a " + Color.BOLD_ON + Color.BLUE + "obsidian" + Color.RESET + Color.CYAN + " blade" + Color.RESET + " is on the ground.",
@@ -770,8 +773,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            4000000),
-    
+            4000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     BOOK_OF_THORBRAND(70, Arrays.asList("Book of Thorbrand", "book", "Book"),
             Color.BOLD_ON + Color.YELLOW + "Book" + Color.RESET + " of" + Color.CYAN + " Thorbrand" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "Book" + Color.RESET + " of" + Color.CYAN + " Thorbrand" + Color.RESET + " is on the ground.",
@@ -781,8 +784,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            5000000),
-    
+            5000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     GOLDEN_HARP(71, Arrays.asList("golden harp", "harp"),
             Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.CYAN + " harp" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "golden" + Color.RESET + Color.CYAN + " harp" + Color.RESET + " is on the ground.",
@@ -792,8 +795,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            5000000),
-            
+            5000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     SILK_SCROLL(72, Arrays.asList("silk scroll", "scroll"),
             Color.BOLD_ON + Color.WHITE + "silk" + Color.RESET + Color.CYAN + " scroll" + Color.RESET,
             "a " + Color.BOLD_ON + Color.WHITE + "silk" + Color.RESET + Color.CYAN + " scroll" + Color.RESET + " is on the ground.",
@@ -803,8 +806,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            5300000),
-            
+            5300000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     BLACK_TRUFFLE(73, Arrays.asList("black truffle", "truffle"),
             Color.BOLD_ON + Color.BLUE + "black" + Color.RESET + Color.WHITE + Color.BOLD_ON + " truffle" + Color.RESET,
             "a " + Color.BOLD_ON + Color.BLUE + "black" + Color.RESET + Color.WHITE + Color.BOLD_ON + " truffle" + Color.RESET + " is on the ground.",
@@ -814,8 +817,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            6000000),
-            
+            6000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     EMERALD_STATUE(74, Arrays.asList("emerald statue", "statue"),
             Color.BOLD_ON + Color.GREEN + "emerald" + Color.RESET + Color.CYAN + " statue" + Color.RESET,
             "a " + Color.BOLD_ON + Color.GREEN + "emerald" + Color.RESET + Color.CYAN + " statue" + Color.RESET + " is on the ground.",
@@ -825,8 +828,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            7000000),
-            
+            7000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     DEMONIC_TALISMAN(75, Arrays.asList("demonic talisman", "talisman"),
             Color.BOLD_ON + Color.RED + "demonic" + Color.RESET + Color.CYAN + " talisman" + Color.RESET,
             "a " + Color.BOLD_ON + Color.RED + "demonic" + Color.RESET + Color.CYAN + " talisman" + Color.RESET + " is on the ground.",
@@ -836,8 +839,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            8000000),
-            
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     EYE_OF_NJAL(76, Arrays.asList("Eye of Njal", "Eye", "eye"),
             Color.BOLD_ON + Color.WHITE + "Eye" + Color.RESET + " of" + Color.RED + " Njal" + Color.RESET,
             "a " + Color.BOLD_ON + Color.WHITE + "Eye" + Color.RESET + " of" + Color.RED + " Njal" + Color.RESET + " is on the ground.",
@@ -847,8 +850,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            8000000),
-            
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     VALGARD_STONE(77, Arrays.asList("Valgard stone", "stone"),
             Color.BOLD_ON + Color.YELLOW + "Valgard" + Color.RESET + Color.CYAN + " stone" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "Valgard" + Color.RESET + Color.CYAN + " stone" + Color.RESET + " is on the ground.",
@@ -858,8 +861,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            8300000),
-            
+            8300000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     BLOODSTONE(78, Arrays.asList("bloodstone", "stone"),
             Color.BOLD_ON + Color.RED + "bloodstone" + Color.RESET,
             "a " + Color.BOLD_ON + Color.RED + "bloodstone" + Color.RESET + " is on the ground.",
@@ -869,8 +872,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            8500000),
-            
+            8500000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     HORN_OF_KOLSKEGG(79, Arrays.asList("Horn of Kolskegg", "Horn", "horn"),
             Color.BOLD_ON + Color.YELLOW + "Horn" + Color.RESET + " of" + Color.CYAN + " Kolskegg" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "Horn" + Color.RESET + " of" + Color.CYAN + " Kolskegg" + Color.RESET + " is on the ground.",
@@ -880,8 +883,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            12000000),
-            
+            12000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     ANCIENT_RUNESTONE(80, Arrays.asList("ancient runestone", "runestone"),
             Color.BOLD_ON + Color.YELLOW + "ancient" + Color.RESET + Color.WHITE + Color.BOLD_ON + " runestone" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "ancient" + Color.RESET + Color.WHITE + Color.BOLD_ON + " runestone" + Color.RESET + " is on the ground.",
@@ -891,8 +894,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            15000000),
-            
+            15000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     AEGIRS_PIPE(81, Arrays.asList("Aegirs pipe", "pipe"),
             Color.BOLD_ON + Color.YELLOW + "Aegirs" + Color.RESET + Color.CYAN + " pipe" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "Aegirs" + Color.RESET + Color.CYAN + " pipe" + Color.RESET + " is on the ground.",
@@ -902,8 +905,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            15000000),
-            
+            15000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     SERPENT_IDOL(82, Arrays.asList("serpent idol", "idol"),
             Color.BOLD_ON + Color.MAGENTA + "serpent" + Color.RESET + Color.CYAN + " idol" + Color.RESET,
             "a " + Color.BOLD_ON + Color.MAGENTA + "serpent" + Color.RESET + Color.CYAN + " idol" + Color.RESET + " is on the ground.",
@@ -913,8 +916,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            20000000),
-            
+            20000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     SORCERORS_MONOCLE(83, Arrays.asList("Sorcerors monocle", "monocle"),
             Color.BOLD_ON + Color.RED + "Sorcerors" + Color.RESET + Color.WHITE + " monocle" + Color.RESET,
             "a " + Color.BOLD_ON + Color.RED + "Sorcerors" + Color.RESET + Color.WHITE + " monocle" + Color.RESET + " is on the ground.",
@@ -924,8 +927,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            20000000),
-            
+            20000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     SPIDER_FANG(84, Arrays.asList("spider fang", "fang"),
             Color.BOLD_ON + Color.YELLOW + "spider" + Color.RESET + Color.RED + " fang" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "spider" + Color.RESET + Color.RED + " fang" + Color.RESET + " is on the ground.",
@@ -935,8 +938,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            25000000),
-            
+            25000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     SPIDERSILK_POUCH(85, Arrays.asList("spidersilk pouch", "pouch"),
             Color.BOLD_ON + Color.YELLOW + "spidersilk" + Color.RESET + Color.CYAN + " pouch" + Color.RESET,
             "a " + Color.BOLD_ON + Color.YELLOW + "spidersilk" + Color.RESET + Color.CYAN + " pouch" + Color.RESET + " is on the ground.",
@@ -946,8 +949,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            30000000),
-            
+            30000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
     CRYSTAL_SPIDER(86, Arrays.asList("crystal spider", "spider"),
             Color.BOLD_ON + Color.CYAN + "crystal" + Color.RESET + Color.RED + " spider" + Color.RESET,
             "a " + Color.BOLD_ON + Color.CYAN + "crystal" + Color.RESET + Color.RED + " spider" + Color.RESET + " is on the ground.",
@@ -957,8 +960,8 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            32000000);
-            
+            32000000, Sets.<TimeTracker.TimeOfDay>newHashSet());
+
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
     private final String restingName;
@@ -970,8 +973,9 @@ public enum ItemType {
     private final boolean isEquipment;
     private final Rarity rarity;
     private final int valueInGold;
+    private final Set<TimeTracker.TimeOfDay> validTimeOfDays;
 
-    ItemType(Integer itemTypeCode, List<String> itemTriggers, String itemName, String restingName, String itemDescription, boolean isDisposable, int maxUses, int itemHalfLifeTicks, boolean isEquipment, Rarity rarity, int valueInGold) {
+    ItemType(Integer itemTypeCode, List<String> itemTriggers, String itemName, String restingName, String itemDescription, boolean isDisposable, int maxUses, int itemHalfLifeTicks, boolean isEquipment, Rarity rarity, int valueInGold, Set<TimeTracker.TimeOfDay> validTimeOfDays) {
         this.itemTypeCode = itemTypeCode;
         this.itemTriggers = itemTriggers;
         this.itemName = itemName;
@@ -983,6 +987,7 @@ public enum ItemType {
         this.isEquipment = isEquipment;
         this.rarity = rarity;
         this.valueInGold = valueInGold;
+        this.validTimeOfDays = validTimeOfDays;
     }
 
     public Item create() {
@@ -1027,6 +1032,10 @@ public enum ItemType {
 
     public int getValueInGold() {
         return valueInGold;
+    }
+
+    public Set<TimeTracker.TimeOfDay> getValidTimeOfDays() {
+        return validTimeOfDays;
     }
 
     public static ItemType itemTypeFromCode(Integer code) {

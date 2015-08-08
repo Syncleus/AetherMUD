@@ -59,7 +59,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.entityManager = gameManager.getEntityManager();
         this.playerManager = gameManager.getPlayerManager();
         this.channelUtils = gameManager.getChannelUtils();
-        this.worldExporter = new WorldExporter(roomManager, mapsManager, floorManager, entityManager);
+        this.worldExporter = new WorldExporter(roomManager, mapsManager, floorManager, entityManager, gameManager);
         this.lootManager = gameManager.getLootManager();
         this.roles = roles;
     }
