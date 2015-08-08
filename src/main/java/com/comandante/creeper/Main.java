@@ -6,6 +6,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.graphite.PickledGraphite;
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.jmx_management.PlayerManagementMBean;
+import com.comandante.creeper.jmx_management.PlayerManagementManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.player.PlayerManager;
@@ -74,6 +76,11 @@ public class Main {
         startUpMessage("Reading world from disk.");
         WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.readWorldFromDisk();
+
+        startUpMessage("Creating and registering Player Management MBeans.");
+        PlayerManagementManager playerManagementManager = new PlayerManagementManager(gameManager);
+        playerManagementManager.processPlayersMarkedForDeletion();
+        playerManagementManager.createAndRegisterAllPlayerManagementMBeans();
 
         startUpMessage("Configuring commands");
         ConfigureCommands.configure(gameManager);

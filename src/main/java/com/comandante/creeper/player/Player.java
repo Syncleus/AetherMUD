@@ -73,7 +73,6 @@ public class Player extends CreeperEntity {
         }
     }
 
-
     private boolean processTickBucket(int numberOfTicksToFillBucket) {
         if (tickBucket == numberOfTicksToFillBucket) {
             tickBucket = 0;
@@ -965,4 +964,7 @@ public class Player extends CreeperEntity {
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
     }
 
+    public Interner<String> getInterner() {
+        return interner;
+    }
 }

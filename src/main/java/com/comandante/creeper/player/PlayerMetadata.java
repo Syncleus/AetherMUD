@@ -24,6 +24,7 @@ public class PlayerMetadata implements Serializable {
     private Set<PlayerRole> playerRoleSet;
     private String[] playerEquipment;
     private List<String> effects;
+    private boolean isMarkedForDelete;
 
     public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank) {
         this.playerName = playerName;
@@ -58,6 +59,7 @@ public class PlayerMetadata implements Serializable {
         if (playerMetadata.effects != null) {
             this.effects = Lists.newArrayList(playerMetadata.getEffects());
         }
+        this.isMarkedForDelete = new Boolean(playerMetadata.isMarkedForDelete);
     }
 
     public List<String> getInventory() {
@@ -184,5 +186,13 @@ public class PlayerMetadata implements Serializable {
             effects = Lists.newArrayList();
         }
         return effects;
+    }
+
+    public boolean isMarkedForDelete() {
+        return isMarkedForDelete;
+    }
+
+    public void setIsMarkedForDelete(boolean isMarkedForDelete) {
+        this.isMarkedForDelete = isMarkedForDelete;
     }
 }
