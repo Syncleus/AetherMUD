@@ -1,12 +1,13 @@
 package com.comandante.creeper.player;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PlayerManagementMBean {
 
-    public void toggleMarkForDelete();
+    void setMarkForDelete(boolean isMark);
 
-    public boolean isMarkedForDelete();
+    boolean getMarkForDelete();
 
     public int getGold();
 
@@ -26,4 +27,13 @@ public interface PlayerManagementMBean {
 
     public void sendMessageFromGod(String message);
 
+    public void setExperience(int amt);
+
+    public int getExperience();
+
+    public void setRoles(String roles);
+
+    public String getRoles();
+
+    public Map<String, String> getInventory();
 }

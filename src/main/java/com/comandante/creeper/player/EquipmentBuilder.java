@@ -106,6 +106,18 @@ public class EquipmentBuilder {
                     return getBismuthSword(item);
                 case GUCCI_PANTS:
                     return getGucciPants(item);
+                case AEXIUM_BOOTS:
+                    return getAexiumBoots(item);
+                case AEXIUM_BRACERS:
+                    return getAexiumBracers(item);
+                case AEXIUM_CHESTPLATE:
+                    return getAexiumChestplate(item);
+                case AEXIUM_HELMET:
+                    return getAexiumHelmet(item);
+                case AEXIUM_LEGGINGS:
+                    return getAexiumLeggings(item);
+                case AEXIUM_SWORD:
+                    return getAexiumSword(item);
             }
         }
         return null;
@@ -209,7 +221,6 @@ public class EquipmentBuilder {
         return item;
     }
 
-
     public static Item getMithrilHelmet(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(9).setStrength(9).setAgile(7).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HEAD, stats);
@@ -251,7 +262,6 @@ public class EquipmentBuilder {
         item.setEquipment(equipment);
         return item;
     }
-
 
     public static Item getPyamiteHelmet(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(18).setStrength(18).setAgile(14).createStats();
@@ -438,6 +448,48 @@ public class EquipmentBuilder {
     public static Item getGucciPants(Item item) {
         Stats stats = new StatsBuilder().setArmorRating(1000).setStrength(700).setAgile(900).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getAexiumSword(Item item){
+        Stats stats = new StatsBuilder().setArmorRating(6472).setStrength(1261).setWeaponRatingMax(9000).setWeaponRatingMin(1000).setNumberOfWeaponRolls(12).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getAexiumChestplate(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(1200).setStrength(6000).setAgile(1135).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.CHEST, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getAexiumHelmet(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(678).setStrength(531).setAgile(340).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HEAD, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getAexiumBracers(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(300).setStrength(399).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.WRISTS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getAexiumLeggings(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(1000).setStrength(500).setAgile(900).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getAexiumBoots(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(600).setStrength(340).setAgile(480).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
         item.setEquipment(equipment);
         return item;
     }

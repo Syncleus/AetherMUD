@@ -185,6 +185,10 @@ public class PlayerMetadata implements Serializable {
         playerRoleSet.add(playerRole);
     }
 
+    public void resetPlayerRoles() {
+        this.playerRoleSet = Sets.newHashSet();
+    }
+
     public String[] getPlayerEquipment() {
         return playerEquipment;
     }

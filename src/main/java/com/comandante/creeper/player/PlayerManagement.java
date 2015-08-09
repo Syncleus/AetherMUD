@@ -1,34 +1,43 @@
 package com.comandante.creeper.player;
 
+import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
+import com.google.api.client.util.Lists;
+import com.google.api.client.util.Maps;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PlayerManagement implements PlayerManagementMBean {
 
     private final GameManager gameManager;
     private final String playerId;
 
-        public PlayerManagement(GameManager gameManager, String playerId) {
-            this.gameManager = gameManager;
-            this.playerId = playerId;
-        }
+    public PlayerManagement(GameManager gameManager, String playerId) {
+        this.gameManager = gameManager;
+        this.playerId = playerId;
+    }
 
-        @Override
-        public void toggleMarkForDelete() {
-            Interner<String> interner = findInterner();
-            synchronized (interner.intern(playerId)) {
-                PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-                playerMetadata.setIsMarkedForDelete(true);
-                gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
-            }
+    @Override
+    public void setMarkForDelete(boolean isMark) {
+        Interner<String> interner = findInterner();
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadata.setIsMarkedForDelete(isMark);
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
         }
+    }
 
-        @Override
-        public boolean isMarkedForDelete() {
-            return gameManager.getPlayerManager().getPlayerMetadata(playerId).isMarkedForDelete();
-        }
+    @Override
+    public boolean getMarkForDelete() {
+        return gameManager.getPlayerManager().getPlayerMetadata(playerId).isMarkedForDelete();
+    }
 
     @Override
     public int getGold() {
@@ -89,6 +98,64 @@ public class PlayerManagement implements PlayerManagementMBean {
     @Override
     public int getMana() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentMana();
+    }
+
+    @Override
+    public void setExperience(int amt) {
+        synchronized (findInterner().intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadata.getStats().setExperience(amt);
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    @Override
+    public int getExperience() {
+        return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getExperience();
+    }
+
+    @Override
+    public void setRoles(String roles) {
+        String[] split = roles.split(",");
+        synchronized (findInterner().intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadata.resetPlayerRoles();
+            for (String roleType : split) {
+                PlayerRole byType = PlayerRole.getByType(roleType);
+                if (byType == null) {
+                    continue;
+                }
+                playerMetadata.addPlayerRole(byType);
+            }
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    @Override
+    public String getRoles() {
+        List<String> rolesList = Lists.newArrayList();
+        Set<PlayerRole> playerRoleSet = gameManager.getPlayerManager().getPlayerMetadata(playerId).getPlayerRoleSet();
+        for (PlayerRole next : playerRoleSet) {
+            rolesList.add(next.getRoleType());
+        }
+        return Joiner.on(",").join(rolesList);
+    }
+
+    @Override
+    public Map<String, String> getInventory() {
+        Map<String, String> inventoryContents = Maps.newHashMap();
+        List<String> inventory = gameManager.getPlayerManager().getPlayerMetadata(playerId).getInventory();
+        for (String itemId : inventory) {
+            Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
+            if (itemEntity == null) {
+                continue;
+            }
+            String itemName = itemEntity.getItemName();
+            final String msgWithoutColorCodes =
+                    itemName.replaceAll("\u001B\\[[;\\d]*m", "");
+            inventoryContents.put(msgWithoutColorCodes, itemEntity.getItemId());
+        }
+        return inventoryContents;
     }
 
     private Interner<String> findInterner() {
