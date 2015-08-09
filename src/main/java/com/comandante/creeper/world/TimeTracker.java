@@ -75,6 +75,6 @@ public class TimeTracker extends CreeperEntity {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         long passed = now - c.getTimeInMillis();
-        return passed / 1000;
+        return passed;
     }
 }
