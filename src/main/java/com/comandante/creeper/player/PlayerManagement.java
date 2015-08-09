@@ -92,7 +92,7 @@ public class PlayerManagement implements PlayerManagementMBean {
 
     @Override
     public void sendMessageFromGod(String message) {
-        gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.RED + "[ADMIN SPEAKS DIRECTLY TO YOU] " + message + "\r\n", true);
+        gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.RED + "[ADMIN SPEAKS DIRECTLY TO YOU] " + message + Color.RESET + "\r\n", true);
     }
 
     @Override
