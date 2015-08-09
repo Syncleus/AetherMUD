@@ -1,6 +1,7 @@
 package com.comandante.creeper.player;
 
 import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
 import com.google.api.client.util.Lists;
@@ -192,6 +193,23 @@ public class PlayerManagement implements PlayerManagementMBean {
             inventoryContents.put(msgWithoutColorCodes, itemEntity.getItemId());
         }
         return inventoryContents;
+    }
+
+    @Override
+    public String createItemInInventory(int itemTypeId){
+        ItemType itemType = ItemType.itemTypeFromCode(itemTypeId);
+        if (itemType.equals(ItemType.UNKNOWN)) {
+            return "No such item exists with id: " + itemTypeId;
+        }
+        Item item = itemType.create();
+        gameManager.getEntityManager().saveItem(item);
+        synchronized (findInterner().intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadata.addInventoryEntityId(item.getItemId());
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+        final String msgWithoutColorCodes = item.getItemName().replaceAll("\u001B\\[[;\\d]*m", "");
+        return msgWithoutColorCodes + " created.";
     }
 
     private Interner<String> findInterner() {

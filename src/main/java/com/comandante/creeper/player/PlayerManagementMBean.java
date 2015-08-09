@@ -42,4 +42,6 @@ public interface PlayerManagementMBean {
     public void setPassword(String password);
 
     Map<String, String> getLockerInventory();
+
+    public String createItemInInventory(int itemTypeId);
 }
