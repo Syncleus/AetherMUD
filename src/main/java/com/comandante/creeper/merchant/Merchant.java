@@ -6,7 +6,9 @@ import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
+import java.text.NumberFormat;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,9 +39,9 @@ public abstract class Merchant extends CreeperEntity {
 
     public String getMenu() {
         Table t = new Table(3, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.NONE);
-        t.setColumnWidth(0, 2, 5);
-        t.setColumnWidth(1, 5, 8);
+                ShownBorders.HEADER_FIRST_AND_LAST_COLLUMN);
+        t.setColumnWidth(0, 5, 5);
+        t.setColumnWidth(1, 12, 12);
         t.setColumnWidth(2, 50, 69);
         t.addCell("#");
         t.addCell("price");
@@ -49,7 +51,7 @@ public abstract class Merchant extends CreeperEntity {
         while (entries.hasNext()) {
             Map.Entry<Integer, MerchantItemForSale> next = entries.next();
             t.addCell(String.valueOf(next.getKey()));
-            t.addCell(String.valueOf(next.getValue().getCost()));
+            t.addCell(NumberFormat.getNumberInstance(Locale.US).format(next.getValue().getCost()));
             t.addCell(next.getValue().getItem().getItemDescription());
             i++;
         }

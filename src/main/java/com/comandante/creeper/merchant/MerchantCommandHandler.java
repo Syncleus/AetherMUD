@@ -15,10 +15,8 @@ import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.NumberFormat;
+import java.util.*;
 
 public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
 
@@ -109,8 +107,8 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
     public String getInventoryPrintMenu(Map<Integer, InventoryItemForSale> menu) {
         Table t = new Table(3, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.HEADER_FIRST_AND_LAST_COLLUMN);
-        t.setColumnWidth(0, 2, 5);
-        t.setColumnWidth(1, 5, 8);
+        t.setColumnWidth(0, 5, 5);
+        t.setColumnWidth(1, 12, 12);
         t.setColumnWidth(2, 50, 69);
         t.addCell("#");
         t.addCell("price");
@@ -119,7 +117,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
         while (entries.hasNext()) {
             Map.Entry<Integer, InventoryItemForSale> next = entries.next();
             t.addCell(String.valueOf(next.getKey()));
-            t.addCell(String.valueOf(next.getValue().getCost()));
+            t.addCell(NumberFormat.getNumberInstance(Locale.US).format(next.getValue().getCost()));
             t.addCell(next.getValue().getItem().getItemDescription());
         }
         return t.render() + "\r\n";
