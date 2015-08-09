@@ -8,6 +8,7 @@ import com.comandante.creeper.server.Color;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class TimeTracker extends CreeperEntity {
 
@@ -43,11 +44,13 @@ public class TimeTracker extends CreeperEntity {
 
     private TimeOfDay determineTimeOfDay() {
         long milliSecondsSinceMidnight = milliSecondsSinceMidnight();
-        if (milliSecondsSinceMidnight <= (NUMBER_OF_MILLISECONDS_IN_A_DAY * .25)) {
+        if (milliSecondsSinceMidnight <= TimeUnit.HOURS.toMillis(5)) {
+            return TimeOfDay.NIGHT;
+        } else if (milliSecondsSinceMidnight <= TimeUnit.HOURS.toMillis(12)) {
             return TimeOfDay.MORNING;
-        } else if (milliSecondsSinceMidnight <= (NUMBER_OF_MILLISECONDS_IN_A_DAY * .50)) {
+        } else if (milliSecondsSinceMidnight <= TimeUnit.HOURS.toMillis(16)) {
             return TimeOfDay.AFTERNOON;
-        } else if (milliSecondsSinceMidnight <= (NUMBER_OF_MILLISECONDS_IN_A_DAY * .75)) {
+        } else if (milliSecondsSinceMidnight <= TimeUnit.HOURS.toMillis(20)) {
             return TimeOfDay.EVENING;
         } else {
             return TimeOfDay.NIGHT;
@@ -67,7 +70,7 @@ public class TimeTracker extends CreeperEntity {
         }
     }
 
-    private long milliSecondsSinceMidnight(){
+    private long milliSecondsSinceMidnight() {
         Calendar c = Calendar.getInstance();
         long now = c.getTimeInMillis();
         c.set(Calendar.HOUR_OF_DAY, 0);
