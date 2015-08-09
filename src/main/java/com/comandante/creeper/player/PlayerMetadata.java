@@ -139,6 +139,10 @@ public class PlayerMetadata implements Serializable {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getPlayerId() {
         return playerId;
     }

@@ -77,6 +77,25 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
+    public String getPassword() {
+        StringBuilder shadowPwd = new StringBuilder();
+        String password = gameManager.getPlayerManager().getPlayerMetadata(playerId).getPassword();
+        for (int i = 0; i < password.length(); i++) {
+            shadowPwd.append("*");
+        }
+        return shadowPwd.toString();
+    }
+
+    @Override
+    public void setPassword(String password) {
+        synchronized (findInterner().intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadata.setPassword(password);
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    @Override
     public void setMana(int amt) {
         synchronized (findInterner().intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
@@ -145,6 +164,23 @@ public class PlayerManagement implements PlayerManagementMBean {
     public Map<String, String> getInventory() {
         Map<String, String> inventoryContents = Maps.newHashMap();
         List<String> inventory = gameManager.getPlayerManager().getPlayerMetadata(playerId).getInventory();
+        for (String itemId : inventory) {
+            Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
+            if (itemEntity == null) {
+                continue;
+            }
+            String itemName = itemEntity.getItemName();
+            final String msgWithoutColorCodes =
+                    itemName.replaceAll("\u001B\\[[;\\d]*m", "");
+            inventoryContents.put(msgWithoutColorCodes, itemEntity.getItemId());
+        }
+        return inventoryContents;
+    }
+
+    @Override
+    public Map<String, String> getLockerInventory() {
+        Map<String, String> inventoryContents = Maps.newHashMap();
+        List<String> inventory = gameManager.getPlayerManager().getPlayerMetadata(playerId).getLockerInventory();
         for (String itemId : inventory) {
             Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
             if (itemEntity == null) {

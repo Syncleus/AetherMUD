@@ -36,4 +36,10 @@ public interface PlayerManagementMBean {
     public String getRoles();
 
     public Map<String, String> getInventory();
+
+    public String getPassword();
+
+    public void setPassword(String password);
+
+    Map<String, String> getLockerInventory();
 }

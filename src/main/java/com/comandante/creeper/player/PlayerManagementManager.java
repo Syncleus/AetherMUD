@@ -38,6 +38,10 @@ public class PlayerManagementManager {
                         gameManager.getEntityManager().removeItem(itemId);
                         log.info("Removed itemId from " + playerMetadata.getPlayerName() + "'s inventory: " + itemId);
                     }
+                    for (String itemId : playerMetadata.getLockerInventory()) {
+                        gameManager.getEntityManager().removeItem(itemId);
+                        log.info("Removed itemId from " + playerMetadata.getPlayerName() + "'s locker inventory: " + itemId);
+                    }
                 }
                     gameManager.getPlayerManager().getPlayerMetadataStore().remove(playerId);
                     log.info(playerMetadata.getPlayerName() + " has been removed from the game.");
