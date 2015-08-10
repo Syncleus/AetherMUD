@@ -44,7 +44,12 @@ public class CastCommand extends Command {
             String desiredSpellName = originalMessageParts.get(1);
             Spell spell = SpellRegistry.getSpell(desiredSpellName);
             if (spell == null) {
-                write("No spell found with the name: " + desiredSpellName);
+                write("No spell found with the name: " + desiredSpellName + "\r\n");
+                return;
+            }
+            if (player.isActiveSpellCoolDown(spell.getSpellName())) {
+                write("That spell is still in cooldown.\r\n");
+                write(gameManager.renderCoolDownString(player.getCoolDowns()));
                 return;
             }
             if (originalMessageParts.size() == 2) {

@@ -3,6 +3,8 @@ package com.comandante.creeper.spells;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.player.CoolDown;
+import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
@@ -30,11 +32,12 @@ public abstract class Spell {
     private Set<Effect> effects;
     private final boolean isAreaSpell;
     private final SpellExecute spellExecute;
+    private final int coolDownTicks;
 
     private static final Logger log = Logger.getLogger(Spell.class);
 
 
-    public Spell(GameManager gameManager, Set<String> validTriggers, int manaCost, Stats attackStats, List<String> attackMessages, String spellDescription, String spellName, Set<Effect> effects, boolean isAreaSpell, SpellExecute spellExecute) {
+    public Spell(GameManager gameManager, Set<String> validTriggers, int manaCost, Stats attackStats, List<String> attackMessages, String spellDescription, String spellName, Set<Effect> effects, boolean isAreaSpell, SpellExecute spellExecute, int coolDownTicks) {
         this.gameManager = gameManager;
         this.validTriggers = validTriggers;
         this.manaCost = manaCost;
@@ -45,6 +48,7 @@ public abstract class Spell {
         this.effects = effects;
         this.isAreaSpell = isAreaSpell;
         this.spellExecute = spellExecute;
+        this.coolDownTicks = coolDownTicks;
     }
 
     private int getSpellAttack(Stats victim) {
@@ -100,6 +104,7 @@ public abstract class Spell {
                 if (npcIds.size() > 0) {
                     applyEffectsToNpcs(npcIds, player);
                     player.updatePlayerMana(-manaCost);
+                    player.addCoolDown(new CoolDown(spellName, coolDownTicks, CoolDownType.SPELL));
                 }
             }
         }
@@ -115,6 +120,7 @@ public abstract class Spell {
                 gameManager.writeToPlayerCurrentRoom(sourcePlayer.getPlayerId(), sourcePlayer.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + spellName + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + destinationPlayer.getPlayerName() + "! \r\n");
                 applyEffectsToPlayer(destinationPlayer, sourcePlayer);
                 sourcePlayer.updatePlayerMana(-manaCost);
+                sourcePlayer.addCoolDown(new CoolDown(spellName, coolDownTicks, CoolDownType.SPELL));
             }
         }
     }

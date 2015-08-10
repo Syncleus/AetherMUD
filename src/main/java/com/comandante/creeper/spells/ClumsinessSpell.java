@@ -34,6 +34,8 @@ public class ClumsinessSpell extends Spell {
 
     private final static List<String> attackMessages = Lists.newArrayList("awkwardness permeates and as a result " + BOLD_ON + Color.MAGENTA + "clumsiness" + Color.RESET + " is had by all.");
     private final static int manaCost = 300;
+    private final static int coolDownTicks = 120;
+
     private final static SpellExecute spellExecute = new SpellExecute() {
         @Override
         public void executeNpc(GameManager gameManager, Npc npc, Player player) {
@@ -55,6 +57,6 @@ public class ClumsinessSpell extends Spell {
     };
 
     public ClumsinessSpell(GameManager gameManager) {
-        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.<Effect>newHashSet(), isAreaSpell, spellExecute);
+        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.<Effect>newHashSet(), isAreaSpell, spellExecute, coolDownTicks);
     }
 }

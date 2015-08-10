@@ -426,6 +426,23 @@ public class GameManager {
         return t.render();
     }
 
+    public String renderCoolDownString(Set<CoolDown> coolDowns) {
+        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
+
+        t.setColumnWidth(0, 16, 20);
+        // t.setColumnWidth(1, 10, 13);
+
+        int i = 1;
+        for (CoolDown coolDown : coolDowns) {
+            int percent = 100 - (int) (((coolDown.getOriginalNumberOfTicks() - coolDown.getNumberOfTicks()) * 100.0f) / coolDown.getOriginalNumberOfTicks());
+            t.addCell(drawProgressBar(percent));
+            t.addCell(coolDown.getName());
+            i++;
+        }
+        return t.render();
+    }
+
     public String buildLookString(String name, Stats stats, Stats diff) {
         StringBuilder returnString = new StringBuilder();
         Table t = new Table(3, BorderStyle.CLASSIC_COMPATIBLE,

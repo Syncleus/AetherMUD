@@ -367,6 +367,10 @@ public class Player extends CreeperEntity {
         this.coolDowns.add(coolDown);
     }
 
+    public Set<CoolDown> getCoolDowns() {
+        return coolDowns;
+    }
+
     public boolean isActive(CoolDownType coolDownType) {
         for (CoolDown c : coolDowns) {
             if (c.getCoolDownType().equals(coolDownType)) {
@@ -388,6 +392,15 @@ public class Player extends CreeperEntity {
                 isActive(CoolDownType.FORAGE_SHORT) ||
                 isActive(CoolDownType.FORAGE_SUPERSHORT)) {
             return true;
+        }
+        return false;
+    }
+
+    public boolean isActiveSpellCoolDown(String spellName) {
+        for (CoolDown coolDown : coolDowns) {
+            if (coolDown.getName().equalsIgnoreCase(spellName)) {
+                return true;
+            }
         }
         return false;
     }

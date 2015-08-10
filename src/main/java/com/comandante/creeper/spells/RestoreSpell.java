@@ -27,6 +27,7 @@ public class RestoreSpell extends Spell {
 
     private final static List<String> attackMessages = Lists.newArrayList("a wave of " + BOLD_ON + Color.MAGENTA + "healing" + Color.RESET + " flows to those in need");
     private static int manaCost = 80;
+    private final static int coolDownTicks = 2;
 
     private static EffectBuilder burnEffect = new EffectBuilder()
             .setEffectApplyMessages(Lists.newArrayList("You feel a rush of dopamine as a " + Color.BOLD_ON + Color.MAGENTA + "healing" + Color.RESET + " sensation flows through your body!"))
@@ -38,7 +39,7 @@ public class RestoreSpell extends Spell {
             .setLifeSpanTicks(6);
 
     public RestoreSpell(GameManager gameManager) {
-        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect.createEffect()), isAreaSpell, null);
+        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect.createEffect()), isAreaSpell, null, coolDownTicks);
     }
 
     @Override

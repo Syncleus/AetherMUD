@@ -83,5 +83,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new NpcLocationCommand(gameManager));
         creeperCommandRegistry.addCommand(new TimeCommand(gameManager));
         creeperCommandRegistry.addCommand(new ShowCommand(gameManager));
+        creeperCommandRegistry.addCommand(new CoolDownCommand(gameManager));
     }
 }

@@ -33,6 +33,7 @@ public class LightningSpell extends Spell {
 
     private final static List<String> attackMessages = Lists.newArrayList("a broad stroke of " + BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolts across the sky");
     private static int manaCost = 60;
+    private final static int coolDownTicks = 5;
 
     private static EffectBuilder burnEffect = new EffectBuilder()
             .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning" + Color.RESET + " from the lightning strike!"))
@@ -44,7 +45,7 @@ public class LightningSpell extends Spell {
             .setLifeSpanTicks(2);
 
     public LightningSpell(GameManager gameManager) {
-        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect.createEffect()), isAreaSpell, null);
+        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect.createEffect()), isAreaSpell, null, coolDownTicks);
     }
 
     @Override
