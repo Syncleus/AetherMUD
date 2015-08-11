@@ -46,7 +46,7 @@ public class GossipCommand extends Command {
             String gossipMessage = null;
             while (players.hasNext()) {
                 final Player next = players.next().getValue();
-                gossipMessage =   WHITE + "[" + RESET + MAGENTA + player.getPlayerName() +  WHITE + "] " + RESET + BOLD_ON + WHITE + msg + RESET;
+                gossipMessage =   WHITE + "[" + RESET + MAGENTA + player.getPlayerName() +  WHITE + "] " + RESET + CYAN + msg + RESET;
                 if (next.getPlayerId().equals(playerId)) {
                     write(gossipMessage);
                 } else {
