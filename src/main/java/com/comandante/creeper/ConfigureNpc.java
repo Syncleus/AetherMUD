@@ -97,10 +97,6 @@ public class ConfigureNpc {
         itemsForSale.put(37, new MerchantItemForSale(ItemType.BISMUTH_SWORD, 3000000));
         itemsForSale.put(37, new MerchantItemForSale(ItemType.GUCCI_PANTS, 80000000));
 
-
-
-
-
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
 
