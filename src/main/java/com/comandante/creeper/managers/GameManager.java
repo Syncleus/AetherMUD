@@ -449,7 +449,7 @@ public class GameManager {
                 ShownBorders.NONE);
 
         t.setColumnWidth(0, 16, 20);
-        t.setColumnWidth(1, 10, 13);
+        t.setColumnWidth(1, 10, 20);
 
 
         t.addCell("Experience");
@@ -636,14 +636,25 @@ public class GameManager {
         int currentMana = stats.getCurrentMana();
         int maxMana = stats.getMaxMana();
         StringBuilder sb = new StringBuilder()
+                .append(Color.BOLD_ON + Color.WHITE)
                 .append("[")
+                .append(Color.RESET)
                 .append(player.getPlayerName())
-                .append("@")
-                .append("creeper")
                 .append(" ")
-                .append(currentHealth).append("/").append(maxHealth).append("h")
+                .append(currentHealth)
+                .append(Color.BOLD_ON)
+                .append(Color.WHITE)
+                .append("/")
+                .append(Color.RESET)
+                .append(maxHealth)
+                .append("h")
                 .append(" ")
-                .append(currentMana).append("/").append(maxMana).append("m");
+                .append(currentMana)
+                .append(Color.BOLD_ON)
+                .append(Color.WHITE)
+                .append("/")
+                .append(Color.RESET)
+                .append(maxMana).append("m");
         if (isFight) {
             sb.append(Color.RED + " ! " + Color.RESET);
         }
@@ -656,7 +667,9 @@ public class GameManager {
                 sb.append(Color.GREEN + "F" + Color.RESET);
             }
         }
+        sb.append(Color.BOLD_ON + Color.WHITE);
         sb.append("] ");
+        sb.append(Color.RESET);
         return sb.toString();
     }
 
