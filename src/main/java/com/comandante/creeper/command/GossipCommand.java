@@ -4,6 +4,7 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.bot.commands.BotCommand;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.server.Color;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -11,9 +12,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.*;
 
-import static com.comandante.creeper.server.Color.CYAN;
-import static com.comandante.creeper.server.Color.MAGENTA;
-import static com.comandante.creeper.server.Color.RESET;
+import static com.comandante.creeper.server.Color.*;
 
 public class GossipCommand extends Command {
 
@@ -47,7 +46,7 @@ public class GossipCommand extends Command {
             String gossipMessage = null;
             while (players.hasNext()) {
                 final Player next = players.next().getValue();
-                gossipMessage = CYAN + "[" + player.getPlayerName() + "] " + msg + RESET;
+                gossipMessage =   WHITE + "[" + RESET + MAGENTA + player.getPlayerName() +  WHITE + "] " + RESET + WHITE + msg + RESET;
                 if (next.getPlayerId().equals(playerId)) {
                     write(gossipMessage);
                 } else {
