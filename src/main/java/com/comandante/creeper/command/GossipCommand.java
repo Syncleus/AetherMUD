@@ -11,6 +11,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.*;
 
+import static com.comandante.creeper.server.Color.CYAN;
 import static com.comandante.creeper.server.Color.MAGENTA;
 import static com.comandante.creeper.server.Color.RESET;
 
@@ -46,7 +47,7 @@ public class GossipCommand extends Command {
             String gossipMessage = null;
             while (players.hasNext()) {
                 final Player next = players.next().getValue();
-                gossipMessage = MAGENTA + "[" + player.getPlayerName() + "] " + msg + RESET;
+                gossipMessage = CYAN + "[" + player.getPlayerName() + "] " + msg + RESET;
                 if (next.getPlayerId().equals(playerId)) {
                     write(gossipMessage);
                 } else {
