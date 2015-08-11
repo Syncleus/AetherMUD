@@ -37,7 +37,27 @@ public class SystemInfo extends Command {
             RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
             long uptime = bean.getUptime();
             String upTime = getDurationBreakdown(uptime);
-            write(Color.MAGENTA + "os_name:" + Color.RESET + os_name + " | " + Color.MAGENTA + " os_version:" + Color.RESET + os_version + " | " + Color.MAGENTA + "java_version:" + Color.RESET + java_version + " | " + Color.MAGENTA + "uptime:" + Color.RESET + upTime + "\r\n");
+            write(new StringBuilder()
+                    .append(Color.MAGENTA)
+                    .append("os_name:")
+                    .append(Color.RESET)
+                    .append(os_name)
+                    .append(" | ")
+                    .append(Color.MAGENTA)
+                    .append(" os_version:")
+                    .append(Color.RESET)
+                    .append(os_version)
+                    .append(" | ")
+                    .append(Color.MAGENTA)
+                    .append("java_version:")
+                    .append(Color.RESET)
+                    .append(java_version)
+                    .append(" | ")
+                    .append(Color.MAGENTA)
+                    .append("uptime:")
+                    .append(Color.RESET)
+                    .append(upTime)
+                    .append("\r\n").toString());
         } finally {
             super.messageReceived(ctx, e);
         }
