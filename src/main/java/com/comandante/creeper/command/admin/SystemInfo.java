@@ -5,6 +5,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.Color;
 import com.google.common.collect.Sets;
+import org.apache.commons.io.FileUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import sun.management.BaseOperatingSystemImpl;
@@ -37,6 +38,7 @@ public class SystemInfo extends Command {
             RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
             long uptime = bean.getUptime();
             String upTime = getDurationBreakdown(uptime);
+            String maxHeap = FileUtils.byteCountToDisplaySize(Runtime.getRuntime().maxMemory());
             write(new StringBuilder()
                     .append(Color.MAGENTA)
                     .append("os_name:")
@@ -52,6 +54,11 @@ public class SystemInfo extends Command {
                     .append("java_version:")
                     .append(Color.RESET)
                     .append(java_version)
+                    .append(" | ")
+                    .append(Color.MAGENTA)
+                    .append("max_heap:")
+                    .append(Color.RESET)
+                    .append(maxHeap)
                     .append(" | ")
                     .append(Color.MAGENTA)
                     .append("uptime:")
