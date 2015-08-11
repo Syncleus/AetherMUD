@@ -4,10 +4,10 @@ package com.comandante.creeper.player;
 public enum CoolDownType {
 
     DEATH("death", 30),
-    FORAGE_LONG("forage-long", 15),
-    FORAGE_MEDIUM("forage-medium", 10),
-    FORAGE_SHORT("forage-short", 16),
-    FORAGE_SUPERSHORT("forage-supershort", 3),
+    FORAGE_LONG("forage-long", 7),
+    FORAGE_MEDIUM("forage-medium", 4),
+    FORAGE_SHORT("forage-short", 3),
+    FORAGE_SUPERSHORT("forage-supershort", 1),
     SPELL("",0);
 
     private final String name;

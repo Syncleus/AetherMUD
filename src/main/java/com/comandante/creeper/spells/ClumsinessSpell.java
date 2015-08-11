@@ -34,7 +34,7 @@ public class ClumsinessSpell extends Spell {
 
     private final static List<String> attackMessages = Lists.newArrayList("awkwardness permeates and as a result " + BOLD_ON + Color.MAGENTA + "clumsiness" + Color.RESET + " is had by all.");
     private final static int manaCost = 300;
-    private final static int coolDownTicks = 120;
+    private final static int coolDownTicks = 30;
 
     private final static SpellExecute spellExecute = new SpellExecute() {
         @Override
