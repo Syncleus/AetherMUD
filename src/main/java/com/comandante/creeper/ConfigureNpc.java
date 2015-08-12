@@ -146,6 +146,126 @@ public class ConfigureNpc {
         gameManager.getForageManager().addForageToArea(Area.SOUTH3_ZONE, hazeForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.SOUTH4_ZONE, hazeForageBuilder);
 
+        ForageBuilder aexirianForageBuilder = new ForageBuilder();
+        aexirianForageBuilder.setItemType(ItemType.AEXIRIAN_ROOT);
+        aexirianForageBuilder.setMinAmt(1);
+        aexirianForageBuilder.setMaxAmt(3);
+        aexirianForageBuilder.setPctOfSuccess(5);
+        aexirianForageBuilder.setForageExperience(10);
+        aexirianForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN4_ZONE, aexirianForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN5_ZONE, aexirianForageBuilder);
+
+        ForageBuilder mithaemForageBuilder = new ForageBuilder();
+        mithaemForageBuilder.setItemType(ItemType.MITHAEM_LEAF);
+        mithaemForageBuilder.setMinAmt(1);
+        mithaemForageBuilder.setMaxAmt(3);
+        mithaemForageBuilder.setPctOfSuccess(5);
+        mithaemForageBuilder.setForageExperience(10);
+        mithaemForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.TISLAND3_ZONE, mithaemForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.TISLAND4_ZONE, mithaemForageBuilder);
+
+        ForageBuilder duriccaForageBuilder = new ForageBuilder();
+        duriccaForageBuilder.setItemType(ItemType.DURICCA_ROOT);
+        duriccaForageBuilder.setMinAmt(1);
+        duriccaForageBuilder.setMaxAmt(3);
+        duriccaForageBuilder.setPctOfSuccess(5);
+        duriccaForageBuilder.setForageExperience(10);
+        duriccaForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.TOFT1_ZONE, duriccaForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.TOFT2_ZONE, duriccaForageBuilder);
+
+        ForageBuilder pondeselForageBuilder = new ForageBuilder();
+        pondeselForageBuilder.setItemType(ItemType.PONDESEL_BERRY);
+        pondeselForageBuilder.setMinAmt(1);
+        pondeselForageBuilder.setMaxAmt(3);
+        pondeselForageBuilder.setPctOfSuccess(5);
+        pondeselForageBuilder.setForageExperience(10);
+        pondeselForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.TISLAND6_ZONE, pondeselForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.TISLAND7_ZONE, pondeselForageBuilder);
+
+        ForageBuilder vikalionusForageBuilder = new ForageBuilder();
+        vikalionusForageBuilder.setItemType(ItemType.VIKALIONUS_CAP);
+        vikalionusForageBuilder.setMinAmt(1);
+        vikalionusForageBuilder.setMaxAmt(3);
+        vikalionusForageBuilder.setPctOfSuccess(5);
+        vikalionusForageBuilder.setForageExperience(10);
+        vikalionusForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.NORTH12_ZONE, vikalionusForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH13_ZONE, vikalionusForageBuilder);
+
+        ForageBuilder loornsForageBuilder = new ForageBuilder();
+        loornsForageBuilder.setItemType(ItemType.LOORNS_LACE);
+        loornsForageBuilder.setMinAmt(1);
+        loornsForageBuilder.setMaxAmt(3);
+        loornsForageBuilder.setPctOfSuccess(5);
+        loornsForageBuilder.setForageExperience(10);
+        loornsForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE4_ZONE, loornsForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE5_ZONE, loornsForageBuilder);
+
+        ForageBuilder tournearesForageBuilder = new ForageBuilder();
+        tournearesForageBuilder.setItemType(ItemType.TOURNEARES_LEAF);
+        tournearesForageBuilder.setMinAmt(1);
+        tournearesForageBuilder.setMaxAmt(3);
+        tournearesForageBuilder.setPctOfSuccess(5);
+        tournearesForageBuilder.setForageExperience(10);
+        tournearesForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE6_ZONE, tournearesForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE7_ZONE, tournearesForageBuilder);
+
+        ForageBuilder haussianForageBuilder = new ForageBuilder();
+        haussianForageBuilder.setItemType(ItemType.HAUSSIAN_BERRY);
+        haussianForageBuilder.setMinAmt(1);
+        haussianForageBuilder.setMaxAmt(3);
+        haussianForageBuilder.setPctOfSuccess(5);
+        haussianForageBuilder.setForageExperience(10);
+        haussianForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN2_ZONE, haussianForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN3_ZONE, haussianForageBuilder);
+
+        ForageBuilder pertilliumForageBuilder = new ForageBuilder();
+        pertilliumForageBuilder.setItemType(ItemType.PERTILLIUM_ROOT);
+        pertilliumForageBuilder.setMinAmt(1);
+        pertilliumForageBuilder.setMaxAmt(3);
+        pertilliumForageBuilder.setPctOfSuccess(5);
+        pertilliumForageBuilder.setForageExperience(10);
+        pertilliumForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN4_ZONE, pertilliumForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN5_ZONE, pertilliumForageBuilder);
+
+        ForageBuilder hycianthisForageBuilder = new ForageBuilder();
+        hycianthisForageBuilder.setItemType(ItemType.HYCIANTHIS_BARK);
+        hycianthisForageBuilder.setMinAmt(1);
+        hycianthisForageBuilder.setMaxAmt(3);
+        hycianthisForageBuilder.setPctOfSuccess(5);
+        hycianthisForageBuilder.setForageExperience(10);
+        hycianthisForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.NORTH10_ZONE, hycianthisForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH11_ZONE, hycianthisForageBuilder);
+
+        ForageBuilder punilareForageBuilder = new ForageBuilder();
+        punilareForageBuilder.setItemType(ItemType.PUNILARE_FERN);
+        punilareForageBuilder.setMinAmt(1);
+        punilareForageBuilder.setMaxAmt(3);
+        punilareForageBuilder.setPctOfSuccess(5);
+        punilareForageBuilder.setForageExperience(10);
+        punilareForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.SOUTH1_ZONE, punilareForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE14_ZONE, punilareForageBuilder);
+
+        ForageBuilder keakiarForageBuilder = new ForageBuilder();
+        keakiarForageBuilder.setItemType(ItemType.KEAKIAR_CAP);
+        keakiarForageBuilder.setMinAmt(1);
+        keakiarForageBuilder.setMaxAmt(3);
+        keakiarForageBuilder.setPctOfSuccess(5);
+        keakiarForageBuilder.setForageExperience(10);
+        keakiarForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE15_ZONE, keakiarForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH14_ZONE, keakiarForageBuilder);
+        
         SpellRegistry.addSpell(new LightningSpell(gameManager));
         SpellRegistry.addSpell(new ClumsinessSpell(gameManager));
         SpellRegistry.addSpell(new RestoreSpell(gameManager));
