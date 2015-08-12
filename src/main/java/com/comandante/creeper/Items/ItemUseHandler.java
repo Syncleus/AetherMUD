@@ -88,7 +88,7 @@ public class ItemUseHandler {
 
     private void processDogdicks() {
         String playerName = player.getPlayerName();
-        writeToRoom(playerName + " eats a " + Color.GREEN + "dog dick." + Color.RESET + ".\r\n");
+        writeToRoom(playerName + " eats a " + Color.GREEN + "dog dick" + Color.RESET + ".\r\n");
         writeToPlayer("1000 mana is restored." + "\r\n");
         writeToPlayer("1500 health is restored.");
         player.addMana(1000);
@@ -98,12 +98,132 @@ public class ItemUseHandler {
 
     private void processHaze() {
         String playerName = player.getPlayerName();
-        writeToRoom(playerName + " smokes " + Color.GREEN + "haze." + Color.RESET + ".\r\n");
+        writeToRoom(playerName + " smokes " + Color.GREEN + "haze" + Color.RESET + ".\r\n");
         writeToPlayer("5000 mana is restored." + "\r\n");
         writeToPlayer("3000 health is restored.");
         player.addMana(5000);
         player.updatePlayerHealth(3000, null);
         Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-haze-smoked")).inc();
+    }
+
+    private void processAexirianRoot() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " chews on an " + Color.YELLOW + "aexirian " + Color.RESET + Color.GREEN + "root" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-aexirian-chewed")).inc();
+    }
+    
+    private void processMithaemLeaf() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " eats a " + Color.YELLOW + "mithaem " + Color.RESET + Color.GREEN + "leaf" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-mithaem-ate")).inc();
+    }
+    
+    private void processDuriccaRoot() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " chews a " + Color.YELLOW + "duricca " + Color.RESET + Color.GREEN + "root" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-duricca-chewed")).inc();
+    }
+
+    private void processPondeselBerry() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " eats a " + Color.YELLOW + "pondesel " + Color.RESET + Color.GREEN + "berry" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-pondesel-ate")).inc();
+    }
+
+    private void processVikalionusCap() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " eats a " + Color.YELLOW + "vikalionus " + Color.RESET + Color.GREEN + "cap" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-vikalionus-ate")).inc();
+    }
+    
+    private void processLoornsLace() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " smokes " + Color.YELLOW + "Loorn's " + Color.RESET + Color.GREEN + "lace" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-loorns-smoked")).inc();
+    }
+
+    private void processTournearesLeaf() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " smokes " + Color.YELLOW + "Tourneares " + Color.RESET + Color.GREEN + "leaf" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-tourneares-smoked")).inc();
+    }
+    
+    private void processHaussianBerry() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " eats a " + Color.YELLOW + "Haussian " + Color.RESET + Color.GREEN + "berry" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-haussian-ate")).inc();
+    }
+    
+    private void processPertilliumRoot() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " grinds some " + Color.YELLOW + "Pertillium " + Color.RESET + Color.GREEN + "root " + Color.RESET + "into a tincture.\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-pertillium-ground")).inc();
+    }
+    
+    private void processHycianthisBark() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " brews a tea from some " + Color.YELLOW + "Hycianthis " + Color.RESET + Color.GREEN + "bark" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-hycianthis-drank")).inc();
+    }
+    
+    private void processPunilareFern() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " chews a " + Color.YELLOW + "Punilare " + Color.RESET + Color.GREEN + "fern " + Color.RESET + "leaf.\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-punilare-chewed")).inc();
+    }
+    
+    private void processKeakiarCap() {
+        String playerName = player.getPlayerName();
+        writeToRoom(playerName + " eats a " + Color.YELLOW + "Keakiar " + Color.RESET + Color.GREEN + "cap" + Color.RESET + ".\r\n");
+        writeToPlayer("5000 mana is restored." + "\r\n");
+        writeToPlayer("3000 health is restored.");
+        player.addMana(5000);
+        player.updatePlayerHealth(3000, null);
+        Main.metrics.counter(MetricRegistry.name(ItemUseHandler.class, playerName + "-keakiar-ate")).inc();
     }
     
     private void processBook() {
@@ -133,6 +253,42 @@ public class ItemUseHandler {
                     break;
                 case HAZE:
                     processHaze();
+                    break;
+                case AEXIRIAN_ROOT:
+                    processAexirianRoot();
+                    break;
+                case MITHAEM_LEAF:
+                    processMithaemLeaf();
+                    break;
+                case DURICCA_ROOT:
+                    processDuriccaRoot();
+                    break;
+                case PONDESEL_BERRY:
+                    processPondeselBerry();
+                    break;
+                case VIKALIONUS_CAP:
+                    processVikalionusCap();
+                    break;
+                case LOORNS_LACE:
+                    processLoornsLace();
+                    break;
+                case TOURNEARES_LEAF:
+                    processTournearesLeaf();
+                    break;
+                case HAUSSIAN_BERRY:
+                    processHaussianBerry();
+                    break;
+                case PERTILLIUM_ROOT:
+                    processPertilliumRoot();
+                    break;
+                case HYCIANTHIS_BARK:
+                    processHycianthisBark();
+                    break;
+                case PUNILARE_FERN:
+                    processPunilareFern();
+                    break;
+                case KEAKIAR_CAP:
+                    processKeakiarCap();
                     break;
                 case UNKNOWN:
                     writeToPlayer("Item not found.");
