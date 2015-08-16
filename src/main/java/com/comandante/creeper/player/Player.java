@@ -163,7 +163,7 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public boolean updatePlayerHealth(int amount, Npc npc) {
+    public boolean updatePlayerHealth(long amount, Npc npc) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (amount > 0) {
@@ -188,14 +188,14 @@ public class Player extends CreeperEntity {
         return false;
     }
 
-    private void addHealth(int addAmt, PlayerMetadata playerMetadata) {
-        int currentHealth = playerMetadata.getStats().getCurrentHealth();
+    private void addHealth(long addAmt, PlayerMetadata playerMetadata) {
+        long currentHealth = playerMetadata.getStats().getCurrentHealth();
         Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
-        int maxHealth = statsModifier.getMaxHealth();
-        int proposedNewAmt = currentHealth + addAmt;
+        long maxHealth = statsModifier.getMaxHealth();
+        long proposedNewAmt = currentHealth + addAmt;
         if (proposedNewAmt > maxHealth) {
             if (currentHealth < maxHealth) {
-                int adjust = proposedNewAmt - maxHealth;
+                long adjust = proposedNewAmt - maxHealth;
                 proposedNewAmt = proposedNewAmt - adjust;
             } else {
                 proposedNewAmt = proposedNewAmt - addAmt;
@@ -204,16 +204,16 @@ public class Player extends CreeperEntity {
         playerMetadata.getStats().setCurrentHealth(proposedNewAmt);
     }
 
-    public void addMana(int addAmt) {
+    public void addMana(long addAmt) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
-            int currentMana = playerMetadata.getStats().getCurrentMana();
+            long currentMana = playerMetadata.getStats().getCurrentMana();
             Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
-            int maxMana = statsModifier.getMaxMana();
-            int proposedNewAmt = currentMana + addAmt;
+            long maxMana = statsModifier.getMaxMana();
+            long proposedNewAmt = currentMana + addAmt;
             if (proposedNewAmt > maxMana) {
                 if (currentMana < maxMana) {
-                    int adjust = proposedNewAmt - maxMana;
+                    long adjust = proposedNewAmt - maxMana;
                     proposedNewAmt = proposedNewAmt - adjust;
                 } else {
                     proposedNewAmt = proposedNewAmt - addAmt;
@@ -224,15 +224,15 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public void addExperience(int exp) {
+    public void addExperience(long exp) {
         synchronized (interner.intern(playerId)) {
             final Meter requests = Main.metrics.meter("experience-" + playerName);
             PlayerMetadata playerMetadata = getPlayerMetadata();
-            int currentExperience = playerMetadata.getStats().getExperience();
-            int currentLevel = Levels.getLevel(currentExperience);
+            long currentExperience = playerMetadata.getStats().getExperience();
+            long currentLevel = Levels.getLevel(currentExperience);
             playerMetadata.getStats().setExperience(currentExperience + exp);
             requests.mark(exp);
-            int newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
+            long newLevel = Levels.getLevel(playerMetadata.getStats().getExperience());
             if (newLevel > currentLevel) {
                 gameManager.announceLevelUp(playerName, currentLevel, newLevel);
             }
@@ -240,7 +240,7 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public int getCurrentHealth() {
+    public long getCurrentHealth() {
         synchronized (interner.intern(playerId)) {
             return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentHealth();
         }
@@ -887,8 +887,8 @@ public class Player extends CreeperEntity {
         Stats playerStats = getPlayerStatsWithEquipmentAndLevel();
         NpcStatsChangeBuilder npcStatsChangeBuilder = new NpcStatsChangeBuilder().setPlayer(this);
         if (this.isValidPrimaryActiveFight(npc)) {
-            int damageToVictim = 0;
-            int chanceToHit = getChanceToHit(playerStats, npcStats);
+            long damageToVictim = 0;
+            long chanceToHit = getChanceToHit(playerStats, npcStats);
             if (randInt(0, 100) < chanceToHit) {
                 damageToVictim = getAttackAmt(playerStats, npcStats);
             }
@@ -904,7 +904,7 @@ public class Player extends CreeperEntity {
         }
         if (this.doesActiveFightExist(npc)) {
             int chanceToHitBack = getChanceToHit(npcStats, playerStats);
-            int damageBack = getAttackAmt(npcStats, playerStats);
+            long damageBack = getAttackAmt(npcStats, playerStats);
             if (randInt(0, 100) < chanceToHitBack) {
                 final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" +  NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());
@@ -920,17 +920,17 @@ public class Player extends CreeperEntity {
     }
 
     private int getChanceToHit(Stats challenger, Stats victim) {
-        return (challenger.getStrength() + challenger.getMeleSkill()) * 5 - victim.getAgile() * 5;
+        return (int) ((challenger.getStrength() + challenger.getMeleSkill()) * 5 - victim.getAgile() * 5);
     }
 
-    private int getAttackAmt(Stats challenger, Stats victim) {
-        int rolls = 0;
-        int totDamage = 0;
+    private long getAttackAmt(Stats challenger, Stats victim) {
+        long rolls = 0;
+        long totDamage = 0;
         while (rolls <= challenger.getNumberOfWeaponRolls()) {
             rolls++;
-            totDamage = totDamage + randInt(challenger.getWeaponRatingMin(), challenger.getWeaponRatingMax());
+            totDamage = totDamage + randInt((int)challenger.getWeaponRatingMin(), (int)challenger.getWeaponRatingMax());
         }
-        int i = challenger.getStrength() + totDamage - victim.getArmorRating();
+        long i = challenger.getStrength() + totDamage - victim.getArmorRating();
         if (i < 0) {
             return 0;
         } else {

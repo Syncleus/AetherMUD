@@ -19,8 +19,8 @@ public class PlayerMetadata implements Serializable {
     private Stats stats;
     private List<String> inventory;
     private List<String> lockerInventory;
-    private int gold;
-    private int goldInBank;
+    private long gold;
+    private long goldInBank;
     private Set<PlayerRole> playerRoleSet;
     private String[] playerEquipment;
     private List<String> effects;
@@ -48,8 +48,8 @@ public class PlayerMetadata implements Serializable {
         if (playerMetadata.lockerInventory != null) {
             this.lockerInventory = Lists.newArrayList(playerMetadata.getLockerInventory());
         }
-        this.gold = new Integer(playerMetadata.gold);
-        this.goldInBank = new Integer(playerMetadata.goldInBank);
+        this.gold = new Long(playerMetadata.gold);
+        this.goldInBank = new Long(playerMetadata.goldInBank);
         if (playerMetadata.playerRoleSet != null) {
             this.playerRoleSet = Sets.newHashSet(playerMetadata.playerRoleSet);
         }
@@ -151,19 +151,19 @@ public class PlayerMetadata implements Serializable {
         return stats;
     }
 
-    public int getGold() {
+    public long getGold() {
         return gold;
     }
 
-    public int getGoldInBank() {
+    public long getGoldInBank() {
         return goldInBank;
     }
 
-    protected void setGold(int amt) {
+    protected void setGold(long amt) {
         this.gold = amt;
     }
 
-    protected void setGoldInBank(int amt) {
+    protected void setGoldInBank(long amt) {
         this.goldInBank = amt;
     }
 
@@ -171,12 +171,12 @@ public class PlayerMetadata implements Serializable {
         this.gold = gold + amt;
     }
 
-    protected void transferGoldToBank(int amt) {
+    protected void transferGoldToBank(long amt) {
         this.gold = gold - amt;
         this.goldInBank = goldInBank + amt;
     }
 
-    protected void transferBankGoldToPlayer(int amt) {
+    protected void transferBankGoldToPlayer(long amt) {
         this.goldInBank = goldInBank - amt;
         this.gold = gold + amt;
     }

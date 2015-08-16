@@ -24,8 +24,8 @@ public class AccountQueryCommand extends BankCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            int goldInBank = playerManager.getPlayerMetadata(playerId).getGoldInBank();
-            int gold = playerManager.getPlayerMetadata(playerId).getGold();
+            long goldInBank = playerManager.getPlayerMetadata(playerId).getGoldInBank();
+            long gold = playerManager.getPlayerMetadata(playerId).getGold();
             write("You have " + NumberFormat.getNumberInstance(Locale.US).format(goldInBank) + Color.YELLOW + " gold" + Color.RESET + " in your bank account."+ "\r\n");
             write("You have " + NumberFormat.getNumberInstance(Locale.US).format(gold) + Color.YELLOW + " gold" + Color.RESET + " in your inventory."+ "\r\n");
         } finally {

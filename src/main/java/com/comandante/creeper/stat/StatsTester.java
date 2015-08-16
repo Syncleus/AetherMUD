@@ -11,8 +11,8 @@ public class StatsTester {
     public static int NO_HITS_VICTIM = 0;
     public static int NO_MISSES_CHALLENGER = 0;
     public static int NO_MISSES_VICTIM = 0;
-    public static int TOTAL_DAMAGE_CHALLENGER = 0;
-    public static int TOTAL_DAMAGE_VICTIM = 0;
+    public static long TOTAL_DAMAGE_CHALLENGER = 0;
+    public static long TOTAL_DAMAGE_VICTIM = 0;
 
 
     public static void main(String[] args) throws InterruptedException {
@@ -43,11 +43,11 @@ public class StatsTester {
     }
 
     public static boolean fight(Stats challenger, Stats victim) {
-        int damageToVictim = 0;
+        long damageToVictim = 0;
         int chanceToHitVictim = 0;
 
 
-        int damageToChallenger = 0;
+        long damageToChallenger = 0;
         int chanceToHitChallenger = 0;
 
 
@@ -58,7 +58,7 @@ public class StatsTester {
             }
             NO_TURNS++;
             damageToVictim = getAttack(challenger, victim);
-            chanceToHitVictim = (challenger.getStrength() + challenger.getMeleSkill()) * 5 - victim.getAgile() * 5;
+            chanceToHitVictim = (int) ((challenger.getStrength() + challenger.getMeleSkill()) * 5 - victim.getAgile() * 5);
             if (randInt(0, 100) < chanceToHitVictim) {
                 victim.setCurrentHealth(victim.getCurrentHealth() - damageToVictim);
                 TOTAL_DAMAGE_CHALLENGER = TOTAL_DAMAGE_CHALLENGER + damageToVictim;
@@ -67,7 +67,7 @@ public class StatsTester {
                 NO_MISSES_CHALLENGER++;
             }
             damageToChallenger = getAttack(victim, challenger);
-            chanceToHitChallenger = (victim.getStrength() + victim.getMeleSkill()) * 5 - (challenger.getAgile() * 5);
+            chanceToHitChallenger = (int) ((victim.getStrength() + victim.getMeleSkill()) * 5 - (challenger.getAgile() * 5));
 
             if (randInt(0, 100) < chanceToHitChallenger) {
                 challenger.setCurrentHealth(challenger.getCurrentHealth() - damageToChallenger);
@@ -86,12 +86,12 @@ public class StatsTester {
         }
     }
 
-    private static int getAttack(Stats challenger, Stats victim) {
+    private static long getAttack(Stats challenger, Stats victim) {
         int rolls = 0;
         int totDamage = 0;
         while (rolls <= challenger.getNumberOfWeaponRolls()) {
             rolls++;
-            totDamage = totDamage + randInt(challenger.getWeaponRatingMin(), challenger.getWeaponRatingMax());
+            totDamage = totDamage + randInt((int)challenger.getWeaponRatingMin(), (int)challenger.getWeaponRatingMax());
         }
         return challenger.getStrength() + totDamage - victim.getArmorRating();
     }

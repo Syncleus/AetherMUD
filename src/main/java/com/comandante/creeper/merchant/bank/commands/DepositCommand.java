@@ -39,8 +39,8 @@ public class DepositCommand extends BankCommand {
         }
     }
 
-    private boolean areFundsAvailable(int amt) {
-        int inventoryGold = playerManager.getPlayerMetadata(playerId).getGold();
+    private boolean areFundsAvailable(long amt) {
+        long inventoryGold = playerManager.getPlayerMetadata(playerId).getGold();
         return (inventoryGold >= amt);
     }
 

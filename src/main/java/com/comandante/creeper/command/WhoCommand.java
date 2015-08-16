@@ -43,7 +43,7 @@ public class WhoCommand extends Command {
             Set<Player> allPlayers = gameManager.getAllPlayers();
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
-                t.addCell(Integer.toString(Levels.getLevel(playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
+                t.addCell(Long.toString(Levels.getLevel(playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
                 t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
                 t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
             }

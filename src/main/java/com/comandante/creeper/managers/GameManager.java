@@ -515,7 +515,7 @@ public class GameManager {
                 sb.append(Color.GREEN);
                 sb.append("+");
             }
-            sb.append(Integer.toString(diff.getWeaponRatingMin())).append(Color.RESET).append("-");
+            sb.append(Long.toString(diff.getWeaponRatingMin())).append(Color.RESET).append("-");
             if (diff.getWeaponRatingMax() > 0) {
                 sb.append(Color.GREEN);
                 sb.append("+");
@@ -543,8 +543,8 @@ public class GameManager {
         return returnString.toString();
     }
 
-    private String getFormattedNumber(Integer integer) {
-        return NumberFormat.getNumberInstance(Locale.US).format(integer);
+    private String getFormattedNumber(Long longval) {
+        return NumberFormat.getNumberInstance(Locale.US).format(longval);
     }
 
     public void writeToPlayerCurrentRoom(String playerId, String message) {
@@ -567,7 +567,7 @@ public class GameManager {
         }
     }
 
-    public void announceLevelUp(String playerName, int previousLevel, int newLevel) {
+    public void announceLevelUp(String playerName, long previousLevel, long newLevel) {
         Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
         while (players.hasNext()) {
             Map.Entry<String, Player> next = players.next();
@@ -576,10 +576,10 @@ public class GameManager {
     }
 
     public Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
-        Iterator<Map.Entry<String, Integer>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
+        Iterator<Map.Entry<String, Long>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
         int totalDamageDone = 0;
         while (iterator.hasNext()) {
-            Map.Entry<String, Integer> damageEntry = iterator.next();
+            Map.Entry<String, Long> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
             Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
@@ -590,11 +590,11 @@ public class GameManager {
             }
         }
         Map<String, Double> damagePcts = Maps.newHashMap();
-        Set<Map.Entry<String, Integer>> entries = npc.getPlayerDamageMap().entrySet();
-        for (Map.Entry<String, Integer> damageEntry : entries) {
+        Set<Map.Entry<String, Long>> entries = npc.getPlayerDamageMap().entrySet();
+        for (Map.Entry<String, Long> damageEntry : entries) {
             String playerId = damageEntry.getKey();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(playerId);
-            int amount = damageEntry.getValue();
+            long amount = damageEntry.getValue();
             double pct = (double) amount / totalDamageDone;
             if (pct >= .90) {
                 damagePcts.put(playerId, npc.getPctOFExperience(1, Levels.getLevel(playerMetadata.getStats().getExperience())));
@@ -631,10 +631,10 @@ public class GameManager {
         Player player = playerManager.getPlayer(playerId);
         boolean isFight = player.isActiveFights();
         Stats stats = player.getPlayerStatsWithEquipmentAndLevel();
-        int currentHealth = stats.getCurrentHealth();
-        int maxHealth = stats.getMaxHealth();
-        int currentMana = stats.getCurrentMana();
-        int maxMana = stats.getMaxMana();
+        long currentHealth = stats.getCurrentHealth();
+        long maxHealth = stats.getMaxHealth();
+        long currentMana = stats.getCurrentMana();
+        long maxMana = stats.getMaxMana();
         StringBuilder sb = new StringBuilder()
                 .append(Color.BOLD_ON + Color.WHITE)
                 .append("[")

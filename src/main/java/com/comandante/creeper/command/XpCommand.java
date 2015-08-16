@@ -34,8 +34,8 @@ public class XpCommand extends Command {
         configure(e);
         try {
             PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
-            int nextLevel = Levels.getLevel(playerMetadata.getStats().getExperience()) + 1;
-            int expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
+            long nextLevel = Levels.getLevel(playerMetadata.getStats().getExperience()) + 1;
+            long expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
             Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
             StringBuilder sb = new StringBuilder();
             sb.append(NumberFormat.getNumberInstance(Locale.US).format(expToNextLevel)).append(" experience to level ").append(nextLevel).append(".\r\n");

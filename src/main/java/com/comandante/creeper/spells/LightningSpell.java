@@ -51,8 +51,8 @@ public class LightningSpell extends Spell {
     @Override
     public void attackSpell(Set<String> npcIds, Player player) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
-        int willpower = playerStats.getWillpower();
-        int i = 500 + (willpower * 3);
+        long willpower = playerStats.getWillpower();
+        long i = 500 + (willpower * 3);
         this.setEffects(Sets.newHashSet(burnEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-i).createStats()).createEffect()));
         super.attackSpell(npcIds, player);
     }

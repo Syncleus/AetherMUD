@@ -3,23 +3,23 @@ package com.comandante.creeper.stat;
 import java.io.Serializable;
 
 public class Stats implements Serializable {
-    private int strength;
-    private int willpower;
-    private int aim;
-    private int agile;
-    private int armorRating;
-    private int meleSkill;
-    private int currentHealth;
-    private int maxHealth;
-    private int weaponRatingMax;
-    private int weaponRatingMin;
-    private int numberOfWeaponRolls;
-    private int experience;
-    private int currentMana;
-    private int maxMana;
-    private int foraging;
-    private int inventorySize;
-    private int maxEffects;
+    private long strength;
+    private long willpower;
+    private long aim;
+    private long agile;
+    private long armorRating;
+    private long meleSkill;
+    private long currentHealth;
+    private long maxHealth;
+    private long weaponRatingMax;
+    private long weaponRatingMin;
+    private long numberOfWeaponRolls;
+    private long experience;
+    private long currentMana;
+    private long maxMana;
+    private long foraging;
+    private long inventorySize;
+    private long maxEffects;
 
     public Stats(Stats stats) {
         this.strength = stats.strength;
@@ -43,23 +43,23 @@ public class Stats implements Serializable {
         this.maxEffects = stats.maxEffects;
     }
 
-    public Stats(int strength,
-                 int willpower,
-                 int aim,
-                 int agile,
-                 int armorRating,
-                 int meleSkill,
-                 int currentHealth,
-                 int maxHealth,
-                 int weaponRatingMax,
-                 int weaponRatingMin,
-                 int numberOfWeaponRolls,
-                 int experience,
-                 int currentMana,
-                 int maxMana,
-                 int foraging,
-                 int inventorySize,
-                 int maxEffects) {
+    public Stats(long strength,
+                 long willpower,
+                 long aim,
+                 long agile,
+                 long armorRating,
+                 long meleSkill,
+                 long currentHealth,
+                 long maxHealth,
+                 long weaponRatingMax,
+                 long weaponRatingMin,
+                 long numberOfWeaponRolls,
+                 long experience,
+                 long currentMana,
+                 long maxMana,
+                 long foraging,
+                 long inventorySize,
+                 long maxEffects) {
         this.strength = strength;
         this.willpower = willpower;
         this.aim = aim;
@@ -80,139 +80,139 @@ public class Stats implements Serializable {
     }
 
 
-    public int getMaxEffects() {
+    public long getMaxEffects() {
         return maxEffects;
     }
 
-    public void setMaxEffects(int maxEffects) {
+    public void setMaxEffects(long maxEffects) {
         this.maxEffects = maxEffects;
     }
 
-    public int getExperience() {
+    public long getExperience() {
         return experience;
     }
 
-    public void setExperience(int experience) {
+    public void setExperience(long experience) {
         this.experience = experience;
     }
 
-    public int getStrength() {
+    public long getStrength() {
         return strength;
     }
 
-    public void setStrength(int strength) {
+    public void setStrength(long strength) {
         this.strength = strength;
     }
 
-    public int getWillpower() {
+    public long getWillpower() {
         return willpower;
     }
 
-    public void setWillpower(int willpower) {
+    public void setWillpower(long willpower) {
         this.willpower = willpower;
     }
 
-    public int getAim() {
+    public long getAim() {
         return aim;
     }
 
-    public void setAim(int aim) {
+    public void setAim(long aim) {
         this.aim = aim;
     }
 
-    public int getAgile() {
+    public long getAgile() {
         return agile;
     }
 
-    public void setAgile(int agile) {
+    public void setAgile(long agile) {
         this.agile = agile;
     }
 
-    public int getArmorRating() {
+    public long getArmorRating() {
         return armorRating;
     }
 
-    public void setArmorRating(int armorRating) {
+    public void setArmorRating(long armorRating) {
         this.armorRating = armorRating;
     }
 
-    public int getMeleSkill() {
+    public long getMeleSkill() {
         return meleSkill;
     }
 
-    public void setMeleSkill(int meleSkill) {
+    public void setMeleSkill(long meleSkill) {
         this.meleSkill = meleSkill;
     }
 
-    public int getCurrentHealth() {
+    public long getCurrentHealth() {
         return currentHealth;
     }
 
-    public void setCurrentHealth(int currentHealth) {
+    public void setCurrentHealth(long currentHealth) {
         this.currentHealth = currentHealth;
     }
 
-    public int getMaxHealth() {
+    public long getMaxHealth() {
         return maxHealth;
     }
 
-    public void setMaxHealth(int maxHealth) {
+    public void setMaxHealth(long maxHealth) {
         this.maxHealth = maxHealth;
     }
 
-    public int getWeaponRatingMax() {
+    public long getWeaponRatingMax() {
         return weaponRatingMax;
     }
 
-    public void setWeaponRatingMax(int weaponRatingMax) {
+    public void setWeaponRatingMax(long weaponRatingMax) {
         this.weaponRatingMax = weaponRatingMax;
     }
 
-    public int getWeaponRatingMin() {
+    public long getWeaponRatingMin() {
         return weaponRatingMin;
     }
 
-    public void setWeaponRatingMin(int weaponRatingMin) {
+    public void setWeaponRatingMin(long weaponRatingMin) {
         this.weaponRatingMin = weaponRatingMin;
     }
 
-    public int getNumberOfWeaponRolls() {
+    public long getNumberOfWeaponRolls() {
         return numberOfWeaponRolls;
     }
 
-    public void setNumberOfWeaponRolls(int numberOfWeaponRolls) {
+    public void setNumberOfWeaponRolls(long numberOfWeaponRolls) {
         this.numberOfWeaponRolls = numberOfWeaponRolls;
     }
 
-    public int getCurrentMana() {
+    public long getCurrentMana() {
         return currentMana;
     }
 
-    public int getMaxMana() {
+    public long getMaxMana() {
         return maxMana;
     }
 
-    public void setCurrentMana(int currentMana) {
+    public void setCurrentMana(long currentMana) {
         this.currentMana = currentMana;
     }
 
-    public void setMaxMana(int maxMana) {
+    public void setMaxMana(long maxMana) {
         this.maxMana = maxMana;
     }
 
-    public int getForaging() {
+    public long getForaging() {
         return foraging;
     }
 
-    public void setForaging(int foraging) {
+    public void setForaging(long foraging) {
         this.foraging = foraging;
     }
 
-    public int getInventorySize() {
+    public long getInventorySize() {
         return inventorySize;
     }
 
-    public void setInventorySize(int inventorySize) {
+    public void setInventorySize(long inventorySize) {
         this.inventorySize = inventorySize;
     }
 }

@@ -49,7 +49,7 @@ public class Npc extends CreeperEntity {
     private final AtomicBoolean isInFight = new AtomicBoolean(false);
     private List<Effect> effects = Lists.newCopyOnWriteArrayList();
     private int maxEffects = 4;
-    private Map<String, Integer> playerDamageMap = Maps.newHashMap();
+    private Map<String, Long> playerDamageMap = Maps.newHashMap();
     private Room currentRoom;
     private final ArrayBlockingQueue<NpcStatsChange> npcStatsChanges = new ArrayBlockingQueue<>(3000);
     private int effectsTickBucket = 0;
@@ -182,19 +182,19 @@ public class Npc extends CreeperEntity {
         return effects;
     }
 
-    public int getExperience() {
+    public long getExperience() {
         return getStats().getExperience();
     }
 
-    public double getPctOFExperience(double pct, int playerLevel) {
+    public double getPctOFExperience(double pct, long playerLevel) {
         return getExperience() * pct;
     }
 
-    public void addDamageToMap(String playerId, int amt) {
+    public void addDamageToMap(String playerId, long amt) {
         playerDamageMap.put(playerId, amt);
     }
 
-    public Map<String, Integer> getPlayerDamageMap() {
+    public Map<String, Long> getPlayerDamageMap() {
         return playerDamageMap;
     }
 
@@ -214,7 +214,7 @@ public class Npc extends CreeperEntity {
         this.npcStatsChanges.add(npcStatsChange);
     }
 
-    public void doHealthDamage(Player player, List<String> damageStrings, int amt) {
+    public void doHealthDamage(Player player, List<String> damageStrings, long amt) {
         NpcStatsChange npcStatsChange =
                 new NpcStatsChangeBuilder().setStats(new StatsBuilder().setCurrentHealth(amt).createStats()).setDamageStrings(damageStrings).setPlayer(player).createNpcStatsChange();
         addNpcDamage(npcStatsChange);
@@ -231,13 +231,13 @@ public class Npc extends CreeperEntity {
                         gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
                     }
                     StatsHelper.combineStats(getStats(), npcStatsChange.getStats());
-                    int amt = npcStatsChange.getStats().getCurrentHealth();
-                    int damageReportAmt = -npcStatsChange.getStats().getCurrentHealth();
+                    long amt = npcStatsChange.getStats().getCurrentHealth();
+                    long damageReportAmt = -npcStatsChange.getStats().getCurrentHealth();
                     if (getStats().getCurrentHealth() < 0) {
                         damageReportAmt = -amt + getStats().getCurrentHealth();
                         getStats().setCurrentHealth(0);
                     }
-                    int damage = 0;
+                    long damage = 0;
                     if (getPlayerDamageMap().containsKey(npcStatsChange.getPlayer().getPlayerId())) {
                         damage = getPlayerDamageMap().get(npcStatsChange.getPlayer().getPlayerId());
                     }
@@ -273,7 +273,7 @@ public class Npc extends CreeperEntity {
         sb.append(" experience points.");
         sb.append("\r\n");
 
-        Set<Map.Entry<String, Integer>> entries = getPlayerDamageMap().entrySet();
+        Set<Map.Entry<String, Long>> entries = getPlayerDamageMap().entrySet();
         org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
@@ -281,13 +281,13 @@ public class Npc extends CreeperEntity {
         t.setColumnWidth(1, 10, 13);
         t.addCell("Player");
         t.addCell("Damage");
-        for (Map.Entry<String, Integer> entry : entries) {
+        for (Map.Entry<String, Long> entry : entries) {
             Player player = gameManager.getPlayerManager().getPlayer(entry.getKey());
             String name = null;
             if (player != null) {
                 name = player.getPlayerName();
             }
-            int damageAmt = entry.getValue();
+            long damageAmt = entry.getValue();
             t.addCell(name);
             t.addCell(NumberFormat.getNumberInstance(Locale.US).format(damageAmt));
         }

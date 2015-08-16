@@ -9,27 +9,27 @@ public interface PlayerManagementMBean {
 
     boolean getMarkForDelete();
 
-    public int getGold();
+    public long getGold();
 
-    public int getGoldInBankAmount();
+    public long getGoldInBankAmount();
 
-    public void setGoldInBankAmount(int amt);
+    public void setGoldInBankAmount(long amt);
 
-    public void setGold(int amt);
+    public void setGold(long amt);
 
-    public int getHealth();
+    public long getHealth();
 
-    public int getMana();
+    public long getMana();
 
-    public void setHealth(int amt);
+    public void setHealth(long amt);
 
-    public void setMana(int amt);
+    public void setMana(long amt);
 
     public void sendMessageFromGod(String message);
 
-    public void setExperience(int amt);
+    public void setExperience(long amt);
 
-    public int getExperience();
+    public long getExperience();
 
     public void setRoles(String roles);
 

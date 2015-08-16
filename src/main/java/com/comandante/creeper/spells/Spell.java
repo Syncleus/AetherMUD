@@ -51,14 +51,14 @@ public abstract class Spell {
         this.coolDownTicks = coolDownTicks;
     }
 
-    private int getSpellAttack(Stats victim) {
+    private long getSpellAttack(Stats victim) {
         int rolls = 0;
         int totDamage = 0;
         while (rolls <= attackStats.getNumberOfWeaponRolls()) {
             rolls++;
-            totDamage = totDamage + randInt(attackStats.getWeaponRatingMin(), attackStats.getWeaponRatingMax());
+            totDamage = totDamage + randInt((int)attackStats.getWeaponRatingMin(), (int)attackStats.getWeaponRatingMax());
         }
-        int i = attackStats.getStrength() + totDamage - victim.getArmorRating();
+        long i = attackStats.getStrength() + totDamage - victim.getArmorRating();
         if (i < 0) {
             return 0;
         } else {
@@ -66,7 +66,7 @@ public abstract class Spell {
         }
     }
 
-    public String getAttackMessage(int amt, Npc npc) {
+    public String getAttackMessage(long amt, Npc npc) {
         int i = random.nextInt(attackMessages.size());
         String s = attackMessages.get(i);
         if (amt == 0) {
@@ -88,7 +88,7 @@ public abstract class Spell {
     public void attackSpell(Set<String> npcIds, Player player) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {
-            int availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
+            long availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
             if (availableMana < manaCost) {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Not enough mana!" + "\r\n");
             } else {
@@ -96,7 +96,7 @@ public abstract class Spell {
                 for (String npcId : npcIds) {
                     Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
                     gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + spellName + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + npc.getColorName() + "! \r\n");
-                    int spellAttack = getSpellAttack(npc.getStats());
+                    long spellAttack = getSpellAttack(npc.getStats());
                     final String spellAttackStr = getAttackMessage(spellAttack, npc);
                     player.addActiveFight(npc);
                     npc.doHealthDamage(player, Arrays.asList(spellAttackStr), -spellAttack);
@@ -113,7 +113,7 @@ public abstract class Spell {
     public void attackSpell(Player destinationPlayer, Player sourcePlayer) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(sourcePlayer.getPlayerId())) {
-            int availableMana = gameManager.getPlayerManager().getPlayerMetadata(sourcePlayer.getPlayerId()).getStats().getCurrentMana();
+            long availableMana = gameManager.getPlayerManager().getPlayerMetadata(sourcePlayer.getPlayerId()).getStats().getCurrentMana();
             if (availableMana < manaCost) {
                 gameManager.getChannelUtils().write(sourcePlayer.getPlayerId(), "Not enough mana!" + "\r\n");
             } else {
@@ -128,7 +128,7 @@ public abstract class Spell {
     public void applyEffectsToPlayer(Player destinationPlayer, Player player) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {
-            int availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
+            long availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
             if (availableMana < manaCost) {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Not enough mana!" + "\r\n");
             } else {
@@ -156,7 +156,7 @@ public abstract class Spell {
     public void applyEffectsToNpcs(Set<String> npcIds, Player player) {
         Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(player.getPlayerId())) {
-            int availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
+            long availableMana = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getCurrentMana();
             if (availableMana < manaCost) {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Not enough mana!" + "\r\n");
             } else {

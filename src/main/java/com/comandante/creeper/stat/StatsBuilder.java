@@ -1,23 +1,23 @@
 package com.comandante.creeper.stat;
 
 public class StatsBuilder {
-    private int strength;
-    private int willpower;
-    private int aim;
-    private int agile;
-    private int armorRating;
-    private int meleSkill;
-    private int currentHealth;
-    private int maxHealth;
-    private int weaponRatingMax;
-    private int weaponRatingMin;
-    private int numberOfWeaponRolls;
-    private int experience;
-    private int currentMana;
-    private int maxMana;
-    private int foraging;
-    private int inventorySize;
-    private int maxEffects;
+    private long strength;
+    private long willpower;
+    private long aim;
+    private long agile;
+    private long armorRating;
+    private long meleSkill;
+    private long currentHealth;
+    private long maxHealth;
+    private long weaponRatingMax;
+    private long weaponRatingMin;
+    private long numberOfWeaponRolls;
+    private long experience;
+    private long currentMana;
+    private long maxMana;
+    private long foraging;
+    private long inventorySize;
+    private long maxEffects;
 
     public StatsBuilder() {
     }
@@ -43,87 +43,87 @@ public class StatsBuilder {
         this.maxEffects = stats.getMaxEffects();
     }
 
-    public StatsBuilder setStrength(int strength) {
+    public StatsBuilder setStrength(long strength) {
         this.strength = strength;
         return this;
     }
 
-    public StatsBuilder setWillpower(int willpower) {
+    public StatsBuilder setWillpower(long willpower) {
         this.willpower = willpower;
         return this;
     }
 
-    public StatsBuilder setAim(int aim) {
+    public StatsBuilder setAim(long aim) {
         this.aim = aim;
         return this;
     }
 
-    public StatsBuilder setAgile(int agile) {
+    public StatsBuilder setAgile(long agile) {
         this.agile = agile;
         return this;
     }
 
-    public StatsBuilder setArmorRating(int armorRating) {
+    public StatsBuilder setArmorRating(long armorRating) {
         this.armorRating = armorRating;
         return this;
     }
 
-    public StatsBuilder setMeleSkill(int meleSkill) {
+    public StatsBuilder setMeleSkill(long meleSkill) {
         this.meleSkill = meleSkill;
         return this;
     }
 
-    public StatsBuilder setCurrentHealth(int currentHealth) {
+    public StatsBuilder setCurrentHealth(long currentHealth) {
         this.currentHealth = currentHealth;
         return this;
     }
 
-    public StatsBuilder setMaxHealth(int maxHealth) {
+    public StatsBuilder setMaxHealth(long maxHealth) {
         this.maxHealth = maxHealth;
         return this;
     }
 
-    public StatsBuilder setWeaponRatingMax(int weaponRatingMax) {
+    public StatsBuilder setWeaponRatingMax(long weaponRatingMax) {
         this.weaponRatingMax = weaponRatingMax;
         return this;
     }
 
-    public StatsBuilder setWeaponRatingMin(int weaponRatingMin) {
+    public StatsBuilder setWeaponRatingMin(long weaponRatingMin) {
         this.weaponRatingMin = weaponRatingMin;
         return this;
     }
 
-    public StatsBuilder setNumberOfWeaponRolls(int numberOfWeaponRolls) {
+    public StatsBuilder setNumberOfWeaponRolls(long numberOfWeaponRolls) {
         this.numberOfWeaponRolls = numberOfWeaponRolls;
         return this;
     }
 
-    public StatsBuilder setExperience(int experience) {
+    public StatsBuilder setExperience(long experience) {
         this.experience = experience;
         return this;
     }
 
-    public StatsBuilder setCurrentMana(int currentMana) {
+    public StatsBuilder setCurrentMana(long currentMana) {
         this.currentMana = currentMana;
         return this;
     }
 
-    public StatsBuilder setMaxMana(int maxMana) {
+    public StatsBuilder setMaxMana(long maxMana) {
         this.maxMana = maxMana;
         return this;
     }
 
-    public StatsBuilder setForaging(int foraging) {
+    public StatsBuilder setForaging(long foraging) {
         this.foraging = foraging;
         return this;
     }
 
-    public StatsBuilder setInventorySize(int inventorySize) {
+    public StatsBuilder setInventorySize(long inventorySize) {
         this.inventorySize = inventorySize;
         return this;
     }
 
-    public StatsBuilder setMaxEffects(int maxEffects) {
+    public StatsBuilder setMaxEffects(long maxEffects) {
         this.maxEffects = maxEffects;
         return this;
     }

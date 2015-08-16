@@ -41,17 +41,17 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public int getGold() {
+    public long getGold() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId).getGold();
     }
 
     @Override
-    public int getGoldInBankAmount() {
+    public long getGoldInBankAmount() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId).getGoldInBank();
     }
 
     @Override
-    public void setGoldInBankAmount(int amt) {
+    public void setGoldInBankAmount(long amt) {
         synchronized (findInterner().intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             playerMetadata.setGoldInBank(amt);
@@ -60,7 +60,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public void setGold(int amt) {
+    public void setGold(long amt) {
         synchronized (findInterner().intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             playerMetadata.setGold(amt);
@@ -69,7 +69,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public void setHealth(int amt) {
+    public void setHealth(long amt) {
         synchronized (findInterner().intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             playerMetadata.getStats().setCurrentHealth(amt);
@@ -97,7 +97,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public void setMana(int amt) {
+    public void setMana(long amt) {
         synchronized (findInterner().intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             playerMetadata.getStats().setCurrentMana(amt);
@@ -106,7 +106,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public int getHealth() {
+    public long getHealth() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentHealth();
     }
 
@@ -116,12 +116,12 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public int getMana() {
+    public long getMana() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentMana();
     }
 
     @Override
-    public void setExperience(int amt) {
+    public void setExperience(long amt) {
         synchronized (findInterner().intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             playerMetadata.getStats().setExperience(amt);
@@ -130,7 +130,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public int getExperience() {
+    public long getExperience() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getExperience();
     }
 

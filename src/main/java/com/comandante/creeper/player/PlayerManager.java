@@ -108,9 +108,9 @@ public class PlayerManager {
         String guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "gold");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(guageName,
-                    new Gauge<Integer>() {
+                    new Gauge<Long>() {
                         @Override
-                        public Integer getValue() {
+                        public Long getValue() {
                             return getPlayerMetadata(playerMetadata.getPlayerId()).getGold();
                         }
                     });
@@ -119,9 +119,9 @@ public class PlayerManager {
         guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health"),
-                    new Gauge<Integer>() {
+                    new Gauge<Long>() {
                         @Override
-                        public Integer getValue() {
+                        public Long getValue() {
                             return getPlayerMetadata(playerMetadata.getPlayerId()).getStats().getCurrentHealth();
                         }
                     });
@@ -130,9 +130,9 @@ public class PlayerManager {
         guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "xp");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "xp"),
-                    new Gauge<Integer>() {
+                    new Gauge<Long>() {
                         @Override
-                        public Integer getValue() {
+                        public Long getValue() {
                             return getPlayerMetadata(playerMetadata.getPlayerId()).getStats().getExperience();
                         }
                     });

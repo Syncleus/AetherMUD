@@ -39,7 +39,7 @@ public class WithdrawalCommand extends BankCommand {
     }
 
     private boolean areBankFundsAvailable(int amt) {
-        int bankGold = playerManager.getPlayerMetadata(playerId).getGoldInBank();
+        long bankGold = playerManager.getPlayerMetadata(playerId).getGoldInBank();
         return (bankGold >= amt);
     }
 
