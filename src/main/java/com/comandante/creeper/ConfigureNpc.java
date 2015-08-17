@@ -265,7 +265,28 @@ public class ConfigureNpc {
         keakiarForageBuilder.setCoolDownTicks(600);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE15_ZONE, keakiarForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.NORTH14_ZONE, keakiarForageBuilder);
-        
+
+
+        ForageBuilder dirtyBombForageBuilder = new ForageBuilder();
+        dirtyBombForageBuilder.setItemType(ItemType.DIRTY_BOMB);
+        dirtyBombForageBuilder.setMinAmt(1);
+        dirtyBombForageBuilder.setMaxAmt(3);
+        dirtyBombForageBuilder.setPctOfSuccess(2);
+        dirtyBombForageBuilder.setForageExperience(100);
+        dirtyBombForageBuilder.setCoolDownTicks(600);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE15_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH14_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.SOUTH1_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE14_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH10_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.NORTH11_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN4_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN5_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN2_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.WESTERN3_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE6_ZONE, dirtyBombForageBuilder);
+        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE7_ZONE, dirtyBombForageBuilder);
+
         SpellRegistry.addSpell(new LightningSpell(gameManager));
         SpellRegistry.addSpell(new ClumsinessSpell(gameManager));
         SpellRegistry.addSpell(new RestoreSpell(gameManager));
