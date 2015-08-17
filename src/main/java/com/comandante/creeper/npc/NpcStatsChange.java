@@ -12,13 +12,15 @@ public class NpcStatsChange {
     private final List<String> playerDamageStrings;
     private final Player player;
     private final Stats playerStatsChange;
+    private boolean isItemDamage;
 
-    public NpcStatsChange(Stats stats, List<String> damageStrings, Player player, Stats playerStatsChange, List<String> playerDamageStrings) {
+    public NpcStatsChange(Stats stats, List<String> damageStrings, Player player, Stats playerStatsChange, List<String> playerDamageStrings, boolean isItemDamage) {
         this.stats = stats;
         this.damageStrings = damageStrings;
         this.player = player;
         this.playerStatsChange = playerStatsChange;
         this.playerDamageStrings = playerDamageStrings;
+        this.isItemDamage = isItemDamage;
     }
 
     public Stats getStats() {
@@ -39,5 +41,9 @@ public class NpcStatsChange {
 
     public List<String> getPlayerDamageStrings() {
         return playerDamageStrings;
+    }
+
+    public boolean isItemDamage() {
+        return isItemDamage;
     }
 }

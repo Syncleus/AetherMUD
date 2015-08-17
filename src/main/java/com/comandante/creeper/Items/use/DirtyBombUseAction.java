@@ -6,10 +6,17 @@ import com.comandante.creeper.Items.ItemUseAction;
 import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.Effect;
+import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Room;
+import com.google.api.client.util.Lists;
 
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Set;
 
 import static com.comandante.creeper.server.Color.*;
@@ -40,6 +47,13 @@ public class DirtyBombUseAction implements ItemUseAction {
             Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npc.getColorName() + " is heavily damaged by a " + item.getItemName() + "!");
             npc.addDamageToMap(player.getPlayerId(), -30000000);
+            NpcStatsChangeBuilder npcStatsChangeBuilder = new NpcStatsChangeBuilder();
+            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(30000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+            npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-30000000).createStats());
+            npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
+            npcStatsChangeBuilder.setPlayer(player);
+            npcStatsChangeBuilder.setIsItemDamage(true);
+            npc.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
         }
         for (Player presentPlayer : presentPlayers) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is heavily damaged by a " + item.getItemName() + "!");

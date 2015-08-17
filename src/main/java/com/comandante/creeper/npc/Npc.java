@@ -222,13 +222,15 @@ public class Npc extends CreeperEntity {
 
     private void processNpcStatChange(NpcStatsChange npcStatsChange) {
         try {
-            if (npcStatsChange.getPlayer().isActive(CoolDownType.DEATH)) {
+            if (npcStatsChange.getPlayer().isActive(CoolDownType.DEATH) && !npcStatsChange.isItemDamage()) {
                 return;
             }
             if (isAlive.get()) {
                 if (npcStatsChange.getStats() != null) {
                     for (String message : npcStatsChange.getDamageStrings()) {
-                        gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
+                        if (!npcStatsChange.getPlayer().isActive(CoolDownType.DEATH)) {
+                            gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
+                        }
                     }
                     StatsHelper.combineStats(getStats(), npcStatsChange.getStats());
                     long amt = npcStatsChange.getStats().getCurrentHealth();
@@ -249,8 +251,10 @@ public class Npc extends CreeperEntity {
                 }
                 if (npcStatsChange.getPlayerStatsChange() != null) {
                     for (String message : npcStatsChange.getPlayerDamageStrings()) {
-                        gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
-                        npcStatsChange.getPlayer().updatePlayerHealth(npcStatsChange.getPlayerStatsChange().getCurrentHealth(), this);
+                        if (!npcStatsChange.getPlayer().isActive(CoolDownType.DEATH)) {
+                            gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
+                            npcStatsChange.getPlayer().updatePlayerHealth(npcStatsChange.getPlayerStatsChange().getCurrentHealth(), this);
+                        }
                     }
                 }
             }

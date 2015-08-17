@@ -11,6 +11,7 @@ public class NpcStatsChangeBuilder {
     private Player player;
     private Stats playerStatsChange;
     private List<String> playerDamageStrings;
+    private boolean isItemDamage;
 
     public NpcStatsChangeBuilder setStats(Stats stats) {
         this.stats = stats;
@@ -37,7 +38,12 @@ public class NpcStatsChangeBuilder {
         return this;
     }
 
+    public NpcStatsChangeBuilder setIsItemDamage(boolean isItemDamage) {
+        this.isItemDamage = isItemDamage;
+        return this;
+    }
+
     public NpcStatsChange createNpcStatsChange() {
-        return new NpcStatsChange(stats, damageStrings, player, playerStatsChange, playerDamageStrings);
+        return new NpcStatsChange(stats, damageStrings, player, playerStatsChange, playerDamageStrings, isItemDamage);
     }
 }
