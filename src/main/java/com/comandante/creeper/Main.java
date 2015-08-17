@@ -5,6 +5,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.graphite.PickledGraphite;
+import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.player.PlayerManagementManager;
 import com.comandante.creeper.managers.GameManager;
@@ -96,6 +97,9 @@ public class Main {
 
         startUpMessage("Generating map data.");
         mapsManager.generateAllMaps();
+
+        startUpMessage("Configuring Item Use Registry");
+        ItemUseRegistry.configure();
 
         startUpMessage("Configuring default inventorySize limits");
         BackportCommands.configureDefaultInventorySize(entityManager, gameManager);

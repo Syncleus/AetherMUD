@@ -80,7 +80,7 @@ public class ForageManager {
             }
         } finally {
             if (totalForageXp > 0) {
-                gameManager.getChannelUtils().write(player.getPlayerId(), "You gained " + Color.GREEN + "+" + totalForageXp + Color.RESET + " forage experience polongs." + "\r\n", true);
+                gameManager.getChannelUtils().write(player.getPlayerId(), "You gained " + Color.GREEN + "+" + totalForageXp + Color.RESET + " forage experience points." + "\r\n", true);
             }
             if (countOfForagesFound == 0) {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Nothing foraged." + "\r\n");

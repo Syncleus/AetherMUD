@@ -36,7 +36,7 @@ public class UseCommand extends Command {
                 write("Useable item is not found in your inventory.\r\n");
                 return;
             }
-            new ItemUseHandler(inventoryItem, creeperSession, gameManager, player).handle();
+            gameManager.getItemUseHandler().handle(player, inventoryItem);
         } finally {
             super.messageReceived(ctx, e);
         }

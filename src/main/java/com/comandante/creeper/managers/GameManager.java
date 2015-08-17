@@ -3,10 +3,7 @@ package com.comandante.creeper.managers;
 
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
-import com.comandante.creeper.Items.ForageManager;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemDecayManager;
-import com.comandante.creeper.Items.LootManager;
+import com.comandante.creeper.Items.*;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.bot.BotCommandFactory;
 import com.comandante.creeper.bot.BotCommandManager;
@@ -66,6 +63,7 @@ public class GameManager {
     private final Interner<String> interner = Interners.newWeakInterner();
     private static final Logger log = Logger.getLogger(GameManager.class);
     private final TimeTracker timeTracker;
+    private final ItemUseHandler itemUseHandler;
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -89,8 +87,12 @@ public class GameManager {
         this.entityManager.addEntity(timeTracker);
         this.itemDecayManager = new ItemDecayManager(entityManager, this);
         this.entityManager.addEntity(itemDecayManager);
+        this.itemUseHandler = new ItemUseHandler(this);
     }
 
+    public ItemUseHandler getItemUseHandler() {
+        return itemUseHandler;
+    }
     public GossipCache getGossipCache() {
         return gossipCache;
     }
