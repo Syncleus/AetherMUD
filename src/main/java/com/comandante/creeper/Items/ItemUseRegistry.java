@@ -1,6 +1,7 @@
 package com.comandante.creeper.Items;
 
 import com.comandante.creeper.Items.use.DefaultApplyStatsAction;
+import com.comandante.creeper.Items.use.DirtyBombUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.Effect;
@@ -40,6 +41,9 @@ public class ItemUseRegistry {
 
         //Dog Dick
         addItemUseAction(new DefaultApplyStatsAction(ItemType.DOGDICKS, buildStats(500,500), Sets.<Effect>newHashSet()));
+
+        //Dirty Bomb
+        addItemUseAction(new DirtyBombUseAction(ItemType.DIRTY_BOMB));
     }
 
     private static Stats buildStats(int health, int mana) {

@@ -138,7 +138,7 @@ public class Player extends CreeperEntity {
                 }
             }
             PlayerMetadata playerMetadata = getPlayerMetadata();
-            for (String effectId: effectIdsToRemove) {
+            for (String effectId : effectIdsToRemove) {
                 playerMetadata.removeEffectID(effectId);
             }
             savePlayerMetadata(playerMetadata);
@@ -147,21 +147,22 @@ public class Player extends CreeperEntity {
 
     public void killPlayer(Npc npc) {
         synchronized (interner.intern(playerId)) {
-            if (doesActiveFightExist(npc)) {
+            if (npc != null && doesActiveFightExist(npc)) {
                 removeAllActiveFights();
-                if (!isActive(CoolDownType.DEATH)) {
-                    CoolDown death = new CoolDown(CoolDownType.DEATH);
-                    addCoolDown(death);
-                    gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
-                    PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
-                    movePlayer(playerMovement);
-                    gameManager.currentRoomLogic(getPlayerId());
-                    String prompt = gameManager.buildPrompt(playerId);
-                    gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
-                }
+            }
+            if (!isActive(CoolDownType.DEATH)) {
+                CoolDown death = new CoolDown(CoolDownType.DEATH);
+                addCoolDown(death);
+                gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
+                PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
+                movePlayer(playerMovement);
+                gameManager.currentRoomLogic(getPlayerId());
+                String prompt = gameManager.buildPrompt(playerId);
+                gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
             }
         }
     }
+
 
     public boolean updatePlayerHealth(long amount, Npc npc) {
         synchronized (interner.intern(playerId)) {
@@ -179,7 +180,7 @@ public class Player extends CreeperEntity {
                 }
                 gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
                 playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-                if (playerMetadata.getStats().getCurrentHealth() == 0 && npc != null) {
+                if (playerMetadata.getStats().getCurrentHealth() == 0) {
                     killPlayer(npc);
                     return true;
                 }
@@ -725,7 +726,7 @@ public class Player extends CreeperEntity {
         Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
-        sb.append("Foraging Level ").append( gameManager.getForageManager().getLevel(modifiedStats.getForaging())).append("\r\n");
+        sb.append("Foraging Level ").append(gameManager.getForageManager().getLevel(modifiedStats.getForaging())).append("\r\n");
         sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildEquipmentString()).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
@@ -893,7 +894,7 @@ public class Player extends CreeperEntity {
                 damageToVictim = getAttackAmt(playerStats, npcStats);
             }
             if (damageToVictim > 0) {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" +  NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             } else {
@@ -906,7 +907,7 @@ public class Player extends CreeperEntity {
             int chanceToHitBack = getChanceToHit(npcStats, playerStats);
             long damageBack = getAttackAmt(npcStats, playerStats);
             if (randInt(0, 100) < chanceToHitBack) {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" +  NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());
                 npcStatsChangeBuilder.setPlayerDamageStrings(Arrays.asList(fightMsg));
 
@@ -928,7 +929,7 @@ public class Player extends CreeperEntity {
         long totDamage = 0;
         while (rolls <= challenger.getNumberOfWeaponRolls()) {
             rolls++;
-            totDamage = totDamage + randInt((int)challenger.getWeaponRatingMin(), (int)challenger.getWeaponRatingMax());
+            totDamage = totDamage + randInt((int) challenger.getWeaponRatingMin(), (int) challenger.getWeaponRatingMax());
         }
         long i = challenger.getStrength() + totDamage - victim.getArmorRating();
         if (i < 0) {

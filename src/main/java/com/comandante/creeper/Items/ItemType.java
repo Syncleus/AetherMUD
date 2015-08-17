@@ -1158,7 +1158,18 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            80, Sets.<TimeTracker.TimeOfDay>newHashSet());            
+            80, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
+    DIRTY_BOMB(105, Arrays.asList("dirty bomb", "bomb"),
+            Color.YELLOW + "dirty" + Color.RESET + " bomb" + Color.RESET,
+            "a " + Color.YELLOW + "dirty" + Color.RESET + " bomb" + Color.RESET + " is here on the ground.",
+            "a " + Color.YELLOW + "dirty" + Color.RESET + " bomb" + Color.RESET,
+            true,
+            0,
+            60,
+            false,
+            Rarity.LEGENDARY,
+            4000000, Sets.<TimeTracker.TimeOfDay>newHashSet());
 
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
