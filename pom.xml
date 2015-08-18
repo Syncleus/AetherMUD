@@ -165,10 +165,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
-                    <items>
-                        <item>timestamp</item>
-                    </items>
                     <doCheck>true</doCheck>
                     <doUpdate>true</doUpdate>
                     <shortRevisionLength>5</shortRevisionLength>
