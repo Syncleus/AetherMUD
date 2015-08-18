@@ -173,7 +173,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             String itemName = itemEntity.getItemName();
             final String msgWithoutColorCodes =
                     itemName.replaceAll("\u001B\\[[;\\d]*m", "");
-            inventoryContents.put(msgWithoutColorCodes, itemEntity.getItemId());
+            inventoryContents.put(itemEntity.getItemId(), msgWithoutColorCodes);
         }
         return inventoryContents;
     }
@@ -190,7 +190,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             String itemName = itemEntity.getItemName();
             final String msgWithoutColorCodes =
                     itemName.replaceAll("\u001B\\[[;\\d]*m", "");
-            inventoryContents.put(msgWithoutColorCodes, itemEntity.getItemId());
+            inventoryContents.put(itemEntity.getItemId(), msgWithoutColorCodes);
         }
         return inventoryContents;
     }

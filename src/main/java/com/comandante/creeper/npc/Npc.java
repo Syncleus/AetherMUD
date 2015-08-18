@@ -303,7 +303,9 @@ public class Npc extends CreeperEntity {
         isAlive.set(false);
         Map<String, Double> xpProcessed;
         Item corpse = new Item(getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, getLoot());
-        gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage());
+        if (!player.isActive(CoolDownType.DEATH)) {
+            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage());
+        }
         xpProcessed = gameManager.processExperience(this, getCurrentRoom());
         gameManager.getEntityManager().saveItem(corpse);
         Integer roomId = gameManager.getRoomManager().getNpcCurrentRoom(this).get().getRoomId();

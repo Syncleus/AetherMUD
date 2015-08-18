@@ -38,6 +38,10 @@ public class DirtyBombUseAction implements ItemUseAction {
     @Override
     public void executeAction(GameManager gameManager, Player player, Item item) {
         Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getRoomId().equals(1)) {
+            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " tried to detonate a " + item.getItemName() + "!");
+            return;
+        }
         Set<String> npcIds = currentRoom.getNpcIds();
         Set<Player> presentPlayers = gameManager.getRoomManager().getPresentPlayers(currentRoom);
         for (Player ply: presentPlayers) {
@@ -45,9 +49,9 @@ public class DirtyBombUseAction implements ItemUseAction {
         }
         for (String npcId : npcIds) {
             Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
-            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npc.getColorName() + " is heavily damaged by a " + item.getItemName() + "!");
+            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npc.getColorName() + " is heavily damaged by a " + item.getItemName() + "!" + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(30000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET);
             NpcStatsChangeBuilder npcStatsChangeBuilder = new NpcStatsChangeBuilder();
-            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(30000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(30000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
             npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-30000000).createStats());
             npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             npcStatsChangeBuilder.setPlayer(player);

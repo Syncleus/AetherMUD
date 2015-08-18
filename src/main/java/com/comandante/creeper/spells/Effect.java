@@ -29,11 +29,11 @@ public class Effect extends CreeperEntity {
         this.effectApplications = 0;
     }
 
-    public Effect(Effect effect) {
-        this.setEntityId(effect.getEntityId());
-        this.effectName = effect.effectName;
-        this.effectDescription = effect.effectDescription;
-        this.effectApplyMessages = effect.effectApplyMessages;
+        public Effect(Effect effect) {
+            this.setEntityId(effect.getEntityId());
+            this.effectName = effect.effectName;
+            this.effectDescription = effect.effectDescription;
+            this.effectApplyMessages = effect.effectApplyMessages;
         this.applyStatsOnTick = effect.applyStatsOnTick;
         this.durationStats = effect.durationStats;
         this.maxEffectApplications = effect.maxEffectApplications;
