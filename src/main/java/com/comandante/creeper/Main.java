@@ -50,13 +50,15 @@ public class Main {
             return "0";
         }
         String buildVersion = props.getProperty("build.version");
-        long buildTimestamp = Long.parseLong(props.getProperty("build.timestamp"));
+        String timestampString = props.getProperty("build.timestamp");
+        if (buildVersion == null || timestampString == null || timestampString.isEmpty() || buildVersion.isEmpty()) {
+            return "creeper-local-dev";
+        }
+        long buildTimestamp = Long.parseLong(timestampString);
         Date date = new Date(buildTimestamp);
         SimpleDateFormat format = new SimpleDateFormat();
         String dateFormatted = format.format(date);
-        if (buildVersion == null) {
-            return "creeper-local-dev";
-        }
+
         return buildVersion + " " + dateFormatted;
     }
     public static void main(String[] args) throws Exception {
