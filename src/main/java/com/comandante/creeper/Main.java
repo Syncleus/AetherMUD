@@ -27,10 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -52,8 +50,14 @@ public class Main {
             return "0";
         }
         String buildVersion = props.getProperty("build.version");
-        String buildTimestamp = props.getProperty("build.timestamp");
-        return buildVersion + " " + buildTimestamp;
+        long buildTimestamp = Long.parseLong(props.getProperty("build.timestamp"));
+        Date date = new Date(buildTimestamp);
+        SimpleDateFormat format = new SimpleDateFormat();
+        String dateFormatted = format.format(date);
+        if (buildVersion == null) {
+            return "creeper-local-dev";
+        }
+        return buildVersion + " " + dateFormatted;
     }
     public static void main(String[] args) throws Exception {
 

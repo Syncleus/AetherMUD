@@ -1,5 +1,6 @@
 package com.comandante.creeper.command.admin;
 
+import com.comandante.creeper.Main;
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
@@ -64,6 +65,11 @@ public class SystemInfo extends Command {
                     .append("uptime:")
                     .append(Color.RESET)
                     .append(upTime)
+                    .append(" | ")
+                    .append(Color.MAGENTA)
+                    .append("build:")
+                    .append(Color.RESET)
+                    .append(Main.getCreeperVersion())
                     .append("\r\n").toString());
         } finally {
             super.messageReceived(ctx, e);
