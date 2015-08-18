@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.comandante</groupId>
     <artifactId>creeper</artifactId>
@@ -20,8 +21,8 @@
         <url>https://github.com/chriskearney/github-maven-example</url>
         <connection>scm:git:git://github.com/chriskearney/creeper.git</connection>
         <developerConnection>scm:git:git@github.com:chriskearney/creeper.git</developerConnection>
-      <tag>creeper-0.1.0</tag>
-  </scm>
+        <tag>creeper-0.1.0</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -164,6 +165,10 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
+                    <items>
+                        <item>timestamp</item>
+                    </items>
                     <doCheck>true</doCheck>
                     <doUpdate>true</doUpdate>
                     <shortRevisionLength>5</shortRevisionLength>
@@ -202,7 +207,8 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>com.comandante.creeper.Main</Main-Class>
                                         <Build-Number>$\{buildNumber}</Build-Number>
