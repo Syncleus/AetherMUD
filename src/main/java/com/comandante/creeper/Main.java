@@ -24,11 +24,16 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
 public class Main {
 
@@ -36,10 +41,21 @@ public class Main {
 
     final public static MetricRegistry metrics = new MetricRegistry();
 
-    final public static String CREEPER_VERSION = "0.7 ALPHA";
+    final public static String CREEPER_VERSION = getCreeperVersion();
 
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
 
+    public static String getCreeperVersion() {
+        Properties props = new Properties();
+        try {
+            props.load(Main.class.getResourceAsStream("resources/build.properties"));
+        } catch (IOException e) {
+            log.error("Problem reading build properties file.", e);
+            return "0";
+        }
+        String someProperty = props.getProperty("build.version");
+        return someProperty;
+    }
     public static void main(String[] args) throws Exception {
 
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(buildConfiguration(args));
