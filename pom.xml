@@ -217,7 +217,7 @@
         </plugins>
         <resources>
             <resource>
-                <directory>resources/build.properties</directory>
+                <directory>src/main/resources/</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
