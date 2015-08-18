@@ -41,20 +41,19 @@ public class Main {
 
     final public static MetricRegistry metrics = new MetricRegistry();
 
-    final public static String CREEPER_VERSION = getCreeperVersion();
-
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
 
     public static String getCreeperVersion() {
         Properties props = new Properties();
         try {
-            props.load(Main.class.getResourceAsStream("resources/build.properties"));
-        } catch (IOException e) {
+            props.load(Main.class.getResourceAsStream("/build.properties"));
+        } catch (Exception e) {
             log.error("Problem reading build properties file.", e);
             return "0";
         }
-        String someProperty = props.getProperty("build.version");
-        return someProperty;
+        String buildVersion = props.getProperty("build.version");
+        String buildTimestamp = props.getProperty("build.timestamp");
+        return buildVersion + " " + buildTimestamp;
     }
     public static void main(String[] args) throws Exception {
 
