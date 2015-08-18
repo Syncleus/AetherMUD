@@ -12,15 +12,11 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Room;
-import com.google.api.client.util.Lists;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Set;
-
-import static com.comandante.creeper.server.Color.*;
-import static com.comandante.creeper.server.Color.RESET;
 
 public class DirtyBombUseAction implements ItemUseAction {
 
