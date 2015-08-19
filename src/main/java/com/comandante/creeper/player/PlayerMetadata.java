@@ -214,4 +214,8 @@ public class PlayerMetadata implements Serializable {
     public void setIsMarkedForDelete(boolean isMarkedForDelete) {
         this.isMarkedForDelete = isMarkedForDelete;
     }
+
+    protected void resetEffects(){
+        this.effects = Lists.newArrayList();
+    }
 }

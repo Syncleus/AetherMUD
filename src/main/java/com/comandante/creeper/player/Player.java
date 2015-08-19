@@ -146,6 +146,7 @@ public class Player extends CreeperEntity {
     }
 
     public void killPlayer(Npc npc) {
+        resetEffects();
         synchronized (interner.intern(playerId)) {
             if (npc != null && doesActiveFightExist(npc)) {
                 removeAllActiveFights();
@@ -280,6 +281,14 @@ public class Player extends CreeperEntity {
             playerMetadata.addEffectId(effectId);
             savePlayerMetadata(playerMetadata);
             return true;
+        }
+    }
+
+    public void resetEffects(){
+        synchronized (interner){
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.resetEffects();
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
         }
     }
 

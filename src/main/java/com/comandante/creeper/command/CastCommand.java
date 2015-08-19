@@ -44,11 +44,6 @@ public class CastCommand extends Command {
             }
             String desiredSpellName = originalMessageParts.get(1);
             Spell spell = SpellRegistry.getSpell(desiredSpellName);
-            if (spell instanceof AidsSpell) {
-                if (!player.getPlayerName().equals("fibs")) {
-                    return;
-                }
-            }
             if (spell == null) {
                 write("No spell found with the name: " + desiredSpellName + "\r\n");
                 return;
