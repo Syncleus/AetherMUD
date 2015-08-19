@@ -11,6 +11,7 @@ import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.npc.NpcMover;
 import com.comandante.creeper.player.*;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
@@ -64,6 +65,7 @@ public class GameManager {
     private static final Logger log = Logger.getLogger(GameManager.class);
     private final TimeTracker timeTracker;
     private final ItemUseHandler itemUseHandler;
+    private final NpcMover npcMover;
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
         this.roomManager = roomManager;
@@ -88,6 +90,11 @@ public class GameManager {
         this.itemDecayManager = new ItemDecayManager(entityManager, this);
         this.entityManager.addEntity(itemDecayManager);
         this.itemUseHandler = new ItemUseHandler(this);
+        this.npcMover = new NpcMover(this);
+    }
+
+    public NpcMover getNpcMover() {
+        return npcMover;
     }
 
     public ItemUseHandler getItemUseHandler() {

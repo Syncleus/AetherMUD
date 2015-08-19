@@ -47,4 +47,8 @@ public class CoolDown {
     public int getOriginalNumberOfTicks() {
         return originalNumberOfTicks;
     }
+
+    public void setNumberOfTicks(int numberOfTicks) {
+        this.numberOfTicks = numberOfTicks;
+    }
 }

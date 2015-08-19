@@ -7,6 +7,7 @@ import com.comandante.creeper.Items.Rarity;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
+import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
@@ -17,6 +18,7 @@ import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
+import com.google.api.client.util.Sets;
 import com.google.common.base.Optional;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
@@ -46,7 +48,6 @@ public class Npc extends CreeperEntity {
     private final Set<String> validTriggers;
     private Loot loot;
     private final Set<SpawnRule> spawnRules;
-    private final AtomicBoolean isInFight = new AtomicBoolean(false);
     private List<Effect> effects = Lists.newCopyOnWriteArrayList();
     private int maxEffects = 4;
     private Map<String, Long> playerDamageMap = Maps.newHashMap();
@@ -55,6 +56,9 @@ public class Npc extends CreeperEntity {
     private int effectsTickBucket = 0;
     private final Interner<Npc> interner = Interners.newWeakInterner();
     private final AtomicBoolean isAlive = new AtomicBoolean(true);
+    private Set<CoolDown> coolDowns = Sets.newHashSet();
+    private final Random random = new Random();
+
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
         this.gameManager = gameManager;
@@ -101,6 +105,12 @@ public class Npc extends CreeperEntity {
                     for (NpcStatsChange npcStatsChange : npcStatsChangeList) {
                         processNpcStatChange(npcStatsChange);
                     }
+                    if (!isActiveCooldown(CoolDownType.NPC_FIGHT) && !isActiveCooldown(CoolDownType.NPC_ROAM) && currentRoom != null) {
+                        if (getRandPercent(.5)) {
+                            gameManager.getNpcMover().roam(getEntityId());
+                        }
+                    }
+                    tickAllActiveCoolDowns();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -108,6 +118,34 @@ public class Npc extends CreeperEntity {
             }
         }
     }
+
+    private boolean getRandPercent(double percent) {
+        double rangeMin = 0;
+        double rangeMax = 100;
+        double randomValue = rangeMin + (rangeMax - rangeMin) * random.nextDouble();
+        return randomValue <= percent;
+    }
+
+    private void tickAllActiveCoolDowns() {
+        Iterator<CoolDown> iterator = coolDowns.iterator();
+        while (iterator.hasNext()) {
+            CoolDown coolDown = iterator.next();
+            if (coolDown.isActive()) {
+                coolDown.decrementTick();
+            } else {
+                iterator.remove();
+            }
+        }
+    }
+
+    public void addCoolDown(CoolDown coolDown) {
+        this.coolDowns.add(coolDown);
+    }
+
+    public Set<CoolDown> getCoolDowns() {
+        return coolDowns;
+    }
+
 
     public void setLastPhraseTimestamp(long lastPhraseTimestamp) {
         this.lastPhraseTimestamp = lastPhraseTimestamp;
@@ -123,14 +161,6 @@ public class Npc extends CreeperEntity {
 
     public Set<Area> getRoamAreas() {
         return roamAreas;
-    }
-
-    public boolean getIsInFight() {
-        return this.isInFight.get();
-    }
-
-    public void setIsInFight(boolean isInFight) {
-        this.isInFight.set(isInFight);
     }
 
     public Stats getStats() {
@@ -166,6 +196,16 @@ public class Npc extends CreeperEntity {
 
     public Set<SpawnRule> getSpawnRules() {
         return spawnRules;
+    }
+
+    public Optional<SpawnRule> getSpawnRuleByArea(Area area) {
+        Set<SpawnRule> spawnRules = getSpawnRules();
+        for (SpawnRule spawnRule: spawnRules) {
+            if (spawnRule.getArea().equals(area)) {
+                return Optional.of(spawnRule);
+            }
+        }
+        return Optional.absent();
     }
 
     public void addEffect(Effect effect) {
@@ -211,8 +251,29 @@ public class Npc extends CreeperEntity {
     }
 
     public void addNpcDamage(NpcStatsChange npcStatsChange) {
+        if (!isActiveCooldown(CoolDownType.NPC_FIGHT)) {
+            addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
+        } else {
+            for (CoolDown coolDown: coolDowns) {
+                if (coolDown.getCoolDownType().equals(CoolDownType.NPC_FIGHT)) {
+                    coolDown.setNumberOfTicks(coolDown.getOriginalNumberOfTicks());
+                }
+            }
+        }
         this.npcStatsChanges.add(npcStatsChange);
     }
+
+    public boolean isActiveCooldown(CoolDownType coolDownType) {
+        for (CoolDown c : coolDowns) {
+            if (c.getCoolDownType().equals(coolDownType)) {
+                if (c.isActive()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     public void doHealthDamage(Player player, List<String> damageStrings, long amt) {
         NpcStatsChange npcStatsChange =
