@@ -71,10 +71,12 @@ public class NpcMover {
         for (Area ar : roamAreas) {
             if (ar.equals(area)) {
                 Optional<SpawnRule> spawnRuleByArea = npc.getSpawnRuleByArea(area);
-                int maxPerRoom = spawnRuleByArea.get().getMaxPerRoom();
-                int numberOfNpcInRoom = numberOfNpcInRoom(npc, room);
-                if (numberOfNpcInRoom < maxPerRoom) {
-                    return true;
+                if (spawnRuleByArea.isPresent()) {
+                    int maxPerRoom = spawnRuleByArea.get().getMaxPerRoom();
+                    int numberOfNpcInRoom = numberOfNpcInRoom(npc, room);
+                    if (numberOfNpcInRoom < maxPerRoom) {
+                        return true;
+                    }
                 }
             }
         }
