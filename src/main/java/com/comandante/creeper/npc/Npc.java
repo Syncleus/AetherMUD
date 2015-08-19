@@ -106,7 +106,7 @@ public class Npc extends CreeperEntity {
                         processNpcStatChange(npcStatsChange);
                     }
                     if (!isActiveCooldown(CoolDownType.NPC_FIGHT) && !isActiveCooldown(CoolDownType.NPC_ROAM) && currentRoom != null) {
-                        if (getRandPercent(.5)) {
+                        if (getRandPercent(.1)) {
                             gameManager.getNpcMover().roam(getEntityId());
                         }
                     }

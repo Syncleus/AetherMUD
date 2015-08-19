@@ -11,6 +11,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Random;
@@ -20,6 +21,7 @@ public class NpcMover {
 
     private final GameManager gameManager;
     private final Random random = new Random();
+    private static final Logger log = Logger.getLogger(NpcMover.class);
 
     public NpcMover(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -62,6 +64,7 @@ public class NpcMover {
         destinationRoom.getNpcIds().add(npcId);
         npcEntity.addCoolDown(new CoolDown(CoolDownType.NPC_ROAM));
         gameManager.roomSay(destinationRoomId, npcEntity.getColorName() + " has arrived.", "");
+        log.info("NPC MOVER COMPLETE " + npcEntity.getName());
     }
 
     private boolean doesRoomHaveEmptyNpcsSpots(Room room, Npc npc, Area area) {
