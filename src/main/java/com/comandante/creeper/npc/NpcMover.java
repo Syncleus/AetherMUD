@@ -64,7 +64,6 @@ public class NpcMover {
         destinationRoom.getNpcIds().add(npcId);
         npcEntity.addCoolDown(new CoolDown(CoolDownType.NPC_ROAM));
         gameManager.roomSay(destinationRoomId, npcEntity.getColorName() + " has arrived.", "");
-        log.info("NPC MOVER COMPLETE " + npcEntity.getName());
     }
 
     private boolean doesRoomHaveEmptyNpcsSpots(Room room, Npc npc, Area area) {
