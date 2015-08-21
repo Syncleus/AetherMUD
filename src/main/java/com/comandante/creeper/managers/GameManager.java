@@ -23,6 +23,7 @@ import com.comandante.creeper.spells.EffectsManager;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.*;
+import com.google.api.client.util.Lists;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
@@ -337,14 +338,21 @@ public class GameManager {
             sb.append("   ").append(entityManager.getItemEntity(itemId).getRestingName()).append("\r\n");
         }
 
+        List<String> npcs = Lists.newArrayList();
         for (String npcId : playerCurrentRoom.getNpcIds()) {
+            StringBuilder sbb = new StringBuilder();
             Npc npcEntity = entityManager.getNpcEntity(npcId);
             if(Main.vowels.contains(Character.toLowerCase(npcEntity.getName().charAt(0)))) {
-                sb.append("an ");
+                sbb.append("an ");
             } else {
-                sb.append("a ");
+                sbb.append("a ");
             }
-            sb.append(npcEntity.getColorName()).append(" is here.\r\n");
+            sbb.append(npcEntity.getColorName()).append(" is here.\r\n");
+            npcs.add(sbb.toString());
+        }
+        Collections.sort(npcs, String.CASE_INSENSITIVE_ORDER);
+        for (String s: npcs) {
+            sb.append(s);
         }
         String msg = null;
         if (sb.toString().substring(sb.toString().length() - 2).equals("\r\n")) {

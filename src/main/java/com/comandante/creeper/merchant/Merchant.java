@@ -41,7 +41,7 @@ public abstract class Merchant extends CreeperEntity {
         Table t = new Table(3, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.HEADER_FIRST_AND_LAST_COLLUMN);
         t.setColumnWidth(0, 5, 5);
-        t.setColumnWidth(1, 12, 12);
+        t.setColumnWidth(1, 12, 16);
         t.setColumnWidth(2, 50, 69);
         t.addCell("#");
         t.addCell("price");
