@@ -4,6 +4,7 @@ import com.comandante.creeper.Items.*;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.*;
+import com.comandante.creeper.merchant.GrimulfWizard;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcExporter;
 import com.comandante.creeper.spawner.ItemSpawner;
@@ -105,8 +106,8 @@ public class ConfigureNpc {
         grimulfItems.put(2, new MerchantItemForSale(ItemType.TAPPERHET_SWORD, 60000));
         grimulfItems.put(3, new MerchantItemForSale(ItemType.BIGGERS_SKIN_SATCHEL, 250000));
         grimulfItems.put(4, new MerchantItemForSale(ItemType.DWARF_BOOTS_OF_AGILITY, 10000));
-        grimulfItems.put(5, new MerchantItemForSale(ItemType.GOLDEN_WAND, 4000000000));
-        grimulfItems.put(6, new MerchantItemForSale(ItemType.MITHAEM_LEAF, 1400000000));
+       // grimulfItems.put(5, new MerchantItemForSale(ItemType.GOLDEN_WAND, 4000000000));
+        grimulfItems.put(5, new MerchantItemForSale(ItemType.MITHAEM_LEAF, 1400000000));
 
         Map<Integer, MerchantItemForSale> ketilItems = Maps.newHashMap();          
         ketilItems.put(1, new MerchantItemForSale(ItemType.BEER, 12));
