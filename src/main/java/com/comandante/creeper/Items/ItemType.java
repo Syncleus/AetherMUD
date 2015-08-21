@@ -1281,6 +1281,17 @@ public enum ItemType {
             Rarity.LEGENDARY,
             8000000, Sets.<TimeTracker.TimeOfDay>newHashSet());
             
+    PYAMITE_ICEAXE(116, Arrays.asList("pyamite ice axe", "ice axe", "axe", "p", "ice", "a"),
+            Color.BOLD_ON + Color.GREEN + "pyamite" + Color.RESET + Color.CYAN + " ice " + Color.RESET + "axe",
+            "a " + Color.BOLD_ON + Color.GREEN + "pyamite" + Color.RESET + Color.CYAN + " ice " + Color.RESET + "axe is on the ground.",
+            "a " + Color.BOLD_ON + Color.GREEN + "pyamite" + Color.RESET + Color.CYAN + " ice " + Color.RESET + "axe",
+            false,
+            0,
+            60,
+            false,
+            Rarity.LEGENDARY,
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
     private final String restingName;
