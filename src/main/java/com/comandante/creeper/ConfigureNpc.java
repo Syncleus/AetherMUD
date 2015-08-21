@@ -107,6 +107,14 @@ public class ConfigureNpc {
         grimulfItems.put(4, new MerchantItemForSale(ItemType.DWARF_BOOTS_OF_AGILITY, 10000));
         grimulfItems.put(5, new MerchantItemForSale(ItemType.GOLDEN_WAND, 4000000000));
         grimulfItems.put(6, new MerchantItemForSale(ItemType.MITHAEM_LEAF, 1400000000));
+
+        Map<Integer, MerchantItemForSale> ketilItems = Maps.newHashMap();          
+        ketilItems.put(1, new MerchantItemForSale(ItemType.BEER, 12));
+        ketilItems.put(2, new MerchantItemForSale(ItemType.PURPLE_DRANK, 120));
+        ketilItems.put(3, new MerchantItemForSale(ItemType.MARIJUANA, 100));
+        ketilItems.put(4, new MerchantItemForSale(ItemType.PYAMITE_ICEAXE, 10000000));
+        ketilItems.put(5, new MerchantItemForSale(ItemType.STRENGTH_ELIXIR, 3000));
+        ketilItems.put(6, new MerchantItemForSale(ItemType.CHRONIC_JOOSE, 5500));
         
         
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
@@ -122,6 +130,9 @@ public class ConfigureNpc {
 
         GrimulfWizard grimulfWizard = new GrimulfWizard(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), grimulfItems);
         gameManager.getRoomManager().addMerchant(102, grimulfWizard);
+        
+        KetilCommissary ketilCommissary = new KetilCommissary(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), ketilItems);
+        gameManager.getRoomManager().addMerchant(420, ketilCommissary);
 
         ForageBuilder marijuanaForageBuilder = new ForageBuilder();
         marijuanaForageBuilder.setItemType(ItemType.MARIJUANA);
