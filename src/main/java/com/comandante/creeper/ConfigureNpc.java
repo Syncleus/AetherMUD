@@ -56,43 +56,12 @@ public class ConfigureNpc {
 
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
         itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 8));
-        itemsForSale.put(2, new MerchantItemForSale(ItemType.BROAD_SWORD, 1000));
-        itemsForSale.put(3, new MerchantItemForSale(ItemType.IRON_BOOTS, 800));
-        itemsForSale.put(4, new MerchantItemForSale(ItemType.IRON_BRACERS, 400));
-        itemsForSale.put(5, new MerchantItemForSale(ItemType.IRON_HELMET, 500));
-        itemsForSale.put(6, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
-        itemsForSale.put(7, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
-        itemsForSale.put(8, new MerchantItemForSale(ItemType.PHANTOM_SWORD, 7000));
-        itemsForSale.put(9, new MerchantItemForSale(ItemType.PHANTOM_HELMET, 3500));
-        itemsForSale.put(11, new MerchantItemForSale(ItemType.PHANTOM_BOOTS, 3000));
-        itemsForSale.put(12, new MerchantItemForSale(ItemType.PHANTOM_BRACERS, 1500));
-        itemsForSale.put(13, new MerchantItemForSale(ItemType.PHANTOM_LEGGINGS, 4000));
-        itemsForSale.put(14, new MerchantItemForSale(ItemType.MITHRIL_SWORD, 14000));
-        itemsForSale.put(15, new MerchantItemForSale(ItemType.MITHRIL_HELMET, 7000));
-        itemsForSale.put(16, new MerchantItemForSale(ItemType.MITHRIL_CHESTPLATE, 10000));
-        itemsForSale.put(17, new MerchantItemForSale(ItemType.MITHRIL_BOOTS, 6000));
-        itemsForSale.put(18, new MerchantItemForSale(ItemType.MITHRIL_BRACERS, 4000));
-        itemsForSale.put(19, new MerchantItemForSale(ItemType.MITHRIL_LEGGINGS, 8000));
-        itemsForSale.put(20, new MerchantItemForSale(ItemType.PYAMITE_SWORD, 20000));
-        itemsForSale.put(21, new MerchantItemForSale(ItemType.PYAMITE_HELMET, 14000));
-        itemsForSale.put(22, new MerchantItemForSale(ItemType.PYAMITE_CHESTPLATE, 20000));
-        itemsForSale.put(23, new MerchantItemForSale(ItemType.PYAMITE_BOOTS, 12000));
-        itemsForSale.put(24, new MerchantItemForSale(ItemType.PYAMITE_BRACERS, 8000));
-        itemsForSale.put(25, new MerchantItemForSale(ItemType.PYAMITE_LEGGINGS, 16000));
-        itemsForSale.put(26, new MerchantItemForSale(ItemType.TAPPERHET_SWORD, 60000));
-        itemsForSale.put(27, new MerchantItemForSale(ItemType.VULCERIUM_SWORD, 160000));
-        itemsForSale.put(28, new MerchantItemForSale(ItemType.VULCERIUM_HELMET, 37000));
-        itemsForSale.put(29, new MerchantItemForSale(ItemType.VULCERIUM_CHESTPLATE, 52000));
-        itemsForSale.put(30, new MerchantItemForSale(ItemType.VULCERIUM_BOOTS, 38000));
-        itemsForSale.put(31, new MerchantItemForSale(ItemType.VULCERIUM_BRACERS, 29000));
-        itemsForSale.put(32, new MerchantItemForSale(ItemType.VULCERIUM_LEGGINGS, 52000));
-        itemsForSale.put(33, new MerchantItemForSale(ItemType.PURPLE_DRANK, 80));
-        itemsForSale.put(33, new MerchantItemForSale(ItemType.LEATHER_SATCHEL, 25000));
-        itemsForSale.put(34, new MerchantItemForSale(ItemType.BIGGERS_SKIN_SATCHEL, 250000));
-        itemsForSale.put(35, new MerchantItemForSale(ItemType.STRENGTH_ELIXIR, 2000));
-        itemsForSale.put(36, new MerchantItemForSale(ItemType.CHRONIC_JOOSE, 4000));
-        itemsForSale.put(37, new MerchantItemForSale(ItemType.BISMUTH_SWORD, 3000000));
-        itemsForSale.put(37, new MerchantItemForSale(ItemType.GUCCI_PANTS, 80000000));
+        itemsForSale.put(2, new MerchantItemForSale(ItemType.PURPLE_DRANK, 80));
+        itemsForSale.put(3, new MerchantItemForSale(ItemType.LEATHER_SATCHEL, 25000));
+        itemsForSale.put(4, new MerchantItemForSale(ItemType.BIGGERS_SKIN_SATCHEL, 250000));
+        itemsForSale.put(5, new MerchantItemForSale(ItemType.STRENGTH_ELIXIR, 2000));
+        itemsForSale.put(6, new MerchantItemForSale(ItemType.CHRONIC_JOOSE, 4000));
+        itemsForSale.put(7, new MerchantItemForSale(ItemType.GUCCI_PANTS, 80000000));
 
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
@@ -104,7 +73,42 @@ public class ConfigureNpc {
         blacksmithItems.put(4, new MerchantItemForSale(ItemType.IRON_HELMET, 500));
         blacksmithItems.put(5, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
         blacksmithItems.put(6, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
+        blacksmithItems.put(7, new MerchantItemForSale(ItemType.PHANTOM_SWORD, 7000));
+        blacksmithItems.put(8, new MerchantItemForSale(ItemType.PHANTOM_HELMET, 3500));
+        blacksmithItems.put(9, new MerchantItemForSale(ItemType.PHANTOM_BOOTS, 3000));
+        blacksmithItems.put(10, new MerchantItemForSale(ItemType.PHANTOM_BRACERS, 1500));
+        blacksmithItems.put(11, new MerchantItemForSale(ItemType.PHANTOM_LEGGINGS, 4000));
+        blacksmithItems.put(12, new MerchantItemForSale(ItemType.MITHRIL_SWORD, 14000));
+        blacksmithItems.put(13, new MerchantItemForSale(ItemType.MITHRIL_HELMET, 7000));
+        blacksmithItems.put(14, new MerchantItemForSale(ItemType.MITHRIL_CHESTPLATE, 10000));
+        blacksmithItems.put(15, new MerchantItemForSale(ItemType.MITHRIL_BOOTS, 6000));
+        blacksmithItems.put(16, new MerchantItemForSale(ItemType.MITHRIL_BRACERS, 4000));
+        blacksmithItems.put(17, new MerchantItemForSale(ItemType.MITHRIL_LEGGINGS, 8000));
+        blacksmithItems.put(18, new MerchantItemForSale(ItemType.PYAMITE_SWORD, 20000));
+        blacksmithItems.put(19, new MerchantItemForSale(ItemType.PYAMITE_HELMET, 14000));
+        blacksmithItems.put(20, new MerchantItemForSale(ItemType.PYAMITE_CHESTPLATE, 20000));
+        blacksmithItems.put(21, new MerchantItemForSale(ItemType.PYAMITE_BOOTS, 12000));
+        blacksmithItems.put(22, new MerchantItemForSale(ItemType.PYAMITE_BRACERS, 8000));
+        blacksmithItems.put(23, new MerchantItemForSale(ItemType.PYAMITE_LEGGINGS, 16000));
+        blacksmithItems.put(24, new MerchantItemForSale(ItemType.VULCERIUM_SWORD, 160000));
+        blacksmithItems.put(25, new MerchantItemForSale(ItemType.VULCERIUM_HELMET, 37000));
+        blacksmithItems.put(26, new MerchantItemForSale(ItemType.VULCERIUM_CHESTPLATE, 52000));
+        blacksmithItems.put(27, new MerchantItemForSale(ItemType.VULCERIUM_BOOTS, 38000));
+        blacksmithItems.put(28, new MerchantItemForSale(ItemType.VULCERIUM_BRACERS, 29000));
+        blacksmithItems.put(29, new MerchantItemForSale(ItemType.VULCERIUM_LEGGINGS, 52000));
+        blacksmithItems.put(30, new MerchantItemForSale(ItemType.BISMUTH_SWORD, 3000000));
+        blacksmithItems.put(31, new MerchantItemForSale(ItemType.BISMUTH_HELMET, 2400000));
+        blacksmithItems.put(32, new MerchantItemForSale(ItemType.LEATHER_SATCHEL, 25000));
 
+        Map<Integer, MerchantItemForSale> grimulfItems = Maps.newHashMap();        
+        grimulfItems.put(1, new MerchantItemForSale(ItemType.MARIJUANA, 100));
+        grimulfItems.put(2, new MerchantItemForSale(ItemType.TAPPERHET_SWORD, 60000));
+        grimulfItems.put(3, new MerchantItemForSale(ItemType.BIGGERS_SKIN_SATCHEL, 250000));
+        grimulfItems.put(4, new MerchantItemForSale(ItemType.DWARF_BOOTS_OF_AGILITY, 10000));
+        grimulfItems.put(5, new MerchantItemForSale(ItemType.GOLDEN_WAND, 4000000000));
+        grimulfItems.put(6, new MerchantItemForSale(ItemType.MITHAEM_LEAF, 1400000000));
+        
+        
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
         gameManager.getRoomManager().addMerchant(66, blacksmith);
         gameManager.getRoomManager().addMerchant(253, blacksmith);
@@ -115,6 +119,9 @@ public class ConfigureNpc {
 
         LockerRoomGuy lockerRoomGuy = new LockerRoomGuy(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(63, lockerRoomGuy);
+
+        GrimulfWizard grimulfWizard = new GrimulfWizard(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), grimulfItems);
+        gameManager.getRoomManager().addMerchant(102, grimulfWizard);
 
         ForageBuilder marijuanaForageBuilder = new ForageBuilder();
         marijuanaForageBuilder.setItemType(ItemType.MARIJUANA);
