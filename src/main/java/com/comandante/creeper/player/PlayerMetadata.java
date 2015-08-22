@@ -3,13 +3,11 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.stat.Stats;
 import com.google.api.client.util.Lists;
+import com.google.api.client.util.Maps;
 import com.google.common.collect.Sets;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class PlayerMetadata implements Serializable {
 
@@ -25,6 +23,7 @@ public class PlayerMetadata implements Serializable {
     private String[] playerEquipment;
     private List<String> effects;
     private boolean isMarkedForDelete;
+    private Map<String, String> playerSettings;
 
     public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank) {
         this.playerName = playerName;
@@ -58,6 +57,9 @@ public class PlayerMetadata implements Serializable {
         }
         if (playerMetadata.effects != null) {
             this.effects = Lists.newArrayList(playerMetadata.getEffects());
+        }
+        if (playerMetadata.playerSettings != null) {
+            this.playerSettings = new HashMap<String, String>(playerMetadata.getPlayerSettings());
         }
         this.isMarkedForDelete = new Boolean(playerMetadata.isMarkedForDelete);
     }
@@ -217,5 +219,39 @@ public class PlayerMetadata implements Serializable {
 
     protected void resetEffects(){
         this.effects = Lists.newArrayList();
+    }
+
+    public boolean setSetting(String key, String value) {
+        if (playerSettings.size() >= 100) {
+            return false;
+        }
+        if (playerSettings == null) {
+            this.playerSettings = Maps.newHashMap();
+        }
+        PlayerSettings byKey = PlayerSettings.getByKey(key);
+        if (byKey == null) {
+            return false;
+        }
+        if (byKey.getType().equals(Integer.TYPE)) {
+            try {
+                int i = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        playerSettings.put(key, value);
+        return true;
+    }
+
+    public String getSetting(String key) {
+        return playerSettings.get(key);
+    }
+
+    public Map<String, String> getPlayerSettings() {
+        return playerSettings;
+    }
+
+    public void deleteSetting(String key) {
+        playerSettings.remove(key);
     }
 }

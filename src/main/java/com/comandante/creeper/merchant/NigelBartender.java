@@ -14,7 +14,7 @@ import static com.comandante.creeper.server.Color.BOLD_ON;
 public class NigelBartender extends Merchant {
     private final static long phraseIntervalMs = 300000;
     private final static String NAME = "nigel the bartender";
-    private final static String welcomeMessage = " N I G E L 'S   B A R ";
+    private final static String welcomeMessage = "\r\n N I G E L 'S   B A R \r\n";
     private final static Set<String> validTriggers = new HashSet<String>(Arrays.asList(new String[]
                     {"nigel", "bartender", "barkeep", "Nigel", "NIGEL", NAME}
     ));

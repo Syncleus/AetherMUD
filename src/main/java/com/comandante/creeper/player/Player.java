@@ -797,6 +797,32 @@ public class Player extends CreeperEntity {
         }
     }
 
+    public boolean setPlayerSetting(String key, String value) {
+        boolean success;
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            success = playerMetadata.setSetting(key, value);
+            savePlayerMetadata(playerMetadata);
+        }
+        return success;
+    }
+
+    public String getPlayerSetting(String key) {
+        return getPlayerMetadata().getSetting(key);
+    }
+
+    public void removePlayerSetting(String key) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.deleteSetting(key);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public Map<String, String> getPlayerSettings() {
+        return getPlayerMetadata().getPlayerSettings();
+    }
+
     public void removeActiveFight(Npc npc) {
         synchronized (interner.intern(playerId)) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
