@@ -222,6 +222,9 @@ public class PlayerMetadata implements Serializable {
     }
 
     public boolean setSetting(String key, String value) {
+        if (playerSettings == null) {
+            playerSettings = Maps.newHashMap();
+        }
         if (playerSettings.size() >= 100) {
             return false;
         }
