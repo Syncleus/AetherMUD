@@ -101,6 +101,7 @@ public class GameManager {
     public ItemUseHandler getItemUseHandler() {
         return itemUseHandler;
     }
+
     public GossipCache getGossipCache() {
         return gossipCache;
     }
@@ -207,7 +208,7 @@ public class GameManager {
 
     public void announceConnect(String userName) {
         Set<Player> allPlayers = getAllPlayers();
-        for (Player p: allPlayers) {
+        for (Player p : allPlayers) {
             getChannelUtils().write(p.getPlayerId(), Color.GREEN + userName + " has connected." + Color.RESET + "\r\n", true);
         }
     }
@@ -313,9 +314,9 @@ public class GameManager {
         sb.append("\r\n\r\n");
         //java.lang.String wrap(java.lang.String str, int wrapLength, java.lang.String newLineStr, boolean wrapLongWords)
         sb.append(WordUtils.wrap(playerCurrentRoom.getRoomDescription(), 80, "\r\n", true)).append("\r\n").append("\r\n");
-        //  if (playerCurrentRoom.getMapData().isPresent()) {
-        //      sb.append(playerCurrentRoom.getMapData().get()).append("\r\n");
-        //  }
+        if (playerCurrentRoom.getMapData().isPresent()) {
+            sb.append(mapsManager.drawMap(playerCurrentRoom.getRoomId(), new Coords(5, 5))).append("\r\n");
+        }
         sb.append(getExits(playerCurrentRoom, player)).append("\r\n");
 
         Set<Merchant> merchants = playerCurrentRoom.getMerchants();
@@ -342,7 +343,7 @@ public class GameManager {
         for (String npcId : playerCurrentRoom.getNpcIds()) {
             StringBuilder sbb = new StringBuilder();
             Npc npcEntity = entityManager.getNpcEntity(npcId);
-            if(Main.vowels.contains(Character.toLowerCase(npcEntity.getName().charAt(0)))) {
+            if (Main.vowels.contains(Character.toLowerCase(npcEntity.getName().charAt(0)))) {
                 sbb.append("an ");
             } else {
                 sbb.append("a ");
@@ -351,7 +352,7 @@ public class GameManager {
             npcs.add(sbb.toString());
         }
         Collections.sort(npcs, String.CASE_INSENSITIVE_ORDER);
-        for (String s: npcs) {
+        for (String s : npcs) {
             sb.append(s);
         }
         String msg = null;
