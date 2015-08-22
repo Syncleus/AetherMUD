@@ -45,10 +45,10 @@ public class DirtyBombUseAction implements ItemUseAction {
         }
         for (String npcId : npcIds) {
             Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
-            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npc.getColorName() + " is heavily damaged by a " + item.getItemName() + "!" + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(30000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET);
+            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npc.getColorName() + " is heavily damaged by a " + item.getItemName() + "!" + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(90000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET);
             NpcStatsChangeBuilder npcStatsChangeBuilder = new NpcStatsChangeBuilder();
-            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(30000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
-            npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-30000000).createStats());
+            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(90000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+            npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-90000000).createStats());
             npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             npcStatsChangeBuilder.setPlayer(player);
             npcStatsChangeBuilder.setIsItemDamage(true);
@@ -56,7 +56,7 @@ public class DirtyBombUseAction implements ItemUseAction {
         }
         for (Player presentPlayer : presentPlayers) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is heavily damaged by a " + item.getItemName() + "!");
-            presentPlayer.updatePlayerHealth(-30000000, null);
+            presentPlayer.updatePlayerHealth(-90000000, null);
         }
     }
 
