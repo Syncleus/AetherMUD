@@ -67,10 +67,10 @@ public class ConfigureNpc {
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
         
-        Map<Integer, MerchantItemForSale> nigelBartender = Maps.newLinkedHashMap();
-        nigelBartender.put(1, new MerchantItemForSale(ItemType.BEER, 6));
+        Map<Integer, MerchantItemForSale> nigelForSale = Maps.newLinkedHashMap();
+        nigelForSale.put(1, new MerchantItemForSale(ItemType.BEER, 6));
         
-        NigelBartender nigelBartender = new NigelBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
+        NigelBartender nigelBartender = new NigelBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), nigelForSale);
         gameManager.getRoomManager().addMerchant(377, nigelBartender);
 
         Map<Integer, MerchantItemForSale> blacksmithItems = Maps.newHashMap();
