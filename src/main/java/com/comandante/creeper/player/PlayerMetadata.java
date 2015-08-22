@@ -244,6 +244,9 @@ public class PlayerMetadata implements Serializable {
     }
 
     public String getSetting(String key) {
+        if (playerSettings == null) {
+            playerSettings = Maps.newHashMap();
+        }
         return playerSettings.get(key);
     }
 
