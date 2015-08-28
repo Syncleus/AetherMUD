@@ -123,6 +123,16 @@ public class ConfigureNpc {
         ketilItems.put(5, new MerchantItemForSale(ItemType.STRENGTH_ELIXIR, 3000));
         ketilItems.put(6, new MerchantItemForSale(ItemType.CHRONIC_JOOSE, 5500));
         
+        Map<Integer, MerchantItemForSale> blackbeardItems = Maps.newHashMap();          
+        blackbeardItems.put(1, new MerchantItemForSale(ItemType.IRON_LOCKPICKING_SET, 8000000));
+        blackbeardItems.put(2, new MerchantItemForSale(ItemType.PYAMITE_LOCKPICKING_SET, 8000000));
+        blackbeardItems.put(3, new MerchantItemForSale(ItemType.SPOOL_OF_CLIMBING_ROPE, 8000000));
+        blackbeardItems.put(4, new MerchantItemForSale(ItemType.BLACK_CLOAK, 8000000));
+        blackbeardItems.put(5, new MerchantItemForSale(ItemType.SMELTING_CRUCIBLE, 8000000));
+        blackbeardItems.put(6, new MerchantItemForSale(ItemType.LEATHER_SHOES, 8000000));
+        
+        Rogueshop rogueshop = new Rogueshop(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blackbeardItems);
+        gameManager.getRoomManager().addMerchant(864, rogueshop);
         
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
         gameManager.getRoomManager().addMerchant(66, blacksmith);
