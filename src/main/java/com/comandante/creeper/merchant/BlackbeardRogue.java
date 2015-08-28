@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static com.comandante.creeper.server.Color.BOLD_ON;
 
-public class BlackbeardRogue extends Merchant {
+public class Rogueshop extends Merchant {
     private final static long phraseIntervalMs = 300000;
     private final static String NAME = "blackbeard";
     private final static String welcomeMessage = "Welcome to Blackbeard's Rogue Shop.\r\n";
@@ -21,7 +21,7 @@ public class BlackbeardRogue extends Merchant {
 
     private final static String colorName = BOLD_ON + Color.CYAN + NAME  + Color.RESET ;
 
-    public BlackbeardRogue(GameManager gameManager, Loot loot, Map<Integer, MerchantItemForSale> merchantItemForSales) {
+    public Rogueshop(GameManager gameManager, Loot loot, Map<Integer, MerchantItemForSale> merchantItemForSales) {
         super(gameManager, NAME, colorName, validTriggers, merchantItemForSales, welcomeMessage);
     }
 }
