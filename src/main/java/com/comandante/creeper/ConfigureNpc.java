@@ -131,7 +131,7 @@ public class ConfigureNpc {
         blackbeardItems.put(5, new MerchantItemForSale(ItemType.SMELTING_CRUCIBLE, 8000000));
         blackbeardItems.put(6, new MerchantItemForSale(ItemType.LEATHER_SHOES, 8000000));
         
-        Rogueshop rogueshop = new Rogueshop(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blackbeardItems);
+        BlackbeardRogue rogueshop = new BlackbeardRogue(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blackbeardItems);
         gameManager.getRoomManager().addMerchant(864, rogueshop);
         
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
