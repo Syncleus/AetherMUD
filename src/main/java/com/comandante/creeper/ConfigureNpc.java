@@ -131,6 +131,24 @@ public class ConfigureNpc {
         blackbeardItems.put(5, new MerchantItemForSale(ItemType.SMELTING_CRUCIBLE, 8000000));
         blackbeardItems.put(6, new MerchantItemForSale(ItemType.LEATHER_SHOES, 8000000));
         
+        Map<Integer, MerchantItemForSale> wentworthItems = Maps.newHashMap();          
+        wentworthItems.put(1, new MerchantItemForSale(ItemType.GENTLEMANS_TOP_HAT, 8000000));
+        wentworthItems.put(2, new MerchantItemForSale(ItemType.LEATHER_GLOVES, 8000000));
+        wentworthItems.put(3, new MerchantItemForSale(ItemType.WOOL_SCARF, 8000000));
+        wentworthItems.put(4, new MerchantItemForSale(ItemType.LEATHER_BELT, 8000000));
+        wentworthItems.put(5, new MerchantItemForSale(ItemType.SILK_SASH, 8000000));
+        wentworthItems.put(6, new MerchantItemForSale(ItemType.LEATHER_SCABBARD, 8000000));
+        wentworthItems.put(7, new MerchantItemForSale(ItemType.BYSENSKIN_SCABBARD, 19000000));
+        wentworthItems.put(8, new MerchantItemForSale(ItemType.IRON_SPECTACLES, 8000000));
+        wentworthItems.put(9, new MerchantItemForSale(ItemType.GOLDEN_SPECTACLES, 40000000));
+        wentworthItems.put(10, new MerchantItemForSale(ItemType.NOBLEMANS_SHOULDER_CLASP, 200000000));
+        wentworthItems.put(11, new MerchantItemForSale(ItemType.WOODSMANS_TUNIC, 8000000));
+        wentworthItems.put(12, new MerchantItemForSale(ItemType.PLAIN_WHITE_ROBE, 8000000));
+        wentworthItems.put(13, new MerchantItemForSale(ItemType.FINE_POWDERED_WIG, 30000000));
+        wentworthItems.put(14, new MerchantItemForSale(ItemType.HABROK_FEATHER_HAT, 10000000));
+        wentworthItems.put(15, new MerchantItemForSale(ItemType.POLISHED_IRON_CODPIECE, 30000000));
+        wentworthItems.put(16, new MerchantItemForSale(ItemType.GOLDEN_CODPIECE, 950000000));
+
         BlackbeardRogue rogueshop = new BlackbeardRogue(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blackbeardItems);
         gameManager.getRoomManager().addMerchant(864, rogueshop);
         
@@ -147,6 +165,9 @@ public class ConfigureNpc {
 
         GrimulfWizard grimulfWizard = new GrimulfWizard(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), grimulfItems);
         gameManager.getRoomManager().addMerchant(102, grimulfWizard);
+        
+        WentworthTailor wentworthTailor = new WentworthTailor(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), wentworthItems);
+        gameManager.getRoomManager().addMerchant(865, wentworthTailor);
         
         KetilCommissary ketilCommissary = new KetilCommissary(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), ketilItems);
         gameManager.getRoomManager().addMerchant(420, ketilCommissary);
