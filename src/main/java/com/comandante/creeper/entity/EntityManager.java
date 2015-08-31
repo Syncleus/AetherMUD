@@ -8,12 +8,9 @@ import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
-import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.world.Room;
 import com.comandante.creeper.world.RoomManager;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -32,7 +29,7 @@ public class EntityManager {
     private final HTreeMap<String, Item> items;
     private final HTreeMap<String, Effect> effects;
     private final ConcurrentHashMap<String, CreeperEntity> entities = new ConcurrentHashMap<>();
-    private final ExecutorService ticketRunnerService = Executors.newFixedThreadPool(20);
+    private final ExecutorService mainTickExecutorService = Executors.newFixedThreadPool(50);
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private static final Logger log = Logger.getLogger(EntityManager.class);
@@ -50,8 +47,12 @@ public class EntityManager {
             this.effects = db.createHashMap("effectsMap").valueSerializer(new EffectSerializer()).make();
         }
         this.playerManager = playerManager;
-        ExecutorService tickService = Executors.newFixedThreadPool(1);
-        tickService.submit(new Ticker());
+        ExecutorService tickOrchestratorService = Executors.newFixedThreadPool(5);
+        tickOrchestratorService.submit(new PlayerTicker());
+        tickOrchestratorService.submit(new RoomTicker());
+        tickOrchestratorService.submit(new NpcTicker());
+        tickOrchestratorService.submit(new EntityTicker());
+        tickOrchestratorService.submit(new EffectTicker());
     }
 
     public ConcurrentHashMap<String, Npc> getNpcs() {
@@ -105,7 +106,7 @@ public class EntityManager {
     public Item getItemEntity(String itemId) {
         Item item = items.get(itemId);
         if (item == null) {
-            return item;
+            return null;
         }
         return new Item(item);
     }
@@ -113,16 +114,36 @@ public class EntityManager {
     public Effect getEffectEntity(String effectId) {
         Effect effect = effects.get(effectId);
         if (effect == null) {
-            return effect;
+            return null;
         }
         return new Effect(effect);
     }
 
 
-    class Ticker implements Runnable {
+    class PlayerTicker implements Runnable {
+        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "player_tick_time"));
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    final com.codahale.metrics.Timer.Context context = ticktime.time();
+                    Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
+                    while (players.hasNext()) {
+                        Map.Entry<String, Player> next = players.next();
+                        mainTickExecutorService.submit(next.getValue());
+                    }
+                    context.stop();
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    log.error("Problem with player ticker!", e);
+                    SentryManager.logSentry(this.getClass(), e, "Problem with player ticker!");
+                }
+            }
+        }
+    }
 
-        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "tick_time"));
-
+    class RoomTicker implements Runnable {
+        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "room_tick_time"));
         @Override
         public void run() {
             while (true) {
@@ -131,27 +152,73 @@ public class EntityManager {
                     Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
                     while (rooms.hasNext()) {
                         Map.Entry<Integer, Room> next = rooms.next();
-                        ticketRunnerService.submit(next.getValue());
-                    }
-                    Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
-                    while (players.hasNext()) {
-                        Map.Entry<String, Player> next = players.next();
-                        ticketRunnerService.submit(next.getValue());
-                    }
-                    for (Map.Entry<String, Npc> next : npcs.entrySet()) {
-                        ticketRunnerService.submit(next.getValue());
-                    }
-                    for (Map.Entry<String, CreeperEntity> next : entities.entrySet()) {
-                        ticketRunnerService.submit(next.getValue());
-                    }
-                    for (Map.Entry<String, Effect> next : effects.entrySet()) {
-                        ticketRunnerService.submit(next.getValue());
+                        mainTickExecutorService.submit(next.getValue());
                     }
                     context.stop();
                     Thread.sleep(500);
                 } catch (Exception e) {
-                    log.error("Problem with ticker!", e);
-                    SentryManager.logSentry(this.getClass(), e, "Problem with ticker!");
+                    log.error("Problem with room ticker!", e);
+                    SentryManager.logSentry(this.getClass(), e, "Problem with room ticker!");
+                }
+            }
+        }
+    }
+
+    class NpcTicker implements Runnable {
+        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "npc_tick_time"));
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    final com.codahale.metrics.Timer.Context context = ticktime.time();
+                    for (Map.Entry<String, Npc> next : npcs.entrySet()) {
+                        mainTickExecutorService.submit(next.getValue());
+                    }
+                    context.stop();
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    log.error("Problem with npc ticker!", e);
+                    SentryManager.logSentry(this.getClass(), e, "Problem with npc ticker!");
+                }
+            }
+        }
+    }
+
+    class EntityTicker implements Runnable {
+        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "entity_tick_time"));
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    final com.codahale.metrics.Timer.Context context = ticktime.time();
+                    for (Map.Entry<String, CreeperEntity> next : entities.entrySet()) {
+                        mainTickExecutorService.submit(next.getValue());
+                    }
+                    context.stop();
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    log.error("Problem with entity ticker!", e);
+                    SentryManager.logSentry(this.getClass(), e, "Problem with entity ticker!");
+                }
+            }
+        }
+    }
+
+    class EffectTicker implements Runnable {
+        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "effect_tick_time"));
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    final com.codahale.metrics.Timer.Context context = ticktime.time();
+                    for (Map.Entry<String, Effect> next : effects.entrySet()) {
+                        mainTickExecutorService.submit(next.getValue());
+                    }
+                    context.stop();
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    log.error("Problem with effect ticker!", e);
+                    SentryManager.logSentry(this.getClass(), e, "Problem with effect ticker!");
                 }
             }
         }
