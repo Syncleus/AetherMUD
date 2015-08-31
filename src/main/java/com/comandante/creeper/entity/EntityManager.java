@@ -32,7 +32,7 @@ public class EntityManager {
     private final HTreeMap<String, Item> items;
     private final HTreeMap<String, Effect> effects;
     private final ConcurrentHashMap<String, CreeperEntity> entities = new ConcurrentHashMap<>();
-    private final ExecutorService ticketRunnerService = Executors.newFixedThreadPool(10);
+    private final ExecutorService ticketRunnerService = Executors.newFixedThreadPool(20);
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private static final Logger log = Logger.getLogger(EntityManager.class);
