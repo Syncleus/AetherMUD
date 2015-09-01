@@ -1,19 +1,30 @@
 package com.comandante.creeper.world;
 
+import com.codahale.metrics.Timer;
 import com.comandante.creeper.CreeperConfiguration;
+import com.comandante.creeper.Main;
+import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
+import org.apache.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static com.codahale.metrics.MetricRegistry.name;
 
 public class MapsManager {
 
     private final RoomManager roomManager;
     private final Map<Integer, MapMatrix> floorMatrixMaps;
     private final CreeperConfiguration creeperConfiguration;
+    private final ExecutorService mapGeneratorService = Executors.newFixedThreadPool(1);
+    private static final Logger log = Logger.getLogger(GameManager.class);
+    private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(MapsManager.class, "generate_all_maps_time"));
 
     public MapsManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager) {
         this.roomManager = roomManager;
@@ -21,7 +32,8 @@ public class MapsManager {
         this.creeperConfiguration = creeperConfiguration;
     }
 
-    public void generateAllMaps() {
+    private void generate() {
+        Timer.Context time = ticktime.time();
         int maxRows = creeperConfiguration.defaultMapSize;
         int maxColumns = creeperConfiguration.defaultMapSize;
         Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
@@ -31,6 +43,11 @@ public class MapsManager {
             String s = drawMap(roomId, new Coords(maxRows, maxColumns));
             next.getValue().setMapData(Optional.of(s));
         }
+        time.stop();
+    }
+
+    public void generateAllMaps() {
+        mapGeneratorService.submit(new MapGeneration());
     }
 
     public String drawMap(Integer roomId, Coords max) {
@@ -73,5 +90,12 @@ public class MapsManager {
 
     public Map<Integer, MapMatrix> getFloorMatrixMaps() {
         return floorMatrixMaps;
+    }
+
+    class MapGeneration implements Runnable {
+        @Override
+        public void run() {
+            generate();
+        }
     }
 }
