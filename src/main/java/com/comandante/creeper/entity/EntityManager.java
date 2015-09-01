@@ -52,7 +52,6 @@ public class EntityManager {
         tickOrchestratorService.submit(new RoomTicker());
         tickOrchestratorService.submit(new NpcTicker());
         tickOrchestratorService.submit(new EntityTicker());
-        tickOrchestratorService.submit(new EffectTicker());
     }
 
     public ConcurrentHashMap<String, Npc> getNpcs() {
@@ -203,25 +202,4 @@ public class EntityManager {
             }
         }
     }
-
-    class EffectTicker implements Runnable {
-        private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "effect_tick_time"));
-        @Override
-        public void run() {
-            while (true) {
-                try {
-                    final com.codahale.metrics.Timer.Context context = ticktime.time();
-                    for (Map.Entry<String, Effect> next : effects.entrySet()) {
-                        mainTickExecutorService.submit(next.getValue());
-                    }
-                    context.stop();
-                    Thread.sleep(500);
-                } catch (Exception e) {
-                    log.error("Problem with effect ticker!", e);
-                    SentryManager.logSentry(this.getClass(), e, "Problem with effect ticker!");
-                }
-            }
-        }
-    }
-
 }
