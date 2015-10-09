@@ -118,6 +118,8 @@ public class EquipmentBuilder {
                     return getAexiumLeggings(item);
                 case AEXIUM_SWORD:
                     return getAexiumSword(item);
+                case VIAGRA_SWORD:
+                    return getViagraSword(item);
             }
         }
         return null;
@@ -493,4 +495,12 @@ public class EquipmentBuilder {
         item.setEquipment(equipment);
         return item;
     }
+
+    public static Item getViagraSword(Item item){
+        Stats stats = new StatsBuilder().setArmorRating(12944).setStrength(6305).setWeaponRatingMax(27000).setWeaponRatingMin(20000).setNumberOfWeaponRolls(24).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
 }

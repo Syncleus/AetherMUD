@@ -1532,7 +1532,18 @@ public enum ItemType {
             60,
             false,
             Rarity.LEGENDARY,
-            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet());
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
+    VIAGRA_SWORD(139, Arrays.asList("sword", "viagra sword", "viagra sword"),
+            Color.GREEN + "viagra" + Color.RESET + Color.RED + " sword" + Color.RESET,
+            "a " + Color.GREEN + "viagra" + Color.RESET + Color.RED + " sword" + Color.RESET + " is on the ground.",
+            "a " + Color.GREEN + "viagra" + Color.RESET + Color.RED + " sword" + Color.RESET,
+            false,
+            0,
+            60,
+            true,
+            Rarity.LEGENDARY,
+            100000000, Sets.<TimeTracker.TimeOfDay>newHashSet());
             
     
             

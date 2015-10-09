@@ -122,6 +122,7 @@ public class ConfigureNpc {
         ketilItems.put(4, new MerchantItemForSale(ItemType.PYAMITE_ICEAXE, 10000000));
         ketilItems.put(5, new MerchantItemForSale(ItemType.STRENGTH_ELIXIR, 3000));
         ketilItems.put(6, new MerchantItemForSale(ItemType.CHRONIC_JOOSE, 5500));
+        ketilItems.put(7, new MerchantItemForSale(ItemType.VIAGRA_SWORD, 900000000));
         
         Map<Integer, MerchantItemForSale> blackbeardItems = Maps.newHashMap();          
         blackbeardItems.put(1, new MerchantItemForSale(ItemType.IRON_LOCKPICKING_SET, 8000000));
