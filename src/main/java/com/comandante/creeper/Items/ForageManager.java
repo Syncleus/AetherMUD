@@ -114,8 +114,9 @@ public class ForageManager {
 
 
     public static long getPctSuccessBoostForLevel(long level) {
-        double v = FORAGE_LEVEL_PCT_BOOST_MODIFIER * sqrt(level);
-        return (long) Math.ceil(v);
+        //double v = FORAGE_LEVEL_PCT_BOOST_MODIFIER * sqrt(level);
+        //return (long) Math.ceil(v);
+        return 0;
     }
 
     public static long getLevel(long experience) {
