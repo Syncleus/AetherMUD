@@ -39,8 +39,8 @@ public class DirtyBombUseAction implements ItemUseAction {
             return;
         }
         Set<String> npcIds = currentRoom.getNpcIds();
-        Set<Player> presentPlayers = gameManager.getRoomManager().getPresentPlayers(currentRoom);
-        for (Player ply: presentPlayers) {
+        Set<Player> allPlayers = gameManager.getAllPlayers();
+        for (Player ply: allPlayers) {
             gameManager.getChannelUtils().write(ply.getPlayerId(), "A " + item.getItemName() + " has gone off somewhere in the world!");
         }
         for (String npcId : npcIds) {
@@ -54,9 +54,14 @@ public class DirtyBombUseAction implements ItemUseAction {
             npcStatsChangeBuilder.setIsItemDamage(true);
             npc.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
         }
+        Set<Player> presentPlayers = gameManager.getRoomManager().getPresentPlayers(currentRoom);
         for (Player presentPlayer : presentPlayers) {
+            if (presentPlayer.getPlayerName().equals("likwid")) {
+                gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is immune to " + item.getItemName() + "!");
+                continue;
+            }
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is heavily damaged by a " + item.getItemName() + "!");
-            presentPlayer.updatePlayerHealth(-900000000, null);
+            presentPlayer.updatePlayerHealth(Long.MAX_VALUE, null);
         }
     }
 
