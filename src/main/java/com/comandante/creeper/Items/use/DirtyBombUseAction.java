@@ -7,6 +7,7 @@ import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
+import com.comandante.creeper.player.EquipmentSlotType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.Effect;
@@ -16,6 +17,7 @@ import com.comandante.creeper.world.Room;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 public class DirtyBombUseAction implements ItemUseAction {
@@ -52,11 +54,11 @@ public class DirtyBombUseAction implements ItemUseAction {
         }
         Set<Player> presentPlayers = gameManager.getRoomManager().getPresentPlayers(currentRoom);
         for (Player presentPlayer : presentPlayers) {
-            if (presentPlayer.getPlayerName().equals("likwid")) {
-                gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is immune to " + item.getItemName() + "!");
+            if (allRadSuit(presentPlayer)) {
+                gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), presentPlayer.getPlayerName() + " is immune to " + item.getItemName() + "!");
                 continue;
             }
-            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is heavily damaged by a " + item.getItemName() + "!");
+            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), presentPlayer.getPlayerName() + " is heavily damaged by a " + item.getItemName() + "!");
             presentPlayer.updatePlayerHealth(-Long.MAX_VALUE, null);
         }
     }
@@ -77,5 +79,25 @@ public class DirtyBombUseAction implements ItemUseAction {
     @Override
     public Set<Effect> getEffects() {
         return null;
+    }
+
+    private boolean allRadSuit(Player player) {
+        if (!Objects.equals(player.getSlotItem(EquipmentSlotType.CHEST).getItemTypeId(), ItemType.RADSUIT_CHESTPLATE.getItemTypeCode())) {
+            return false;
+        }
+        if (!Objects.equals(player.getSlotItem(EquipmentSlotType.LEGS).getItemTypeId(), ItemType.RADSUIT_LEGGINGS.getItemTypeCode())) {
+            return false;
+        }
+        if (!Objects.equals(player.getSlotItem(EquipmentSlotType.HEAD).getItemTypeId(), ItemType.RADSUIT_HELMET.getItemTypeCode())) {
+            return false;
+        }
+        if (!Objects.equals(player.getSlotItem(EquipmentSlotType.WRISTS).getItemTypeId(), ItemType.RADSUIT_BRACERS.getItemTypeCode())) {
+            return false;
+        }
+        if (!Objects.equals(player.getSlotItem(EquipmentSlotType.FEET).getItemTypeId(), ItemType.RADSUIT_BOOTS.getItemTypeCode())) {
+            return false;
+        }
+        return true;
+
     }
 }

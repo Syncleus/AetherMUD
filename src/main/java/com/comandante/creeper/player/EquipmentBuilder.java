@@ -120,6 +120,16 @@ public class EquipmentBuilder {
                     return getAexiumSword(item);
                 case VIAGRA_SWORD:
                     return getViagraSword(item);
+                case RADSUIT_CHESTPLATE:
+                    return getRadsuitChestplate(item);
+                case RADSUIT_HELMET:
+                    return getRadsuitHelmet(item);
+                case RADSUIT_BRACERS:
+                    return getRadsuitBracers(item);
+                case RADSUIT_LEGGINGS:
+                    return getRadsuitLeggings(item);
+                case RADSUIT_BOOTS:
+                    return getRadsuitBoots(item);
             }
         }
         return null;
@@ -499,6 +509,41 @@ public class EquipmentBuilder {
     public static Item getViagraSword(Item item){
         Stats stats = new StatsBuilder().setArmorRating(12944).setStrength(6305).setWeaponRatingMax(27000).setWeaponRatingMin(20000).setNumberOfWeaponRolls(24).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getRadsuitChestplate(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(1900).setStrength(7000).setAgile(2135).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.CHEST, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getRadsuitHelmet(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(978).setStrength(731).setAgile(640).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.HEAD, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getRadsuitBracers(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(600).setStrength(499).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.WRISTS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getRadsuitLeggings(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(1500).setStrength(800).setAgile(1400).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
+        item.setEquipment(equipment);
+        return item;
+    }
+
+    public static Item getRadsuitBoots(Item item) {
+        Stats stats = new StatsBuilder().setArmorRating(800).setStrength(540).setAgile(780).createStats();
+        final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
         item.setEquipment(equipment);
         return item;
     }
