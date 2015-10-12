@@ -39,10 +39,6 @@ public class DirtyBombUseAction implements ItemUseAction {
             return;
         }
         Set<String> npcIds = currentRoom.getNpcIds();
-        Set<Player> allPlayers = gameManager.getAllPlayers();
-        for (Player ply: allPlayers) {
-            gameManager.getChannelUtils().write(ply.getPlayerId(), "A " + item.getItemName() + " has gone off somewhere in the world!");
-        }
         for (String npcId : npcIds) {
             Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npc.getColorName() + " is heavily damaged by a " + item.getItemName() + "!" + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(900000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET);
@@ -61,7 +57,7 @@ public class DirtyBombUseAction implements ItemUseAction {
                 continue;
             }
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " is heavily damaged by a " + item.getItemName() + "!");
-            presentPlayer.updatePlayerHealth(Long.MAX_VALUE, null);
+            presentPlayer.updatePlayerHealth(-Long.MAX_VALUE, null);
         }
     }
 
