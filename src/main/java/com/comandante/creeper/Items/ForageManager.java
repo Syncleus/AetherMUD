@@ -46,7 +46,7 @@ public class ForageManager {
         long countOfForagesFound = 0;
         long totalForageXp = 0;
         Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
-        long foragingLevel = playerStatsWithEquipmentAndLevel.getForaging();
+        long foragingLevel = getLevel(playerStatsWithEquipmentAndLevel.getForaging());
         try {
             for (Forage forage : room.getForages().values()) {
                 if (forage.getMinLevel() > foragingLevel) {
