@@ -6,6 +6,7 @@ import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
+import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
 import org.apache.log4j.Logger;
@@ -44,7 +45,8 @@ public class ForageManager {
         gameManager.getChannelUtils().write(player.getPlayerId(), "You scan the ground for plants, herbs and fungi...\r\n");
         long countOfForagesFound = 0;
         long totalForageXp = 0;
-        long foragingLevel = getLevel(gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getStats().getForaging());
+        Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
+        long foragingLevel = playerStatsWithEquipmentAndLevel.getForaging();
         try {
             for (Forage forage : room.getForages().values()) {
                 if (forage.getMinLevel() > foragingLevel) {

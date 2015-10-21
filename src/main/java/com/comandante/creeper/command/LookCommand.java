@@ -30,6 +30,9 @@ public class LookCommand extends Command {
             }
             originalMessageParts.remove(0);
             String target = Joiner.on(" ").join(originalMessageParts);
+            if (target.equalsIgnoreCase("self")) {
+                write(player.getLookString() + "\r\n");
+            }
             //Notables
             for (Map.Entry<String, String> notable : currentRoom.getNotables().entrySet()) {
                 if (notable.getKey().equalsIgnoreCase(target)) {
