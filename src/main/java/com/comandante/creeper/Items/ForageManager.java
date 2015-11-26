@@ -60,9 +60,9 @@ public class ForageManager {
                 forage.setCoolDownTicksLeft(forage.getCoolDownTicks());
                 double foragePctOfSuccess = forage.getPctOfSuccess();
                 long modifiedLevelForForage = getLevel(player.getPlayerStatsWithEquipmentAndLevel().getForaging());
-                long pctSuccessBoostForLevel = getPctSuccessBoostForLevel(modifiedLevelForForage);
+                double pctSuccessBoostForLevel = getPctSuccessBoostForLevel(modifiedLevelForForage);
                 //System.out.prlongln("you get a boost of " + pctSuccessBoostForLevel);
-                foragePctOfSuccess = foragePctOfSuccess + pctSuccessBoostForLevel;
+                foragePctOfSuccess = (foragePctOfSuccess * pctSuccessBoostForLevel) + foragePctOfSuccess;
                 //System.out.prlongln("final pct of success for forage: " + foragePctOfSuccess);
                 if (getRandPercent(foragePctOfSuccess)) {
                     player.updatePlayerForageExperience(forage.getForageExperience());
@@ -115,10 +115,9 @@ public class ForageManager {
     private static double FORAGE_DELAY_TIME_CALCULATION_MODIFIER = 1.91;
 
 
-    public static long getPctSuccessBoostForLevel(long level) {
-        //double v = FORAGE_LEVEL_PCT_BOOST_MODIFIER * sqrt(level);
-        //return (long) Math.ceil(v);
-        return 0;
+    public static double getPctSuccessBoostForLevel(long level) {
+        double v = FORAGE_LEVEL_PCT_BOOST_MODIFIER * sqrt(level);
+        return v;
     }
 
     public static long getLevel(long experience) {
@@ -136,7 +135,7 @@ public class ForageManager {
         return (long) Math.ceil(v);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main1(String[] args) throws InterruptedException {
         long i = 0;
         while (i < 1000000) {
             long level = getLevel(i);
@@ -154,7 +153,7 @@ public class ForageManager {
         level = 0;
         while (level < 60) {
             level++;
-            long xp = getPctSuccessBoostForLevel(level);
+            double xp = getPctSuccessBoostForLevel(level);
             System.out.println("level: " + level + " is bosted by " + xp + "pct.");
         }
 
@@ -167,6 +166,5 @@ public class ForageManager {
 
         Thread.sleep(-1000);
     }
-
 
 }
