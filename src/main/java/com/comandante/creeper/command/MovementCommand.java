@@ -3,6 +3,7 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.PlayerMovement;
+import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.world.RemoteExit;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
@@ -11,6 +12,7 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class MovementCommand extends Command {
@@ -43,6 +45,13 @@ public class MovementCommand extends Command {
             if (player.isActive(CoolDownType.DEATH)) {
                 write("You are dead and can not move.");
                 return;
+            }
+            for (String effectId : playerManager.getPlayerMetadata(playerId).getEffects()) {
+                Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
+                if (effect.isFrozenMovement()) {
+                    write("You are frozen and can not move.");
+                    return;
+                }
             }
             final String command = getRootCommand(e);
             PlayerMovement playerMovement = null;
