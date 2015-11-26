@@ -111,7 +111,7 @@ public class ForageManager {
     }
 
     private static double FORAGE_EXP_CONSTANT_MODIFIER = 0.05;
-    private static double FORAGE_LEVEL_PCT_BOOST_MODIFIER = 3;
+    private static double FORAGE_LEVEL_PCT_BOOST_MODIFIER = .5;
     private static double FORAGE_DELAY_TIME_CALCULATION_MODIFIER = 1.91;
 
 
