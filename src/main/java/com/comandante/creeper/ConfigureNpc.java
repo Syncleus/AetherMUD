@@ -445,5 +445,6 @@ public class ConfigureNpc {
         SpellRegistry.addSpell(new ClumsinessSpell(gameManager));
         SpellRegistry.addSpell(new RestoreSpell(gameManager));
         SpellRegistry.addSpell(new AidsSpell(gameManager));
+        SpellRegistry.addSpell(new FreezeSpell(gameManager));
     }
 }

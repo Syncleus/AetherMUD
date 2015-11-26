@@ -2,6 +2,7 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.Items.use.DefaultApplyStatsAction;
 import com.comandante.creeper.Items.use.DirtyBombUseAction;
+import com.comandante.creeper.Items.use.ResetAllEffectsUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.Effect;
@@ -43,7 +44,7 @@ public class ItemUseRegistry {
         addItemUseAction(new DefaultApplyStatsAction(ItemType.DOGDICKS, buildStats(500,500), Sets.<Effect>newHashSet()));
         
         //Mithaem Leaf
-        addItemUseAction(new DefaultApplyStatsAction(ItemType.MITHAEM_LEAF, buildStats(0,0), resetEffects()));
+        addItemUseAction(new ResetAllEffectsUseAction(ItemType.MITHAEM_LEAF));
 
         //Dirty Bomb
         addItemUseAction(new DirtyBombUseAction(ItemType.DIRTY_BOMB));
