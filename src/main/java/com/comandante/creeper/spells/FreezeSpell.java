@@ -52,7 +52,7 @@ public class FreezeSpell extends Spell {
     public void attackSpell(Set<String> npcIds, Player player) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
         long willpower = playerStats.getWillpower();
-        long i = 50000mo0 + (willpower * 3);
+        long i = 5000000 + (willpower * 3);
         this.setEffects(Sets.newHashSet(freezeEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-i).createStats()).createEffect()));
         super.attackSpell(npcIds, player);
     }
