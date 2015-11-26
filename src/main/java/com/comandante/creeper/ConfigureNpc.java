@@ -441,6 +441,7 @@ public class ConfigureNpc {
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE7_ZONE, radsuitBootsForageBuilder);
 
         SpellRegistry.addSpell(new LightningSpell(gameManager));
+        SpellRegistry.addSpell(new FreezeSpell(gameManager));
         SpellRegistry.addSpell(new ClumsinessSpell(gameManager));
         SpellRegistry.addSpell(new RestoreSpell(gameManager));
         SpellRegistry.addSpell(new AidsSpell(gameManager));
