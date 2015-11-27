@@ -43,6 +43,9 @@ public class ItemUseRegistry {
         //Dog Dick
         addItemUseAction(new DefaultApplyStatsAction(ItemType.DOGDICKS, buildStats(500,500), Sets.<Effect>newHashSet()));
         
+        //Lemon Haze
+        addItemUseAction(new DefaultApplyStatsAction(ItemType.HAZE, buildStats(1000000,1000000), Sets.<Effect>newHashSet()));
+        
         //Mithaem Leaf
         addItemUseAction(new ResetAllEffectsUseAction(ItemType.MITHAEM_LEAF));
 
