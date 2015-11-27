@@ -16,7 +16,7 @@ import java.util.Set;
 
 import static com.comandante.creeper.server.Color.BOLD_ON;
 
-public class BlackholeSpell extends Spell {
+public class BlackHoleSpell extends Spell {
 
     private final static String NAME = BOLD_ON + Color.BLACK + "black" + Color.RESET + " hole";
     private final static String DESCRIPTION = "A black hole.";
@@ -44,7 +44,7 @@ public class BlackholeSpell extends Spell {
             .setFrozenMovement(false)
             .setLifeSpanTicks(2);
 
-    public BlackholeSpell(GameManager gameManager) {
+    public BlackHoleSpell(GameManager gameManager) {
         super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(holeEffect.createEffect()), isAreaSpell, null, coolDownTicks);
     }
 
@@ -52,7 +52,7 @@ public class BlackholeSpell extends Spell {
     public void attackSpell(Set<String> npcIds, Player player) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
         long willpower = playerStats.getWillpower();
-        long i = 66666666666 + (willpower * 3);
+        long i = 66666666666L + (willpower * 3);
         this.setEffects(Sets.newHashSet(holeEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-i).createStats()).createEffect()));
         super.attackSpell(npcIds, player);
     }

@@ -6,10 +6,10 @@ import java.util.Set;
 public class Loot implements Serializable {
 
     private final Set<ItemType> items;
-    private final int lootGoldMax;
-    private final int lootGoldMin;
+    private final long lootGoldMax;
+    private final long lootGoldMin;
 
-    public Loot(int lootGoldMin, int lootGoldMax, Set<ItemType> items) {
+    public Loot(long lootGoldMin, long lootGoldMax, Set<ItemType> items) {
         this.items = items;
         this.lootGoldMax = lootGoldMax;
         this.lootGoldMin = lootGoldMin;
@@ -19,11 +19,11 @@ public class Loot implements Serializable {
         return items;
     }
 
-    public int getLootGoldMax() {
+    public long getLootGoldMax() {
         return lootGoldMax;
     }
 
-    public int getLootGoldMin() {
+    public long getLootGoldMin() {
         return lootGoldMin;
     }
 }

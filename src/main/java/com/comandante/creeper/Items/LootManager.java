@@ -2,6 +2,7 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.managers.GameManager;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang.math.JVMRandom;
 
 import java.util.Random;
 import java.util.Set;
@@ -16,8 +17,8 @@ public class LootManager {
 
     private final Random  random = new Random();
 
-    private int randInt(int min, int max) {
-        return random.nextInt((max - min) + 1) + min;
+    private long randInt(long min, long max) {
+        return JVMRandom.nextLong((max - min) + 1) + min;
     }
 
     public boolean lootDropSuccess(double percent) {
@@ -27,7 +28,7 @@ public class LootManager {
         return randomValue <= percent;
     }
 
-    public int lootGoldAmountReturn(Loot loot) {
+    public long lootGoldAmountReturn(Loot loot) {
         return randInt(loot.getLootGoldMin(), loot.getLootGoldMax());
     }
 

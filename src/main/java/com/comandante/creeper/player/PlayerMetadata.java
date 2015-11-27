@@ -169,7 +169,7 @@ public class PlayerMetadata implements Serializable {
         this.goldInBank = amt;
     }
 
-    protected void incrementGold(int amt) {
+    protected void incrementGold(long amt) {
         this.gold = gold + amt;
     }
 

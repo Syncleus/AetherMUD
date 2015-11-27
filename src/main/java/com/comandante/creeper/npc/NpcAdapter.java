@@ -108,9 +108,9 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         jsonReader.nextName();
         jsonReader.beginObject();
         jsonReader.nextName();
-        final int lootGoldMin = jsonReader.nextInt();
+        final long lootGoldMin = jsonReader.nextLong();
         jsonReader.nextName();
-        final int lootGoldMax = jsonReader.nextInt();
+        final long lootGoldMax = jsonReader.nextLong();
         jsonReader.nextName();
         jsonReader.beginArray();
         Set<ItemType> items = Sets.newHashSet();
@@ -135,37 +135,37 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         while (jsonReader.hasNext()) {
             String nextName = jsonReader.nextName();
             if (nextName.equals("agile")) {
-                statsBuilder.setAgile(jsonReader.nextInt());
+                statsBuilder.setAgile(jsonReader.nextLong());
             } else if (nextName.equals("aim")) {
-                statsBuilder.setAim(jsonReader.nextInt());
+                statsBuilder.setAim(jsonReader.nextLong());
             } else if (nextName.equals("armorRating")) {
-                statsBuilder.setArmorRating(jsonReader.nextInt());
+                statsBuilder.setArmorRating(jsonReader.nextLong());
             } else if (nextName.equals("currentHealth")) {
-                statsBuilder.setCurrentHealth(jsonReader.nextInt());
+                statsBuilder.setCurrentHealth(jsonReader.nextLong());
             } else if (nextName.equals("currentMana")) {
-                statsBuilder.setCurrentMana(jsonReader.nextInt());
+                statsBuilder.setCurrentMana(jsonReader.nextLong());
             } else if (nextName.equals("experience")) {
-                statsBuilder.setExperience(jsonReader.nextInt());
+                statsBuilder.setExperience(jsonReader.nextLong());
             } else if (nextName.equals("maxHealth")) {
-                statsBuilder.setMaxHealth(jsonReader.nextInt());
+                statsBuilder.setMaxHealth(jsonReader.nextLong());
             } else if (nextName.equals("maxMana")) {
-                statsBuilder.setMaxMana(jsonReader.nextInt());
+                statsBuilder.setMaxMana(jsonReader.nextLong());
             } else if (nextName.equals("meleSkill")) {
-                statsBuilder.setMeleSkill(jsonReader.nextInt());
+                statsBuilder.setMeleSkill(jsonReader.nextLong());
             } else if (nextName.equals("numberOfWeaponRolls")) {
-                statsBuilder.setNumberOfWeaponRolls(jsonReader.nextInt());
+                statsBuilder.setNumberOfWeaponRolls(jsonReader.nextLong());
             } else if (nextName.equals("strength")) {
-                statsBuilder.setStrength(jsonReader.nextInt());
+                statsBuilder.setStrength(jsonReader.nextLong());
             } else if (nextName.equals("weaponRatingMax")) {
-                statsBuilder.setWeaponRatingMax(jsonReader.nextInt());
+                statsBuilder.setWeaponRatingMax(jsonReader.nextLong());
             }else if (nextName.equals("weaponRatingMin")) {
-                statsBuilder.setWeaponRatingMin(jsonReader.nextInt());
+                statsBuilder.setWeaponRatingMin(jsonReader.nextLong());
             }else if (nextName.equals("willPower")) {
-                statsBuilder.setWillpower(jsonReader.nextInt());
+                statsBuilder.setWillpower(jsonReader.nextLong());
             }else if (nextName.equals("foraging")) {
-                statsBuilder.setForaging(jsonReader.nextInt());
+                statsBuilder.setForaging(jsonReader.nextLong());
             }else if (nextName.equals("inventorySize")) {
-                statsBuilder.setInventorySize(jsonReader.nextInt());
+                statsBuilder.setInventorySize(jsonReader.nextLong());
             }
         }
         jsonReader.endObject();

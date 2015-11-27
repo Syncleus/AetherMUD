@@ -163,4 +163,16 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         // assumes the target class has a no-args Constructor
         return clazz.getConstructor(GameManager.class).newInstance(gameManager);
     }
+
+    public static boolean isLong(String s) {
+        try {
+            Long.parseLong(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
+    }
 }

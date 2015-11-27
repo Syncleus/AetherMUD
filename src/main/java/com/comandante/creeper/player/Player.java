@@ -251,7 +251,7 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public void transferGoldToBank(int amt) {
+    public void transferGoldToBank(long amt) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
             playerMetadata.transferGoldToBank(amt);
@@ -267,7 +267,7 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public void incrementGold(int amt) {
+    public void incrementGold(long amt) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
             playerMetadata.incrementGold(amt);

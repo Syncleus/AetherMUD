@@ -32,7 +32,7 @@
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
       "maxInstances": 3
-    }, 
+    }
   },
   "validTriggers": [
     "luchtigen",
