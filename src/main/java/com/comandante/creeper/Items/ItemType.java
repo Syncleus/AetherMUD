@@ -1598,7 +1598,51 @@ public enum ItemType {
             60,
             true,
             Rarity.LEGENDARY,
-            100000000, Sets.<TimeTracker.TimeOfDay>newHashSet());
+            100000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            
+    CRYSTALLINE_TABLET(145, Arrays.asList("crystalline tablet", "crystalline", "tablet", "c", "t"),
+            Color.CYAN + "crystalline" + Color.RESET + Color.YELLOW + " tablet " + Color.RESET,
+            "a " + Color.CYAN + "crystalline" + Color.RESET + Color.YELLOW + " tablet " + Color.RESET + "is on the ground.",
+            "a " + Color.CYAN + "golden" + Color.RESET + Color.YELLOW + " tablet " + Color.RESET,
+            false,
+            0,
+            60,
+            false,
+            Rarity.LEGENDARY,
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            
+    STRAND_OF_ALYXITE(146, Arrays.asList("strand of alyxite", "strand", "alyxite", "s", "a"),
+            Color.WHITE + "strand of" + Color.RESET + Color.BOLD_ON + Color.RED + " alyxite " + Color.RESET,
+            "a " + Color.WHITE + "strand of" + Color.RESET + Color.BOLD_ON + Color.RED + " alyxite " + Color.RESET + "is on the ground.",
+            "a " + Color.WHITE + "strand of" + Color.RESET + Color.BOLD_ON + Color.RED + " alyxite " + Color.RESET,
+            false,
+            0,
+            60,
+            false,
+            Rarity.LEGENDARY,
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            
+    GARMR_HIDE(147, Arrays.asList("garmr hide", "garmr", "hide", "g", "h"),
+            Color.WHITE + "garmr" + Color.RESET + Color.BOLD_ON + Color.RED + " hide " + Color.RESET,
+            "a " + Color.WHITE + "garmr" + Color.RESET + Color.BOLD_ON + Color.RED + " hide " + Color.RESET + "is on the ground.",
+            "a " + Color.WHITE + "garmr" + Color.RESET + Color.BOLD_ON + Color.RED + " hide " + Color.RESET,
+            false,
+            0,
+            60,
+            false,
+            Rarity.LEGENDARY,
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            
+    STROMAN_GRAVER(148, Arrays.asList("stroman graver", "stroman", "graver", "s", "g"),
+            Color.RED + Color.BOLD_ON + "stroman" + Color.RESET + Color.BOLD_ON + Color.GREEN + " graver " + Color.RESET,
+            "a " + Color.RED + Color.BOLD_ON + "stroman" + Color.RESET + Color.BOLD_ON + Color.GREEN + " graver " + Color.RESET + "is on the ground.",
+            "a " + Color.RED + Color.BOLD_ON + "stroman" + Color.RESET + Color.BOLD_ON + Color.GREEN + " graver " + Color.RESET,
+            false,
+            0,
+            60,
+            false,
+            Rarity.LEGENDARY,
+            8000000, Sets.<TimeTracker.TimeOfDay>newHashSet());
             
     
             
