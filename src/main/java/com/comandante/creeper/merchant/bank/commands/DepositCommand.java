@@ -25,8 +25,8 @@ public class DepositCommand extends BankCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
-                int depositAmt = Integer.parseInt(originalMessageParts.get(1));
+            if (originalMessageParts.size() > 1 && Command.isLong(originalMessageParts.get(1))) {
+                long depositAmt = Long.parseLong(originalMessageParts.get(1));
                 if (areFundsAvailable(depositAmt)) {
                     player.transferGoldToBank(depositAmt);
                     write("Your funds of " + NumberFormat.getNumberInstance(Locale.US).format(depositAmt) + Color.YELLOW + " gold " + Color.RESET + "have been transferred to your bank account."+ "\r\n");
