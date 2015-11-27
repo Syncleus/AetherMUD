@@ -1,0 +1,41 @@
+{
+  "name": "garmr",
+  "colorName": "\u001B[1m\u001B[35mgarmr\u001B[0m",
+  "dieMessage": "the \u001B[1m\u001B[35mgarmr\u001B[0m falls to the ground and convulses in death.",
+  "loot": {
+    "lootGoldMin": 26400000000,
+    "lootGoldMax": 31200000000,
+    "lootItems": [147]
+  },
+  "roamAreas": [
+    "toft5_zone"
+  ],
+  "stats": {
+    "agile": 4800000,
+    "aim": 4752000,
+    "armorRating": 21600000,
+    "currentHealth": 1080000000,
+    "currentMana": 816000000,
+    "experience": 6960000000,
+    "maxHealth": 1080000000,
+    "maxMana": 384000000,
+    "meleSkill": 55200000,
+    "numberOfWeaponRolls": 2000,
+    "strength": 46800000,
+    "weaponRatingMax": 84000000,
+    "weaponRatingMin": 52800000,
+    "willPower": 48000000
+  },
+  "spawnAreas": {
+    "toft5_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 1
+    } 
+  },
+  "validTriggers": [
+    "garmr",
+    "g"
+  ]
+}
