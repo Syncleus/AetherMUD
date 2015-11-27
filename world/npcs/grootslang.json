@@ -1,0 +1,41 @@
+{
+  "name": "grootslang",
+  "colorName": "\u001B[1m\u001B[35mgrootslang\u001B[0m",
+  "dieMessage": "the \u001B[1m\u001B[35mgrootslang\u001B[0m falls to the ground and convulses in death.",
+  "loot": {
+    "lootGoldMin": 11000000000,
+    "lootGoldMax": 13000000000,
+    "lootItems": [146]
+  },
+  "roamAreas": [
+    "toft5_zone"
+  ],
+  "stats": {
+    "agile": 2000000,
+    "aim": 1980000,
+    "armorRating": 9000000,
+    "currentHealth": 450000000,
+    "currentMana": 340000000,
+    "experience": 2900000000,
+    "maxHealth": 450000000,
+    "maxMana": 160000000,
+    "meleSkill": 23000000,
+    "numberOfWeaponRolls": 850,
+    "strength": 19500000,
+    "weaponRatingMax": 35000000,
+    "weaponRatingMin": 22000000,
+    "willPower": 20000000
+  },
+  "spawnAreas": {
+    "toft5_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 2
+    } 
+  },
+  "validTriggers": [
+    "grootslang",
+    "g"
+  ]
+}
