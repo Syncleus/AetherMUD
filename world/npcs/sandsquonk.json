@@ -1,0 +1,50 @@
+{
+  "name": "sand squonk",
+  "colorName": "sand \u001B[1m\u001B[35msquonk\u001B[0m",
+  "dieMessage": "the sand \u001B[1m\u001B[35msquonk\u001B[0m falls to the ground and convulses in death.",
+  "loot": {
+    "lootGoldMin": 104000000000,
+    "lootGoldMax": 124000000000,
+    "lootItems": [152]
+  },
+  "roamAreas": [
+    "bloodridge18_zone",
+    "bloodridge19_zone"
+  ],
+  "stats": {
+    "agile": 19200000,
+    "aim": 19002000,
+    "armorRating": 84000000,
+    "currentHealth": 4400000000,
+    "currentMana": 2600000000,
+    "experience": 22000000000,
+    "maxHealth": 4400000000,
+    "maxMana": 1400000000,
+    "meleSkill": 208000000,
+    "numberOfWeaponRolls": 8000,
+    "strength": 182000000,
+    "weaponRatingMax": 334000000,
+    "weaponRatingMin": 210000000,
+    "willPower": 196000000
+  },
+  "spawnAreas": {
+    "bloodridge18_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 1
+    },
+    "bloodridge19_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 2
+    }
+  },
+  "validTriggers": [
+    "sand squonk",
+    "sand",
+    "squonk",
+    "s"
+  ]
+}
