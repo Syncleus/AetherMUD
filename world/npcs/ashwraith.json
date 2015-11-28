@@ -1,0 +1,51 @@
+{
+  "name": "ash wraith",
+  "colorName": "ash \u001B[1m\u001B[35mwraith\u001B[0m",
+  "dieMessage": "the ash \u001B[1m\u001B[35mwraith\u001B[0m falls to the ground and convulses in death.",
+  "loot": {
+    "lootGoldMin": 73000000000,
+    "lootGoldMax": 94000000000,
+    "lootItems": [150]
+  },
+  "roamAreas": [
+    "bloodridge18_zone",
+    "bloodridge19_zone"
+  ],
+  "stats": {
+    "agile": 1400000,
+    "aim": 1302000,
+    "armorRating": 63000000,
+    "currentHealth": 3300000000,
+    "currentMana": 1900000000,
+    "experience": 17000000000,
+    "maxHealth": 3300000000,
+    "maxMana": 1100000000,
+    "meleSkill": 144000000,
+    "numberOfWeaponRolls": 5000,
+    "strength": 144000000,
+    "weaponRatingMax": 222000000,
+    "weaponRatingMin": 190000000,
+    "willPower": 142000000
+  },
+  "spawnAreas": {
+    "bloodridge18_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 2
+    },
+    "bloodridge19_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 1
+    }
+  },
+  "validTriggers": [
+    "ash wraith",
+    "ash",
+    "wraith",
+    "a",
+    "w"
+  ]
+}
