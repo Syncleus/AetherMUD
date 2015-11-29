@@ -40,7 +40,7 @@ public class BlackHoleSpell extends Spell {
             .setEffectDescription("a dark vortex of nothingness.")
             .setEffectName(Color.BOLD_ON + Color.BLACK + "Black vortex of" + Color.RESET + Color.BOLD_ON + Color.BLUE + " NOTHING" + Color.RESET)
             .setDurationStats(new StatsBuilder().createStats())
-            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-15000000000).createStats())
+            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-15000000000L).createStats())
             .setFrozenMovement(false)
             .setLifeSpanTicks(2);
 
