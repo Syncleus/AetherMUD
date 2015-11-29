@@ -1,0 +1,41 @@
+{
+  "name": "dhampir",
+  "colorName": "\u001B[1m\u001B[35mdhampir\u001B[0m",
+  "dieMessage": "the \u001B[1m\u001B[35mdhampir\u001B[0m falls to the ground and convulses in death.",
+  "loot": {
+    "lootGoldMin": 2600000000000,
+    "lootGoldMax": 3100000000000,
+    "lootItems": [156]
+  },
+  "roamAreas": [
+    "bloodridge20_zone"
+  ],
+  "stats": {
+    "agile": 480000000,
+    "aim": 500020000,
+    "armorRating": 2000000000,
+    "currentHealth": 100000000000,
+    "currentMana": 70000000000,
+    "experience": 550000000000,
+    "maxHealth": 110000000000,
+    "maxMana": 35000000000,
+    "meleSkill": 5200000000,
+    "numberOfWeaponRolls": 200000,
+    "strength": 4600000000,
+    "weaponRatingMax": 7000000000,
+    "weaponRatingMin": 5250000000,
+    "willPower": 4600000000
+  },
+  "spawnAreas": {
+    "bloodridge20_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 2
+    }
+  },
+  "validTriggers": [
+    "dhampir",
+    "d"
+  ]
+}
