@@ -1,0 +1,44 @@
+{
+  "name": "gray lindorm",
+  "colorName": "gray \u001B[1m\u001B[35mlindorm\u001B[0m",
+  "dieMessage": "the gray \u001B[1m\u001B[35mlindorm\u001B[0m falls to the ground and convulses in death.",
+  "loot": {
+    "lootGoldMin": 4160000000000,
+    "lootGoldMax": 4960000000000,
+    "lootItems": [157]
+  },
+  "roamAreas": [
+    "bloodridge20_zone"
+  ],
+  "stats": {
+    "agile": 768000000,
+    "aim": 800002000,
+    "armorRating": 3200000000,
+    "currentHealth": 160000000000,
+    "currentMana": 112000000000,
+    "experience": 885000000000,
+    "maxHealth": 161000000000,
+    "maxMana": 56000000000,
+    "meleSkill": 8020000000,
+    "numberOfWeaponRolls": 320000,
+    "strength": 7360000000,
+    "weaponRatingMax": 11200000000,
+    "weaponRatingMin": 8025000000,
+    "willPower": 7300000000
+  },
+  "spawnAreas": {
+    "bloodridge20_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 2
+    }
+  },
+  "validTriggers": [
+    "gray lindorm",
+    "lindorm",
+    "gray",
+    "g",
+    "l"
+  ]
+}
