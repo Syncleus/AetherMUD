@@ -1,0 +1,51 @@
+{
+  "name": "ridge leprechaun",
+  "colorName": "ridge \u001B[1m\u001B[35mleprechaun\u001B[0m",
+  "dieMessage": "the ridge \u001B[1m\u001B[35mleprechaun\u001B[0m falls to the ground and convulses in death.",
+  "loot": {
+    "lootGoldMin": 1300000000000,
+    "lootGoldMax": 1800000000000,
+    "lootItems": [154]
+  },
+  "roamAreas": [
+    "bloodridge19_zone",
+    "bloodridge20_zone"
+  ],
+  "stats": {
+    "agile": 280000000,
+    "aim": 300002000,
+    "armorRating": 1200000000,
+    "currentHealth": 60000000000,
+    "currentMana": 42000000000,
+    "experience": 300000000000,
+    "maxHealth": 66000000000,
+    "maxMana": 21000000000,
+    "meleSkill": 3000000000,
+    "numberOfWeaponRolls": 120000,
+    "strength": 2660000000,
+    "weaponRatingMax": 4200000000,
+    "weaponRatingMin": 3105000000,
+    "willPower": 2600000000
+  },
+  "spawnAreas": {
+    "bloodridge19_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 1
+    },
+    "bloodridge20_zone": {
+      "randomChance": 90,
+      "maxPerRoom": 1,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 2
+    }
+  },
+  "validTriggers": [
+    "ridge leprechaun",
+    "ridge",
+    "leprechaun",
+    "r",
+    "l"
+  ]
+}
