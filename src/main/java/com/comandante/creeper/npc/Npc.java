@@ -325,7 +325,7 @@ public class Npc extends CreeperEntity {
         }
     }
 
-    private String getBattleReport(int xpEarned) {
+    private String getBattleReport(long xpEarned) {
         StringBuilder sb = new StringBuilder();
         sb.append(Color.MAGENTA).append("Battle Report----------------------------").append(Color.RESET).append("\r\n");
         sb.append("You killed a ");
@@ -381,7 +381,7 @@ public class Npc extends CreeperEntity {
             if (p == null) {
                 continue;
             }
-            int xpEarned = (int) Math.round(playerDamageExperience.getValue());
+            long xpEarned = (long) Math.round(playerDamageExperience.getValue());
             p.addExperience(xpEarned);
             gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) + "\r\n", true);
         }
