@@ -932,9 +932,14 @@ public class Player extends CreeperEntity {
                 damageToVictim = getAttackAmt(playerStats, npcStats);
             }
             if (damageToVictim > 0) {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
-                npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
-                npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
+                if (randInt(0, 100) > 95) {
+                   final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack!" + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                   npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(damageToVictim*3)).createStats());
+                   npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg)); 
+                } else {
+                  final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                  npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
+                  npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             } else {
                 final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + "You MISS " + npc.getName() + "!";
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
