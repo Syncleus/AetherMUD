@@ -29,23 +29,22 @@ public class HealingSpell extends Spell {
     private static int manaCost = 80000000;
     private final static int coolDownTicks = 20;
 
-    private static EffectBuilder burnEffect = new EffectBuilder()
+    private static EffectBuilder fullHealEffect = new EffectBuilder()
             .setEffectApplyMessages(Lists.newArrayList("An aura of " + Color.BOLD_ON + Color.MAGENTA + "healing" + Color.RESET + " surrounds you"))
             .setEffectDescription("Heals a target to full health.")
             .setEffectName(Color.BOLD_ON + Color.MAGENTA + "healing" + Color.RESET + Color.BOLD_ON + Color.YELLOW + " AURA" + Color.RESET)
             .setDurationStats(new StatsBuilder().createStats())
-            .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(stats.getMaxHealth).createStats())
             .setFrozenMovement(false)
             .setLifeSpanTicks(1);
 
     public HealingSpell(GameManager gameManager) {
-        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(burnEffect.createEffect()), isAreaSpell, null, coolDownTicks);
+        super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.newHashSet(fullHealEffect.createEffect()), isAreaSpell, null, coolDownTicks);
     }
 
     @Override
     public void attackSpell(Player destinationPlayer, Player sourcePlayer) {
         Stats stats = sourcePlayer.getPlayerStatsWithEquipmentAndLevel();
-        this.setEffects(Sets.newHashSet(burnEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth((stats.getMaxHealth).createStats()).createEffect()));
+        this.setEffects(Sets.newHashSet(fullHealEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth((stats.getMaxHealth())).createStats()).createEffect()));
         super.attackSpell(destinationPlayer, sourcePlayer);
     }
 }
