@@ -43,7 +43,7 @@ public class HealingSpell extends Spell {
 
     @Override
     public void attackSpell(Player destinationPlayer, Player sourcePlayer) {
-        Stats stats = sourcePlayer.getPlayerStatsWithEquipmentAndLevel();
+        Stats stats = destinationPlayer.getPlayerStatsWithEquipmentAndLevel();
         this.setEffects(Sets.newHashSet(fullHealEffect.setApplyStatsOnTick(new StatsBuilder().setCurrentHealth((stats.getMaxHealth())).createStats()).createEffect()));
         super.attackSpell(destinationPlayer, sourcePlayer);
     }
