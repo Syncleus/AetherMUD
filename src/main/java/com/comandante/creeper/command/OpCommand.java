@@ -41,6 +41,9 @@ public class OpCommand extends Command {
         configure(e);
         try {
             //ghetto and will only work for one channel bots.
+            if (originalMessageParts.size() <= 1) {
+                return;
+            }
             originalMessageParts.remove(0);
             String desiredNickNameToOp = Joiner.on(" ").join(originalMessageParts);
             UserChannelDao<User, Channel> userChannelDao = gameManager.getIrcBotService().getBot().getUserChannelDao();
