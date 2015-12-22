@@ -51,13 +51,9 @@ public class OpCommand extends Command {
             }
             ImmutableSortedSet<Channel> channels = user.getChannels();
             for (Channel channel : channels) {
-                if (channel.getName().equals(gameManager.getCreeperConfiguration().ircChannel)) {
                     channel.send().op(user);
-                    write("Ops given.");
-                    return;
+                    write("Ops given in channel " + channel.getName());
                 }
-            }
-            write("Unable to give ops to user.");
         } finally {
             super.messageReceived(ctx, e);
         }
