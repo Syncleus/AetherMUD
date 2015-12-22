@@ -23,9 +23,9 @@ import java.util.Set;
 
 public class OpCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("open", "o");
-    final static String description = "Open a locker.";
-    final static String correctUsage = "open lockers";
+    final static List<String> validTriggers = Arrays.asList("op");
+    final static String description = "Give a user in the IRC channel ops.";
+    final static String correctUsage = "op fibs";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
     public OpCommand(GameManager gameManager) {
