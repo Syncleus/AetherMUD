@@ -87,5 +87,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new SystemInfo(gameManager));
         creeperCommandRegistry.addCommand(new SetCommand(gameManager));
         creeperCommandRegistry.addCommand(new DelCommand(gameManager));
+        creeperCommandRegistry.addCommand(new OpCommand(gameManager));
     }
 }
