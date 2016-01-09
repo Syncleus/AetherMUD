@@ -153,8 +153,10 @@ public class Player extends CreeperEntity {
             }
             if (!isActive(CoolDownType.DEATH)) {
                 long newGold = getPlayerMetadata().getGold() / 2;
-                getPlayerMetadata().setGold(newGold);
-                gameManager.getChannelUtils().write(getPlayerId(), "You just " + Color.BOLD_ON + Color.RED + "lost " + Color.RESET + newGold + "  gold!\r\n");
+                PlayerMetadata playerMetadata = getPlayerMetadata();
+                playerMetadata.setGold(newGold);
+                gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+                gameManager.getChannelUtils().write(getPlayerId(), "You just " + Color.BOLD_ON + Color.RED + "lost " + Color.RESET + newGold + Color.YELLOW + " gold" + Color.RESET + "!\r\n");
                 CoolDown death = new CoolDown(CoolDownType.DEATH);
                 addCoolDown(death);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");

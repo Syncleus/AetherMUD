@@ -37,7 +37,17 @@ public abstract class Spell {
     private static final Logger log = Logger.getLogger(Spell.class);
 
 
-    public Spell(GameManager gameManager, Set<String> validTriggers, int manaCost, Stats attackStats, List<String> attackMessages, String spellDescription, String spellName, Set<Effect> effects, boolean isAreaSpell, SpellExecute spellExecute, int coolDownTicks) {
+    public Spell(GameManager gameManager,
+                 Set<String> validTriggers,
+                 int manaCost,
+                 Stats attackStats,
+                 List<String> attackMessages,
+                 String spellDescription,
+                 String spellName,
+                 Set<Effect> effects,
+                 boolean isAreaSpell,
+                 SpellExecute spellExecute,
+                 int coolDownTicks) {
         this.gameManager = gameManager;
         this.validTriggers = validTriggers;
         this.manaCost = manaCost;

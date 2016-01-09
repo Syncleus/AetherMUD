@@ -3,7 +3,7 @@ package com.comandante.creeper.player;
 
 public enum CoolDownType {
 
-    DEATH("death", 30),
+    DEATH("death", 150),
     FORAGE_LONG("forage-long", 7),
     FORAGE_MEDIUM("forage-medium", 4),
     FORAGE_SHORT("forage-short", 3),
@@ -11,7 +11,6 @@ public enum CoolDownType {
     SPELL("",0),
     NPC_FIGHT("fight",30),
     NPC_ROAM("npc-roam", 600);
-
     private final String name;
     private final int ticks;
 
