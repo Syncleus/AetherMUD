@@ -14,27 +14,28 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
     private final GameManager gameManager;
     private final CreeperAuthenticator creeperAuthenticator;
     private static final Logger log = Logger.getLogger(CreeperAuthenticationHandler.class);
-
-
-
-
-    private static final String LOGO = "         / \\\n\r" +
-            "        |\\_/|\n\r" +
-            "        |---|\n\r" +
-            "        |   |\n\r" +
-            "        |   |\n\r" +
-            "      _ |=-=| _\n\r" +
-            "  _  / \\|   |/ \\\n\r" +
-            " / \\|   |   |   ||\\\n\r" +
-            "|   |   |   |   | \\>\n\r" +
-            "|   |   |   |   |   \\\n\r" +
-            "| -   -   -   - |)   )\n\r" +
-            "|                   /\n\r" +
-            " \\                 /\n\r" +
-            "  \\               /\n\r" +
-            "   \\             /\n\r" +
-            "    \\           /\n\r" +
-            "     |         |\n\r";
+    private static final String LOGO = "                          /[-])//  ___\n\r" +
+            "                     __ --\\ `_/~--|  / \\\n\r" +
+            "                   /_-/~~--~~ /~~~\\\\_\\ /\\\n\r" +
+            "                   |  |___|===|_-- | \\ \\ \\\n\r" +
+            " _/~~~~~~~~|~~\\,   ---|---\\___/----|  \\/\\-\\\n\r" +
+            " ~\\________|__/   / // \\__ |  ||  / | |   | |\n\r" +
+            "          ,~-|~~~~~\\--, | \\|--|/~|||  |   | |\n\r" +
+            "          [3-|____---~~ _--'==;/ _,   |   |_|\n\r" +
+            "                      /   /\\__|_/  \\  \\__/--/\n\r" +
+            "                     /---/_\\  -___/ |  /,--|\n\r" +
+            "                     /  /\\/~--|   | |  \\///\n\r" +
+            "                    /  / |-__ \\    |/\n\r" +
+            "                   |--/ /      |-- | \\\n\r" +
+            "                  \\^~~\\\\/\\      \\   \\/- _\n\r" +
+            "                   \\    |  \\     |~~\\~~| \\\n\r" +
+            "                    \\    \\  \\     \\   \\  | \\\n\r" +
+            "                      \\    \\ |     \\   \\    \\\n\r" +
+            "                       |~~|\\/\\|     \\   \\   |\n\r" +
+            "                      |   |/         \\_--_- |\\\n\r" +
+            "                      |  /            /   |/\\/\n\r" +
+            "                       ~~             /  /\n\r" +
+            "                                     |__/\n\r";
 
     public CreeperAuthenticationHandler(GameManager gameManager) {
         this.gameManager = gameManager;

@@ -15,6 +15,7 @@ public class BotCommandFactory {
         addCommand(new CheckNorrisBotCommand(botCommandManager));
         addCommand(new DictionaryBotCommand(botCommandManager));
         addCommand(new ImdbBotCommand(botCommandManager));
+        addCommand(new ForecastCommand(botCommandManager));
     }
 
     public BotCommand getCommand(String originalFullCmd) {

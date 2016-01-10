@@ -13,6 +13,8 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class WeatherManager {
@@ -36,12 +38,24 @@ public class WeatherManager {
                 });
     }
 
+    public List<String> getWeatherForecast(String zipCode) throws IOException {
+        List<String> resp = Lists.newArrayList();
+        GenericUrl url = new GenericUrl("http://api.wunderground.com/api/" + creeperConfiguration.weatherUndergroundApiKey + "/forecast/q/" + zipCode + ".json");
+        HttpRequest httpRequest = requestFactory.buildGetRequest(url);
+        GenericJson content = httpRequest.execute().parseAs(GenericJson.class);
+        List<String> forecastString = getForecastString(content);
+        String s = forecastString.get(0);
+        forecastString.set(0, zipCode + ": " + s);
+        resp.addAll(forecastString);
+        return resp;
+    }
+
     public List<String> getWeather(String zipCode) throws IOException {
         List<String> resp = Lists.newArrayList();
         GenericUrl url = new GenericUrl("http://api.wunderground.com/api/" + creeperConfiguration.weatherUndergroundApiKey + "/conditions/q/" + zipCode + ".json");
         HttpRequest httpRequest = requestFactory.buildGetRequest(url);
         GenericJson content = httpRequest.execute().parseAs(GenericJson.class);
-        resp.addAll(getForecastString(content));
+        resp.addAll(getCurrentConditionsString(content));
         return resp;
     }
 
@@ -54,7 +68,44 @@ public class WeatherManager {
         return resp;
     }
 
+    public List<String> getWeatherForecast(String cityName, String state) throws IOException {
+        List<String> resp = Lists.newArrayList();
+        GenericUrl url = new GenericUrl("http://api.wunderground.com/api/" + creeperConfiguration.weatherUndergroundApiKey + "/forecast/q/" + state.toUpperCase() + "/" + convertToUrlFriendly(cityName) + ".json");
+        HttpRequest httpRequest = requestFactory.buildGetRequest(url);
+        GenericJson content = httpRequest.execute().parseAs(GenericJson.class);
+        List<String> forecastString = getForecastString(content);
+        String s = forecastString.get(0);
+        forecastString.set(0, convertToUrlFriendly(cityName) + "," + state.toUpperCase() + ": " + s);
+        resp.addAll(forecastString);
+        return resp;
+    }
+
     private List<String> getForecastString(GenericJson content) {
+        List<String> response = Lists.newArrayList();
+        StringBuilder respLin = new StringBuilder();
+        try {
+            ArrayMap forecast = (ArrayMap) content.get("forecast");
+            ArrayMap simpleforecast = (ArrayMap) forecast.get("simpleforecast");
+            ArrayList forecastday = (ArrayList) simpleforecast.get("forecastday");
+            Iterator iterator = forecastday.iterator();
+            while (iterator.hasNext()) {
+                ArrayMap day = (ArrayMap) iterator.next();
+                ArrayMap date = (ArrayMap) day.get("date");
+                ArrayMap high = (ArrayMap) day.get("high");
+                ArrayMap low = (ArrayMap) day.get("low");
+                String conditions = (String) day.get("conditions");
+                respLin.append(date.get("weekday_short")).append(" ").append((String)high.get("fahrenheit")).append("F/").append((String)low.get("fahrenheit")).append("F ").append("(").append(conditions).append(")").append(" | ");
+
+            }
+        } catch (Exception e) {
+            log.error("Error obtaining weather!", e);
+        }
+        String finalstring = respLin.toString().substring(0, respLin.toString().length() - 2);
+        response.add(finalstring);
+        return response;
+    }
+
+    private List<String> getCurrentConditionsString(GenericJson content) {
         List<String> response = Lists.newArrayList();
         try {
             ArrayMap current_observation = (ArrayMap) content.get("current_observation");
