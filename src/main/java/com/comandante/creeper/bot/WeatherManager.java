@@ -64,7 +64,7 @@ public class WeatherManager {
         GenericUrl url = new GenericUrl("http://api.wunderground.com/api/" + creeperConfiguration.weatherUndergroundApiKey + "/conditions/q/" + state.toUpperCase() + "/" + convertToUrlFriendly(cityName) + ".json");
         HttpRequest httpRequest = requestFactory.buildGetRequest(url);
         GenericJson content = httpRequest.execute().parseAs(GenericJson.class);
-        resp.addAll(getForecastString(content));
+        resp.addAll(getCurrentConditionsString(content));
         return resp;
     }
 
