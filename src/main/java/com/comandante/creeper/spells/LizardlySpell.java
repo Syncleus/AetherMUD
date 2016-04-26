@@ -24,30 +24,30 @@ import java.util.Set;
 
 import static com.comandante.creeper.server.Color.BOLD_ON;
 
-public class AidsSpell extends Spell {
+public class LizardlySpell extends Spell {
 
-    private final static String NAME = BOLD_ON + Color.RED + "aids" + Color.RESET;
-    private final static String DESCRIPTION = "Your target is AIDS positive.";
+    private final static String NAME = BOLD_ON + Color.YELLOW + "lizzards" + Color.RESET;
+    private final static String DESCRIPTION = "Your target is LIZARDLY!!!!";
     private final static Set<String> validTriggers = new HashSet<String>(Arrays.asList(new String[]
-                    {"aids", "a", NAME}
+                    {"lizardly", "liz", NAME}
     ));
     private final static Stats attackStats = new StatsBuilder().createStats();
     private final static boolean isAreaSpell = false;
 
-    private final static List<String> attackMessages = Lists.newArrayList("tainted blood is flung through the air... " + BOLD_ON + Color.RED + "aids" + Color.RESET + "!!!!");
+    private final static List<String> attackMessages = Lists.newArrayList("tainted lizzard blood is flung through the air... " + BOLD_ON + Color.YELLOW + "lizardly" + Color.RESET + "!!!!");
     private final static int manaCost = 300;
     private final static int coolDownTicks = 30;
 
     private static EffectBuilder aids = new EffectBuilder()
-            .setEffectApplyMessages(Lists.newArrayList("You feel closer to daeth as " + Color.BOLD_ON + Color.RED + "aids" + Color.RESET + " destroys your will to live!"))
+            .setEffectApplyMessages(Lists.newArrayList("You feel closer to death as " + Color.BOLD_ON + Color.YELLOW + "lizzardly" + Color.RESET + " destroys your will to live!"))
             .setEffectDescription("Target has aids.")
             .setEffectName(Color.BOLD_ON + Color.RED + "aids" + Color.RESET + Color.BOLD_ON + Color.BLUE + " FOR LIFE" + Color.RESET)
             .setDurationStats(new StatsBuilder().createStats())
             .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-1000).createStats())
             .setFrozenMovement(false)
-            .setLifeSpanTicks(86400);
+            .setLifeSpanTicks(5);
 
-    public AidsSpell(GameManager gameManager) {
+    public LizardlySpell(GameManager gameManager) {
         super(gameManager, validTriggers, manaCost, attackStats, attackMessages, DESCRIPTION, NAME, Sets.<Effect>newHashSet(), isAreaSpell, null, coolDownTicks);
     }
 

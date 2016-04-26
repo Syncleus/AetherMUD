@@ -5,7 +5,6 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.spells.AidsSpell;
 import com.comandante.creeper.spells.Spell;
 import com.comandante.creeper.spells.SpellRegistry;
 import com.google.common.base.Joiner;
