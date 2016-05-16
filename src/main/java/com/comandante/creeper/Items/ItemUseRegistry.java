@@ -12,7 +12,6 @@ import com.google.api.client.util.Maps;
 import com.google.api.client.util.Sets;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,7 +40,7 @@ public class ItemUseRegistry {
         addItemUseAction(new DefaultApplyStatsAction(ItemType.MARIJUANA, buildStats(500,500), Sets.<Effect>newHashSet()));
 
         //Dog Dick
-        addItemUseAction(new DefaultApplyStatsAction(ItemType.DOGDICKS, buildStats(500,500), Sets.<Effect>newHashSet()));
+        addItemUseAction(new DefaultApplyStatsAction(ItemType.DOGNOSES, buildStats(500,500), Sets.<Effect>newHashSet()));
         
         //Lemon Haze
         addItemUseAction(new DefaultApplyStatsAction(ItemType.HAZE, buildStats(1000000,1000000), Sets.<Effect>newHashSet()));

@@ -20,7 +20,7 @@ public class TeleportCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("teleport", "t");
     final static String description = "Teleport to a roomId or playerId.";
     final static String correctUsage = "teleport <roomId|playerName>";
-    final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN, PlayerRole.TELEPORTER);
+    final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.GOD);
 
 
     final static String teleportMessage = "A " + Color.YELLOW + "lightning" + Color.RESET + " bolt descends from the sky and annihilates the earth below." + "\r\n";

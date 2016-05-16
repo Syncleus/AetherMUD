@@ -4,7 +4,8 @@ public enum PlayerRole {
 
     ADMIN("administrator", 1),
     MORTAL("mortal", 2),
-    TELEPORTER("teleporter", 3);
+    TELEPORTER("teleporter", 3),
+    GOD("god", 3);
     
     private final String roleType;
     private final int roleId;
