@@ -38,18 +38,6 @@ public class ItemUseRegistry {
 
         //Marijuana
         addItemUseAction(new DefaultApplyStatsAction(ItemType.MARIJUANA, buildStats(500,500), Sets.<Effect>newHashSet()));
-
-        //Dog Dick
-        addItemUseAction(new DefaultApplyStatsAction(ItemType.DOGNOSES, buildStats(500,500), Sets.<Effect>newHashSet()));
-        
-        //Lemon Haze
-        addItemUseAction(new DefaultApplyStatsAction(ItemType.HAZE, buildStats(1000000,1000000), Sets.<Effect>newHashSet()));
-        
-        //Mithaem Leaf
-        addItemUseAction(new ResetAllEffectsUseAction(ItemType.MITHAEM_LEAF));
-
-        //Dirty Bomb
-        addItemUseAction(new DirtyBombUseAction(ItemType.DIRTY_BOMB));
     }
 
     private static Stats buildStats(int health, int mana) {
@@ -58,7 +46,6 @@ public class ItemUseRegistry {
         statsBuilder.setCurrentMana(mana);
         return statsBuilder.createStats();
     }
-
 
     public static void processEffects(GameManager gameManager, Player player, Set<Effect> effects) {
         if (effects == null) {

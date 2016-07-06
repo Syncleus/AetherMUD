@@ -116,14 +116,4 @@ public class NpcAdapterTest {
         assertEquals(npcOne.getValidTriggers(), npc.getValidTriggers());
 
     }
-
-    @Test
-    public void testRawJson() throws Exception {
-        String testJson = Files.toString(new File("/Users/kearney/Desktop/npcs/tunnelcobra.json"), Charset.defaultCharset());
-        System.out.println(testJson);
-
-        Npc npc = gson.fromJson(testJson, Npc.class);
-
-
-    }
 }
