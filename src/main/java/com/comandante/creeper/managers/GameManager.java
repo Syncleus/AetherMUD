@@ -410,10 +410,11 @@ public class GameManager {
         }
     }
 
-    public String getLookString(Npc npc) {
+    public String getLookString(Npc npc, long playerLevel) {
         StringBuilder sb = new StringBuilder();
         // passing an empty createState because of the "difference calculation"
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(npc.getColorName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
+        sb.append("Level ").append(Levels.getLevel(npc.getStats().getExperience())).append(" ").append(npc.getLevelColor((int) playerLevel).getColor()).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats())).append("\r\n");
         if (npc.getEffects() != null && npc.getEffects().size() > 0) {
@@ -616,13 +617,13 @@ public class GameManager {
             long amount = damageEntry.getValue();
             double pct = (double) amount / totalDamageDone;
             if (pct >= .90) {
-                damagePcts.put(playerId, npc.getPctOFExperience(1, Levels.getLevel(playerMetadata.getStats().getExperience())));
+                damagePcts.put(playerId, (double) 1);
             } else if (pct >= 0.25) {
-                damagePcts.put(playerId, npc.getPctOFExperience(.8, Levels.getLevel(playerMetadata.getStats().getExperience())));
+                damagePcts.put(playerId, .8);
             } else if (pct >= 0.10) {
-                damagePcts.put(playerId, npc.getPctOFExperience(.5, Levels.getLevel(playerMetadata.getStats().getExperience())));
+                damagePcts.put(playerId, .5);
             } else {
-                damagePcts.put(playerId, npc.getPctOFExperience(.25, Levels.getLevel(playerMetadata.getStats().getExperience())));
+                damagePcts.put(playerId, .25);
             }
         }
         return damagePcts;

@@ -9,6 +9,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
+import com.comandante.creeper.player.Levels;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -79,6 +80,8 @@ public class Npc extends CreeperEntity {
             try {
                 if (isAlive.get()) {
                     if (effectsTickBucket == 5) {
+
+                        // START Process NPC Effects
                         for (Effect effect : effects) {
                             if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
                                 Optional<Room> npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(this);
@@ -96,10 +99,13 @@ public class Npc extends CreeperEntity {
                                 gameManager.getEntityManager().saveEffect(effect);
                             }
                         }
+                        // END Process Npc Effects
+
                         effectsTickBucket = 0;
                     } else {
                         effectsTickBucket++;
                     }
+
                     List<NpcStatsChange> npcStatsChangeList = Lists.newArrayList();
                     npcStatsChanges.drainTo(npcStatsChangeList);
                     for (NpcStatsChange npcStatsChange : npcStatsChangeList) {
@@ -200,7 +206,7 @@ public class Npc extends CreeperEntity {
 
     public Optional<SpawnRule> getSpawnRuleByArea(Area area) {
         Set<SpawnRule> spawnRules = getSpawnRules();
-        for (SpawnRule spawnRule: spawnRules) {
+        for (SpawnRule spawnRule : spawnRules) {
             if (spawnRule.getArea().equals(area)) {
                 return Optional.of(spawnRule);
             }
@@ -254,7 +260,7 @@ public class Npc extends CreeperEntity {
         if (!isActiveCooldown(CoolDownType.NPC_FIGHT)) {
             addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
         } else {
-            for (CoolDown coolDown: coolDowns) {
+            for (CoolDown coolDown : coolDowns) {
                 if (coolDown.getCoolDownType().equals(CoolDownType.NPC_FIGHT)) {
                     coolDown.setNumberOfTicks(coolDown.getOriginalNumberOfTicks());
                 }
@@ -321,7 +327,6 @@ public class Npc extends CreeperEntity {
             }
         } catch (Exception e) {
             SentryManager.logSentry(this.getClass(), e, "Problem processing NPC Stat Change!");
-
         }
     }
 
@@ -362,12 +367,12 @@ public class Npc extends CreeperEntity {
 
     private void killNpc(Player player) {
         isAlive.set(false);
-        Map<String, Double> xpProcessed;
+        Map<String, Double> damagePercents;
         Item corpse = new Item(getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, getLoot());
         if (!player.isActive(CoolDownType.DEATH)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage());
         }
-        xpProcessed = gameManager.processExperience(this, getCurrentRoom());
+        damagePercents = gameManager.processExperience(this, getCurrentRoom());
         gameManager.getEntityManager().saveItem(corpse);
         Integer roomId = gameManager.getRoomManager().getNpcCurrentRoom(this).get().getRoomId();
         Room room = gameManager.getRoomManager().getRoom(roomId);
@@ -376,14 +381,139 @@ public class Npc extends CreeperEntity {
         getCurrentRoom().removePresentNpc(getEntityId());
         gameManager.getEntityManager().deleteNpcEntity(getEntityId());
         player.removeActiveFight(this);
-        for (Map.Entry<String, Double> playerDamageExperience : xpProcessed.entrySet()) {
-            Player p = gameManager.getPlayerManager().getPlayer(playerDamageExperience.getKey());
+        for (Map.Entry<String, Double> playerDamagePercent : damagePercents.entrySet()) {
+            Player p = gameManager.getPlayerManager().getPlayer(playerDamagePercent.getKey());
             if (p == null) {
                 continue;
             }
-            long xpEarned = (long) Math.round(playerDamageExperience.getValue());
+            Double playerDamagePercentValue = playerDamagePercent.getValue();
+
+            int playerLevel = (int) Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience());
+            int npcLevel = (int) Levels.getLevel(this.getStats().getExperience());
+
+            long xpEarned = (long) (getNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
             p.addExperience(xpEarned);
             gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) + "\r\n", true);
+        }
+    }
+
+    public static enum NpcLevelColor {
+
+        RED(Color.RED + "Red"),
+        ORANGE(Color.CYAN + "Cyan"),
+        YELLOW(Color.YELLOW + "Yellow"),
+        GREEN(Color.GREEN + "Green"),
+        WHITE(Color.WHITE + "White");
+
+        private final String color;
+
+        NpcLevelColor(String color) {
+            this.color = color;
+        }
+
+        public String getColor() {
+            return "(" + Color.BOLD_ON + color + Color.RESET + ")";
+        }
+    }
+
+    public NpcLevelColor getLevelColor(int playerLevel) {
+        int npcLevel = (int) Levels.getLevel(this.getStats().getExperience());
+
+        if (playerLevel + 5 <= npcLevel) {
+            return NpcLevelColor.RED;
+        } else {
+            switch (npcLevel - playerLevel) {
+                case 4:
+                case 3:
+                    return NpcLevelColor.ORANGE;
+                case 2:
+                case 1:
+                case 0:
+                case -1:
+                case -3:
+                    return NpcLevelColor.YELLOW;
+                default:
+                    if (playerLevel <= 5) {
+                        return NpcLevelColor.GREEN;
+                    } else {
+                        if (playerLevel <= 50) {
+                            if (npcLevel <= (playerLevel - 5 - Math.floor(playerLevel / 10))) {
+                                return NpcLevelColor.WHITE;
+                            } else {
+                                return NpcLevelColor.GREEN;
+                            }
+                        } else {
+                            // Player is over level 50
+                            if (npcLevel <= (playerLevel - 1 - Math.floor(playerLevel / 5))) {
+                                return NpcLevelColor.WHITE;
+                            } else {
+                                return NpcLevelColor.GREEN;
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    private int getNpcXp(int playerLevel, int npcLevel) {
+        if (npcLevel >= playerLevel) {
+            double temp = ((playerLevel * 5) + 45) * (1 + (0.05 * (npcLevel - playerLevel)));
+            double tempCap = ((playerLevel * 5) + 45) * 1.2;
+            if (temp > tempCap) {
+                return (int) Math.floor(tempCap);
+            } else {
+                return (int) Math.floor(temp);
+            }
+        } else {
+            if (getLevelColor(playerLevel).equals(NpcLevelColor.WHITE)) {
+                return 0;
+            } else {
+                return (int) (Math.floor((playerLevel * 5) + 45) * (1 - (playerLevel - npcLevel) / getZD(playerLevel)));
+            }
+        }
+    }
+
+    private int getZD(int lvl) {
+        if (lvl <= 7) {
+            return 5;
+        }
+        if (lvl <= 9) {
+            return 6;
+        }
+        if (lvl <= 11) {
+            return 7;
+        }
+        if (lvl <= 15) {
+            return 8;
+        }
+        if (lvl <= 19) {
+            return 9;
+        }
+        if (lvl <= 29) {
+            return 11;
+        }
+        if (lvl <= 39) {
+            return 12;
+        }
+        if (lvl <= 49) {
+            return 13;
+        }
+        if (lvl <= 59) {
+            return 14;
+        }
+        if (lvl <= 69) {
+            return 15;
+        }
+        if (lvl <= 79) {
+            return 16;
+        }
+        if (lvl <= 89) {
+            return 17;
+        }
+        if (lvl <= 99) {
+            return 18;
+        } else {
+            return 19;
         }
     }
 

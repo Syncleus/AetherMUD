@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 
 import com.codahale.metrics.Meter;
+import com.comandante.creeper.Items.ForageManager;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Main;
@@ -740,7 +741,7 @@ public class Player extends CreeperEntity {
         Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
         sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
-        sb.append("Foraging Level ").append(gameManager.getForageManager().getLevel(modifiedStats.getForaging())).append("\r\n");
+        sb.append("Foraging Level ").append(ForageManager.getLevel(modifiedStats.getForaging())).append("\r\n");
         sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildEquipmentString()).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
