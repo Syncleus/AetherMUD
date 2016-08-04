@@ -36,7 +36,7 @@ public class MapsManager {
         Timer.Context time = ticktime.time();
         int maxRows = creeperConfiguration.defaultMapSize;
         int maxColumns = creeperConfiguration.defaultMapSize;
-        Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             Integer roomId = next.getValue().getRoomId();

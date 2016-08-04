@@ -47,7 +47,7 @@ public class RoomManager {
 
     public Optional<List<Integer>> getRoomsForTag(String tag) {
         List<Integer> matchedRooms = Lists.newArrayList();
-        Iterator<Map.Entry<Integer, Room>> rooms = getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms = getRoomsIterator();
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             if (next.getValue().getRoomTags().contains(tag)) {
@@ -74,13 +74,17 @@ public class RoomManager {
         return getRoom(roomId).getRoomTags();
     }
 
-    public Iterator<java.util.Map.Entry<Integer, Room>> getRooms() {
+    public Iterator<java.util.Map.Entry<Integer, Room>> getRoomsIterator() {
         return rooms.entrySet().iterator();
+    }
+
+    public Map<Integer, Room> getrooms() {
+        return rooms;
     }
 
     public Set<Room> getRoomsByFloorId(Integer floorId) {
         Set<Room> rooms = Sets.newHashSet();
-        Iterator<Map.Entry<Integer, Room>> rooms1 = getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms1 = getRoomsIterator();
         while (rooms1.hasNext()) {
             Map.Entry<Integer, Room> next = rooms1.next();
             if (next.getValue().getFloorId().equals(floorId)) {
@@ -91,7 +95,7 @@ public class RoomManager {
     }
 
     public Optional<Room> getPlayerCurrentRoom(String playerId) {
-        Iterator<Map.Entry<Integer, Room>> rooms = getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms = getRoomsIterator();
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             Room room = next.getValue();
@@ -118,7 +122,7 @@ public class RoomManager {
 
     public Set<Room> getRoomsByArea(Area area) {
         Set<Room> rooms = Sets.newHashSet();
-        Iterator<Map.Entry<Integer, Room>> rooms1 = getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms1 = getRoomsIterator();
         while (rooms1.hasNext()) {
             Map.Entry<Integer, Room> next = rooms1.next();
             if (next.getValue().getAreas().contains(area)) {
@@ -129,7 +133,7 @@ public class RoomManager {
     }
 
     public boolean doesRoomIdExist(Integer roomId) {
-        Iterator<Map.Entry<Integer, Room>> rooms1 = getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms1 = getRoomsIterator();
         Set<Integer> roomIds = Sets.newHashSet();
         while (rooms1.hasNext()) {
             Map.Entry<Integer, Room> next = rooms1.next();
@@ -141,7 +145,7 @@ public class RoomManager {
     }
 
     public Room getRoomByItemId(String itemId) {
-        Iterator<Map.Entry<Integer, Room>> rooms = getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms = getRoomsIterator();
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             if (next.getValue().getItemIds().contains(itemId)) {

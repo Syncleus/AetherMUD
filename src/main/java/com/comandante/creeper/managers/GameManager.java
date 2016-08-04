@@ -182,7 +182,7 @@ public class GameManager {
 
     public Set<Player> getAllPlayers() {
         ImmutableSet.Builder<Player> builder = ImmutableSet.builder();
-        Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
+        Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             Room room = next.getValue();
@@ -631,7 +631,7 @@ public class GameManager {
 
     public synchronized void removeAllNpcs() {
         for (Npc npc : entityManager.getNpcs().values()) {
-            Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
+            Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
             while (rooms.hasNext()) {
                 Map.Entry<Integer, Room> next = rooms.next();
                 next.getValue().removePresentNpc(npc.getEntityId());

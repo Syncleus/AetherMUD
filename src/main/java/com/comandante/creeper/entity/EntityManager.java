@@ -148,7 +148,7 @@ public class EntityManager {
             while (true) {
                 try {
                     final com.codahale.metrics.Timer.Context context = ticktime.time();
-                    Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
+                    Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
                     while (rooms.hasNext()) {
                         Map.Entry<Integer, Room> next = rooms.next();
                         mainTickExecutorService.submit(next.getValue());

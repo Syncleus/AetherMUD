@@ -66,7 +66,7 @@ public class TeleportCommand extends Command {
                     return;
                 }
             }
-            Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRooms();
+            Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
             while (rooms.hasNext()) {
                 Map.Entry<Integer, Room> next = rooms.next();
                 if (Integer.toString(next.getKey()).equals(desiredId)) {
