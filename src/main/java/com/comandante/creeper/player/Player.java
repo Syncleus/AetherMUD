@@ -961,7 +961,7 @@ public class Player extends CreeperEntity {
             }
             if (damageToVictim > 0) {
                 if (randInt(0, 100) > 95) {
-                    final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack!" + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                    final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
                     npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(damageToVictim * 3)).createStats());
                     npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
                 } else {
