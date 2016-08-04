@@ -171,7 +171,6 @@ public class MapMatrix {
         };
     }
 
-
     public String getCsv() {
         StringBuilder sb = new StringBuilder();
         for (List<Integer> list : matrix) {
