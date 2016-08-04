@@ -4,7 +4,6 @@ import com.comandante.creeper.Items.*;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.*;
-import com.comandante.creeper.merchant.GrimulfWizard;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcExporter;
 import com.comandante.creeper.spawner.ItemSpawner;
@@ -72,6 +71,7 @@ public class ConfigureNpc {
         blacksmithItems.put(4, new MerchantItemForSale(ItemType.IRON_HELMET, 500));
         blacksmithItems.put(5, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
         blacksmithItems.put(6, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
+        blacksmithItems.put(7, new MerchantItemForSale(ItemType.LIGHTNING_SPELLBOOKNG, 1100));
 
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
         gameManager.getRoomManager().addMerchant(66, blacksmith);
@@ -96,6 +96,6 @@ public class ConfigureNpc {
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, marijuanaForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE1_ZONE, marijuanaForageBuilder);
 
-        SpellRegistry.addSpell(new LightningSpell(gameManager));
+        SpellTriggerRegistry.addSpell(new LightningSpell(gameManager));
     }
 }

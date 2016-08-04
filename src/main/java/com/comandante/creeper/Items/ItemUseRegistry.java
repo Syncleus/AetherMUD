@@ -2,6 +2,7 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.Items.use.DefaultApplyStatsAction;
 import com.comandante.creeper.Items.use.DirtyBombUseAction;
+import com.comandante.creeper.Items.use.LightningSpellBookUseAction;
 import com.comandante.creeper.Items.use.ResetAllEffectsUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
@@ -38,6 +39,9 @@ public class ItemUseRegistry {
 
         //Marijuana
         addItemUseAction(new DefaultApplyStatsAction(ItemType.MARIJUANA, buildStats(500,500), Sets.<Effect>newHashSet()));
+
+        //Lightning Spellbook
+        addItemUseAction(new LightningSpellBookUseAction(ItemType.LIGHTNING_SPELLBOOKNG));
     }
 
     private static Stats buildStats(int health, int mana) {

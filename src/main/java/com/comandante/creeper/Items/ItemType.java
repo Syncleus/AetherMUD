@@ -145,7 +145,18 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            3000, Sets.<TimeTracker.TimeOfDay>newHashSet());
+            3000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
+    LIGHTNING_SPELLBOOKNG(13, Arrays.asList("lightning book", "lightning spell book", "book", "spell book"),
+            "a " + Color.YELLOW + "lightning" + Color.RESET + " spell book." + Color.RESET,
+            "a " + Color.YELLOW + "lightning" + Color.RESET + " spell book." + Color.RESET,
+            "a " + Color.YELLOW + "lightning" + Color.RESET + " spell book." + Color.RESET,
+            true,
+            0,
+            60,
+            false,
+            Rarity.RARE,
+            3000, Sets.<TimeTracker.TimeOfDay>newHashSet()),;
 
             
     private final Integer itemTypeCode;

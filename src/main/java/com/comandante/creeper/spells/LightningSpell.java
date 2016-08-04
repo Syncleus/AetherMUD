@@ -18,7 +18,7 @@ import static com.comandante.creeper.server.Color.BOLD_ON;
 
 public class LightningSpell extends Spell {
 
-    private final static String NAME = BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolt";
+    public final static String NAME = BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolt";
     private final static String DESCRIPTION = "A powerful bolt of lightning.";
     private final static Set<String> validTriggers = new HashSet<String>(Arrays.asList(new String[]
                     {"lightning", "lightning bolt", "l", NAME}

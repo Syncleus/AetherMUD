@@ -24,8 +24,9 @@ public class PlayerMetadata implements Serializable {
     private List<String> effects;
     private boolean isMarkedForDelete;
     private Map<String, String> playerSettings;
+    private String[] learnedSpells;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -34,6 +35,7 @@ public class PlayerMetadata implements Serializable {
         this.playerRoleSet = playerRoleSet;
         this.playerEquipment = playerEquipment;
         this.goldInBank = goldInBank;
+        this.learnedSpells = learnedSpells;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -60,6 +62,9 @@ public class PlayerMetadata implements Serializable {
         }
         if (playerMetadata.playerSettings != null) {
             this.playerSettings = new HashMap<String, String>(playerMetadata.getPlayerSettings());
+        }
+        if (playerMetadata.learnedSpells != null) {
+            this.learnedSpells = Arrays.copyOf(playerMetadata.learnedSpells, playerMetadata.learnedSpells.length);
         }
         this.isMarkedForDelete = new Boolean(playerMetadata.isMarkedForDelete);
     }
@@ -99,6 +104,27 @@ public class PlayerMetadata implements Serializable {
 
     protected void removeInventoryEntityId(String itemId) {
         inventory.remove(itemId);
+    }
+
+    protected void addLearnedSpellByName(String spellName) {
+        if (learnedSpells == null) {
+            learnedSpells = new String[0];
+        }
+        String[] result = Arrays.copyOf(learnedSpells, learnedSpells.length + 1);
+        result[learnedSpells.length] = spellName;
+        this.learnedSpells = result;
+    }
+
+    protected void removeLearnedSpellByName(String spellName) {
+        List<String> learnedSpellsKeep = new ArrayList<String>(Arrays.asList(learnedSpells));
+        learnedSpellsKeep.remove(spellName);
+        String[] newSpells = new String[learnedSpellsKeep.size()];
+        int i = 0;
+        for (String id : learnedSpellsKeep) {
+            newSpells[i] = id;
+            i++;
+        }
+        this.learnedSpells = newSpells;
     }
 
     protected void addEquipmentEntityId(String equipmentItemId) {
@@ -159,6 +185,10 @@ public class PlayerMetadata implements Serializable {
 
     public long getGoldInBank() {
         return goldInBank;
+    }
+
+    public String[] getLearnedSpells() {
+        return learnedSpells;
     }
 
     protected void setGold(long amt) {
