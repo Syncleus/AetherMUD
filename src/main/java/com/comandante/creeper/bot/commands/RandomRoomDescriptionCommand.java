@@ -30,11 +30,11 @@ public class RandomRoomDescriptionCommand extends BotCommand {
         output.add(randomRoom.getRoomTitle());
         output.add(" ");
         output.add(randomRoom.getRoomDescription());
-        String mapString = botCommandManager.getGameManager().getMapsManager().drawMap(randomRoom.getRoomId(), new Coords(5, 5));
+        /*String mapString = botCommandManager.getGameManager().getMapsManager().drawMap(randomRoom.getRoomId(), new Coords(5, 5));
         String[] split = mapString.split("\\r?\\n");
         for (String s: split) {
             output.add(s);
-        }
+        }*/
         return output;
     }
 
