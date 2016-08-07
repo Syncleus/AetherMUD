@@ -19,6 +19,7 @@ import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.api.client.util.Sets;
 import com.google.common.base.Optional;
 import com.google.common.collect.Interner;
@@ -250,6 +251,10 @@ public class Npc extends CreeperEntity {
 
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public AtomicBoolean getIsAlive() {
+        return isAlive;
     }
 
     public void setCurrentRoom(Room currentRoom) {

@@ -16,13 +16,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ConfigureNpc {
 
-    public static void configureAllNpcs(GameManager gameManager) throws FileNotFoundException {
+    public static void configureAllNpcs(GameManager gameManager) throws IOException {
         EntityManager entityManager = gameManager.getEntityManager();
         List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
         for (Npc npc: npcsFromFile) {
@@ -35,7 +36,7 @@ public class ConfigureNpc {
         }
     }
 
-    public static void configure(EntityManager entityManager, GameManager gameManager) throws FileNotFoundException {
+    public static void configure(EntityManager entityManager, GameManager gameManager) throws IOException {
 
         configureAllNpcs(gameManager);
 
@@ -71,11 +72,16 @@ public class ConfigureNpc {
         blacksmithItems.put(4, new MerchantItemForSale(ItemType.IRON_HELMET, 500));
         blacksmithItems.put(5, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
         blacksmithItems.put(6, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
-        blacksmithItems.put(7, new MerchantItemForSale(ItemType.LIGHTNING_SPELLBOOKNG, 1100));
 
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
         gameManager.getRoomManager().addMerchant(66, blacksmith);
         gameManager.getRoomManager().addMerchant(253, blacksmith);
+
+        Map<Integer, MerchantItemForSale> wizarditems = Maps.newHashMap();
+        wizarditems.put(1, new MerchantItemForSale(ItemType.LIGHTNING_SPELLBOOKNG, 5000));
+
+        Wizard wizard = new Wizard(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), wizarditems);
+        gameManager.getRoomManager().addMerchant(98, wizard);
 
         JimBanker jimBanker = new JimBanker(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(65, jimBanker);

@@ -205,4 +205,18 @@ public class WorldExporter {
         }
     }
 
+    public void buildTestworld() {
+        WorldModel worldModel = new GsonBuilder().create().fromJson("{\n" +
+                "  \"floorModelList\": [\n" +
+                "    {\n" +
+                "      \"name\": \"main\",\n" +
+                "      \"id\": 0,\n" +
+                "      \"rawMatrixCsv\": \"0,1\"\n" +
+                "}]\n" +
+                "}", WorldModel.class);
+        for (FloorModel next : worldModel.getFloorModelList()) {
+            buildFloor(next);
+        }
+    }
+
 }

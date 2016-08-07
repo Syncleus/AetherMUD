@@ -3,6 +3,7 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.server.ChannelCommunicationUtils;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.google.common.collect.Lists;
@@ -34,9 +35,9 @@ public class CountdownCommand extends Command {
     public static class PrintCountdown implements Runnable {
 
         private PlayerManager playerManager;
-        private ChannelUtils channelUtils;
+        private ChannelCommunicationUtils channelUtils;
 
-        public PrintCountdown(PlayerManager playerManager, ChannelUtils channelUtils) {
+        public PrintCountdown(PlayerManager playerManager, ChannelCommunicationUtils channelUtils) {
             this.playerManager = playerManager;
             this.channelUtils = channelUtils;
         }

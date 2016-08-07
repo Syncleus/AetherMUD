@@ -13,10 +13,7 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcMover;
 import com.comandante.creeper.player.*;
-import com.comandante.creeper.server.ChannelUtils;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.server.GossipCache;
-import com.comandante.creeper.server.MultiLineInputManager;
+import com.comandante.creeper.server.*;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
@@ -46,7 +43,7 @@ public class GameManager {
 
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
-    private final ChannelUtils channelUtils;
+    private final ChannelCommunicationUtils channelUtils;
     private final NewUserRegistrationManager newUserRegistrationManager;
     private final EntityManager entityManager;
     private final ItemDecayManager itemDecayManager;
@@ -68,7 +65,7 @@ public class GameManager {
     private final ItemUseHandler itemUseHandler;
     private final NpcMover npcMover;
 
-    public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelUtils channelUtils) {
+    public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils) {
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
@@ -154,7 +151,7 @@ public class GameManager {
         return newUserRegistrationManager;
     }
 
-    public ChannelUtils getChannelUtils() {
+    public ChannelCommunicationUtils getChannelUtils() {
         return channelUtils;
     }
 

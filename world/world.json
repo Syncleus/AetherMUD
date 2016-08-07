@@ -2931,8 +2931,8 @@
         {
           "roomId": 98,
           "floorId": 16,
-          "roomDescription": "Dried and cured meats hang from the ceiling and along the walls. A rack of sharp knives can be seen behind the counter, and leather and cloth aprons hang from several hooks on the wall.",
-          "roomTitle": "BUTCHER SHOP",
+          "roomDescription": "Dust covered books and alchemy bottles line the wall.  Everything here is for sale.",
+          "roomTitle": "Wizards Stoop",
           "roomTags": [],
           "areaNames": [
             "house_zone"
@@ -6143,7 +6143,7 @@
         {
           "roomId": 2,
           "floorId": 0,
-          "roomDescription": "Flanking the town square on its northern side, this cobblestone lane is home to a small butcher shop and a blacksmith. The simple stone buildings are covered in a layer of soot from the constant burning of coal, needed to forge the tools and weaponry required by the townspeople. To the north, the town gates can be seen in the distance.",
+          "roomDescription": "Flanking the town square on its northern side, this cobblestone lane is home to a small wizards shop and a blacksmith. The simple stone buildings are covered in a layer of soot from the constant burning of coal, needed to forge the tools and weaponry required by the townspeople. To the north, the town gates can be seen in the distance.",
           "roomTitle": "CRAIGAVON LANE NORTH",
           "roomTags": [],
           "areaNames": [
@@ -6151,7 +6151,7 @@
           ],
           "enterExitNames": {
             "66": "Blacksmith",
-            "98": "Butcher"
+            "98": "Wizard"
           },
           "notables": {}
         },

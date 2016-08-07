@@ -4,6 +4,7 @@ import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.server.ChannelCommunicationUtils;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.CreeperSession;
@@ -23,7 +24,7 @@ public class BankCommand extends SimpleChannelUpstreamHandler {
     public final List<String> validTriggers;
     public final GameManager gameManager;
     public final PlayerManager playerManager;
-    public final ChannelUtils channelUtils;
+    public final ChannelCommunicationUtils channelUtils;
     public CreeperSession creeperSession;
     public Player player;
     public String playerId;

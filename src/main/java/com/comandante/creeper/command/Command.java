@@ -7,6 +7,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerRole;
+import com.comandante.creeper.server.ChannelCommunicationUtils;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.world.*;
@@ -31,7 +32,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public final EntityManager entityManager;
     public final RoomManager roomManager;
     public final PlayerManager playerManager;
-    public final ChannelUtils channelUtils;
+    public final ChannelCommunicationUtils channelUtils;
     public final LootManager lootManager;
     public final String correctUsage;
     public CreeperSession creeperSession;

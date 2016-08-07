@@ -11,19 +11,19 @@
     "north1_zone"
   ],
   "stats": {
-    "agile": 1,
+    "agile": 3,
     "aim": 1,
-    "armorRating": 8,
-    "currentHealth": 200,
+    "armorRating": 16,
+    "currentHealth": 100,
     "currentMana": 100,
     "experience": 22600,
     "maxHealth": 150,
     "maxMana": 100,
-    "meleSkill": 6,
+    "meleSkill": 12,
     "numberOfWeaponRolls": 1,
-    "strength": 5,
-    "weaponRatingMax": 13,
-    "weaponRatingMin": 8,
+    "strength": 10,
+    "weaponRatingMax": 9,
+    "weaponRatingMin": 6,
     "willPower": 1
   },
   "spawnAreas": {
