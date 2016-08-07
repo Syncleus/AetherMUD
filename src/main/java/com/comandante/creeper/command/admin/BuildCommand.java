@@ -98,6 +98,10 @@ public class BuildCommand extends Command {
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("enter")) {
+                    if (originalMessageParts.size() != 3) {
+                        channelUtils.write(playerId, "Must specify a name for new \"enter\"");
+                        return;
+                    }
                     String enterName = originalMessageParts.get(2);
                     Integer newRoomId = findUnusedRoomId();
                     Integer newFloorId = findUnusedFloorId();
@@ -116,9 +120,7 @@ public class BuildCommand extends Command {
                 }
                 channelUtils.write(playerId, "Room already exists at that location.");
             }
-        } finally
-
-        {
+        } finally {
             super.messageReceived(ctx, e);
         }
 
