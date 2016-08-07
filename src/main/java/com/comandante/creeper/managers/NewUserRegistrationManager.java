@@ -46,7 +46,7 @@ public class NewUserRegistrationManager {
             newUserRegistrationFlow(session, e);
             return false;
         }
-        session.setUsername(Optional.of(username));
+        session.setUsername(java.util.Optional.of(username));
         return true;
     }
 

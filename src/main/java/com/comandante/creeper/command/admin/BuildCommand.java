@@ -76,7 +76,7 @@ public class BuildCommand extends Command {
                         BasicRoom basicRoom = newBasic()
                                 .setRoomId(newRoomId)
                                 .setFloorId(newFloorId)
-                                .setDownId(Optional.of(currentRoom.getRoomId()))
+                                .setDownId(java.util.Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setUpId(Optional.of(newRoomId));
                         entityManager.addEntity(basicRoom);
@@ -99,7 +99,7 @@ public class BuildCommand extends Command {
                         BasicRoom basicRoom = newBasic()
                                 .setRoomId(newRoomId)
                                 .setFloorId(newFloorId)
-                                .setUpId(Optional.of(currentRoom.getRoomId()))
+                                .setUpId(java.util.Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setDownId(Optional.of(newRoomId));
                         entityManager.addEntity(basicRoom);

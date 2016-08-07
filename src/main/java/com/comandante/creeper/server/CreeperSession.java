@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CreeperSession {
 
-    private Optional<String> username = Optional.absent();
+    private java.util.Optional<String> username = java.util.Optional.empty();
     private Optional<String> password = Optional.absent();
     private boolean isAuthed = false;
     private AtomicBoolean isAbleToDoAbility = new AtomicBoolean(false);
@@ -46,11 +46,11 @@ public class CreeperSession {
         this.lastMessage = lastMessage;
     }
 
-    public Optional<String> getUsername() {
+    public java.util.Optional<String> getUsername() {
         return username;
     }
 
-    public void setUsername(Optional<String> username) {
+    public void setUsername(java.util.Optional<String> username) {
         this.username = username;
     }
 
