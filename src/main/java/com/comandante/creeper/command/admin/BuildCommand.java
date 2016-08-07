@@ -77,14 +77,7 @@ public class BuildCommand extends Command {
                                 .setDownId(Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setUpId(Optional.of(newRoomId));
-                        entityManager.addEntity(basicRoom);
-                        Set<RoomModel> roomModels = Sets.newHashSet(basicRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
-                        newFloorModel.setRoomModels(roomModels);
-                        floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
-                        mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
-                        mapsManager.generateAllMaps();
-                        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
-                        gameManager.currentRoomLogic(player.getPlayerId());
+                        addNewRoomAndFloorAndMovePlayer(basicRoom, newFloorModel, Optional.empty());
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("d") | desiredBuildDirection.equalsIgnoreCase("down")) {
@@ -101,14 +94,7 @@ public class BuildCommand extends Command {
                                 .setUpId(Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setDownId(Optional.of(newRoomId));
-                        entityManager.addEntity(basicRoom);
-                        Set<RoomModel> roomModels = Sets.newHashSet(basicRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
-                        newFloorModel.setRoomModels(roomModels);
-                        floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
-                        mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
-                        mapsManager.generateAllMaps();
-                        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
-                        gameManager.currentRoomLogic(player.getPlayerId());
+                        addNewRoomAndFloorAndMovePlayer(basicRoom, newFloorModel, Optional.empty());
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("enter")) {
@@ -125,16 +111,7 @@ public class BuildCommand extends Command {
                             .addEnterExit(returnRemoteExit)
                             .createBasicRoom();
                     currentRoom.addEnterExit(remoteExit);
-                    entityManager.addEntity(basicRoom);
-                    Set<RoomModel> roomModels = Sets.newHashSet(basicRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
-                    newFloorModel.setRoomModels(roomModels);
-                    floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
-                    MapMatrix matrixFromCsv = MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv());
-                    matrixFromCsv.addRemote(basicRoom.getRoomId(), returnRemoteExit);
-                    mapsManager.addFloorMatrix(newFloorModel.getId(), matrixFromCsv);
-                    mapsManager.generateAllMaps();
-                    player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
-                    gameManager.currentRoomLogic(player.getPlayerId());
+                    addNewRoomAndFloorAndMovePlayer(basicRoom, newFloorModel, Optional.of(returnRemoteExit));
                     return;
                 }
                 channelUtils.write(playerId, "Room already exists at that location.");
@@ -228,6 +205,21 @@ public class BuildCommand extends Command {
                 }
             }
         }
+    }
+
+    private void addNewRoomAndFloorAndMovePlayer(Room newRoom, FloorModel newFloorModel, Optional<RemoteExit> returnRemoteExit) {
+        entityManager.addEntity(newRoom);
+        Set<RoomModel> roomModels = Sets.newHashSet(newRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
+        newFloorModel.setRoomModels(roomModels);
+        floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
+        MapMatrix matrixFromCsv = MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv());
+        if (returnRemoteExit.isPresent()) {
+            matrixFromCsv.addRemote(newRoom.getRoomId(), returnRemoteExit.get());
+        }
+        mapsManager.addFloorMatrix(newFloorModel.getId(), matrixFromCsv);
+        mapsManager.generateAllMaps();
+        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), newRoom.getRoomId(), null, "", ""));
+        gameManager.currentRoomLogic(player.getPlayerId());
     }
 
     private synchronized Integer findUnusedRoomId() {
