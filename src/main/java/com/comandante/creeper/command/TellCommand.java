@@ -24,7 +24,7 @@ public class TellCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() < 3) {
                 write("tell failed, no message to send.");
                 return;
@@ -50,8 +50,6 @@ public class TellCommand extends Command {
             stringBuilder.append(RESET);
             channelUtils.write(desintationPlayer.getPlayerId(), destinationPlayercolor + stringBuilder.append("\r\n").toString(), true);
             write(stringBuilder.toString());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

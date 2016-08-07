@@ -8,13 +8,13 @@ import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommand;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class TalkCommand extends Command {
@@ -29,10 +29,10 @@ public class TalkCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        TalkCommand talkCommand = this;
+        execCommand(ctx, e, () -> {
             if (creeperSession.getGrabMerchant().isPresent()) {
-                creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>absent());
+                creeperSession.setGrabMerchant(Optional.empty());
                 return;
             }
             originalMessageParts.remove(0);
@@ -50,11 +50,9 @@ public class TalkCommand extends Command {
                         write(LockerCommand.getPrompt());
                     }
                     creeperSession.setGrabMerchant(Optional.of(
-                            new CreeperEntry<Merchant, SimpleChannelUpstreamHandler>(merchant, this)));
+                            new CreeperEntry<>(merchant, talkCommand)));
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

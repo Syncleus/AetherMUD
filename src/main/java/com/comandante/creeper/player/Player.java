@@ -161,7 +161,7 @@ public class Player extends CreeperEntity {
                 CoolDown death = new CoolDown(CoolDownType.DEATH);
                 addCoolDown(death);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
-                PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
+                PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
                 movePlayer(playerMovement);
                 gameManager.currentRoomLogic(getPlayerId());
                 String prompt = gameManager.buildPrompt(playerId);

@@ -1,6 +1,7 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.PlayerRole;
@@ -27,8 +28,7 @@ public class NpcLocationCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             Map<String, Set<Room>> npcMap = Maps.newTreeMap();
             Iterator<Map.Entry<String, Npc>> iterator = entityManager.getNpcs().entrySet().iterator();
             while (iterator.hasNext()) {
@@ -60,8 +60,6 @@ public class NpcLocationCommand extends Command {
                 }
             }
             write(resp.toString());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

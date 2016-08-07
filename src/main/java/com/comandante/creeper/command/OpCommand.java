@@ -32,8 +32,7 @@ public class OpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             //ghetto and will only work for one channel bots.
             if (originalMessageParts.size() <= 1) {
                 return;
@@ -48,11 +47,9 @@ public class OpCommand extends Command {
             }
             ImmutableSortedSet<Channel> channels = user.getChannels();
             for (Channel channel : channels) {
-                    channel.send().op(user);
-                    write("Ops given in channel " + channel.getName());
-                }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+                channel.send().op(user);
+                write("Ops given in channel " + channel.getName());
+            }
+        });
     }
 }

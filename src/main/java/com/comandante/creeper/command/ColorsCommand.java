@@ -21,27 +21,24 @@ public class ColorsCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
-            write ("BLACK: " + Color.BLACK + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("BLUE: " + Color.BLUE + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("CYAN: " + Color.CYAN + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("GREEN: " + Color.GREEN + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("MAGENTA: " + Color.MAGENTA + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("RED: " + Color.RED + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("WHITE: " + Color.WHITE + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("YELLOW: " + Color.YELLOW + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("\r\n\r\nBOLD COLORS\r\n");
-            write ("BLACK: " + Color.BOLD_ON + Color.BLACK + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("BLUE: "  + Color.BOLD_ON + Color.BLUE + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("CYAN: "  + Color.BOLD_ON + Color.CYAN + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("GREEN: "  + Color.BOLD_ON + Color.GREEN + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("MAGENTA: "  + Color.BOLD_ON + Color.MAGENTA + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("RED: "  + Color.BOLD_ON  + Color.RED + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("WHITE: "  + Color.BOLD_ON + Color.WHITE + "This is an example of the color." + Color.RESET + "\r\n");
-            write ("YELLOW: "  + Color.BOLD_ON + Color.YELLOW + "This is an example of the color." + Color.RESET + "\r\n");
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        execCommand(ctx, e, () -> {
+            write("BLACK: " + Color.BLACK + "This is an example of the color." + Color.RESET + "\r\n");
+            write("BLUE: " + Color.BLUE + "This is an example of the color." + Color.RESET + "\r\n");
+            write("CYAN: " + Color.CYAN + "This is an example of the color." + Color.RESET + "\r\n");
+            write("GREEN: " + Color.GREEN + "This is an example of the color." + Color.RESET + "\r\n");
+            write("MAGENTA: " + Color.MAGENTA + "This is an example of the color." + Color.RESET + "\r\n");
+            write("RED: " + Color.RED + "This is an example of the color." + Color.RESET + "\r\n");
+            write("WHITE: " + Color.WHITE + "This is an example of the color." + Color.RESET + "\r\n");
+            write("YELLOW: " + Color.YELLOW + "This is an example of the color." + Color.RESET + "\r\n");
+            write("\r\n\r\nBOLD COLORS\r\n");
+            write("BLACK: " + Color.BOLD_ON + Color.BLACK + "This is an example of the color." + Color.RESET + "\r\n");
+            write("BLUE: " + Color.BOLD_ON + Color.BLUE + "This is an example of the color." + Color.RESET + "\r\n");
+            write("CYAN: " + Color.BOLD_ON + Color.CYAN + "This is an example of the color." + Color.RESET + "\r\n");
+            write("GREEN: " + Color.BOLD_ON + Color.GREEN + "This is an example of the color." + Color.RESET + "\r\n");
+            write("MAGENTA: " + Color.BOLD_ON + Color.MAGENTA + "This is an example of the color." + Color.RESET + "\r\n");
+            write("RED: " + Color.BOLD_ON + Color.RED + "This is an example of the color." + Color.RESET + "\r\n");
+            write("WHITE: " + Color.BOLD_ON + Color.WHITE + "This is an example of the color." + Color.RESET + "\r\n");
+            write("YELLOW: " + Color.BOLD_ON + Color.YELLOW + "This is an example of the color." + Color.RESET + "\r\n");
+        });
     }
 }

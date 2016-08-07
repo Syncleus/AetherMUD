@@ -1,10 +1,12 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -26,8 +28,7 @@ public class GiveHealthCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (!player.getPlayerName().equals("fibs")) {
                 write("This attempt to cheat has been logged.");
                 return;
@@ -35,7 +36,7 @@ public class GiveHealthCommand extends Command {
             if (originalMessageParts.size() > 2) {
                 String destinationPlayerName = originalMessageParts.get(1);
                 String amt = originalMessageParts.get(2);
-                if (!isInteger(amt)) {
+                if (!NumberUtils.isNumber(amt)) {
                     write("Third option to givehealth needs to be an integer amount.");
                     return;
                 }
@@ -47,8 +48,6 @@ public class GiveHealthCommand extends Command {
                 playerByUsername.incrementGold(Integer.parseInt(amt));
                 write("The amount of " + amt + " gold has been placed into " + destinationPlayerName + "'s inventory.");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

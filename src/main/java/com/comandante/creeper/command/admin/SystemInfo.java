@@ -2,6 +2,7 @@ package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.Main;
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.Color;
@@ -29,8 +30,7 @@ public class SystemInfo extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             String os_name = System.getProperty("os.name", "OS_NAME");
             String os_version = System.getProperty("os.version", "OS_VERSION");
             String java_version = System.getProperty("java.version", "JAVA_VERSION");
@@ -69,9 +69,7 @@ public class SystemInfo extends Command {
                     .append(Color.RESET)
                     .append(Main.getCreeperVersion())
                     .append("\r\n").toString());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     public static String getDurationBreakdown(long millis) {

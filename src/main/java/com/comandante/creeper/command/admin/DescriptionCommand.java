@@ -2,11 +2,11 @@ package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.MultiLineInputManager;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -27,14 +27,14 @@ public class DescriptionCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        DescriptionCommand descriptionCommand = this;
+        execCommand(ctx, e, () -> {
             if (creeperSession.getGrabMultiLineInput().isPresent()) {
                 MultiLineInputManager multiLineInputManager = gameManager.getMultiLineInputManager();
                 UUID uuid = creeperSession.getGrabMultiLineInput().get().getKey();
                 String multiLineInput = multiLineInputManager.retrieveMultiLineInput(uuid);
                 currentRoom.setRoomDescription(multiLineInput);
-                creeperSession.setGrabMultiLineInput(Optional.<CreeperEntry<UUID, Command>>absent());
+                creeperSession.setGrabMultiLineInput(Optional.empty());
                 return;
             }
             if (originalMessageParts.size() > 1) {
@@ -54,9 +54,7 @@ public class DescriptionCommand extends Command {
             }
             write("You are now in multi-line mode.  Type \"done\" on an empty line to exit and save.\r\n");
             creeperSession.setGrabMultiLineInput(Optional.of(
-                    new CreeperEntry<UUID, Command>(gameManager.getMultiLineInputManager().createNewMultiLineInput(), this)));
-        } finally {
-           super.messageReceived(ctx, e);
-        }
+                    new CreeperEntry<>(gameManager.getMultiLineInputManager().createNewMultiLineInput(), descriptionCommand)));
+        });
     }
 }

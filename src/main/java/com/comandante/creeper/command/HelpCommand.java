@@ -27,8 +27,7 @@ public class HelpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             StringBuilder sb = new StringBuilder();
             Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                     ShownBorders.HEADER_FIRST_AND_LAST_COLLUMN);
@@ -52,8 +51,6 @@ public class HelpCommand extends Command {
             sb.append(t.render());
             sb.append("\r\n");
             write(sb.toString());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

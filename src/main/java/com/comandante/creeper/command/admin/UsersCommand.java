@@ -1,6 +1,7 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerRole;
@@ -33,8 +34,7 @@ public class UsersCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             Table t = new Table(4, BorderStyle.BLANKS,
                     ShownBorders.NONE);
             t.setColumnWidth(0, 14, 24);
@@ -66,8 +66,6 @@ public class UsersCommand extends Command {
                 t.addCell(idleTime);
             }
             write(t.render());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

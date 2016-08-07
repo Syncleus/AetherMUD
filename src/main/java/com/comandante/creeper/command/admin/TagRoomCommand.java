@@ -1,6 +1,7 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
@@ -25,14 +26,11 @@ public class TagRoomCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             originalMessageParts.remove(0);
             if (originalMessageParts.get(0).equalsIgnoreCase("list")) {
                 StringBuilder sb = new StringBuilder();
-                Iterator<String> iterator = currentRoom.getRoomTags().iterator();
-                while (iterator.hasNext()) {
-                    String tag = iterator.next();
+                for (String tag : currentRoom.getRoomTags()) {
                     sb.append(tag).append("\n");
                 }
                 write("tag\n---");
@@ -41,8 +39,6 @@ public class TagRoomCommand extends Command {
             }
             currentRoom.addTag(originalMessageParts.get(0));
             write(String.format("tagged world with tag: \"%s\".", originalMessageParts.get(0)));
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

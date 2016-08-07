@@ -22,8 +22,7 @@ public class UseCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
                 write("No item specified.");
                 return;
@@ -36,8 +35,6 @@ public class UseCommand extends Command {
                 return;
             }
             gameManager.getItemUseHandler().handle(player, inventoryItem);
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

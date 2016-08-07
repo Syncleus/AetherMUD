@@ -19,8 +19,7 @@ public class ShowCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() <= 1) {
                 return;
             }
@@ -34,8 +33,6 @@ public class ShowCommand extends Command {
                     }
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

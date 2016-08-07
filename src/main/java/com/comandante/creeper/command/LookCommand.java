@@ -23,10 +23,9 @@ public class LookCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
-                currentRoomLogic();
+                printCurrentRoomInformation();
                 return;
             }
             originalMessageParts.remove(0);
@@ -57,8 +56,6 @@ public class LookCommand extends Command {
                     write(gameManager.getLookString(currentNpc, Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience())) + "\r\n");
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

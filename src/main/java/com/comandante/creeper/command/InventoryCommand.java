@@ -24,8 +24,7 @@ public class InventoryCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        this.execCommand(ctx, e, () -> {
             List<Item> inventory = player.getInventory();
             if (inventory == null) {
                 write("You aren't carrying anything.");
@@ -37,8 +36,6 @@ public class InventoryCommand extends Command {
             String join = StringUtils.join(player.getRolledUpIntentory().toArray(), "\r\n");
             inventoryString.append(join);
             write(inventoryString.toString());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

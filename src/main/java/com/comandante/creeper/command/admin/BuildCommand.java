@@ -159,7 +159,7 @@ public class BuildCommand extends Command {
         rebuildExits(currentRoom, mapMatrix);
         processExits(basicRoom, mapMatrix);
         mapsManager.generateAllMaps();
-        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
+        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), "", ""));
         gameManager.currentRoomLogic(player.getPlayerId());
         write("Room Created.");
     }
@@ -218,7 +218,7 @@ public class BuildCommand extends Command {
         }
         mapsManager.addFloorMatrix(newFloorModel.getId(), matrixFromCsv);
         mapsManager.generateAllMaps();
-        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), newRoom.getRoomId(), null, "", ""));
+        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), newRoom.getRoomId(), "", ""));
         gameManager.currentRoomLogic(player.getPlayerId());
     }
 

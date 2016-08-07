@@ -5,6 +5,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.world.Coords;
 import com.comandante.creeper.world.Room;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -24,26 +25,23 @@ public class MapCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
-            if (originalMessageParts.size() > 1 && isInteger(originalMessageParts.get(1))) {
+        execCommand(ctx, e, () -> {
+            if (originalMessageParts.size() > 1 && NumberUtils.isNumber(originalMessageParts.get(1))) {
                 int max = Integer.parseInt(originalMessageParts.get(1));
                 write(mapsManager.drawMap(currentRoom.getRoomId(), new Coords(max, max)));
             } else {
-                Player player = playerManager.getPlayer(playerId);
-                final Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
+                Player player1 = playerManager.getPlayer(playerId);
+                final Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player1).get();
                 StringBuilder sb = new StringBuilder();
 
                 if (playerCurrentRoom.getMapData().isPresent()) {
                     sb.append(playerCurrentRoom.getMapData().get()).append("\r\n");
-                    channelUtils.write(player.getPlayerId(), sb.toString());
+                    channelUtils.write(player1.getPlayerId(), sb.toString());
                 } else {
-                    channelUtils.write(player.getPlayerId(), "No map data.");
+                    channelUtils.write(player1.getPlayerId(), "No map data.");
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }
 

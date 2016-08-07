@@ -22,8 +22,7 @@ public class UnequipCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
                 write("No equipment item specified.");
                 return;
@@ -38,8 +37,6 @@ public class UnequipCommand extends Command {
                 }
             }
             write("Item is not currently equipped.");
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

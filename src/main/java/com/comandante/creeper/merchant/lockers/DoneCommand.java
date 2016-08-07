@@ -3,13 +3,13 @@ package com.comandante.creeper.merchant.lockers;
 import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
-import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class DoneCommand extends LockerCommand {
 
@@ -23,7 +23,7 @@ public class DoneCommand extends LockerCommand {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
-        creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>absent());
+        creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
         e.getChannel().getPipeline().remove("executed_command");
         e.getChannel().getPipeline().remove("executed_locker_command");
         String s = gameManager.buildPrompt(playerId);

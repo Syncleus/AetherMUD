@@ -31,8 +31,7 @@ public class XpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
             long nextLevel = Levels.getLevel(playerMetadata.getStats().getExperience()) + 1;
             long expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
@@ -52,9 +51,7 @@ public class XpCommand extends Command {
             table.addCell(String.valueOf(round(meter.getFifteenMinuteRate())));
 
             write(NumberFormat.getNumberInstance(Locale.US).format(expToNextLevel) + " experience to level " + nextLevel + ".\r\n" + table.render());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     public static double round(double value) {

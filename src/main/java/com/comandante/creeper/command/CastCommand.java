@@ -27,8 +27,7 @@ public class CastCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        try {
-            ;
+        this.execCommand(ctx, e, () -> {
             if (player.getCurrentHealth() <= 0) {
                 write("You have no health and as such you can not attack.");
                 return;
@@ -81,8 +80,6 @@ public class CastCommand extends Command {
                     return;
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

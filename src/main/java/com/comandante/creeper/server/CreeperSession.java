@@ -15,8 +15,8 @@ public class CreeperSession {
     private Optional<String> password = Optional.absent();
     private boolean isAuthed = false;
     private AtomicBoolean isAbleToDoAbility = new AtomicBoolean(false);
-    private Optional<CreeperEntry<UUID, Command>> grabMultiLineInput = Optional.absent();
-    private Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant = Optional.absent();
+    private java.util.Optional<CreeperEntry<UUID, Command>> grabMultiLineInput = java.util.Optional.empty();
+    private java.util.Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant = java.util.Optional.empty();
     private String lastMessage;
     private final Long initialLoginTime;
     private Long lastActivity;
@@ -86,11 +86,11 @@ public class CreeperSession {
         return this.isAbleToDoAbility.get();
     }
 
-    public Optional<CreeperEntry<UUID, Command>> getGrabMultiLineInput() {
+    public java.util.Optional<CreeperEntry<UUID, Command>> getGrabMultiLineInput() {
         return grabMultiLineInput;
     }
 
-    public void setGrabMultiLineInput(Optional<CreeperEntry<UUID, Command>> grabMultiLineInput) {
+    public void setGrabMultiLineInput(java.util.Optional<CreeperEntry<UUID, Command>> grabMultiLineInput) {
         this.grabMultiLineInput = grabMultiLineInput;
     }
 
@@ -102,11 +102,11 @@ public class CreeperSession {
         this.isAbleToDoAbility = isAbleToDoAbility;
     }
 
-    public Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> getGrabMerchant() {
+    public java.util.Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> getGrabMerchant() {
         return grabMerchant;
     }
 
-    public void setGrabMerchant(Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant) {
+    public void setGrabMerchant(java.util.Optional<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>> grabMerchant) {
         this.grabMerchant = grabMerchant;
     }
 

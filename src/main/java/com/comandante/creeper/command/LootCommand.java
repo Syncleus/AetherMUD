@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class LootCommand extends Command {
 
@@ -25,10 +26,9 @@ public class LootCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() > 1) {
-                for (Item item : player.getInventory()) {
+                player.getInventory().forEach(item -> {
                     if (item.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
                         Loot loot = item.getLoot();
                         if (loot != null) {
@@ -38,22 +38,19 @@ public class LootCommand extends Command {
                                 player.incrementGold(gold);
                             }
                             Set<Item> items = lootManager.lootItemsReturn(loot);
-                            for (Item i: items) {
-                                    gameManager.acquireItem(player, i.getItemId());
-                                    write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
-                                }
+                            items.forEach(i -> {
+                                gameManager.acquireItem(player, i.getItemId());
+                                write("You looted " + i.getItemName() + " from a " + item.getItemName() + ".\r\n");
+                            });
                             if (gold < 0 && items.size() == 0) {
                                 write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
                         }
                         player.removeInventoryId(item.getItemId());
                         entityManager.removeItem(item);
-                        return;
                     }
-                }
+                });
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

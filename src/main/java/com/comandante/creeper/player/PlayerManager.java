@@ -67,6 +67,10 @@ public class PlayerManager {
         return players.entrySet().iterator();
     }
 
+    public Map<String, Player> getAllPlayersMap() {
+        return players;
+    }
+
     public void removePlayer(String username) {
         Player player = getPlayerByUsername(username);
         if (player.getChannel() != null && player.getChannel().isConnected()) {

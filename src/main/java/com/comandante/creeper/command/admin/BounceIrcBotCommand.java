@@ -1,6 +1,7 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
@@ -25,9 +26,8 @@ public class BounceIrcBotCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        try {
-            synchronized (BounceIrcBotCommand.class) {
-                ;
+        execCommandThreadSafe(ctx, e, BounceIrcBotCommand.class, () -> {
+            try {
                 MultiBotManager<PircBotX> manager = gameManager.getIrcBotService().getManager();
                 write("IRC Bot Service shutting down.\r\n");
                 manager.stopAndWait();
@@ -36,9 +36,9 @@ public class BounceIrcBotCommand extends Command {
                 multiBotManager.start();
                 gameManager.getIrcBotService().setManager(multiBotManager);
                 write("IRC Bot Service started.\r\n");
+            } catch (Exception ex) {
+                log.error("Unable to restart IRC service", ex);
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

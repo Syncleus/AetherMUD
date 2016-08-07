@@ -19,15 +19,13 @@ public class CoolDownCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (player.isActiveCoolDown()) {
                 write(gameManager.renderCoolDownString(player.getCoolDowns()));
             } else {
                 write("No active cooldowns.\r\n");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
+
     }
 }

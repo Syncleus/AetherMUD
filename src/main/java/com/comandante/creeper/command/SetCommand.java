@@ -21,8 +21,7 @@ public class SetCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             write("'set help' for full settings help.\r\n");
             if (originalMessageParts.size() <= 1) {
                 write(returnAllSettings());
@@ -42,9 +41,7 @@ public class SetCommand extends Command {
             } else {
                 write ("Unknown Setting.\r\n");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     private String returnAllSettings() {

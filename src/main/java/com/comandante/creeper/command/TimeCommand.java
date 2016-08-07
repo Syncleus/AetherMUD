@@ -20,12 +20,9 @@ public class TimeCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             TimeTracker.TimeOfDay timeOfDay = gameManager.getTimeTracker().getTimeOfDay();
             write(timeOfDay.color + timeOfDay + Color.RESET);
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }
