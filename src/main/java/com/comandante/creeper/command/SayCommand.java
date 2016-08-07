@@ -26,7 +26,7 @@ public class SayCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             originalMessageParts.remove(0);
             String message = Joiner.on(" ").join(originalMessageParts);

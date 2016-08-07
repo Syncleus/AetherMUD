@@ -22,7 +22,6 @@ public class PickUpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
         try {
             Set<String> itemIds = currentRoom.getItemIds();
             originalMessageParts.remove(0);

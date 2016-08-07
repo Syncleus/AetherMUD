@@ -3,7 +3,6 @@ package com.comandante.creeper.command.admin;
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
-import com.comandante.creeper.world.Area;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -22,7 +21,7 @@ public class NotablesCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             for (Map.Entry<String, String> notable : currentRoom.getNotables().entrySet()) {
                 write(notable.getKey() + " : " + notable.getValue() + "\r\n");

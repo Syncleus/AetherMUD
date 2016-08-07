@@ -27,7 +27,7 @@ public class BounceIrcBotCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
             synchronized (BounceIrcBotCommand.class) {
-                configure(e);
+                ;
                 MultiBotManager<PircBotX> manager = gameManager.getIrcBotService().getManager();
                 write("IRC Bot Service shutting down.\r\n");
                 manager.stopAndWait();

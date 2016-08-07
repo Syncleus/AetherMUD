@@ -25,7 +25,7 @@ public class LootCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (originalMessageParts.size() > 1) {
                 for (Item item : player.getInventory()) {

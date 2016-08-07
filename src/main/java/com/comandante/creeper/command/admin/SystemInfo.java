@@ -29,7 +29,7 @@ public class SystemInfo extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             String os_name = System.getProperty("os.name", "OS_NAME");
             String os_version = System.getProperty("os.version", "OS_VERSION");

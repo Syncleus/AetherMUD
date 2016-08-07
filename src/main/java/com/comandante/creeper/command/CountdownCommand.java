@@ -4,7 +4,6 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.server.ChannelCommunicationUtils;
-import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.Color;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -24,7 +23,7 @@ public class CountdownCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             new Thread(new PrintCountdown(playerManager, channelUtils)).start();
         } finally {

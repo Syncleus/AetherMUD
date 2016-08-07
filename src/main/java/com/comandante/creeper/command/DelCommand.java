@@ -2,9 +2,7 @@ package com.comandante.creeper.command;
 
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.PlayerSettings;
 import com.google.api.client.util.Lists;
-import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -24,7 +22,7 @@ public class DelCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
            if (originalMessageParts.size() <= 1) {
                 write(returnAllSettings());

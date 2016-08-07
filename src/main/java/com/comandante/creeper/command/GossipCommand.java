@@ -4,7 +4,6 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.bot.commands.BotCommand;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.server.Color;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -26,7 +25,7 @@ public class GossipCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (originalMessageParts.size() == 1) {
                 write("Nothing to gossip about?");

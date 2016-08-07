@@ -24,7 +24,7 @@ public class InventoryCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             List<Item> inventory = player.getInventory();
             if (inventory == null) {

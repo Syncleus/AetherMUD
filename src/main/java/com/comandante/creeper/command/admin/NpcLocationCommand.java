@@ -27,7 +27,7 @@ public class NpcLocationCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             Map<String, Set<Room>> npcMap = Maps.newTreeMap();
             Iterator<Map.Entry<String, Npc>> iterator = entityManager.getNpcs().entrySet().iterator();

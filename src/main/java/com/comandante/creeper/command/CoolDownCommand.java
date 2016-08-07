@@ -1,7 +1,6 @@
 package com.comandante.creeper.command;
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.server.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -20,7 +19,7 @@ public class CoolDownCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (player.isActiveCoolDown()) {
                 write(gameManager.renderCoolDownString(player.getCoolDowns()));

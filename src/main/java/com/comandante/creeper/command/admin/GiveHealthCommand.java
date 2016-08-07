@@ -26,7 +26,7 @@ public class GiveHealthCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (!player.getPlayerName().equals("fibs")) {
                 write("This attempt to cheat has been logged.");

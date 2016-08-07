@@ -24,7 +24,6 @@ public class TellCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
         try {
             if (originalMessageParts.size() < 3) {
                 write("tell failed, no message to send.");

@@ -1,19 +1,13 @@
 package com.comandante.creeper.command;
 
-import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
 
@@ -38,7 +32,7 @@ public class OpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             //ghetto and will only work for one channel bots.
             if (originalMessageParts.size() <= 1) {

@@ -33,7 +33,7 @@ public class UsersCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             Table t = new Table(4, BorderStyle.BLANKS,
                     ShownBorders.NONE);

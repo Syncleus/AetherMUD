@@ -24,7 +24,7 @@ public class MapCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (originalMessageParts.size() > 1 && isInteger(originalMessageParts.get(1))) {
                 int max = Integer.parseInt(originalMessageParts.get(1));

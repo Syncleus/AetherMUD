@@ -24,7 +24,7 @@ public class SaveWorldCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             worldExporter.saveWorld();
             write("World saved.");

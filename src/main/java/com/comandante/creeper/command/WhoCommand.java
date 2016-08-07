@@ -27,7 +27,7 @@ public class WhoCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             StringBuilder output = new StringBuilder();
            // output.append(Color.MAGENTA + "Who--------------------------------" + Color.RESET).append("\r\n");

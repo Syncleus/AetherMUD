@@ -36,7 +36,7 @@ public class MovementCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
-            configure(e);
+            ;
             if (player.isActiveFights()) {
                 write("You can't move while in a fight!");
                 return;

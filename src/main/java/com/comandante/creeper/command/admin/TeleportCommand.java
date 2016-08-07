@@ -31,7 +31,7 @@ public class TeleportCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (originalMessageParts.size() <= 1) {
                 return;

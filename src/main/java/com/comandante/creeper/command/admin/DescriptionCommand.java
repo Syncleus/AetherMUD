@@ -27,7 +27,7 @@ public class DescriptionCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (creeperSession.getGrabMultiLineInput().isPresent()) {
                 MultiLineInputManager multiLineInputManager = gameManager.getMultiLineInputManager();

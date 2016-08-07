@@ -27,7 +27,7 @@ public class HelpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             StringBuilder sb = new StringBuilder();
             Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,

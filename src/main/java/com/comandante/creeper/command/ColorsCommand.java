@@ -1,10 +1,8 @@
 package com.comandante.creeper.command;
 
 
-import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
-import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -23,7 +21,7 @@ public class ColorsCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             write ("BLACK: " + Color.BLACK + "This is an example of the color." + Color.RESET + "\r\n");
             write ("BLUE: " + Color.BLUE + "This is an example of the color." + Color.RESET + "\r\n");

@@ -23,7 +23,7 @@ public class FightKillCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (player.getCurrentHealth() <= 0) {
                 write("You have no health and as such you can not attack.");

@@ -5,7 +5,6 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.world.*;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -13,7 +12,6 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BuildCommand extends Command {
 
@@ -28,7 +26,7 @@ public class BuildCommand extends Command {
 
     @Override
     public synchronized void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             if (originalMessageParts.size() > 1) {
                 String desiredBuildDirection = originalMessageParts.get(1);
@@ -194,7 +192,7 @@ public class BuildCommand extends Command {
         if (mapMatrix.getWesternExit(room.getRoomId()) > 0) {
             room.setWestId(Optional.of(mapMatrix.getWesternExit(room.getRoomId())));
         }
-        room.setEnterExits(Lists.<RemoteExit>newArrayList());
+        room.setEnterExits(Lists.newArrayList());
         if (mapMatrix.getRemotes().containsKey(room.getRoomId())) {
             Set<RemoteExit> remoteExits = mapMatrix.getRemotes().get(room.getRoomId());
             for (RemoteExit next : remoteExits) {

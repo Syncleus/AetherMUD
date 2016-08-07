@@ -12,10 +12,7 @@ import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.world.*;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.channel.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -67,14 +64,21 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.roles = roles;
     }
 
-    public void configure(MessageEvent e) {
-        this.creeperSession = extractCreeperSession(e.getChannel());
-        this.player = playerManager.getPlayer(extractPlayerId(creeperSession));
-        this.playerId = player.getPlayerId();
-        this.currentRoom = gameManager.getRoomManager().getPlayerCurrentRoom(player).get();
-        this.mapMatrix = mapsManager.getFloorMatrixMaps().get(currentRoom.getFloorId());
-        this.currentRoomCoords = mapMatrix.getCoords(currentRoom.getRoomId());
-        this.originalMessageParts = getOriginalMessageParts(e);
+    @Override
+    public void handleUpstream(ChannelHandlerContext ctx, ChannelEvent e) throws Exception {
+        try {
+            if (e instanceof MessageEvent) {
+                this.creeperSession = extractCreeperSession(e.getChannel());
+                this.originalMessageParts = getOriginalMessageParts((MessageEvent) e);
+                this.player = playerManager.getPlayer(extractPlayerId(creeperSession));
+                this.playerId = player.getPlayerId();
+                this.currentRoom = gameManager.getRoomManager().getPlayerCurrentRoom(player).get();
+                this.mapMatrix = mapsManager.getFloorMatrixMaps().get(currentRoom.getFloorId());
+                this.currentRoomCoords = mapMatrix.getCoords(currentRoom.getRoomId());
+            }
+        } finally {
+            super.handleUpstream(ctx, e);
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ public class SpawnCommand  extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
             if (originalMessageParts.size() == 1) {

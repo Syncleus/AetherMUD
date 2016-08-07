@@ -25,7 +25,7 @@ public class TagRoomCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             originalMessageParts.remove(0);
             if (originalMessageParts.get(0).equalsIgnoreCase("list")) {

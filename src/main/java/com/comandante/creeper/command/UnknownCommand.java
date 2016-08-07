@@ -12,7 +12,7 @@ public class UnknownCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
+        ;
         try {
             write(getPrompt(), false);
             e.getChannel().getPipeline().remove(ctx.getHandler());
