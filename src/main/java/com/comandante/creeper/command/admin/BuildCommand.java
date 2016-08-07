@@ -12,6 +12,8 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BuildCommand extends Command {
 
@@ -76,7 +78,8 @@ public class BuildCommand extends Command {
                                 .createBasicRoom();
                         currentRoom.setUpId(Optional.of(newRoomId));
                         entityManager.addEntity(basicRoom);
-                        newFloorModel.setRoomModels(Sets.newHashSet(Iterators.transform(Sets.newHashSet(basicRoom).iterator(), WorldExporter.buildRoomModelsFromRooms())));
+                        Set<RoomModel> roomModels = Sets.newHashSet(basicRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
+                        newFloorModel.setRoomModels(roomModels);
                         floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
                         mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
                         mapsManager.generateAllMaps();
@@ -99,7 +102,8 @@ public class BuildCommand extends Command {
                                 .createBasicRoom();
                         currentRoom.setDownId(Optional.of(newRoomId));
                         entityManager.addEntity(basicRoom);
-                        newFloorModel.setRoomModels(Sets.newHashSet(Iterators.transform(Sets.newHashSet(basicRoom).iterator(), WorldExporter.buildRoomModelsFromRooms())));
+                        Set<RoomModel> roomModels = Sets.newHashSet(basicRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
+                        newFloorModel.setRoomModels(roomModels);
                         floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
                         mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
                         mapsManager.generateAllMaps();
@@ -122,7 +126,8 @@ public class BuildCommand extends Command {
                             .createBasicRoom();
                     currentRoom.addEnterExit(remoteExit);
                     entityManager.addEntity(basicRoom);
-                    newFloorModel.setRoomModels(Sets.newHashSet(Iterators.transform(Sets.newHashSet(basicRoom).iterator(), WorldExporter.buildRoomModelsFromRooms())));
+                    Set<RoomModel> roomModels = Sets.newHashSet(basicRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
+                    newFloorModel.setRoomModels(roomModels);
                     floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
                     MapMatrix matrixFromCsv = MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv());
                     matrixFromCsv.addRemote(basicRoom.getRoomId(), returnRemoteExit);
