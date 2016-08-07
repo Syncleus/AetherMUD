@@ -3,8 +3,6 @@ package com.comandante.creeper.world;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.GsonBuilder;
@@ -14,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.function.Function;
 
 public class WorldExporter {
 
@@ -58,11 +57,10 @@ public class WorldExporter {
         floorModel.setRawMatrixCsv(mapMatrix.getCsv());
         floorModel.setRoomModels((new HashSet<RoomModel>()));
         floorModel.setName(floorManager.getName(floorId));
-        Iterator<RoomModel> roomModels = Iterators.transform(rooms.iterator(), buildRoomModelsFromRooms());
-        while (roomModels.hasNext()) {
-            RoomModel next = roomModels.next();
-            floorModel.getRoomModels().add(next);
-        }
+        rooms.stream()
+                .map(buildRoomModelsFromRooms())
+                .forEach(roomModel -> floorModel.getRoomModels()
+                        .add(roomModel));
         return floorModel;
     }
 
@@ -178,20 +176,15 @@ public class WorldExporter {
             mapsManager.addFloorMatrix(floorModel.getId(), matrixFromCsv);
             return;
         }
-        Iterator<BasicRoom> transform = Iterators.transform(floorModel.getRoomModels().iterator(), getBasicRoom(matrixFromCsv));
-        while (transform.hasNext()) {
-            BasicRoom next = transform.next();
-            entityManager.addEntity(next);
-        }
+        floorModel.getRoomModels().stream().map(getBasicRoom(matrixFromCsv)).forEach(entityManager::addEntity);
         floorManager.addFloor(floorModel.getId(), floorModel.getName());
         mapsManager.addFloorMatrix(floorModel.getId(), matrixFromCsv);
     }
 
     public void readWorldFromDisk() throws FileNotFoundException {
         WorldModel worldModel = new GsonBuilder().create().fromJson(Files.newReader(new File(("world/world.json")), Charset.defaultCharset()), WorldModel.class);
-        for (FloorModel next : worldModel.getFloorModelList()) {
-            buildFloor(next);
-        }
+        worldModel.getFloorModelList()
+                .forEach(this::buildFloor);
     }
 
     public void buildTestworld() {

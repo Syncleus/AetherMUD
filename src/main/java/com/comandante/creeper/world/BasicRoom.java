@@ -1,10 +1,10 @@
 package com.comandante.creeper.world;
 
 import com.comandante.creeper.managers.GameManager;
-import com.google.common.base.Optional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class BasicRoom extends Room {

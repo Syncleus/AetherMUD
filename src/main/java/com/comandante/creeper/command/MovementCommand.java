@@ -12,7 +12,6 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class MovementCommand extends Command {

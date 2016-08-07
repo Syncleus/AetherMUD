@@ -120,7 +120,7 @@ public class NpcMover {
     }
 
     public Set<Integer> getPossibleExits(Room room) {
-        List<Optional<Integer>> opts = Lists.newArrayList();
+        List<java.util.Optional<Integer>> opts = Lists.newArrayList();
         opts.add(room.getDownId());
         opts.add(room.getUpId());
         opts.add(room.getNorthId());
@@ -129,7 +129,7 @@ public class NpcMover {
         opts.add(room.getWestId());
 
         Set<Integer> exits = Sets.newHashSet();
-        for (Optional<Integer> opt : opts) {
+        for (java.util.Optional<Integer> opt : opts) {
             if (opt.isPresent()) {
                 exits.add(opt.get());
             }

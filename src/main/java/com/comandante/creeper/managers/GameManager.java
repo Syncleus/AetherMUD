@@ -13,7 +13,10 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcMover;
 import com.comandante.creeper.player.*;
-import com.comandante.creeper.server.*;
+import com.comandante.creeper.server.ChannelCommunicationUtils;
+import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.GossipCache;
+import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
@@ -427,7 +430,7 @@ public class GameManager {
     }
 
     public String renderEffectsString(List<Effect> effects) {
-        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
         t.setColumnWidth(0, 16, 20);
@@ -444,7 +447,7 @@ public class GameManager {
     }
 
     public String renderCoolDownString(Set<CoolDown> coolDowns) {
-        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
         t.setColumnWidth(0, 16, 20);

@@ -12,8 +12,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.lang.reflect.GenericArrayType;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,12 +30,12 @@ public abstract class Room extends CreeperEntity {
 
     private String roomTitle;
     private final Integer floorId;
-    private Optional<Integer> northId;
-    private Optional<Integer> westId;
-    private Optional<Integer> eastId;
-    private Optional<Integer> southId;
-    private Optional<Integer> downId;
-    private Optional<Integer> upId;
+    private java.util.Optional<Integer> northId;
+    private java.util.Optional<Integer> westId;
+    private java.util.Optional<Integer> eastId;
+    private java.util.Optional<Integer> southId;
+    private java.util.Optional<Integer> downId;
+    private java.util.Optional<Integer> upId;
     private List<RemoteExit> enterExits = Lists.newArrayList();
     private String roomDescription;
     private final Set<String> presentPlayerIds = Sets.<String>newConcurrentHashSet();
@@ -55,12 +53,12 @@ public abstract class Room extends CreeperEntity {
     public Room(Integer roomId,
                 String roomTitle,
                 Integer floorId,
-                Optional<Integer> northId,
-                Optional<Integer> southId,
-                Optional<Integer> eastId,
-                Optional<Integer> westId,
-                Optional<Integer> upId,
-                Optional<Integer> downId,
+                java.util.Optional<Integer> northId,
+                java.util.Optional<Integer> southId,
+                java.util.Optional<Integer> eastId,
+                java.util.Optional<Integer> westId,
+                java.util.Optional<Integer> upId,
+                java.util.Optional<Integer> downId,
                 List<RemoteExit> enterExits,
                 String roomDescription, Set<String> roomTags,
                 Set<Area> areas,
@@ -103,27 +101,27 @@ public abstract class Room extends CreeperEntity {
         return roomTags;
     }
 
-    public void setNorthId(Optional<Integer> northId) {
+    public void setNorthId(java.util.Optional<Integer> northId) {
         this.northId = northId;
     }
 
-    public void setWestId(Optional<Integer> westId) {
+    public void setWestId(java.util.Optional<Integer> westId) {
         this.westId = westId;
     }
 
-    public void setEastId(Optional<Integer> eastId) {
+    public void setEastId(java.util.Optional<Integer> eastId) {
         this.eastId = eastId;
     }
 
-    public void setSouthId(Optional<Integer> southId) {
+    public void setSouthId(java.util.Optional<Integer> southId) {
         this.southId = southId;
     }
 
-    public void setDownId(Optional<Integer> downId) {
+    public void setDownId(java.util.Optional<Integer> downId) {
         this.downId = downId;
     }
 
-    public void setUpId(Optional<Integer> upId) {
+    public void setUpId(java.util.Optional<Integer> upId) {
         this.upId = upId;
     }
 
@@ -179,7 +177,7 @@ public abstract class Room extends CreeperEntity {
         return npcIds;
     }
 
-    protected java.util.Set<String> getPresentPlayerIds() {
+    protected Set<String> getPresentPlayerIds() {
         // terrible null pointers will result if you call this shit directly.
         // People sign off and cause problems
         return presentPlayerIds;
@@ -201,27 +199,27 @@ public abstract class Room extends CreeperEntity {
         return roomId;
     }
 
-    public Optional<Integer> getNorthId() {
+    public java.util.Optional<Integer> getNorthId() {
         return northId;
     }
 
-    public Optional<Integer> getWestId() {
+    public java.util.Optional<Integer> getWestId() {
         return westId;
     }
 
-    public Optional<Integer> getEastId() {
+    public java.util.Optional<Integer> getEastId() {
         return eastId;
     }
 
-    public Optional<Integer> getSouthId() {
+    public java.util.Optional<Integer> getSouthId() {
         return southId;
     }
 
-    public Optional<Integer> getUpId() {
+    public java.util.Optional<Integer> getUpId() {
         return upId;
     }
 
-    public Optional<Integer> getDownId() {
+    public java.util.Optional<Integer> getDownId() {
         return downId;
     }
 

@@ -24,7 +24,7 @@ public class MapsManager {
     private final CreeperConfiguration creeperConfiguration;
     private final ExecutorService mapGeneratorService = Executors.newFixedThreadPool(1);
     private static final Logger log = Logger.getLogger(GameManager.class);
-    private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(MapsManager.class, "generate_all_maps_time"));
+    private final Timer ticktime = Main.metrics.timer(name(MapsManager.class, "generate_all_maps_time"));
 
     public MapsManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager) {
         this.roomManager = roomManager;

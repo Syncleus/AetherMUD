@@ -5,17 +5,13 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.world.*;
-import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class BuildCommand extends Command {
 
@@ -76,7 +72,7 @@ public class BuildCommand extends Command {
                         BasicRoom basicRoom = newBasic()
                                 .setRoomId(newRoomId)
                                 .setFloorId(newFloorId)
-                                .setDownId(java.util.Optional.of(currentRoom.getRoomId()))
+                                .setDownId(Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setUpId(Optional.of(newRoomId));
                         entityManager.addEntity(basicRoom);
@@ -99,7 +95,7 @@ public class BuildCommand extends Command {
                         BasicRoom basicRoom = newBasic()
                                 .setRoomId(newRoomId)
                                 .setFloorId(newFloorId)
-                                .setUpId(java.util.Optional.of(currentRoom.getRoomId()))
+                                .setUpId(Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setDownId(Optional.of(newRoomId));
                         entityManager.addEntity(basicRoom);
