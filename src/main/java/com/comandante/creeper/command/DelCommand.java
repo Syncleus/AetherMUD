@@ -22,14 +22,8 @@ public class DelCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        execCommand(ctx, e, new CommandRunnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-        try {
-           if (originalMessageParts.size() <= 1) {
+        execCommand(ctx, e, () -> {
+            if (originalMessageParts.size() <= 1) {
                 write(returnAllSettings());
                 return;
             }
@@ -37,9 +31,7 @@ public class DelCommand extends Command {
             String desiredSettingName = originalMessageParts.get(0);
             player.removePlayerSetting(desiredSettingName);
             write("Setting removed.\r\n");
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     private String returnAllSettings() {

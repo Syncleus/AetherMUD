@@ -71,7 +71,7 @@ public class NpcTestHarness {
         int npcWins = 0;
 
         totalFightRounds = 0;
-        int totalIterations = 100000;
+        int totalIterations = 1000;
         for (int i = 0; i < totalIterations; i++) {
             String username = UUID.randomUUID().toString();
             Player player = createRandomPlayer(username);

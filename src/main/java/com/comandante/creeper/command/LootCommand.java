@@ -28,7 +28,7 @@ public class LootCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
             if (originalMessageParts.size() > 1) {
-                player.getInventory().forEach(item -> {
+                for (Item item : player.getInventory()) {
                     if (item.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
                         Loot loot = item.getLoot();
                         if (loot != null) {
@@ -38,18 +38,19 @@ public class LootCommand extends Command {
                                 player.incrementGold(gold);
                             }
                             Set<Item> items = lootManager.lootItemsReturn(loot);
-                            items.forEach(i -> {
+                            for (Item i: items) {
                                 gameManager.acquireItem(player, i.getItemId());
-                                write("You looted " + i.getItemName() + " from a " + item.getItemName() + ".\r\n");
-                            });
+                                write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
+                            }
                             if (gold < 0 && items.size() == 0) {
                                 write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
                         }
                         player.removeInventoryId(item.getItemId());
                         entityManager.removeItem(item);
+                        return;
                     }
-                });
+                }
             }
         });
     }
