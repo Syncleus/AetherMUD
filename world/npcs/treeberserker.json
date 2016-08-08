@@ -6,33 +6,33 @@
   "loot": {
     "lootGoldMin": 7,
     "lootGoldMax": 14,
-    "lootItems": []
+    "lootItems": [4,6]
   },
   "roamAreas": [
     "north1_zone"
   ],
   "stats": {
-    "agile": 2,
+    "agile": 1,
     "aim": 1,
-    "armorRating": 17,
-    "currentHealth": 100,
-    "currentMana": 100,
+    "armorRating": 3,
+    "currentHealth": 90,
+    "currentMana": 90,
     "experience": 22600,
-    "maxHealth": 150,
-    "maxMana": 100,
+    "maxHealth": 90,
+    "maxMana": 90,
     "meleSkill": 12,
     "numberOfWeaponRolls": 1,
     "strength": 10,
-    "weaponRatingMax": 15,
-    "weaponRatingMin": 9,
+    "weaponRatingMax": 12,
+    "weaponRatingMin": 7,
     "willPower": 1
   },
   "spawnAreas": {
     "north1_zone": {
       "randomChance": 100,
-      "maxPerRoom": 3,
+      "maxPerRoom": 6,
       "spawnIntervalTicks": 600,
-      "maxInstances": 12
+      "maxInstances": 24
     }
   },
   "validTriggers": [

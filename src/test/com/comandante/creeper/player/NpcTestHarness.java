@@ -2,6 +2,8 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.CreeperConfiguration;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.EntityManager;
@@ -18,21 +20,29 @@ import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.WorldExporter;
+import com.google.common.collect.Interner;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.apache.commons.codec.language.Soundex;
 import org.apache.commons.configuration.MapConfiguration;
 import org.jboss.netty.channel.Channel;
 import org.junit.Before;
 import org.junit.Test;
+import org.mapdb.Atomic;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.ShownBorders;
+import org.nocrala.tools.texttablefmt.Table;
 
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 
 public class NpcTestHarness {
@@ -69,39 +79,84 @@ public class NpcTestHarness {
     public void testCombat() throws Exception {
         List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
         Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
-
-        int playerWins = 0;
-        int npcWins = 0;
-
-        totalFightRounds = 0;
         int totalIterations = 100;
-        Player player = null;
-        for (int i = 0; i < totalIterations; i++) {
-            String username = UUID.randomUUID().toString();
-            player = createRandomPlayer(username);
-            Npc npc = new NpcBuilder(treeBerseker).createNpc();
-            gameManager.getEntityManager().addEntity(npc);
-            player.getCurrentRoom().addPresentNpc(npc.getEntityId());
-            player.addActiveFight(npc);
-            if (conductFight(player, npc)) {
-                playerWins++;
-            } else {
-                npcWins++;
+        Player player;
+        Npc npc = null;
+        Table t = new Table(7, BorderStyle.BLANKS,
+                ShownBorders.NONE);
+        t.setColumnWidth(0, 20, 20);
+        t.setColumnWidth(1, 15, 20);
+        t.setColumnWidth(2, 16, 16);
+        t.setColumnWidth(3, 16, 16);
+        t.setColumnWidth(4, 16, 16);
+        t.setColumnWidth(5, 16, 16);
+        //t.setColumnWidth(6, 16, 16);
+
+        t.addCell("Npc");
+        t.addCell("Player Level");
+        t.addCell("Player Win Pct");
+        t.addCell("Npc Win Pct");
+        t.addCell("Avg Rounds");
+        t.addCell("Avg Gold");
+        t.addCell("Drops");
+        //equipment.add(ItemType.BERSEKER_BOOTS.create());
+       // equipment.add(ItemType.BERSERKER_BATON.create());
+        //equipment.add(ItemType.BERSERKER_CHEST.create());
+        //equipment.add(ItemType.BERSEKER_SHORTS.create());
+
+        Map<String, AtomicInteger> drops = new HashMap<String, AtomicInteger>();
+        int totalGold = 0;
+        for (int level = 0; level < 10; level++) {
+            Set<Item> equipment = Sets.newHashSet();
+            int playerWins = 0;
+            int npcWins = 0;
+            totalFightRounds = 0;
+            for (int i = 0; i < 100; i++) {
+                String username = UUID.randomUUID().toString();
+                player = createRandomPlayer(username, level);
+                equipArmor(player, equipment);
+                npc = new NpcBuilder(treeBerseker).createNpc();
+                gameManager.getEntityManager().addEntity(npc);
+                player.getCurrentRoom().addPresentNpc(npc.getEntityId());
+                player.addActiveFight(npc);
+                if (conductFight(player, npc)) {
+                    playerWins++;
+                    int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npc.getLoot());
+                    totalGold =+ gold;
+                    Set<Item> items = gameManager.getLootManager().lootItemsReturn(npc.getLoot());
+                    items.forEach(item -> {
+                        if (!drops.containsKey(item.getItemName())) {
+                            drops.put(item.getItemName(), new AtomicInteger(1));
+                        } else {
+                            drops.get(item.getItemName()).incrementAndGet();
+                        }
+                    });
+                } else {
+                    npcWins++;
+                }
+                player.getCurrentRoom().removePresentNpc(npc.getEntityId());
+                entityManager.deleteNpcEntity(npc.getEntityId());
+                player.getCurrentRoom().removePresentPlayer(player.getPlayerId());
             }
-            player.getCurrentRoom().removePresentNpc(npc.getEntityId());
-            entityManager.deleteNpcEntity(npc.getEntityId());
-            player.getCurrentRoom().removePresentPlayer(player.getPlayerId());
-            if (i%100==0) {
-                System.out.println("Fight iterations: " + i);
-            }
+            float playerWinPercent = (playerWins * 100.0f) / totalIterations;
+            float npcWinPercent = (npcWins * 100.0f) / totalIterations;
+            t.addCell(npc.getName());
+            t.addCell(String.valueOf(level));
+            t.addCell(String.valueOf(playerWinPercent)+"%");
+            t.addCell(String.valueOf(npcWinPercent)+"%");
+            t.addCell(String.valueOf(totalFightRounds / totalIterations));
+            t.addCell(String.valueOf(totalGold / totalIterations));
+            StringBuilder sb = new StringBuilder();
+            drops.entrySet().stream().map(entry -> entry.getKey() + "(" + entry.getValue().get() + ")").forEach(s -> sb.append(s).append(","));
+            t.addCell(sb.toString());
         }
-        Stats difference = StatsHelper.getDifference(player.getPlayerStatsWithEquipmentAndLevel(), new PlayerStats().DEFAULT_PLAYER.createStats());
-        String player1 = gameManager.buildLookString("player", player.getPlayerStatsWithEquipmentAndLevel(),difference );
-        System.out.println(player1);
-        System.out.println("");
-        System.out.println("Player Wins: " + playerWins);
-        System.out.println("Npc Wins: " + npcWins);
-        System.out.println("Average rounds: " + totalFightRounds / totalIterations);
+        System.out.println(t.render());
+
+       // Stats difference = StatsHelper.getDifference(player.getPlayerStatsWithEquipmentAndLevel(), new PlayerStats().DEFAULT_PLAYER.createStats());
+       // String player1 = gameManager.buildLookString("player", player.getPlayerStatsWithEquipmentAndLevel(),difference );
+       // System.out.println(player1);
+       // System.out.println("");
+
     }
 
     private boolean conductFight(Player player, Npc npc) {
@@ -123,7 +178,7 @@ public class NpcTestHarness {
         }
     }
 
-    private Player createRandomPlayer(String username) throws FileNotFoundException {
+    private Player createRandomPlayer(String username, int level) throws FileNotFoundException {
         createUser(username, "3333333");
         Player player = new Player(username, gameManager);
         Channel mockChannel = mock(Channel.class);
@@ -133,8 +188,16 @@ public class NpcTestHarness {
         gameManager.getPlayerManager().addPlayer(player);
         gameManager.placePlayerInLobby(player);
         gameManager.getPlayerManager().getSessionManager().putSession(creeperSession);
-        player.addExperience(Levels.getXp(3));
+        player.addExperience(Levels.getXp(level));
         return player;
+    }
+
+    private void equipArmor(Player player, Set<Item> equipment) {
+        equipment.forEach(item -> {
+            entityManager.saveItem(item);
+            gameManager.acquireItem(player, item.getItemId());
+            player.equip(item);
+        });
     }
 
     private void createUser(String username, String password) {

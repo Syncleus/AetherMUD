@@ -65,12 +65,12 @@ public class ConfigureNpc {
         gameManager.getRoomManager().addMerchant(377, nigelBartender);
 
         Map<Integer, MerchantItemForSale> blacksmithItems = Maps.newHashMap();
-        blacksmithItems.put(1, new MerchantItemForSale(ItemType.BROAD_SWORD, 1000));
-        blacksmithItems.put(2, new MerchantItemForSale(ItemType.IRON_BOOTS, 800));
-        blacksmithItems.put(3, new MerchantItemForSale(ItemType.IRON_BRACERS, 400));
-        blacksmithItems.put(4, new MerchantItemForSale(ItemType.IRON_HELMET, 500));
-        blacksmithItems.put(5, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
-        blacksmithItems.put(6, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
+        blacksmithItems.put(1, new MerchantItemForSale(ItemType.BERSERKER_BATON, 1000));
+        blacksmithItems.put(2, new MerchantItemForSale(ItemType.BERSEKER_BOOTS, 350));
+        blacksmithItems.put(3, new MerchantItemForSale(ItemType.BERSERKER_BRACERS, 350));
+        blacksmithItems.put(4, new MerchantItemForSale(ItemType.BERSEKER_HELM, 350));
+        blacksmithItems.put(5, new MerchantItemForSale(ItemType.BERSERKER_CHEST, 700));
+        blacksmithItems.put(6, new MerchantItemForSale(ItemType.BERSEKER_SHORTS, 850));
         blacksmithItems.put(7, new MerchantItemForSale(ItemType.LEATHER_SATCHEL, 600));
 
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
