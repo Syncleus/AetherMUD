@@ -12,6 +12,9 @@ import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.npc.NpcExporter;
 import com.comandante.creeper.server.ChannelCommunicationUtils;
 import com.comandante.creeper.server.CreeperSession;
+import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stat.StatsBuilder;
+import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.WorldExporter;
@@ -71,10 +74,11 @@ public class NpcTestHarness {
         int npcWins = 0;
 
         totalFightRounds = 0;
-        int totalIterations = 1000;
+        int totalIterations = 100;
+        Player player = null;
         for (int i = 0; i < totalIterations; i++) {
             String username = UUID.randomUUID().toString();
-            Player player = createRandomPlayer(username);
+            player = createRandomPlayer(username);
             Npc npc = new NpcBuilder(treeBerseker).createNpc();
             gameManager.getEntityManager().addEntity(npc);
             player.getCurrentRoom().addPresentNpc(npc.getEntityId());
@@ -91,6 +95,10 @@ public class NpcTestHarness {
                 System.out.println("Fight iterations: " + i);
             }
         }
+        Stats difference = StatsHelper.getDifference(player.getPlayerStatsWithEquipmentAndLevel(), new PlayerStats().DEFAULT_PLAYER.createStats());
+        String player1 = gameManager.buildLookString("player", player.getPlayerStatsWithEquipmentAndLevel(),difference );
+        System.out.println(player1);
+        System.out.println("");
         System.out.println("Player Wins: " + playerWins);
         System.out.println("Npc Wins: " + npcWins);
         System.out.println("Average rounds: " + totalFightRounds / totalIterations);
@@ -125,6 +133,7 @@ public class NpcTestHarness {
         gameManager.getPlayerManager().addPlayer(player);
         gameManager.placePlayerInLobby(player);
         gameManager.getPlayerManager().getSessionManager().putSession(creeperSession);
+        player.addExperience(Levels.getXp(3));
         return player;
     }
 

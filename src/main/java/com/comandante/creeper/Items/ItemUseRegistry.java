@@ -1,9 +1,7 @@
 package com.comandante.creeper.Items;
 
 import com.comandante.creeper.Items.use.DefaultApplyStatsAction;
-import com.comandante.creeper.Items.use.DirtyBombUseAction;
 import com.comandante.creeper.Items.use.LightningSpellBookUseAction;
-import com.comandante.creeper.Items.use.ResetAllEffectsUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.Effect;
@@ -32,7 +30,7 @@ public class ItemUseRegistry {
 
     public static void configure() {
         //Beer
-        addItemUseAction(new DefaultApplyStatsAction(ItemType.BEER, buildStats(100, 0), Sets.<Effect>newHashSet()));
+        addItemUseAction(new DefaultApplyStatsAction(ItemType.SMALL_HEALTH_POTION, buildStats(100, 0), Sets.<Effect>newHashSet()));
 
         //Purple Drank
         addItemUseAction(new DefaultApplyStatsAction(ItemType.PURPLE_DRANK, buildStats(500, 0), Sets.<Effect>newHashSet()));

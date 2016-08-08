@@ -15,7 +15,6 @@ import com.comandante.creeper.world.Area;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +40,9 @@ public class ConfigureNpc {
         configureAllNpcs(gameManager);
 
         Main.startUpMessage("Adding beer");
-        ItemSpawner itemSpawner = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.NEWBIE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(100).setMaxPerRoom(5).setRandomPercent(40).createSpawnRule(), gameManager);
-        ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
-        ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.BEER, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.NEWBIE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(100).setMaxPerRoom(5).setRandomPercent(40).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
          ItemSpawner itemSpawner5 = new ItemSpawner(ItemType.KEY, new SpawnRuleBuilder().setArea(Area.LOBBY).setSpawnIntervalTicks(600).setMaxInstances(1).setMaxPerRoom(1).setRandomPercent(5).createSpawnRule(), gameManager);
 
         entityManager.addEntity(itemSpawner);
@@ -52,7 +51,7 @@ public class ConfigureNpc {
         entityManager.addEntity(itemSpawner5);
 
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
-        itemsForSale.put(1, new MerchantItemForSale(ItemType.BEER, 8));
+        itemsForSale.put(1, new MerchantItemForSale(ItemType.SMALL_HEALTH_POTION, 8));
         itemsForSale.put(2, new MerchantItemForSale(ItemType.PURPLE_DRANK, 80));
         itemsForSale.put(3, new MerchantItemForSale(ItemType.LEATHER_SATCHEL, 25000));
 
@@ -60,7 +59,7 @@ public class ConfigureNpc {
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
         
         Map<Integer, MerchantItemForSale> nigelForSale = Maps.newLinkedHashMap();
-        nigelForSale.put(1, new MerchantItemForSale(ItemType.BEER, 6));
+        nigelForSale.put(1, new MerchantItemForSale(ItemType.SMALL_HEALTH_POTION, 6));
         
         NigelBartender nigelBartender = new NigelBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), nigelForSale);
         gameManager.getRoomManager().addMerchant(377, nigelBartender);
