@@ -3,11 +3,11 @@ package com.comandante.creeper.Items;
 
 public enum Rarity {
 
-    BASIC("basic", 2.0),
-    UNCOMMON("uncommon", 1.2),
-    RARE("rare", .6),
-    LEGENDARY("legendary", .2),
-    EXOTIC("exotic", .01);
+    BASIC("basic", 15.0),
+    UNCOMMON("uncommon", 7),
+    RARE("rare", 3),
+    LEGENDARY("legendary", 1),
+    EXOTIC("exotic", .5);
 
     private final String rarityTypeName;
     private final double percentToLoot;

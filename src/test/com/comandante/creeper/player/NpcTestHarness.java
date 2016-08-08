@@ -3,6 +3,7 @@ package com.comandante.creeper.player;
 import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.EntityManager;
@@ -89,18 +90,18 @@ public class NpcTestHarness {
         t.addCell("Avg Rounds");
         t.addCell("Avg Gold");
         t.addCell("Drops");
-        //equipment.add(ItemType.BERSEKER_BOOTS.create());
-       // equipment.add(ItemType.BERSERKER_BATON.create());
-        //equipment.add(ItemType.BERSERKER_CHEST.create());
-        //equipment.add(ItemType.BERSEKER_SHORTS.create());
+        Set<Item> equipment = Sets.newHashSet();
+        equipment.add(ItemType.BERSEKER_BOOTS.create());
+        //equipment.add(ItemType.BERSERKER_BATON.create());
+        equipment.add(ItemType.BERSERKER_CHEST.create());
+        equipment.add(ItemType.BERSEKER_SHORTS.create());
 
-        Map<String, AtomicInteger> drops = new HashMap<String, AtomicInteger>();
         for (int level = 0; level < 10; level++) {
-            Set<Item> equipment = Sets.newHashSet();
             int playerWins = 0;
             int npcWins = 0;
             int totalGold = 0;
             totalFightRounds = 0;
+            Map<String, AtomicInteger> drops = new HashMap<String, AtomicInteger>();
             for (int i = 0; i < 100; i++) {
                 String username = UUID.randomUUID().toString();
                 player = createRandomPlayer(username, level);
@@ -135,7 +136,7 @@ public class NpcTestHarness {
             t.addCell(String.valueOf(playerWinPercent)+"%");
             t.addCell(String.valueOf(npcWinPercent)+"%");
             t.addCell(String.valueOf(totalFightRounds / totalIterations));
-            t.addCell(String.valueOf(totalGold / totalIterations));
+            t.addCell(String.valueOf(totalGold / playerWins));
             StringBuilder sb = new StringBuilder();
             drops.entrySet().stream().map(entry -> entry.getKey() + "(" + entry.getValue().get() + ")").forEach(s -> sb.append(s).append(","));
             t.addCell(sb.toString());
