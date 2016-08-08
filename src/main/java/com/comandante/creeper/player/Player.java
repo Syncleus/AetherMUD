@@ -19,13 +19,11 @@ import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;
 import com.google.common.collect.*;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.Channel;
-import org.nocrala.tools.texttablefmt.*;
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
@@ -364,6 +362,14 @@ public class Player extends CreeperEntity {
         }
     }
 
+    public void addNpcKillLog(String npcName) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.addNpcKill(npcName);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
     public void transferItemFromLocker(String entityId) {
         synchronized (interner.intern(playerId)) {
             if (gameManager.acquireItem(this, entityId)) {
@@ -483,6 +489,12 @@ public class Player extends CreeperEntity {
 
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
+    }
+
+    public Map<String, Long> getNpcKillLog() {
+        ImmutableMap.Builder<String, Long> builder = ImmutableMap.builder();
+        getPlayerMetadata().getNpcKillLog().forEach((key, value) -> builder.put(key, value));
+        return builder.build();
     }
 
     public void movePlayer(PlayerMovement playerMovement) {

@@ -244,6 +244,7 @@ public class Npc extends CreeperEntity {
 
             long xpEarned = (long) (getNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
             p.addExperience(xpEarned);
+            p.addNpcKillLog(getName());
             gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) + "\r\n", true);
         }
     }

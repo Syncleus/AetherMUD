@@ -25,8 +25,9 @@ public class PlayerMetadata implements Serializable {
     private boolean isMarkedForDelete;
     private Map<String, String> playerSettings;
     private String[] learnedSpells;
+    private Map<String, Long> npcKillLog;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells, Map<String, Long> npcKillLog) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -36,6 +37,7 @@ public class PlayerMetadata implements Serializable {
         this.playerEquipment = playerEquipment;
         this.goldInBank = goldInBank;
         this.learnedSpells = learnedSpells;
+        this.npcKillLog = npcKillLog;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -61,12 +63,15 @@ public class PlayerMetadata implements Serializable {
             this.effects = Lists.newArrayList(playerMetadata.getEffects());
         }
         if (playerMetadata.playerSettings != null) {
-            this.playerSettings = new HashMap<String, String>(playerMetadata.getPlayerSettings());
+            this.playerSettings = new HashMap<>(playerMetadata.getPlayerSettings());
         }
         if (playerMetadata.learnedSpells != null) {
             this.learnedSpells = Arrays.copyOf(playerMetadata.learnedSpells, playerMetadata.learnedSpells.length);
         }
         this.isMarkedForDelete = new Boolean(playerMetadata.isMarkedForDelete);
+        if (playerMetadata.npcKillLog != null) {
+            this.npcKillLog = new HashMap<>(playerMetadata.getNpcKillLog());
+        }
     }
 
     public List<String> getInventory() {
@@ -95,6 +100,19 @@ public class PlayerMetadata implements Serializable {
             lockerInventory = Lists.newArrayList();
         }
         lockerInventory.add(newEntityId);
+    }
+
+    protected void addNpcKill(String npcName) {
+        if (this.npcKillLog == null) {
+            npcKillLog = Maps.newHashMap();
+        }
+        if (npcKillLog.containsKey(npcName)) {
+            Long aLong = npcKillLog.get(npcName);
+            Long newLong = aLong + 1;
+            npcKillLog.put(npcName, newLong);
+        } else {
+            npcKillLog.put(npcName, 1L);
+        }
     }
 
 
@@ -189,6 +207,13 @@ public class PlayerMetadata implements Serializable {
 
     public String[] getLearnedSpells() {
         return learnedSpells;
+    }
+
+    public Map<String, Long> getNpcKillLog() {
+        if (this.npcKillLog == null) {
+            npcKillLog = Maps.newHashMap();
+        }
+        return npcKillLog;
     }
 
     protected void setGold(long amt) {

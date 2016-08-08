@@ -5,8 +5,10 @@ import com.comandante.creeper.command.UnknownCommand;
 import com.comandante.creeper.command.admin.*;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.bank.commands.*;
-import com.comandante.creeper.merchant.bank.commands.DoneCommand;
-import com.comandante.creeper.merchant.lockers.*;
+import com.comandante.creeper.merchant.lockers.GetCommand;
+import com.comandante.creeper.merchant.lockers.LockerCommandRegistry;
+import com.comandante.creeper.merchant.lockers.PutCommand;
+import com.comandante.creeper.merchant.lockers.QueryCommand;
 import com.comandante.creeper.server.CreeperCommandRegistry;
 
 public class ConfigureCommands {
@@ -88,5 +90,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new SetCommand(gameManager));
         creeperCommandRegistry.addCommand(new DelCommand(gameManager));
         creeperCommandRegistry.addCommand(new OpCommand(gameManager));
+        creeperCommandRegistry.addCommand(new KillTallyCommand(gameManager));
     }
 }
