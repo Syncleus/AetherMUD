@@ -128,7 +128,7 @@ public enum ItemType {
     LEATHER_SATCHEL(11, Arrays.asList("leather satchel", "satchel"),
             "a " + Color.GREEN + "leather satchel" + Color.RESET,
             "a " + Color.GREEN + "leather satchel" + Color.RESET,
-            "a " + Color.GREEN + "leather satchel" + Color.RESET + " with room to store an extra `15 items.",
+            "a " + Color.GREEN + "leather satchel" + Color.RESET + " with room to store an extra 15 items.",
             false,
             0,
             60,
