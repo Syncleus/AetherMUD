@@ -56,7 +56,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.UNCOMMON,
+            Rarity.BASIC,
             50, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BERSERKER_CHEST(5, Arrays.asList("chest", "berserker chest", "c"),
@@ -78,7 +78,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.UNCOMMON,
+            Rarity.BASIC,
             80, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BERSERKER_BRACERS(7, Arrays.asList("bracers", "berserker bracers", "b"),
@@ -101,7 +101,7 @@ public enum ItemType {
             60,
             true,
             Rarity.BASIC,
-            80, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            40, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     MARIJUANA(9, Arrays.asList("marijuana", "weed", "m", "w", "f", "flowers"),
             Color.GREEN + "marijuana" + Color.RESET + " flowers" + Color.RESET,
