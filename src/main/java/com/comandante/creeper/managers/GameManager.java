@@ -383,7 +383,10 @@ public class GameManager {
                 entityManager.saveItem(itemEntity);
                 return true;
             } else {
+                Item itemEntity = entityManager.getItemEntity(itemId);
                 channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
+                player.getCurrentRoom().addPresentItem(itemId);
+                roomSay(player.getCurrentRoom().getRoomId(), player.getPlayerName() + " dropped " + itemEntity.getItemName(), player.getPlayerId());
                 return false;
             }
         }

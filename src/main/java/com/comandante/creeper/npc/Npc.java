@@ -7,10 +7,7 @@ import com.comandante.creeper.Items.Rarity;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
-import com.comandante.creeper.player.CoolDown;
-import com.comandante.creeper.player.CoolDownType;
-import com.comandante.creeper.player.Levels;
-import com.comandante.creeper.player.Player;
+import com.comandante.creeper.player.*;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.spells.Effect;
@@ -60,6 +57,7 @@ public class Npc extends CreeperEntity {
     private Room currentRoom;
     private int effectsTickBucket = 0;
     private Set<CoolDown> coolDowns = Sets.newHashSet();
+    private final ExperienceManager experienceManager = new ExperienceManager();
 
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
@@ -136,36 +134,38 @@ public class Npc extends CreeperEntity {
             if (npcStatsChange.getPlayer().isActive(CoolDownType.DEATH) && !npcStatsChange.isItemDamage()) {
                 return;
             }
-            if (isAlive.get()) {
-                if (npcStatsChange.getStats() != null) {
-                    for (String message : npcStatsChange.getDamageStrings()) {
-                        if (!npcStatsChange.getPlayer().isActive(CoolDownType.DEATH)) {
-                            gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
-                        }
-                    }
-                    StatsHelper.combineStats(getStats(), npcStatsChange.getStats());
-                    long amt = npcStatsChange.getStats().getCurrentHealth();
-                    long damageReportAmt = -npcStatsChange.getStats().getCurrentHealth();
-                    if (getStats().getCurrentHealth() < 0) {
-                        damageReportAmt = -amt + getStats().getCurrentHealth();
-                        getStats().setCurrentHealth(0);
-                    }
-                    long damage = 0;
-                    if (getPlayerDamageMap().containsKey(npcStatsChange.getPlayer().getPlayerId())) {
-                        damage = getPlayerDamageMap().get(npcStatsChange.getPlayer().getPlayerId());
-                    }
-                    addDamageToMap(npcStatsChange.getPlayer().getPlayerId(), damage + damageReportAmt);
-                    if (getStats().getCurrentHealth() == 0) {
-                        killNpc(npcStatsChange.getPlayer());
-                        return;
-                    }
+            if (!isAlive.get()) {
+                return;
+            }
+            if (npcStatsChange.getStats() == null) {
+                return;
+            }
+            for (String message : npcStatsChange.getDamageStrings()) {
+                if (!npcStatsChange.getPlayer().isActive(CoolDownType.DEATH)) {
+                    gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
                 }
-                if (npcStatsChange.getPlayerStatsChange() != null) {
-                    for (String message : npcStatsChange.getPlayerDamageStrings()) {
-                        if (!npcStatsChange.getPlayer().isActive(CoolDownType.DEATH)) {
-                            gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
-                            npcStatsChange.getPlayer().updatePlayerHealth(npcStatsChange.getPlayerStatsChange().getCurrentHealth(), this);
-                        }
+            }
+            StatsHelper.combineStats(getStats(), npcStatsChange.getStats());
+            long amt = npcStatsChange.getStats().getCurrentHealth();
+            long damageReportAmt = -npcStatsChange.getStats().getCurrentHealth();
+            if (getStats().getCurrentHealth() < 0) {
+                damageReportAmt = -amt + getStats().getCurrentHealth();
+                getStats().setCurrentHealth(0);
+            }
+            long damage = 0;
+            if (getPlayerDamageMap().containsKey(npcStatsChange.getPlayer().getPlayerId())) {
+                damage = getPlayerDamageMap().get(npcStatsChange.getPlayer().getPlayerId());
+            }
+            addDamageToMap(npcStatsChange.getPlayer().getPlayerId(), damage + damageReportAmt);
+            if (getStats().getCurrentHealth() == 0) {
+                killNpc(npcStatsChange.getPlayer());
+                return;
+            }
+            if (npcStatsChange.getPlayerStatsChange() != null) {
+                for (String message : npcStatsChange.getPlayerDamageStrings()) {
+                    if (!npcStatsChange.getPlayer().isActive(CoolDownType.DEATH)) {
+                        gameManager.getChannelUtils().write(npcStatsChange.getPlayer().getPlayerId(), message + "\r\n", true);
+                        npcStatsChange.getPlayer().updatePlayerHealth(npcStatsChange.getPlayerStatsChange().getCurrentHealth(), this);
                     }
                 }
             }
@@ -242,7 +242,7 @@ public class Npc extends CreeperEntity {
             int playerLevel = (int) Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience());
             int npcLevel = (int) Levels.getLevel(this.getStats().getExperience());
 
-            long xpEarned = (long) (getNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
+            long xpEarned = (long) (experienceManager.calculateNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
             p.addExperience(xpEarned);
             p.addNpcKillLog(getName());
             gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) + "\r\n", true);
@@ -265,23 +265,6 @@ public class Npc extends CreeperEntity {
         this.currentRoom = currentRoom;
     }
 
-    private int getNpcXp(int playerLevel, int npcLevel) {
-        if (npcLevel >= playerLevel) {
-            double temp = ((playerLevel * 5) + 45) * (1 + (0.05 * (npcLevel - playerLevel)));
-            double tempCap = ((playerLevel * 5) + 45) * 1.2;
-            if (temp > tempCap) {
-                return (int) Math.floor(tempCap);
-            } else {
-                return (int) Math.floor(temp);
-            }
-        } else {
-            if (getLevelColor(playerLevel).equals(NpcLevelColor.WHITE)) {
-                return 0;
-            } else {
-                return (int) (Math.floor((playerLevel * 5) + 45) * (1 - (playerLevel - npcLevel) / getZD(playerLevel)));
-            }
-        }
-    }
 
     private String getBattleReport(long xpEarned) {
         StringBuilder sb = new StringBuilder();
@@ -318,88 +301,7 @@ public class Npc extends CreeperEntity {
         return sb.toString();
     }
 
-    public NpcLevelColor getLevelColor(int playerLevel) {
-        int npcLevel = (int) Levels.getLevel(this.getStats().getExperience());
 
-        if (playerLevel + 5 <= npcLevel) {
-            return NpcLevelColor.RED;
-        } else {
-            switch (npcLevel - playerLevel) {
-                case 4:
-                case 3:
-                    return NpcLevelColor.ORANGE;
-                case 2:
-                case 1:
-                case 0:
-                case -1:
-                case -3:
-                    return NpcLevelColor.YELLOW;
-                default:
-                    if (playerLevel <= 5) {
-                        return NpcLevelColor.GREEN;
-                    } else {
-                        if (playerLevel <= 50) {
-                            if (npcLevel <= (playerLevel - 5 - Math.floor(playerLevel / 10))) {
-                                return NpcLevelColor.WHITE;
-                            } else {
-                                return NpcLevelColor.GREEN;
-                            }
-                        } else {
-                            // Player is over level 50
-                            if (npcLevel <= (playerLevel - 1 - Math.floor(playerLevel / 5))) {
-                                return NpcLevelColor.WHITE;
-                            } else {
-                                return NpcLevelColor.GREEN;
-                            }
-                        }
-                    }
-            }
-        }
-    }
-
-    private int getZD(int lvl) {
-        if (lvl <= 7) {
-            return 5;
-        }
-        if (lvl <= 9) {
-            return 6;
-        }
-        if (lvl <= 11) {
-            return 7;
-        }
-        if (lvl <= 15) {
-            return 8;
-        }
-        if (lvl <= 19) {
-            return 9;
-        }
-        if (lvl <= 29) {
-            return 11;
-        }
-        if (lvl <= 39) {
-            return 12;
-        }
-        if (lvl <= 49) {
-            return 13;
-        }
-        if (lvl <= 59) {
-            return 14;
-        }
-        if (lvl <= 69) {
-            return 15;
-        }
-        if (lvl <= 79) {
-            return 16;
-        }
-        if (lvl <= 89) {
-            return 17;
-        }
-        if (lvl <= 99) {
-            return 18;
-        } else {
-            return 19;
-        }
-    }
 
     public String getColorName() {
         return colorName;
@@ -503,23 +405,27 @@ public class Npc extends CreeperEntity {
         this.coolDowns.add(coolDown);
     }
 
+    public NpcLevelColor getLevelColor(int playerLevel) {
+        return experienceManager.getLevelColor(playerLevel, (int) Levels.getLevel(this.getStats().getExperience()));
+    }
+
     public enum NpcLevelColor {
 
-        RED(Color.RED + "Red"),
-        ORANGE(Color.CYAN + "Cyan"),
-        YELLOW(Color.YELLOW + "Yellow"),
-        GREEN(Color.GREEN + "Green"),
-        WHITE(Color.WHITE + "White");
+    RED(Color.RED + "Red"),
+    ORANGE(Color.CYAN + "Cyan"),
+    YELLOW(Color.YELLOW + "Yellow"),
+    GREEN(Color.GREEN + "Green"),
+    WHITE(Color.WHITE + "White");
 
-        private final String color;
+    private final String color;
 
-        NpcLevelColor(String color) {
-            this.color = color;
-        }
-
-        public String getColor() {
-            return "(" + Color.BOLD_ON + color + Color.RESET + ")";
-        }
+    NpcLevelColor(String color) {
+        this.color = color;
     }
+
+    public String getColor() {
+        return "(" + Color.BOLD_ON + color + Color.RESET + ")";
+    }
+}
 
 }

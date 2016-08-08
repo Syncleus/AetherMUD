@@ -104,13 +104,17 @@ public class Player extends CreeperEntity {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             Stats stats = getPlayerStatsWithEquipmentAndLevel();
-            if (!isActive(CoolDownType.DEATH)) {
-                if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-                    updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
-                }
-                if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
-                    addMana((int) (stats.getMaxMana() * .03));
-                }
+            if (isActive(CoolDownType.NPC_FIGHT)) {
+                return;
+            }
+            if (isActive(CoolDownType.DEATH)) {
+                return;
+            }
+            if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
+                updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
+            }
+            if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
+                addMana((int) (stats.getMaxMana() * .03));
             }
         }
     }
@@ -879,6 +883,7 @@ public class Player extends CreeperEntity {
         synchronized (interner.intern(playerId)) {
             if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) != null) {
                 if (!doesActiveFightExist(npc)) {
+                    addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
                     ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
                     activeFights.put(System.nanoTime(), activeFight);
                     return true;
@@ -982,8 +987,9 @@ public class Player extends CreeperEntity {
             }
             if (damageToVictim > 0) {
                 if (randInt(0, 100) > 95) {
-                    final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
-                    npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(damageToVictim * 3)).createStats());
+                    long criticalDamage = damageToVictim * 3;
+                    final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(criticalDamage) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                    npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(criticalDamage)).createStats());
                     npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
                 } else {
                     final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();

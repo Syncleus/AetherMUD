@@ -46,10 +46,14 @@ public class NpcTestHarness {
     public void setUp() throws Exception {
         ChannelCommunicationUtils channelUtils = new ChannelCommunicationUtils() {
             @Override
-            public void write(String playerId, String message) {}
+            public void write(String playerId, String message) {
+                //System.out.println(message);
+            }
 
             @Override
-            public void write(String playerId, String message, boolean leadingBlankLine) {}
+            public void write(String playerId, String message, boolean leadingBlankLine) {
+                // System.out.println(message);
+            }
         };
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(new MapConfiguration(Maps.newHashMap()));
         DB db = DBMaker.newMemoryDB().closeOnJvmShutdown().make();
@@ -67,34 +71,57 @@ public class NpcTestHarness {
     }
 
     @Test
-    public void testCombat() throws Exception {
-        List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
-        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
-        int totalIterations = 100;
-        Player player;
-        Npc npc = null;
-        Table t = new Table(7, BorderStyle.BLANKS,
-                ShownBorders.NONE);
-        t.setColumnWidth(0, 20, 20);
-        t.setColumnWidth(1, 15, 20);
-        t.setColumnWidth(2, 16, 16);
-        t.setColumnWidth(3, 16, 16);
-        t.setColumnWidth(4, 16, 16);
-        t.setColumnWidth(5, 16, 16);
-        //t.setColumnWidth(6, 16, 16);
-
-        t.addCell("Npc");
-        t.addCell("Player Level");
-        t.addCell("Player Win Pct");
-        t.addCell("Npc Win Pct");
-        t.addCell("Avg Rounds");
-        t.addCell("Avg Gold");
-        t.addCell("Drops");
+    public void testAnotherCombat() throws Exception {
         Set<Item> equipment = Sets.newHashSet();
         equipment.add(ItemType.BERSEKER_BOOTS.create());
         //equipment.add(ItemType.BERSERKER_BATON.create());
         equipment.add(ItemType.BERSERKER_CHEST.create());
         equipment.add(ItemType.BERSEKER_SHORTS.create());
+        String username = UUID.randomUUID().toString();
+        Player player = createRandomPlayer(username, 0);
+        equipArmor(player, equipment);
+        List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
+        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
+        Npc npc = new NpcBuilder(treeBerseker).createNpc();
+        gameManager.getEntityManager().addEntity(npc);
+        player.getCurrentRoom().addPresentNpc(npc.getEntityId());
+        player.addActiveFight(npc);
+        conductFight(player, npc);
+    }
+
+    @Test
+    public void testCombat() throws Exception {
+        List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
+        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
+        int totalIterations = 100;
+        Player player;
+        Npc npc = null;
+        Table t = new Table(8, BorderStyle.BLANKS,
+                ShownBorders.NONE);
+        t.setColumnWidth(0, 20, 20);
+        t.setColumnWidth(1, 15, 20);
+        t.setColumnWidth(2, 13, 16);
+        t.setColumnWidth(3, 10, 16);
+        t.setColumnWidth(4, 13, 16);
+        t.setColumnWidth(5, 10, 16);
+        t.setColumnWidth(6, 13, 16);
+        //t.setColumnWidth(6, 16, 16);
+
+        t.addCell("Npc");
+        t.addCell("Player Level");
+        t.addCell("Player Win");
+        t.addCell("Npc Win");
+        t.addCell("Avg Turns");
+        t.addCell("Avg Gold");
+        t.addCell("XP Earned");
+        t.addCell("Drops");
+        Set<Item> equipment = Sets.newHashSet();
+        equipment.add(ItemType.BERSEKER_BOOTS.create());
+        equipment.add(ItemType.BERSERKER_BATON.create());
+        equipment.add(ItemType.BERSERKER_CHEST.create());
+        equipment.add(ItemType.BERSEKER_SHORTS.create());
+        equipment.add(ItemType.BERSERKER_BRACERS.create());
+        equipment.add(ItemType.BERSEKER_HELM.create());
 
         for (int level = 0; level < 10; level++) {
             int playerWins = 0;
@@ -107,6 +134,7 @@ public class NpcTestHarness {
                 player = createRandomPlayer(username, level);
                 equipArmor(player, equipment);
                 npc = new NpcBuilder(treeBerseker).createNpc();
+                npc.setCurrentRoom(player.getCurrentRoom());
                 gameManager.getEntityManager().addEntity(npc);
                 player.getCurrentRoom().addPresentNpc(npc.getEntityId());
                 player.addActiveFight(npc);
@@ -133,20 +161,26 @@ public class NpcTestHarness {
             float npcWinPercent = (npcWins * 100.0f) / totalIterations;
             t.addCell(npc.getName());
             t.addCell(String.valueOf(level));
-            t.addCell(String.valueOf(playerWinPercent)+"%");
-            t.addCell(String.valueOf(npcWinPercent)+"%");
+            t.addCell(String.valueOf(playerWinPercent) + "%");
+            t.addCell(String.valueOf(npcWinPercent) + "%");
             t.addCell(String.valueOf(totalFightRounds / totalIterations));
-            t.addCell(String.valueOf(totalGold / playerWins));
+            if (totalGold == 0 || playerWins == 0) {
+                t.addCell("0");
+            } else {
+                t.addCell(String.valueOf(totalGold / playerWins));
+            }
+            t.addCell(String.valueOf(new ExperienceManager().calculateNpcXp(level, (int) Levels.getLevel(npc.getStats().getExperience()))));
             StringBuilder sb = new StringBuilder();
             drops.entrySet().stream().map(entry -> entry.getKey() + "(" + entry.getValue().get() + ")").forEach(s -> sb.append(s).append(","));
             t.addCell(sb.toString());
         }
+        System.out.println("#### 100 round fight simulation results ####");
         System.out.println(t.render());
 
-       // Stats difference = StatsHelper.getDifference(player.getPlayerStatsWithEquipmentAndLevel(), new PlayerStats().DEFAULT_PLAYER.createStats());
-       // String player1 = gameManager.buildLookString("player", player.getPlayerStatsWithEquipmentAndLevel(),difference );
-       // System.out.println(player1);
-       // System.out.println("");
+        // Stats difference = StatsHelper.getDifference(player.getPlayerStatsWithEquipmentAndLevel(), new PlayerStats().DEFAULT_PLAYER.createStats());
+        // String player1 = gameManager.buildLookString("player", player.getPlayerStatsWithEquipmentAndLevel(),difference );
+        // System.out.println(player1);
+        // System.out.println("");
 
     }
 
@@ -195,5 +229,4 @@ public class NpcTestHarness {
         PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap());
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
     }
-
 }
