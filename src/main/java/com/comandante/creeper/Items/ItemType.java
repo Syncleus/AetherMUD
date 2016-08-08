@@ -56,7 +56,7 @@ public enum ItemType {
             0,
             60,
             true,
-            Rarity.BASIC,
+            Rarity.UNCOMMON,
             50, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BERSERKER_CHEST(5, Arrays.asList("chest", "berserker chest", "c"),

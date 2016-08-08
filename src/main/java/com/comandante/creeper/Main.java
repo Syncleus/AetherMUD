@@ -7,9 +7,9 @@ import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.graphite.PickledGraphite;
 import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.player.PlayerManagementManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SessionManager;
+import com.comandante.creeper.player.PlayerManagementManager;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.server.ChannelUtils;
 import com.comandante.creeper.server.CreeperServer;
@@ -24,14 +24,10 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.jar.JarInputStream;
-import java.util.jar.Manifest;
 
 public class Main {
 

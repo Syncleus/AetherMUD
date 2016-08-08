@@ -3,7 +3,6 @@ package com.comandante.creeper.player;
 import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.EntityManager;
@@ -14,21 +13,15 @@ import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.npc.NpcExporter;
 import com.comandante.creeper.server.ChannelCommunicationUtils;
 import com.comandante.creeper.server.CreeperSession;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
-import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.WorldExporter;
-import com.google.common.collect.Interner;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.commons.codec.language.Soundex;
 import org.apache.commons.configuration.MapConfiguration;
 import org.jboss.netty.channel.Channel;
 import org.junit.Before;
 import org.junit.Test;
-import org.mapdb.Atomic;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.nocrala.tools.texttablefmt.BorderStyle;
@@ -38,11 +31,8 @@ import org.nocrala.tools.texttablefmt.Table;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 
 public class NpcTestHarness {
@@ -105,11 +95,11 @@ public class NpcTestHarness {
         //equipment.add(ItemType.BERSEKER_SHORTS.create());
 
         Map<String, AtomicInteger> drops = new HashMap<String, AtomicInteger>();
-        int totalGold = 0;
         for (int level = 0; level < 10; level++) {
             Set<Item> equipment = Sets.newHashSet();
             int playerWins = 0;
             int npcWins = 0;
+            int totalGold = 0;
             totalFightRounds = 0;
             for (int i = 0; i < 100; i++) {
                 String username = UUID.randomUUID().toString();
@@ -122,7 +112,7 @@ public class NpcTestHarness {
                 if (conductFight(player, npc)) {
                     playerWins++;
                     int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npc.getLoot());
-                    totalGold =+ gold;
+                    totalGold += gold;
                     Set<Item> items = gameManager.getLootManager().lootItemsReturn(npc.getLoot());
                     items.forEach(item -> {
                         if (!drops.containsKey(item.getItemName())) {
