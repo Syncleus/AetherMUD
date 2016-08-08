@@ -7,13 +7,13 @@ import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.spawner.ItemSpawner;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class Room extends CreeperEntity {
@@ -30,12 +30,12 @@ public abstract class Room extends CreeperEntity {
 
     private String roomTitle;
     private final Integer floorId;
-    private java.util.Optional<Integer> northId;
-    private java.util.Optional<Integer> westId;
-    private java.util.Optional<Integer> eastId;
-    private java.util.Optional<Integer> southId;
-    private java.util.Optional<Integer> downId;
-    private java.util.Optional<Integer> upId;
+    private Optional<Integer> northId;
+    private Optional<Integer> westId;
+    private Optional<Integer> eastId;
+    private Optional<Integer> southId;
+    private Optional<Integer> downId;
+    private Optional<Integer> upId;
     private List<RemoteExit> enterExits = Lists.newArrayList();
     private String roomDescription;
     private final Set<String> presentPlayerIds = Sets.<String>newConcurrentHashSet();
@@ -43,7 +43,7 @@ public abstract class Room extends CreeperEntity {
     private final Set<String> itemIds = Sets.newConcurrentHashSet();
     private List<ItemSpawner> itemSpawners = Lists.newArrayList();
     private Set<Area> areas = Sets.newConcurrentHashSet();
-    private Optional<String> mapData = Optional.absent();
+    private Optional<String> mapData = Optional.empty();
     private final Set<String> roomTags;
     private final Set<Merchant> merchants = Sets.newConcurrentHashSet();
     private Map<ItemType, Forage> forages = Maps.newHashMap();
@@ -53,12 +53,12 @@ public abstract class Room extends CreeperEntity {
     public Room(Integer roomId,
                 String roomTitle,
                 Integer floorId,
-                java.util.Optional<Integer> northId,
-                java.util.Optional<Integer> southId,
-                java.util.Optional<Integer> eastId,
-                java.util.Optional<Integer> westId,
-                java.util.Optional<Integer> upId,
-                java.util.Optional<Integer> downId,
+                Optional<Integer> northId,
+                Optional<Integer> southId,
+                Optional<Integer> eastId,
+                Optional<Integer> westId,
+                Optional<Integer> upId,
+                Optional<Integer> downId,
                 List<RemoteExit> enterExits,
                 String roomDescription, Set<String> roomTags,
                 Set<Area> areas,
@@ -101,27 +101,27 @@ public abstract class Room extends CreeperEntity {
         return roomTags;
     }
 
-    public void setNorthId(java.util.Optional<Integer> northId) {
+    public void setNorthId(Optional<Integer> northId) {
         this.northId = northId;
     }
 
-    public void setWestId(java.util.Optional<Integer> westId) {
+    public void setWestId(Optional<Integer> westId) {
         this.westId = westId;
     }
 
-    public void setEastId(java.util.Optional<Integer> eastId) {
+    public void setEastId(Optional<Integer> eastId) {
         this.eastId = eastId;
     }
 
-    public void setSouthId(java.util.Optional<Integer> southId) {
+    public void setSouthId(Optional<Integer> southId) {
         this.southId = southId;
     }
 
-    public void setDownId(java.util.Optional<Integer> downId) {
+    public void setDownId(Optional<Integer> downId) {
         this.downId = downId;
     }
 
-    public void setUpId(java.util.Optional<Integer> upId) {
+    public void setUpId(Optional<Integer> upId) {
         this.upId = upId;
     }
 
@@ -199,27 +199,27 @@ public abstract class Room extends CreeperEntity {
         return roomId;
     }
 
-    public java.util.Optional<Integer> getNorthId() {
+    public Optional<Integer> getNorthId() {
         return northId;
     }
 
-    public java.util.Optional<Integer> getWestId() {
+    public Optional<Integer> getWestId() {
         return westId;
     }
 
-    public java.util.Optional<Integer> getEastId() {
+    public Optional<Integer> getEastId() {
         return eastId;
     }
 
-    public java.util.Optional<Integer> getSouthId() {
+    public Optional<Integer> getSouthId() {
         return southId;
     }
 
-    public java.util.Optional<Integer> getUpId() {
+    public Optional<Integer> getUpId() {
         return upId;
     }
 
-    public java.util.Optional<Integer> getDownId() {
+    public Optional<Integer> getDownId() {
         return downId;
     }
 

@@ -5,15 +5,15 @@ import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.apache.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -57,29 +57,26 @@ public class MapsManager {
     }
 
     public static Function<Integer, String> render(final Integer currentroomId, final RoomManager roomManager) {
-        return new Function<Integer, String>() {
-            @Override
-            public String apply(Integer roomId) {
-                Room room = roomManager.getRoom(roomId);
-                if (roomId > 0) {
-                    if (roomId.equals(currentroomId)) {
-                        return "[" + Color.BOLD_ON + Color.RED + "*" + Color.RESET + "]";
-                    } else if (roomId.equals(1)) {
-                        return "[" + Color.BOLD_ON + Color.BLUE + "L" + Color.RESET + "]";
-                    } else if (room.getMerchants().size() > 0) {
-                        return "[" + Color.YELLOW + "m" + Color.RESET + "]";
-                    }  else if (room.getEnterExits().size() > 0) {
-                        return "[" + Color.CYAN + "e" + Color.RESET + "]";
-                    } else if (room.getUpId().isPresent()) {
-                        return "[" + Color.GREEN + "^" + Color.RESET + "]";
-                    } else if (room.getDownId().isPresent()) {
-                        return "[" + Color.GREEN + "v" + Color.RESET + "]";
-                    } else {
-                        return "[ ]";
-                    }
+        return roomId -> {
+            Room room = roomManager.getRoom(roomId);
+            if (roomId > 0) {
+                if (roomId.equals(currentroomId)) {
+                    return "[" + Color.BOLD_ON + Color.RED + "*" + Color.RESET + "]";
+                } else if (roomId.equals(1)) {
+                    return "[" + Color.BOLD_ON + Color.BLUE + "L" + Color.RESET + "]";
+                } else if (room.getMerchants().size() > 0) {
+                    return "[" + Color.YELLOW + "m" + Color.RESET + "]";
+                }  else if (room.getEnterExits().size() > 0) {
+                    return "[" + Color.CYAN + "e" + Color.RESET + "]";
+                } else if (room.getUpId().isPresent()) {
+                    return "[" + Color.GREEN + "^" + Color.RESET + "]";
+                } else if (room.getDownId().isPresent()) {
+                    return "[" + Color.GREEN + "v" + Color.RESET + "]";
                 } else {
-                    return "   ";
+                    return "[ ]";
                 }
+            } else {
+                return "   ";
             }
         };
     }
