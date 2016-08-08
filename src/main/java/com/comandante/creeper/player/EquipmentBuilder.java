@@ -84,7 +84,7 @@ public class EquipmentBuilder {
     }
 
     public static Item getLeatherSatchel(Item item) {
-        Stats stats = new StatsBuilder().setInventorySize(10).createStats();
+        Stats stats = new StatsBuilder().setInventorySize(15).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.BAG, stats);
         item.setEquipment(equipment);
         return item;

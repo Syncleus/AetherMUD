@@ -53,7 +53,7 @@ public class ConfigureNpc {
         Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
         itemsForSale.put(1, new MerchantItemForSale(ItemType.SMALL_HEALTH_POTION, 8));
         itemsForSale.put(2, new MerchantItemForSale(ItemType.PURPLE_DRANK, 80));
-        itemsForSale.put(3, new MerchantItemForSale(ItemType.LEATHER_SATCHEL, 25000));
+        itemsForSale.put(3, new MerchantItemForSale(ItemType.BIGGERS_SKIN_SATCHEL, 25000));
 
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
@@ -71,6 +71,7 @@ public class ConfigureNpc {
         blacksmithItems.put(4, new MerchantItemForSale(ItemType.IRON_HELMET, 500));
         blacksmithItems.put(5, new MerchantItemForSale(ItemType.IRON_CHEST_PLATE, 1500));
         blacksmithItems.put(6, new MerchantItemForSale(ItemType.IRON_LEGGINGS, 1100));
+        blacksmithItems.put(7, new MerchantItemForSale(ItemType.LEATHER_SATCHEL, 600));
 
         Blacksmith blacksmith = new Blacksmith(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), blacksmithItems);
         gameManager.getRoomManager().addMerchant(66, blacksmith);
