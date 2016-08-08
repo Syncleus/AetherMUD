@@ -6,7 +6,7 @@
   "loot": {
     "lootGoldMin": 7,
     "lootGoldMax": 14,
-    "lootItems": [4,6]
+    "lootItems": [4,6,2]
   },
   "roamAreas": [
     "north1_zone"

@@ -34,7 +34,7 @@ public enum ItemType {
             0,
             60,
             false,
-            Rarity.BASIC,
+            Rarity.ALWAYS,
             1, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     BERSERKER_BATON(3, Arrays.asList("baton", "a berserker baton", "b"),
