@@ -5,8 +5,9 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.world.Room;
-import com.google.common.base.Optional;
 import org.jboss.netty.channel.Channel;
+
+import java.util.Optional;
 
 public class GameAuth implements CreeperAuthenticator {
 

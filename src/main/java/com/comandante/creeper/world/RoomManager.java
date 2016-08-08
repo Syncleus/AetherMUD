@@ -4,33 +4,24 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RoomManager {
 
     private final PlayerManager playerManager;
+    private ConcurrentHashMap<Integer, Room> rooms = new ConcurrentHashMap<>();
 
     public RoomManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
 
-    private ConcurrentHashMap<Integer, Room> rooms = new ConcurrentHashMap<Integer, Room>();
-
     public void addRoom(Room room) {
         rooms.put(room.getRoomId(), room);
-    }
-
-    public Room getRoom(Integer roomId) {
-        return rooms.get(roomId);
     }
 
     public Set<Player> getPresentPlayers(Room room) {
@@ -57,13 +48,19 @@ public class RoomManager {
 
         if (matchedRooms.size() > 0) {
             return Optional.of(matchedRooms);
-        } else {
-            return Optional.absent();
-        }
+        } else return Optional.empty();
+    }
+
+    public Iterator<Map.Entry<Integer, Room>> getRoomsIterator() {
+        return rooms.entrySet().iterator();
     }
 
     public void addMerchant(Integer roomId, Merchant merchant) {
         getRoom(roomId).addMerchant(merchant);
+    }
+
+    public Room getRoom(Integer roomId) {
+        return rooms.get(roomId);
     }
 
     public void tagRoom(Integer roomId, String tag) {
@@ -72,10 +69,6 @@ public class RoomManager {
 
     public Set<String> getTagsForRoom(Integer roomId) {
         return getRoom(roomId).getRoomTags();
-    }
-
-    public Iterator<java.util.Map.Entry<Integer, Room>> getRoomsIterator() {
-        return rooms.entrySet().iterator();
     }
 
     public Map<Integer, Room> getrooms() {
@@ -94,6 +87,13 @@ public class RoomManager {
         return rooms;
     }
 
+    public Optional<Room> getPlayerCurrentRoom(Player player) {
+        if (player.getCurrentRoom() != null) {
+            return Optional.of(player.getCurrentRoom());
+        }
+        return getPlayerCurrentRoom(player.getPlayerId());
+    }
+
     public Optional<Room> getPlayerCurrentRoom(String playerId) {
         Iterator<Map.Entry<Integer, Room>> rooms = getRoomsIterator();
         while (rooms.hasNext()) {
@@ -105,14 +105,7 @@ public class RoomManager {
                 }
             }
         }
-        return Optional.absent();
-    }
-
-    public Optional<Room> getPlayerCurrentRoom(Player player) {
-        if (player.getCurrentRoom() != null) {
-            return Optional.of(player.getCurrentRoom());
-        }
-        return getPlayerCurrentRoom(player.getPlayerId());
+        return Optional.empty();
     }
 
     public Optional<Room> getNpcCurrentRoom(Npc npc) {

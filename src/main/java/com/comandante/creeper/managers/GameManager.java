@@ -42,8 +42,9 @@ import static com.comandante.creeper.server.Color.*;
 
 public class GameManager {
 
+    public static final Integer LOBBY_ID = 1;
+    private static final Logger log = Logger.getLogger(GameManager.class);
     public static String LOGO = "Creeper.";
-
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private final ChannelCommunicationUtils channelUtils;
@@ -63,7 +64,6 @@ public class GameManager {
     private final StatsModifierFactory statsModifierFactory;
     private final GossipCache gossipCache;
     private final Interner<String> interner = Interners.newWeakInterner();
-    private static final Logger log = Logger.getLogger(GameManager.class);
     private final TimeTracker timeTracker;
     private final ItemUseHandler itemUseHandler;
     private final NpcMover npcMover;
@@ -154,10 +154,6 @@ public class GameManager {
         return newUserRegistrationManager;
     }
 
-    public ChannelCommunicationUtils getChannelUtils() {
-        return channelUtils;
-    }
-
     public ItemDecayManager getItemDecayManager() {
         return itemDecayManager;
     }
@@ -166,32 +162,8 @@ public class GameManager {
         return entityManager;
     }
 
-    public RoomManager getRoomManager() {
-        return roomManager;
-    }
-
-    public PlayerManager getPlayerManager() {
-        return playerManager;
-    }
-
     public TimeTracker getTimeTracker() {
         return timeTracker;
-    }
-
-    public static final Integer LOBBY_ID = 1;
-
-    public Set<Player> getAllPlayers() {
-        ImmutableSet.Builder<Player> builder = ImmutableSet.builder();
-        Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
-        while (rooms.hasNext()) {
-            Map.Entry<Integer, Room> next = rooms.next();
-            Room room = next.getValue();
-            Set<Player> presentPlayers = roomManager.getPresentPlayers(room);
-            for (Player player : presentPlayers) {
-                builder.add(player);
-            }
-        }
-        return builder.build();
     }
 
     public void placePlayerInLobby(Player player) {
@@ -211,6 +183,91 @@ public class GameManager {
         for (Player p : allPlayers) {
             getChannelUtils().write(p.getPlayerId(), Color.GREEN + userName + " has connected." + Color.RESET + "\r\n", true);
         }
+    }
+
+    public Set<Player> getAllPlayers() {
+        ImmutableSet.Builder<Player> builder = ImmutableSet.builder();
+        Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
+        while (rooms.hasNext()) {
+            Map.Entry<Integer, Room> next = rooms.next();
+            Room room = next.getValue();
+            Set<Player> presentPlayers = roomManager.getPresentPlayers(room);
+            for (Player player : presentPlayers) {
+                builder.add(player);
+            }
+        }
+        return builder.build();
+    }
+
+    public ChannelCommunicationUtils getChannelUtils() {
+        return channelUtils;
+    }
+
+    public void currentRoomLogic(String playerId) {
+        Player player = playerManager.getPlayer(playerId);
+        final Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
+        currentRoomLogic(playerId, playerCurrentRoom);
+    }
+
+    public void currentRoomLogic(String playerId, Room playerCurrentRoom) {
+        Player player = playerManager.getPlayer(playerId);
+        StringBuilder sb = new StringBuilder();
+        sb.append(Color.BOLD_ON + Color.GREEN);
+        sb.append(playerCurrentRoom.getRoomTitle());
+        sb.append(RESET);
+        sb.append("\r\n\r\n");
+        sb.append(WordUtils.wrap(playerCurrentRoom.getRoomDescription(), 80, "\r\n", true)).append("\r\n").append("\r\n");
+        String auto_map = player.getPlayerSetting("auto_map");
+        if (playerCurrentRoom.getMapData().isPresent() && auto_map != null) {
+            int i = Integer.parseInt(auto_map);
+            sb.append(mapsManager.drawMap(playerCurrentRoom.getRoomId(), new Coords(i, i))).append("\r\n");
+        }
+        sb.append(getExits(playerCurrentRoom, player)).append("\r\n");
+
+        Set<Merchant> merchants = playerCurrentRoom.getMerchants();
+        for (Merchant merchant : merchants) {
+            sb.append(merchant.getColorName()).append(" is here.").append(RESET).append("\r\n");
+        }
+        for (Player searchPlayer : roomManager.getPresentPlayers(playerCurrentRoom)) {
+            if (searchPlayer.getPlayerId().equals(player.getPlayerId())) {
+                continue;
+            }
+            sb.append(searchPlayer.getPlayerName()).append(" is here.").append(RESET).append("\r\n");
+        }
+
+        for (String itemId : playerCurrentRoom.getItemIds()) {
+            Item itemEntity = entityManager.getItemEntity(itemId);
+            if (itemEntity == null) {
+                playerCurrentRoom.removePresentItem(itemId);
+                continue;
+            }
+            sb.append("   ").append(entityManager.getItemEntity(itemId).getRestingName()).append("\r\n");
+        }
+
+        List<String> npcs = Lists.newArrayList();
+        for (String npcId : playerCurrentRoom.getNpcIds()) {
+            StringBuilder sbb = new StringBuilder();
+            Npc npcEntity = entityManager.getNpcEntity(npcId);
+            if (Main.vowels.contains(Character.toLowerCase(npcEntity.getName().charAt(0)))) {
+                sbb.append("an ");
+            } else {
+                sbb.append("a ");
+            }
+            sbb.append(npcEntity.getColorName()).append(" is here.\r\n");
+            npcs.add(sbb.toString());
+        }
+        Collections.sort(npcs, String.CASE_INSENSITIVE_ORDER);
+        for (String s : npcs) {
+            sb.append(s);
+        }
+        String msg = null;
+        if (sb.toString().substring(sb.toString().length() - 2).equals("\r\n")) {
+            CharSequence charSequence = sb.toString().subSequence(0, sb.toString().length() - 2);
+            msg = charSequence.toString();
+        } else {
+            msg = sb.toString();
+        }
+        channelUtils.write(player.getPlayerId(), msg);
     }
 
     private String getExits(Room room, Player player) {
@@ -299,75 +356,21 @@ public class GameManager {
         return fin;
     }
 
-    public void currentRoomLogic(String playerId) {
-        Player player = playerManager.getPlayer(playerId);
-        final Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
-        currentRoomLogic(playerId, playerCurrentRoom);
-    }
-
-    public void currentRoomLogic(String playerId, Room playerCurrentRoom) {
-        Player player = playerManager.getPlayer(playerId);
-        StringBuilder sb = new StringBuilder();
-        sb.append(Color.BOLD_ON + Color.GREEN);
-        sb.append(playerCurrentRoom.getRoomTitle());
-        sb.append(RESET);
-        sb.append("\r\n\r\n");
-        sb.append(WordUtils.wrap(playerCurrentRoom.getRoomDescription(), 80, "\r\n", true)).append("\r\n").append("\r\n");
-        String auto_map = player.getPlayerSetting("auto_map");
-        if (playerCurrentRoom.getMapData().isPresent() && auto_map != null) {
-            int i = Integer.parseInt(auto_map);
-            sb.append(mapsManager.drawMap(playerCurrentRoom.getRoomId(), new Coords(i, i))).append("\r\n");
-        }
-        sb.append(getExits(playerCurrentRoom, player)).append("\r\n");
-
-        Set<Merchant> merchants = playerCurrentRoom.getMerchants();
-        for (Merchant merchant : merchants) {
-            sb.append(merchant.getColorName()).append(" is here.").append(RESET).append("\r\n");
-        }
-        for (Player searchPlayer : roomManager.getPresentPlayers(playerCurrentRoom)) {
-            if (searchPlayer.getPlayerId().equals(player.getPlayerId())) {
-                continue;
-            }
-            sb.append(searchPlayer.getPlayerName()).append(" is here.").append(RESET).append("\r\n");
-        }
-
-        for (String itemId : playerCurrentRoom.getItemIds()) {
-            Item itemEntity = entityManager.getItemEntity(itemId);
-            if (itemEntity == null) {
-                playerCurrentRoom.removePresentItem(itemId);
-                continue;
-            }
-            sb.append("   ").append(entityManager.getItemEntity(itemId).getRestingName()).append("\r\n");
-        }
-
-        List<String> npcs = Lists.newArrayList();
-        for (String npcId : playerCurrentRoom.getNpcIds()) {
-            StringBuilder sbb = new StringBuilder();
-            Npc npcEntity = entityManager.getNpcEntity(npcId);
-            if (Main.vowels.contains(Character.toLowerCase(npcEntity.getName().charAt(0)))) {
-                sbb.append("an ");
-            } else {
-                sbb.append("a ");
-            }
-            sbb.append(npcEntity.getColorName()).append(" is here.\r\n");
-            npcs.add(sbb.toString());
-        }
-        Collections.sort(npcs, String.CASE_INSENSITIVE_ORDER);
-        for (String s : npcs) {
-            sb.append(s);
-        }
-        String msg = null;
-        if (sb.toString().substring(sb.toString().length() - 2).equals("\r\n")) {
-            CharSequence charSequence = sb.toString().subSequence(0, sb.toString().length() - 2);
-            msg = charSequence.toString();
-        } else {
-            msg = sb.toString();
-        }
-        channelUtils.write(player.getPlayerId(), msg);
-    }
-
     public void placeItemInRoom(Integer roomId, String itemId) {
         roomManager.getRoom(roomId).addPresentItem(entityManager.getItemEntity(itemId).getItemId());
+    }
+
+    public boolean acquireItemFromRoom(Player player, String itemId) {
+        synchronized (interner.intern(itemId)) {
+            Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
+            if (playerCurrentRoom.getItemIds().contains(itemId)) {
+                if (acquireItem(player, itemId)) {
+                    playerCurrentRoom.getItemIds().remove(itemId);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean acquireItem(Player player, String itemId) {
@@ -384,19 +387,6 @@ public class GameManager {
                 return false;
             }
         }
-    }
-
-    public boolean acquireItemFromRoom(Player player, String itemId) {
-        synchronized (interner.intern(itemId)) {
-            Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
-            if (playerCurrentRoom.getItemIds().contains(itemId)) {
-                if (acquireItem(player, itemId)) {
-                    playerCurrentRoom.getItemIds().remove(itemId);
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public void roomSay(Integer roomId, String message, String sourcePlayerId) {
@@ -424,45 +414,6 @@ public class GameManager {
             sb.append(buldEffectsString(npc)).append("\r\n");
         }
         return sb.toString();
-    }
-
-    public String buldEffectsString(Npc npc) {
-        return renderEffectsString(npc.getEffects());
-
-    }
-
-    public String renderEffectsString(List<Effect> effects) {
-        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.NONE);
-
-        t.setColumnWidth(0, 16, 20);
-        // t.setColumnWidth(1, 10, 13);
-
-        int i = 1;
-        for (Effect effect : effects) {
-            int percent = 100 - (int) ((effect.getEffectApplications() * 100.0f) / effect.getMaxEffectApplications());
-            t.addCell(drawProgressBar(percent));
-            t.addCell(effect.getEffectName());
-            i++;
-        }
-        return t.render();
-    }
-
-    public String renderCoolDownString(Set<CoolDown> coolDowns) {
-        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.NONE);
-
-        t.setColumnWidth(0, 16, 20);
-        // t.setColumnWidth(1, 10, 13);
-
-        int i = 1;
-        for (CoolDown coolDown : coolDowns) {
-            int percent = 100 - (int) (((coolDown.getOriginalNumberOfTicks() - coolDown.getNumberOfTicks()) * 100.0f) / coolDown.getOriginalNumberOfTicks());
-            t.addCell(drawProgressBar(percent));
-            t.addCell(coolDown.getName());
-            i++;
-        }
-        return t.render();
     }
 
     public String buildLookString(String name, Stats stats, Stats diff) {
@@ -565,8 +516,70 @@ public class GameManager {
         return returnString.toString();
     }
 
+    public String buldEffectsString(Npc npc) {
+        return renderEffectsString(npc.getEffects());
+
+    }
+
     private String getFormattedNumber(Long longval) {
         return NumberFormat.getNumberInstance(Locale.US).format(longval);
+    }
+
+    public String renderEffectsString(List<Effect> effects) {
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
+
+        t.setColumnWidth(0, 16, 20);
+        // t.setColumnWidth(1, 10, 13);
+
+        int i = 1;
+        for (Effect effect : effects) {
+            int percent = 100 - (int) ((effect.getEffectApplications() * 100.0f) / effect.getMaxEffectApplications());
+            t.addCell(drawProgressBar(percent));
+            t.addCell(effect.getEffectName());
+            i++;
+        }
+        return t.render();
+    }
+
+    public String drawProgressBar(int pct) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        int numberOfProgressBarNotches = getNumberOfProgressBarNotches(pct);
+        for (int i = 0; i < numberOfProgressBarNotches; i++) {
+            sb.append("+");
+        }
+        for (int i = numberOfProgressBarNotches; i < 10; i++) {
+            sb.append(" ");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    public int getNumberOfProgressBarNotches(int y) {
+        int x = (int) (Math.round(y / 10.0) * 10);
+        String str = Integer.toString(x);
+        if (str.length() > 1) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return Integer.parseInt(str);
+    }
+
+    public String renderCoolDownString(Set<CoolDown> coolDowns) {
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
+
+        t.setColumnWidth(0, 16, 20);
+        // t.setColumnWidth(1, 10, 13);
+
+        int i = 1;
+        for (CoolDown coolDown : coolDowns) {
+            int percent = 100 - (int) (((coolDown.getOriginalNumberOfTicks() - coolDown.getNumberOfTicks()) * 100.0f) / coolDown.getOriginalNumberOfTicks());
+            t.addCell(drawProgressBar(percent));
+            t.addCell(coolDown.getName());
+            i++;
+        }
+        return t.render();
     }
 
     public void writeToPlayerCurrentRoom(String playerId, String message) {
@@ -604,7 +617,7 @@ public class GameManager {
             Map.Entry<String, Long> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
-            Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
+            java.util.Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
             if (!playerCurrentRoom.isPresent()) {
                 iterator.remove();
             } else if (!Objects.equals(npcCurrentRoom.getRoomId(), playerCurrentRoom.get().getRoomId())) {
@@ -631,6 +644,14 @@ public class GameManager {
         return damagePcts;
     }
 
+    public PlayerManager getPlayerManager() {
+        return playerManager;
+    }
+
+    public RoomManager getRoomManager() {
+        return roomManager;
+    }
+
     public synchronized void removeAllNpcs() {
         for (Npc npc : entityManager.getNpcs().values()) {
             Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
@@ -647,7 +668,6 @@ public class GameManager {
             }
         }
     }
-
 
     public String buildPrompt(String playerId) {
         Player player = playerManager.getPlayer(playerId);
@@ -693,29 +713,6 @@ public class GameManager {
         sb.append("] ");
         sb.append(Color.RESET);
         return sb.toString();
-    }
-
-    public String drawProgressBar(int pct) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        int numberOfProgressBarNotches = getNumberOfProgressBarNotches(pct);
-        for (int i = 0; i < numberOfProgressBarNotches; i++) {
-            sb.append("+");
-        }
-        for (int i = numberOfProgressBarNotches; i < 10; i++) {
-            sb.append(" ");
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
-    public int getNumberOfProgressBarNotches(int y) {
-        int x = (int) (Math.round(y / 10.0) * 10);
-        String str = Integer.toString(x);
-        if (str.length() > 1) {
-            str = str.substring(0, str.length() - 1);
-        }
-        return Integer.parseInt(str);
     }
 }
 

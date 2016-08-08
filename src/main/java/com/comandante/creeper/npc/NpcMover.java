@@ -6,7 +6,6 @@ import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -14,6 +13,7 @@ import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
@@ -120,7 +120,7 @@ public class NpcMover {
     }
 
     public Set<Integer> getPossibleExits(Room room) {
-        List<java.util.Optional<Integer>> opts = Lists.newArrayList();
+        List<Optional<Integer>> opts = Lists.newArrayList();
         opts.add(room.getDownId());
         opts.add(room.getUpId());
         opts.add(room.getNorthId());
@@ -129,7 +129,7 @@ public class NpcMover {
         opts.add(room.getWestId());
 
         Set<Integer> exits = Sets.newHashSet();
-        for (java.util.Optional<Integer> opt : opts) {
+        for (Optional<Integer> opt : opts) {
             if (opt.isPresent()) {
                 exits.add(opt.get());
             }

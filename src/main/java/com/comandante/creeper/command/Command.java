@@ -12,7 +12,10 @@ import com.comandante.creeper.server.CreeperSession;
 import com.comandante.creeper.world.*;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
-import org.jboss.netty.channel.*;
+import org.jboss.netty.channel.ChannelEvent;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import java.util.Set;
 
 public abstract class Command extends SimpleChannelUpstreamHandler {
 
+    public static final Logger log = Logger.getLogger(Command.class);
     public final List<String> validTriggers;
     public final String description;
     public final Set<PlayerRole> roles;
@@ -42,7 +46,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public Coords currentRoomCoords;
     public List<String> originalMessageParts;
     public WorldExporter worldExporter;
-    public static final Logger log = Logger.getLogger(Command.class);
     public String rootCommand;
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
@@ -65,6 +68,17 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.roles = roles;
     }
 
+    @Override
+    public void handleUpstream(ChannelHandlerContext ctx, ChannelEvent e) throws Exception {
+        try {
+            if (e instanceof MessageEvent) {
+                init((MessageEvent) e);
+            }
+        } finally {
+            super.handleUpstream(ctx, e);
+        }
+    }
+
     private void init(MessageEvent e) {
         this.creeperSession = (CreeperSession) e.getChannel().getAttachment();;
         this.originalMessageParts = getOriginalMessageParts(e);
@@ -76,15 +90,14 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.currentRoomCoords = mapMatrix.getCoords(currentRoom.getRoomId());
     }
 
-    @Override
-    public void handleUpstream(ChannelHandlerContext ctx, ChannelEvent e) throws Exception {
-        try {
-            if (e instanceof MessageEvent) {
-                init((MessageEvent) e);
-            }
-        } finally {
-            super.handleUpstream(ctx, e);
-        }
+    private List<String> getOriginalMessageParts(MessageEvent e) {
+        String origMessage = (String) e.getMessage();
+        return new ArrayList<>(Arrays.asList(origMessage.split(" ")));
+    }
+
+    private String getRootCommand(MessageEvent e) {
+        String origMessage = (String) e.getMessage();
+        return origMessage.split(" ")[0].toLowerCase();
     }
 
     public void execCommandThreadSafe(ChannelHandlerContext ctx, MessageEvent e, Class c, CommandRunnable commandRunnable) throws Exception {
@@ -98,6 +111,22 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
                 ctx.sendUpstream(e);
             }
         }
+    }
+
+    private void removeCurrentHandlerAndWritePrompt(ChannelHandlerContext ctx, MessageEvent e) {
+        removeCurrentHandlerAndWritePrompt(ctx, e, true);
+    }
+
+    public void removeCurrentHandlerAndWritePrompt(ChannelHandlerContext ctx, MessageEvent e, boolean newLine) {
+        e.getChannel().getPipeline().remove(ctx.getHandler());
+        if (creeperSession.getGrabMerchant().isPresent()) {
+            return;
+        }
+        gameManager.getChannelUtils().write(playerId, getPrompt(), newLine);
+    }
+
+    public String getPrompt() {
+        return gameManager.buildPrompt(playerId);
     }
 
     public void execCommandBackgroundThread(ChannelHandlerContext ctx, MessageEvent e, CommandRunnable commandRunnable) throws Exception {
@@ -124,28 +153,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         }
     }
 
-    private void removeCurrentHandlerAndWritePrompt(ChannelHandlerContext ctx, MessageEvent e) {
-        removeCurrentHandlerAndWritePrompt(ctx, e, true);
-    }
-
-    public void removeCurrentHandlerAndWritePrompt(ChannelHandlerContext ctx, MessageEvent e, boolean newLine) {
-        e.getChannel().getPipeline().remove(ctx.getHandler());
-        if (creeperSession.getGrabMerchant().isPresent()) {
-            return;
-        }
-        gameManager.getChannelUtils().write(playerId, getPrompt(), newLine);
-    }
-
-    private String getRootCommand(MessageEvent e) {
-        String origMessage = (String) e.getMessage();
-        return origMessage.split(" ")[0].toLowerCase();
-    }
-
-    private List<String> getOriginalMessageParts(MessageEvent e) {
-        String origMessage = (String) e.getMessage();
-        return new ArrayList<>(Arrays.asList(origMessage.split(" ")));
-    }
-
     public void write(String msg) {
         channelUtils.write(playerId, msg);
     }
@@ -164,10 +171,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     public void printCurrentRoomInformation(Room playerCurrentRoom) {
         gameManager.currentRoomLogic(playerId, playerCurrentRoom);
-    }
-
-    public String getPrompt() {
-        return gameManager.buildPrompt(playerId);
     }
 
     public String getDescription() {

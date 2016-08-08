@@ -25,6 +25,7 @@ import static com.codahale.metrics.MetricRegistry.name;
 
 public class EntityManager {
 
+    private static final Logger log = Logger.getLogger(EntityManager.class);
     private final ConcurrentHashMap<String, Npc> npcs = new ConcurrentHashMap<>();
     private final HTreeMap<String, Item> items;
     private final HTreeMap<String, Effect> effects;
@@ -32,7 +33,6 @@ public class EntityManager {
     private final ExecutorService mainTickExecutorService = Executors.newFixedThreadPool(50);
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
-    private static final Logger log = Logger.getLogger(EntityManager.class);
 
     public EntityManager(RoomManager roomManager, PlayerManager playerManager, DB db) {
         this.roomManager = roomManager;

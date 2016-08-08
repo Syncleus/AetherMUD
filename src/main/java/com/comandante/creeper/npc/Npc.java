@@ -19,15 +19,14 @@ import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.api.client.util.Sets;
-import com.google.common.base.Optional;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
+import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
@@ -40,7 +39,6 @@ import static com.comandante.creeper.server.Color.RESET;
 
 public class Npc extends CreeperEntity {
 
-    private long lastPhraseTimestamp;
     private final GameManager gameManager;
     private final String name;
     private final String colorName;
@@ -49,18 +47,19 @@ public class Npc extends CreeperEntity {
     private final Temperament temperament;
     private final Set<Area> roamAreas;
     private final Set<String> validTriggers;
-    private Loot loot;
     private final Set<SpawnRule> spawnRules;
+    private final ArrayBlockingQueue<NpcStatsChange> npcStatsChanges = new ArrayBlockingQueue<>(3000);
+    private final Interner<Npc> interner = Interners.newWeakInterner();
+    private final AtomicBoolean isAlive = new AtomicBoolean(true);
+    private final Random random = new Random();
+    private long lastPhraseTimestamp;
+    private Loot loot;
     private List<Effect> effects = Lists.newCopyOnWriteArrayList();
     private int maxEffects = 4;
     private Map<String, Long> playerDamageMap = Maps.newHashMap();
     private Room currentRoom;
-    private final ArrayBlockingQueue<NpcStatsChange> npcStatsChanges = new ArrayBlockingQueue<>(3000);
     private int effectsTickBucket = 0;
-    private final Interner<Npc> interner = Interners.newWeakInterner();
-    private final AtomicBoolean isAlive = new AtomicBoolean(true);
     private Set<CoolDown> coolDowns = Sets.newHashSet();
-    private final Random random = new Random();
 
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
@@ -128,174 +127,8 @@ public class Npc extends CreeperEntity {
         }
     }
 
-    private boolean getRandPercent(double percent) {
-        double rangeMin = 0;
-        double rangeMax = 100;
-        double randomValue = rangeMin + (rangeMax - rangeMin) * random.nextDouble();
-        return randomValue <= percent;
-    }
-
-    private void tickAllActiveCoolDowns() {
-        Iterator<CoolDown> iterator = coolDowns.iterator();
-        while (iterator.hasNext()) {
-            CoolDown coolDown = iterator.next();
-            if (coolDown.isActive()) {
-                coolDown.decrementTick();
-            } else {
-                iterator.remove();
-            }
-        }
-    }
-
-    public void addCoolDown(CoolDown coolDown) {
-        this.coolDowns.add(coolDown);
-    }
-
-    public Set<CoolDown> getCoolDowns() {
-        return coolDowns;
-    }
-
-
-    public void setLastPhraseTimestamp(long lastPhraseTimestamp) {
-        this.lastPhraseTimestamp = lastPhraseTimestamp;
-    }
-
-    public String getColorName() {
-        return colorName;
-    }
-
-    public Set<String> getValidTriggers() {
-        return validTriggers;
-    }
-
-    public Set<Area> getRoamAreas() {
-        return roamAreas;
-    }
-
-    public Stats getStats() {
-        return stats;
-    }
-
-    public GameManager getGameManager() {
-        return gameManager;
-    }
-
-    public long getLastPhraseTimestamp() {
-        return lastPhraseTimestamp;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public String getDieMessage() {
-        return dieMessage;
-    }
-
-    public void npcSay(Integer roomId, String message) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(RED);
-        sb.append(name).append(": ").append(message);
-        sb.append(RESET);
-    }
-
-    public Loot getLoot() {
-        return loot;
-    }
-
-    public Set<SpawnRule> getSpawnRules() {
-        return spawnRules;
-    }
-
-    public Optional<SpawnRule> getSpawnRuleByArea(Area area) {
-        Set<SpawnRule> spawnRules = getSpawnRules();
-        for (SpawnRule spawnRule : spawnRules) {
-            if (spawnRule.getArea().equals(area)) {
-                return Optional.of(spawnRule);
-            }
-        }
-        return Optional.absent();
-    }
-
-    public void addEffect(Effect effect) {
-        Interner<String> interner = Interners.newWeakInterner();
-        synchronized (interner.intern(getEntityId())) {
-            if (effects.size() >= maxEffects) {
-            } else {
-                effects.add(effect);
-            }
-        }
-    }
-
-    public List<Effect> getEffects() {
-        return effects;
-    }
-
-    public long getExperience() {
-        return getStats().getExperience();
-    }
-
-    public double getPctOFExperience(double pct, long playerLevel) {
-        return getExperience() * pct;
-    }
-
-    public void addDamageToMap(String playerId, long amt) {
-        playerDamageMap.put(playerId, amt);
-    }
-
-    public Map<String, Long> getPlayerDamageMap() {
-        return playerDamageMap;
-    }
-
-    public void setLoot(Loot loot) {
-        this.loot = loot;
-    }
-
-    public Room getCurrentRoom() {
-        return currentRoom;
-    }
-
-    public Temperament getTemperament() {
-        return temperament;
-    }
-
-    public AtomicBoolean getIsAlive() {
-        return isAlive;
-    }
-
-    public void setCurrentRoom(Room currentRoom) {
-        this.currentRoom = currentRoom;
-    }
-
-    public void addNpcDamage(NpcStatsChange npcStatsChange) {
-        if (!isActiveCooldown(CoolDownType.NPC_FIGHT)) {
-            addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
-        } else {
-            for (CoolDown coolDown : coolDowns) {
-                if (coolDown.getCoolDownType().equals(CoolDownType.NPC_FIGHT)) {
-                    coolDown.setNumberOfTicks(coolDown.getOriginalNumberOfTicks());
-                }
-            }
-        }
-        this.npcStatsChanges.add(npcStatsChange);
-    }
-
-    public boolean isActiveCooldown(CoolDownType coolDownType) {
-        for (CoolDown c : coolDowns) {
-            if (c.getCoolDownType().equals(coolDownType)) {
-                if (c.isActive()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
-    public void doHealthDamage(Player player, List<String> damageStrings, long amt) {
-        NpcStatsChange npcStatsChange =
-                new NpcStatsChangeBuilder().setStats(new StatsBuilder().setCurrentHealth(amt).createStats()).setDamageStrings(damageStrings).setPlayer(player).createNpcStatsChange();
-        addNpcDamage(npcStatsChange);
     }
 
     private void processNpcStatChange(NpcStatsChange npcStatsChange) {
@@ -341,39 +174,46 @@ public class Npc extends CreeperEntity {
         }
     }
 
-    private String getBattleReport(long xpEarned) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Color.MAGENTA).append("Battle Report----------------------------").append(Color.RESET).append("\r\n");
-        sb.append("You killed a ");
-        sb.append(getColorName());
-        sb.append(" for ");
-        sb.append(Color.GREEN);
-        sb.append("+");
-        sb.append(NumberFormat.getNumberInstance(Locale.US).format(xpEarned));
-        sb.append(Color.RESET);
-        sb.append(" experience points.");
-        sb.append("\r\n");
-
-        Set<Map.Entry<String, Long>> entries = getPlayerDamageMap().entrySet();
-        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                ShownBorders.NONE);
-
-        t.setColumnWidth(0, 14, 24);
-        t.setColumnWidth(1, 10, 13);
-        t.addCell("Player");
-        t.addCell("Damage");
-        for (Map.Entry<String, Long> entry : entries) {
-            Player player = gameManager.getPlayerManager().getPlayer(entry.getKey());
-            String name = null;
-            if (player != null) {
-                name = player.getPlayerName();
+    public boolean isActiveCooldown(CoolDownType coolDownType) {
+        for (CoolDown c : coolDowns) {
+            if (c.getCoolDownType().equals(coolDownType)) {
+                if (c.isActive()) {
+                    return true;
+                }
             }
-            long damageAmt = entry.getValue();
-            t.addCell(name);
-            t.addCell(NumberFormat.getNumberInstance(Locale.US).format(damageAmt));
         }
-        sb.append(t.render());
-        return sb.toString();
+        return false;
+    }
+
+    private boolean getRandPercent(double percent) {
+        double rangeMin = 0;
+        double rangeMax = 100;
+        double randomValue = rangeMin + (rangeMax - rangeMin) * random.nextDouble();
+        return randomValue <= percent;
+    }
+
+    private void tickAllActiveCoolDowns() {
+        Iterator<CoolDown> iterator = coolDowns.iterator();
+        while (iterator.hasNext()) {
+            CoolDown coolDown = iterator.next();
+            if (coolDown.isActive()) {
+                coolDown.decrementTick();
+            } else {
+                iterator.remove();
+            }
+        }
+    }
+
+    public Stats getStats() {
+        return stats;
+    }
+
+    public Map<String, Long> getPlayerDamageMap() {
+        return playerDamageMap;
+    }
+
+    public void addDamageToMap(String playerId, long amt) {
+        playerDamageMap.put(playerId, amt);
     }
 
     private void killNpc(Player player) {
@@ -408,23 +248,73 @@ public class Npc extends CreeperEntity {
         }
     }
 
-    public static enum NpcLevelColor {
+    public Loot getLoot() {
+        return loot;
+    }
 
-        RED(Color.RED + "Red"),
-        ORANGE(Color.CYAN + "Cyan"),
-        YELLOW(Color.YELLOW + "Yellow"),
-        GREEN(Color.GREEN + "Green"),
-        WHITE(Color.WHITE + "White");
+    public String getDieMessage() {
+        return dieMessage;
+    }
 
-        private final String color;
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
 
-        NpcLevelColor(String color) {
-            this.color = color;
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
+    private int getNpcXp(int playerLevel, int npcLevel) {
+        if (npcLevel >= playerLevel) {
+            double temp = ((playerLevel * 5) + 45) * (1 + (0.05 * (npcLevel - playerLevel)));
+            double tempCap = ((playerLevel * 5) + 45) * 1.2;
+            if (temp > tempCap) {
+                return (int) Math.floor(tempCap);
+            } else {
+                return (int) Math.floor(temp);
+            }
+        } else {
+            if (getLevelColor(playerLevel).equals(NpcLevelColor.WHITE)) {
+                return 0;
+            } else {
+                return (int) (Math.floor((playerLevel * 5) + 45) * (1 - (playerLevel - npcLevel) / getZD(playerLevel)));
+            }
         }
+    }
 
-        public String getColor() {
-            return "(" + Color.BOLD_ON + color + Color.RESET + ")";
+    private String getBattleReport(long xpEarned) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Color.MAGENTA).append("Battle Report----------------------------").append(Color.RESET).append("\r\n");
+        sb.append("You killed a ");
+        sb.append(getColorName());
+        sb.append(" for ");
+        sb.append(Color.GREEN);
+        sb.append("+");
+        sb.append(NumberFormat.getNumberInstance(Locale.US).format(xpEarned));
+        sb.append(Color.RESET);
+        sb.append(" experience points.");
+        sb.append("\r\n");
+
+        Set<Map.Entry<String, Long>> entries = getPlayerDamageMap().entrySet();
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+                ShownBorders.NONE);
+
+        t.setColumnWidth(0, 14, 24);
+        t.setColumnWidth(1, 10, 13);
+        t.addCell("Player");
+        t.addCell("Damage");
+        for (Map.Entry<String, Long> entry : entries) {
+            Player player = gameManager.getPlayerManager().getPlayer(entry.getKey());
+            String name = null;
+            if (player != null) {
+                name = player.getPlayerName();
+            }
+            long damageAmt = entry.getValue();
+            t.addCell(name);
+            t.addCell(NumberFormat.getNumberInstance(Locale.US).format(damageAmt));
         }
+        sb.append(t.render());
+        return sb.toString();
     }
 
     public NpcLevelColor getLevelColor(int playerLevel) {
@@ -462,24 +352,6 @@ public class Npc extends CreeperEntity {
                             }
                         }
                     }
-            }
-        }
-    }
-
-    private int getNpcXp(int playerLevel, int npcLevel) {
-        if (npcLevel >= playerLevel) {
-            double temp = ((playerLevel * 5) + 45) * (1 + (0.05 * (npcLevel - playerLevel)));
-            double tempCap = ((playerLevel * 5) + 45) * 1.2;
-            if (temp > tempCap) {
-                return (int) Math.floor(tempCap);
-            } else {
-                return (int) Math.floor(temp);
-            }
-        } else {
-            if (getLevelColor(playerLevel).equals(NpcLevelColor.WHITE)) {
-                return 0;
-            } else {
-                return (int) (Math.floor((playerLevel * 5) + 45) * (1 - (playerLevel - npcLevel) / getZD(playerLevel)));
             }
         }
     }
@@ -525,6 +397,127 @@ public class Npc extends CreeperEntity {
             return 18;
         } else {
             return 19;
+        }
+    }
+
+    public String getColorName() {
+        return colorName;
+    }
+
+    public void setLoot(Loot loot) {
+        this.loot = loot;
+    }
+
+    public Set<CoolDown> getCoolDowns() {
+        return coolDowns;
+    }
+
+    public Set<String> getValidTriggers() {
+        return validTriggers;
+    }
+
+    public Set<Area> getRoamAreas() {
+        return roamAreas;
+    }
+
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    public long getLastPhraseTimestamp() {
+        return lastPhraseTimestamp;
+    }
+
+    public void setLastPhraseTimestamp(long lastPhraseTimestamp) {
+        this.lastPhraseTimestamp = lastPhraseTimestamp;
+    }
+
+    public void npcSay(Integer roomId, String message) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(RED);
+        sb.append(name).append(": ").append(message);
+        sb.append(RESET);
+    }
+
+    public Optional<SpawnRule> getSpawnRuleByArea(Area area) {
+        Set<SpawnRule> spawnRules = getSpawnRules();
+        for (SpawnRule spawnRule : spawnRules) {
+            if (spawnRule.getArea().equals(area)) {
+                return Optional.of(spawnRule);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Set<SpawnRule> getSpawnRules() {
+        return spawnRules;
+    }
+
+    public void addEffect(Effect effect) {
+        Interner<String> interner = Interners.newWeakInterner();
+        synchronized (interner.intern(getEntityId())) {
+            if (effects.size() >= maxEffects) {
+            } else {
+                effects.add(effect);
+            }
+        }
+    }
+
+    public List<Effect> getEffects() {
+        return effects;
+    }
+
+    public long getExperience() {
+        return getStats().getExperience();
+    }
+
+    public Temperament getTemperament() {
+        return temperament;
+    }
+
+    public AtomicBoolean getIsAlive() {
+        return isAlive;
+    }
+
+    public void doHealthDamage(Player player, List<String> damageStrings, long amt) {
+        NpcStatsChange npcStatsChange =
+                new NpcStatsChangeBuilder().setStats(new StatsBuilder().setCurrentHealth(amt).createStats()).setDamageStrings(damageStrings).setPlayer(player).createNpcStatsChange();
+        addNpcDamage(npcStatsChange);
+    }
+
+    public void addNpcDamage(NpcStatsChange npcStatsChange) {
+        if (!isActiveCooldown(CoolDownType.NPC_FIGHT)) {
+            addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
+        } else {
+            for (CoolDown coolDown : coolDowns) {
+                if (coolDown.getCoolDownType().equals(CoolDownType.NPC_FIGHT)) {
+                    coolDown.setNumberOfTicks(coolDown.getOriginalNumberOfTicks());
+                }
+            }
+        }
+        this.npcStatsChanges.add(npcStatsChange);
+    }
+
+    public void addCoolDown(CoolDown coolDown) {
+        this.coolDowns.add(coolDown);
+    }
+
+    public enum NpcLevelColor {
+
+        RED(Color.RED + "Red"),
+        ORANGE(Color.CYAN + "Cyan"),
+        YELLOW(Color.YELLOW + "Yellow"),
+        GREEN(Color.GREEN + "Green"),
+        WHITE(Color.WHITE + "White");
+
+        private final String color;
+
+        NpcLevelColor(String color) {
+            this.color = color;
+        }
+
+        public String getColor() {
+            return "(" + Color.BOLD_ON + color + Color.RESET + ")";
         }
     }
 
