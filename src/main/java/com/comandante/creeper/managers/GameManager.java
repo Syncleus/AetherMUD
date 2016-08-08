@@ -704,11 +704,12 @@ public class GameManager {
             sb.append(Color.RED + " ! " + Color.RESET);
         }
         if (player.isActiveCoolDown()) {
-            sb.append(" ");
             if (player.isActive(CoolDownType.DEATH)) {
+                sb.append(" ");
                 sb.append(Color.RED + "D" + Color.RESET);
             }
             if (player.isActiveForageCoolDown()) {
+                sb.append(" ");
                 sb.append(Color.GREEN + "F" + Color.RESET);
             }
         }

@@ -4,8 +4,8 @@
   "dieMessage": "a swamp \u001B[1m\u001B[35mberserker\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
   "temperament": "passive",
   "loot": {
-    "lootGoldMin": 7,
-    "lootGoldMax": 14,
+    "lootGoldMin": 10,
+    "lootGoldMax": 19,
     "lootItems": [3]
   },
   "roamAreas": [
