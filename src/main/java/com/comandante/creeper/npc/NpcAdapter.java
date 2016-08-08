@@ -30,7 +30,7 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         jsonWriter.name("name").value(npc.getName());
         jsonWriter.name("colorName").value(npc.getColorName());
         jsonWriter.name("dieMessage").value(npc.getDieMessage());
-
+        jsonWriter.name("temperament").value(npc.getDieMessage());
         Loot loot = npc.getLoot();
         jsonWriter.name("loot");
         jsonWriter.beginObject();
@@ -105,6 +105,8 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         final String npcColorName = jsonReader.nextString();
         jsonReader.nextName();
         final String npcDieMessage = jsonReader.nextString();
+        jsonReader.nextName();
+        final String temperament = jsonReader.nextString();
         jsonReader.nextName();
         jsonReader.beginObject();
         jsonReader.nextName();
@@ -205,6 +207,7 @@ public class NpcAdapter extends TypeAdapter<Npc> {
         NpcBuilder npcBuilder = new NpcBuilder()
                 .setColorName(npcColorName)
                 .setDieMessage(npcDieMessage)
+                .setTemperament(Temperament.get(temperament))
                 .setLoot(loot)
                 .setName(npcName)
                 .setRoamAreas(roamAreas)

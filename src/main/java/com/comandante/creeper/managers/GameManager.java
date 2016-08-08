@@ -414,7 +414,9 @@ public class GameManager {
         StringBuilder sb = new StringBuilder();
         // passing an empty createState because of the "difference calculation"
         sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(npc.getColorName()).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
-        sb.append("Level ").append(Levels.getLevel(npc.getStats().getExperience())).append(" ").append(npc.getLevelColor((int) playerLevel).getColor()).append("\r\n");
+        sb.append("Level ").append(Levels.getLevel(npc.getStats().getExperience())).append(" ")
+                .append(npc.getLevelColor((int) playerLevel).getColor())
+                .append(" [").append(npc.getTemperament().getFriendlyFormat()).append("]").append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats())).append("\r\n");
         if (npc.getEffects() != null && npc.getEffects().size() > 0) {

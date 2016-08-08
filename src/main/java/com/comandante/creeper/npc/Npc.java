@@ -46,6 +46,7 @@ public class Npc extends CreeperEntity {
     private final String colorName;
     private final Stats stats;
     private final String dieMessage;
+    private final Temperament temperament;
     private final Set<Area> roamAreas;
     private final Set<String> validTriggers;
     private Loot loot;
@@ -62,7 +63,7 @@ public class Npc extends CreeperEntity {
     private final Random random = new Random();
 
 
-    protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
+    protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
@@ -73,6 +74,7 @@ public class Npc extends CreeperEntity {
         this.validTriggers = validTriggers;
         this.loot = loot;
         this.spawnRules = spawnRules;
+        this.temperament = temperament;
     }
 
     @Override
@@ -251,6 +253,10 @@ public class Npc extends CreeperEntity {
 
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public Temperament getTemperament() {
+        return temperament;
     }
 
     public AtomicBoolean getIsAlive() {
