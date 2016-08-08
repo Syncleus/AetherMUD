@@ -3,8 +3,8 @@
   "colorName": "tree \u001B[1m\u001B[35mberserker\u001B[0m",
   "dieMessage": "a tree \u001B[1m\u001B[35mberserker\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
   "loot": {
-    "lootGoldMin": 3,
-    "lootGoldMax": 10,
+    "lootGoldMin": 7,
+    "lootGoldMax": 14,
     "lootItems": []
   },
   "roamAreas": [
