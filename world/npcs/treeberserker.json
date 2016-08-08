@@ -23,7 +23,7 @@
     "meleSkill": 12,
     "numberOfWeaponRolls": 1,
     "strength": 10,
-    "weaponRatingMax": 12,
+    "weaponRatingMax": 10,
     "weaponRatingMin": 7,
     "willPower": 1
   },
