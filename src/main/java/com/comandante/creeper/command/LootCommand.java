@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.function.Consumer;
 
 public class LootCommand extends Command {
 
@@ -39,7 +38,7 @@ public class LootCommand extends Command {
                             }
                             Set<Item> items = lootManager.lootItemsReturn(loot);
                             for (Item i: items) {
-                                gameManager.acquireItem(player, i.getItemId());
+                                gameManager.acquireItem(player, i.getItemId(), true);
                                 write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
                             }
                             if (gold < 0 && items.size() == 0) {

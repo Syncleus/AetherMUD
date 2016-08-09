@@ -374,6 +374,10 @@ public class GameManager {
     }
 
     public boolean acquireItem(Player player, String itemId) {
+        return acquireItem(player, itemId, false);
+    }
+
+    public boolean acquireItem(Player player, String itemId, boolean isFromLoot) {
         synchronized (interner.intern(itemId)) {
             Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
             if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
@@ -385,8 +389,10 @@ public class GameManager {
             } else {
                 Item itemEntity = entityManager.getItemEntity(itemId);
                 channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
-                player.getCurrentRoom().addPresentItem(itemId);
-                roomSay(player.getCurrentRoom().getRoomId(), player.getPlayerName() + " dropped " + itemEntity.getItemName(), player.getPlayerId());
+                if (isFromLoot) {
+                    player.getCurrentRoom().addPresentItem(itemId);
+                    roomSay(player.getCurrentRoom().getRoomId(), player.getPlayerName() + " dropped " + itemEntity.getItemName(), player.getPlayerId());
+                }
                 return false;
             }
         }
