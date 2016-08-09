@@ -494,7 +494,7 @@ public class Player extends CreeperEntity {
 
     public Map<String, Long> getNpcKillLog() {
         ImmutableMap.Builder<String, Long> builder = ImmutableMap.builder();
-        getPlayerMetadata().getNpcKillLog().forEach((key, value) -> builder.put(key, value));
+        getPlayerMetadata().getNpcKillLog().forEach(builder::put);
         return builder.build();
     }
 
