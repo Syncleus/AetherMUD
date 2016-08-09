@@ -5,6 +5,7 @@ import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.IrcBotService;
 import com.comandante.creeper.Items.*;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.SingleThreadedCreeperEventProcessor;
 import com.comandante.creeper.bot.BotCommandFactory;
 import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -37,6 +38,7 @@ import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import static com.comandante.creeper.server.Color.*;
 
@@ -67,6 +69,7 @@ public class GameManager {
     private final TimeTracker timeTracker;
     private final ItemUseHandler itemUseHandler;
     private final NpcMover npcMover;
+    private final SingleThreadedCreeperEventProcessor eventProcessor = new SingleThreadedCreeperEventProcessor(new ArrayBlockingQueue<>(100000));
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils) {
         this.roomManager = roomManager;
@@ -92,6 +95,7 @@ public class GameManager {
         this.entityManager.addEntity(itemDecayManager);
         this.itemUseHandler = new ItemUseHandler(this);
         this.npcMover = new NpcMover(this);
+        this.eventProcessor.startAsync();
     }
 
     public NpcMover getNpcMover() {
@@ -164,6 +168,10 @@ public class GameManager {
 
     public TimeTracker getTimeTracker() {
         return timeTracker;
+    }
+
+    public SingleThreadedCreeperEventProcessor getEventProcessor() {
+        return eventProcessor;
     }
 
     public void placePlayerInLobby(Player player) {

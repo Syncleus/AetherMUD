@@ -362,11 +362,13 @@ public class Player extends CreeperEntity {
     }
 
     public void addNpcKillLog(String npcName) {
-        synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
-            playerMetadata.addNpcKill(npcName);
-            savePlayerMetadata(playerMetadata);
-        }
+        gameManager.getEventProcessor().addEvent(() -> {
+            synchronized (interner.intern(playerId)) {
+                PlayerMetadata playerMetadata = getPlayerMetadata();
+                playerMetadata.addNpcKill(npcName);
+                savePlayerMetadata(playerMetadata);
+            }
+        });
     }
 
     public void transferItemFromLocker(String entityId) {
