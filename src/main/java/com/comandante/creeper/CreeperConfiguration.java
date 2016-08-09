@@ -66,7 +66,7 @@ public class CreeperConfiguration {
     public final String weatherUndergroundApiKey;
 
     public static final String MAX_GOSSIP_CACHE_SIZE = "max.gossip.cache.size";
-    public static final int MAX_GOSSIP_CACHE_SIZE_DEFAULT = 100;
+    public static final int MAX_GOSSIP_CACHE_SIZE_DEFAULT = 1000;
     public final int maxGossipCacheSize;
 
     public CreeperConfiguration(Configuration configuration) {

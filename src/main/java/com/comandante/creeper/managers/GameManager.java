@@ -391,7 +391,7 @@ public class GameManager {
                 channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
                 if (isFromLoot) {
                     player.getCurrentRoom().addPresentItem(itemId);
-                    roomSay(player.getCurrentRoom().getRoomId(), player.getPlayerName() + " dropped " + itemEntity.getItemName(), player.getPlayerId());
+                    roomSay(player.getCurrentRoom().getRoomId(), player.getPlayerName() + " dropped " + itemEntity.getItemName(), player.getPlayerId() + "\r\n");
                 }
                 return false;
             }

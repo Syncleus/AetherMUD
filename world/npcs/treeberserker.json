@@ -37,6 +37,7 @@
   },
   "validTriggers": [
     "t",
+    "tree",
     "tree berserker",
     "berserker",
     "b"

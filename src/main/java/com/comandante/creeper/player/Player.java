@@ -95,19 +95,14 @@ public class Player extends CreeperEntity {
     }
 
     private void processFightRounds() {
-        for (ActiveFight activeFight : activeFights.values()) {
-            doFightRound(activeFight);
-        }
+        activeFights.forEach((aLong, activeFight) -> doFightRound(activeFight));
     }
 
     private void processRegens() {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             Stats stats = getPlayerStatsWithEquipmentAndLevel();
-            if (isActive(CoolDownType.NPC_FIGHT)) {
-                return;
-            }
-            if (isActive(CoolDownType.DEATH)) {
+            if (isActive(CoolDownType.NPC_FIGHT) || isActive(CoolDownType.DEATH)) {
                 return;
             }
             if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
