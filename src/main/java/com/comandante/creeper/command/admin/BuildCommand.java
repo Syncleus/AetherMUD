@@ -26,8 +26,7 @@ public class BuildCommand extends Command {
 
     @Override
     public synchronized void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ;
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() > 1) {
                 String desiredBuildDirection = originalMessageParts.get(1);
                 if (desiredBuildDirection.equalsIgnoreCase("notable")) {
@@ -118,10 +117,7 @@ public class BuildCommand extends Command {
                 }
                 channelUtils.write(playerId, "Room already exists at that location.");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
-
+        });
     }
 
     private FloorModel newFloorModel(Integer floorId, Integer newRoomId, Integer currentRoomId, RemoteExit remoteExit) {
