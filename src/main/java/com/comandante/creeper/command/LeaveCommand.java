@@ -30,10 +30,6 @@ public class LeaveCommand extends Command {
                 Room destinationRoom = roomManager.getRoom(leave.get(0).getRoomId());
                 playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "entered " + leave.get(0).getExitDetail() + ".", "N/A");
                 player.movePlayer(playerMovement);
-                if (playerMovement != null) {
-                    player.setReturnDirection(java.util.Optional.of(playerMovement.getReturnDirection()));
-                    printCurrentRoomInformation(roomManager.getRoom(playerMovement.getDestinationRoomId()));
-                }
                 return;
             }
             write("There is no Leave exit." + "\r\n");

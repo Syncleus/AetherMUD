@@ -12,6 +12,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
+import com.comandante.creeper.npc.Temperament;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
@@ -28,6 +29,7 @@ import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player extends CreeperEntity {
 
@@ -520,9 +522,27 @@ public class Player extends CreeperEntity {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
                     continue;
                 }
-                gameManager.getChannelUtils().write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
             }
+            setReturnDirection(java.util.Optional.of(playerMovement.getReturnDirection()));
+            gameManager.currentRoomLogic(playerId, gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId()));
+            gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
+            processNpcAggro();
         }
+    }
+
+    private void processNpcAggro() {
+        List<Npc> aggresiveRoomNpcs = currentRoom.getNpcIds().stream()
+                .map(npcId -> gameManager.getEntityManager().getNpcEntity(npcId))
+                .filter(npc -> npc.getTemperament().equals(Temperament.AGGRESSIVE))
+                .filter(npc -> {Npc.NpcLevelColor levelColor = npc.getLevelColor((int) Levels.getLevel(getPlayerStatsWithEquipmentAndLevel().getExperience()));
+                    return !levelColor.equals(Npc.NpcLevelColor.WHITE);
+                })
+                .collect(Collectors.toList());
+
+        aggresiveRoomNpcs.forEach(npc -> {
+            gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has angered a " + npc.getColorName() + "\r\n");
+            addActiveFight(npc);
+        });
     }
 
     public Item getInventoryItem(String itemKeyword) {

@@ -4,7 +4,7 @@ import com.comandante.creeper.npc.Npc;
 
 public class ExperienceManager {
 
-    public int calculateNpcXp(int playerLevel, int npcLevel) {
+    public static int calculateNpcXp(int playerLevel, int npcLevel) {
         float xp = 0;
         if (npcLevel == playerLevel) {
             xp = (playerLevel * 5 + 45);
@@ -30,7 +30,7 @@ public class ExperienceManager {
     }
 
 
-    public Npc.NpcLevelColor getLevelColor(int playerLevel, int npcLevel) {
+    public static Npc.NpcLevelColor getLevelColor(int playerLevel, int npcLevel) {
         if (playerLevel + 5 <= npcLevel) {
             return Npc.NpcLevelColor.RED;
         } else {
@@ -67,7 +67,7 @@ public class ExperienceManager {
         }
     }
 
-    private int getZD(int lvl) {
+    private static int getZD(int lvl) {
         if (lvl <= 7) {
             return 5;
         }
