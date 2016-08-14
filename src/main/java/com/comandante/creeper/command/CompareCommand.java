@@ -39,7 +39,7 @@ public class CompareCommand extends Command {
             for (Player presentPlayer : presentPlayers) {
                 if (presentPlayer != null && presentPlayer.getPlayerName().equals(target)) {
                     String targetLookString = presentPlayer.getLookString();
-                    write(CreeperUtils.printStringsNextToEachOther(Lists.newArrayList(selfLookStrong, targetLookString), "  ")+ "\r\n");
+                    write(CreeperUtils.printStringsNextToEachOther(Lists.newArrayList(selfLookStrong, targetLookString), " | ")+ "\r\n");
                     if (!presentPlayer.getPlayerId().equals(playerId)) {
                         channelUtils.write(presentPlayer.getPlayerId(), player.getPlayerName() + " compares themself to you.", true);
                     }
