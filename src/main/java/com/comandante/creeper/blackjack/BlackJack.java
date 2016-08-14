@@ -58,6 +58,11 @@ public class BlackJack {
     }
 
     public static void main(String[] args) {
+
+        String test = "   │7        │   ";
+        String s = CreeperUtils.trimTrailingBlanks(test);
+        System.out.println(s);
+
         Deck deck = new Deck();
         deck.shuffle();
         List<Card> cards = Lists.newArrayList(deck.next(), deck.next(), deck.next(), deck.next());

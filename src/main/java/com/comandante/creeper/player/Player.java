@@ -329,6 +329,11 @@ public class Player extends CreeperEntity {
         }
     }
 
+    public List<String> getLearnedSpells() {
+        PlayerMetadata playerMetadata = getPlayerMetadata();
+        return Lists.newArrayList(playerMetadata.getLearnedSpells());
+    }
+
     public void addInventoryId(String inventoryId) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();

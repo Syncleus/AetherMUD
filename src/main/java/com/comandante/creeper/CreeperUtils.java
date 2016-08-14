@@ -22,7 +22,7 @@ public class CreeperUtils {
     public static String printStringsNextToEachOther(List<String> strings, String seperator) {
         // Find the "longest", meaning most newlines string.
         final String[] maxHeightLine = {strings.get(0)};
-        strings.stream().forEach(s -> {
+        strings.forEach(s -> {
             int height = s.split("[\\r\\n]+").length;
             if (maxHeightLine[0] != null && height > maxHeightLine[0].split("[\\r\\n]+").length) {
                 maxHeightLine[0] = s;
@@ -34,14 +34,16 @@ public class CreeperUtils {
         // Make them all even length.  This is terrible streams api usage.
         List<List<String>> textToJoin = strings.stream()
                 .map((Function<String, List<String>>) s -> Lists.newArrayList(s.split("[\\r\\n]+"))).map(strings1 -> {
+                    String asciiColorPattern = "\u001B\\[[;\\d]*m";
                     strings1.forEach(s -> {
-                        if (s.length() > maxLineLength[0]) {
-                            maxLineLength[0] = s.replaceAll("\u001B\\[[;\\d]*m", "").length();
+                        if (s.replaceAll(asciiColorPattern, "").length() > maxLineLength[0]) {
+                            maxLineLength[0] = s.replaceAll(asciiColorPattern, "").length();
                         }
                     });
                     List<String> newStrings = Lists.newArrayList();
                     strings1.forEach(s -> {
-                        int diff = maxLineLength[0] - s.replaceAll("\u001B\\[[;\\d]*m", "").length();
+                        String cleaned = s.replaceAll(asciiColorPattern, "");
+                        int diff = maxLineLength[0] - cleaned.length();
                         for (int i = 0; i < diff; i++) {
                             s += " ";
                         }
@@ -83,4 +85,16 @@ public class CreeperUtils {
         }
     }
 
+    public static String trimTrailingBlanks( String str)
+    {
+        if( str == null)
+            return null;
+        int len = str.length();
+        for( ; len > 0; len--)
+        {
+            if( ! Character.isWhitespace( str.charAt( len - 1)))
+                break;
+        }
+        return str.substring( 0, len);
+    }
 }
