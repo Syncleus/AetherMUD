@@ -33,9 +33,7 @@ public class ConfigureCommands {
         lockerCommandRegistry.addCommand(new GetCommand(gameManager));
         lockerCommandRegistry.addCommand(new QueryCommand(gameManager));
         lockerCommandRegistry.addCommand(new com.comandante.creeper.merchant.lockers.DoneCommand(gameManager));
-
     }
-
 
     public static void configure(GameManager gameManager) {
         creeperCommandRegistry = new CreeperCommandRegistry(new UnknownCommand(gameManager));
