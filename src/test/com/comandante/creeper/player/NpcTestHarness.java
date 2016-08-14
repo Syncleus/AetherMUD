@@ -64,7 +64,6 @@ public class NpcTestHarness {
         WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.buildTestworld();
         ConfigureCommands.configure(gameManager);
-        ItemUseRegistry.configure();
         this.entityManager = entityManager;
         this.gameManager = gameManager;
     }

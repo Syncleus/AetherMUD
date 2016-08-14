@@ -23,15 +23,15 @@ public class BlackJack {
     }
 
     public static String templateCard =
-            "   ┌─────────┐\n" +
-                    "   │{0}        │\n" +
-                    "   │         │\n" +
-                    "   │         │\n" +
-                    "   │   {1}     │\n" +
-                    "   │         │\n" +
-                    "   │         │\n" +
-                    "   │       {0} │\n" +
-                    "   └─────────┘\n";
+            "┌─────────┐\n" +
+                    "│{0}        │\n" +
+                    "│         │\n" +
+                    "│         │\n" +
+                    "│   {1}     │\n" +
+                    "│         │\n" +
+                    "│         │\n" +
+                    "│       {0} │\n" +
+                    "└─────────┘\n";
 
     public static String getAsciiPlayingCardHand(List<Card> card) {
         List<String> asciiCards = card.stream().map(BlackJack::getAsciiPlayingCard).collect(Collectors.toList());

@@ -185,6 +185,7 @@ public abstract class Room extends CreeperEntity {
 
     public void addPresentPlayer(String playerId) {
         presentPlayerIds.add(playerId);
+
     }
 
     public void removePresentPlayer(String playerId) {
