@@ -52,7 +52,7 @@ public class CompareCommand extends Command {
                 Npc currentNpc = gameManager.getEntityManager().getNpcEntity(npcId);
                 if (currentNpc.getValidTriggers().contains(target)) {
                     String npcLookString = gameManager.getLookString(currentNpc, Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience()));
-                    write(Lists.newArrayList(selfLookStrong, npcLookString) + "\r\n");
+                    write(CreeperUtils.printStringsNextToEachOther(Lists.newArrayList(selfLookStrong, npcLookString)," | ") + "\r\n");
                 }
             }
         });

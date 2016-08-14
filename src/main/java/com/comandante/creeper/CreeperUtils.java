@@ -64,6 +64,8 @@ public class CreeperUtils {
                         textToJoin.forEach(ss -> {
                             if (ss.size() > 0) {
                                 sb[0].append(ss.remove(0)).append(seperator);
+                            } else {
+                                sb[0].append(seperator);
                             }
                         });
                         sb[0].append("\r\n");
