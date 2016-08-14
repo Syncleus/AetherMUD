@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 
 import com.codahale.metrics.Meter;
+import com.comandante.creeper.CreeperUtils;
 import com.comandante.creeper.Items.ForageManager;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
@@ -774,7 +775,9 @@ public class Player extends CreeperEntity {
             sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
             sb.append(buldEffectsString()).append("\r\n");
         }
-        return sb.toString();
+        StringBuilder finalString = new StringBuilder();
+        Lists.newArrayList(sb.toString().split("[\\r\\n]+")).forEach(s -> finalString.append(CreeperUtils.trimTrailingBlanks(s)).append("\r\n"));
+        return finalString.toString();
     }
 
     public Stats getPlayerStatsWithEquipmentAndLevel() {

@@ -182,5 +182,4 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         Class<Command> clazz = (Class<Command>) this.getClass();
         return clazz.getConstructor(GameManager.class).newInstance(gameManager);
     }
-
 }
