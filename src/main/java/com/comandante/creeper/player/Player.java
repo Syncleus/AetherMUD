@@ -17,7 +17,6 @@ import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.Room;
-import com.google.common.base.Optional;
 import com.google.common.collect.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
@@ -38,7 +37,7 @@ public class Player extends CreeperEntity {
     private final Random random = new Random();
     private String playerName;
     private Channel channel;
-    private Optional<String> returnDirection = Optional.absent();
+    private Optional<String> returnDirection = Optional.empty();
     private Room currentRoom;
     private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
     private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
@@ -803,7 +802,7 @@ public class Player extends CreeperEntity {
     }
 
     public String buildEquipmentString() {
-        org.nocrala.tools.texttablefmt.Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
         t.setColumnWidth(0, 16, 20);
 

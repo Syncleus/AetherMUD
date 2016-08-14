@@ -88,7 +88,7 @@ public class MovementCommand extends Command {
             }
             player.movePlayer(playerMovement);
             if (playerMovement != null) {
-                player.setReturnDirection(Optional.of(playerMovement.getReturnDirection()));
+                player.setReturnDirection(java.util.Optional.of(playerMovement.getReturnDirection()));
                 MovementCommand.this.printCurrentRoomInformation(roomManager.getRoom(playerMovement.getDestinationRoomId()));
             }
         });

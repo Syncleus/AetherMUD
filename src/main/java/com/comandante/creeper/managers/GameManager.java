@@ -25,7 +25,6 @@ import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.*;
 import com.google.api.client.util.Lists;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
@@ -634,7 +633,7 @@ public class GameManager {
             Map.Entry<String, Long> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
             PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
-            java.util.Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
+            Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
             if (!playerCurrentRoom.isPresent()) {
                 iterator.remove();
             } else if (!Objects.equals(npcCurrentRoom.getRoomId(), playerCurrentRoom.get().getRoomId())) {

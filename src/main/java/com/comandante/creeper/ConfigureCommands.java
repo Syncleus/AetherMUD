@@ -91,5 +91,7 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new DelCommand(gameManager));
         creeperCommandRegistry.addCommand(new OpCommand(gameManager));
         creeperCommandRegistry.addCommand(new KillTallyCommand(gameManager));
+        creeperCommandRegistry.addCommand(new CompareCommand(gameManager));
+        creeperCommandRegistry.addCommand(new CardsCommand(gameManager));
     }
 }
