@@ -1,7 +1,6 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
-import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerRole;
@@ -19,7 +18,7 @@ public class GiveGoldCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("givegold");
     final static String description = "Give Gold to a Player";
     final static String correctUsage = "givegold <player name> <amt>";
-    final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
+    final static Set<PlayerRole> roles = Sets.newHashSet();
 
 
     public GiveGoldCommand(GameManager gameManager) {

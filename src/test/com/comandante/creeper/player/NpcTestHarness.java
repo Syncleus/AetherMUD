@@ -4,7 +4,6 @@ import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.Items.ItemUseRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
