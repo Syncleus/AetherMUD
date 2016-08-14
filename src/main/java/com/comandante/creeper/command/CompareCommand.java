@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class CompareCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("compare", "c");
+    final static List<String> validTriggers = Arrays.asList("compare");
     final static String description = "Compare yourself to another player or npc.";
     final static String correctUsage = "compare <playerName>||<npc>";
 
