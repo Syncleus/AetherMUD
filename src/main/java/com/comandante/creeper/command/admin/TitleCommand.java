@@ -1,6 +1,7 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.base.Joiner;
@@ -26,13 +27,10 @@ public class TitleCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             originalMessageParts.remove(0);
             currentRoom.setRoomTitle(Joiner.on(" ").join(originalMessageParts));
             write("Titled saved.");
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

@@ -3,6 +3,7 @@ package com.comandante.creeper.command.admin;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
@@ -14,6 +15,7 @@ import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -31,8 +33,7 @@ public class SpawnCommand  extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
             if (originalMessageParts.size() == 1) {
                 write(getHeader());
@@ -56,9 +57,7 @@ public class SpawnCommand  extends Command {
                 }
                 write("No npc found with name: " + targetNpc + "\r\n");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     public String getHeader() {

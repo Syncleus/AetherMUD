@@ -2,14 +2,7 @@ package com.comandante.creeper.command;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.CoolDownType;
-import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMovement;
-import com.comandante.creeper.player.PlayerRole;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.world.Room;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -26,8 +19,7 @@ public class ShowCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() <= 1) {
                 return;
             }
@@ -41,8 +33,6 @@ public class ShowCommand extends Command {
                     }
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

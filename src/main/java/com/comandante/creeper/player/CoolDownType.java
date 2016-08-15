@@ -10,7 +10,8 @@ public enum CoolDownType {
     FORAGE_SUPERSHORT("forage-supershort", 1),
     SPELL("",0),
     NPC_FIGHT("fight",30),
-    NPC_ROAM("npc-roam", 600);
+    NPC_ROAM("npc-roam", 1200),
+    NPC_ALERTED("npc-alerted", 30);
     private final String name;
     private final int ticks;
 

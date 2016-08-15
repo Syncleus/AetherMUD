@@ -18,11 +18,6 @@ public class WhoamiCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
-            write(player.getPlayerName());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        execCommand(ctx, e, () -> write(player.getPlayerName()));
     }
 }

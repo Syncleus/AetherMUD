@@ -1,6 +1,7 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.world.Area;
@@ -25,11 +26,10 @@ public class AreaCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
                 Set<Area> areas = currentRoom.getAreas();
-                for (Area area: areas) {
+                for (Area area : areas) {
                     write(area.getName() + "\r\n");
                 }
                 return;
@@ -37,7 +37,7 @@ public class AreaCommand extends Command {
             String s = originalMessageParts.get(1);
             List<String> strings = Arrays.asList(s.split(","));
             Set<Area> newAreas = Sets.newConcurrentHashSet();
-            for (String string: strings) {
+            for (String string : strings) {
                 String trim = string.trim();
                 Area byName = Area.getByName(trim);
                 if (byName != null) {
@@ -48,8 +48,6 @@ public class AreaCommand extends Command {
                     write(byName + " is not a known area in the code base.");
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

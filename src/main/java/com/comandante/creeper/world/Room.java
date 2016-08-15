@@ -7,15 +7,13 @@ import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.spawner.ItemSpawner;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.lang.reflect.GenericArrayType;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class Room extends CreeperEntity {
@@ -45,7 +43,7 @@ public abstract class Room extends CreeperEntity {
     private final Set<String> itemIds = Sets.newConcurrentHashSet();
     private List<ItemSpawner> itemSpawners = Lists.newArrayList();
     private Set<Area> areas = Sets.newConcurrentHashSet();
-    private Optional<String> mapData = Optional.absent();
+    private Optional<String> mapData = Optional.empty();
     private final Set<String> roomTags;
     private final Set<Merchant> merchants = Sets.newConcurrentHashSet();
     private Map<ItemType, Forage> forages = Maps.newHashMap();
@@ -179,7 +177,7 @@ public abstract class Room extends CreeperEntity {
         return npcIds;
     }
 
-    protected java.util.Set<String> getPresentPlayerIds() {
+    protected Set<String> getPresentPlayerIds() {
         // terrible null pointers will result if you call this shit directly.
         // People sign off and cause problems
         return presentPlayerIds;
@@ -187,6 +185,7 @@ public abstract class Room extends CreeperEntity {
 
     public void addPresentPlayer(String playerId) {
         presentPlayerIds.add(playerId);
+
     }
 
     public void removePresentPlayer(String playerId) {

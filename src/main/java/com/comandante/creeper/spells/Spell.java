@@ -247,5 +247,4 @@ public abstract class Spell {
     interface SpellExecute {
         public void executeNpc(GameManager gameManager, Npc npc, Player player);
     }
-
 }

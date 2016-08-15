@@ -171,7 +171,6 @@ public class MapMatrix {
         };
     }
 
-
     public String getCsv() {
         StringBuilder sb = new StringBuilder();
         for (List<Integer> list : matrix) {
@@ -262,7 +261,7 @@ public class MapMatrix {
                 roomOpts.add(0);
             }
         }
-        return new MapMatrix(lists, Maps.<Integer, Set<RemoteExit>>newHashMap());
+        return new MapMatrix(lists, Maps.newHashMap());
     }
 
     public String renderMap(Integer roomId, RoomManager roomManager) {
@@ -270,18 +269,14 @@ public class MapMatrix {
         Iterator<List<Integer>> rows = getRows();
         while (rows.hasNext()) {
             List<Integer> next = rows.next();
-            Iterator<String> transform = Iterators.transform(next.iterator(), MapsManager.render(roomId, roomManager));
-            while (transform.hasNext()) {
-                String s = transform.next();
-                sb.append(s);
-            }
+            next.stream().map(MapsManager.render(roomId, roomManager)).forEach(sb::append);
             sb.append("\r\n");
         }
         return sb.toString();
     }
 
     public void addRow(boolean startOfArray) {
-        ArrayList<Integer> newRow = Lists.<Integer>newArrayList();
+        ArrayList<Integer> newRow = Lists.newArrayList();
         for (int i = 0; i < matrix.get(0).size(); i++) {
             newRow.add(0);
         }

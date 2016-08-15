@@ -27,10 +27,9 @@ public class WhoCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             StringBuilder output = new StringBuilder();
-           // output.append(Color.MAGENTA + "Who--------------------------------" + Color.RESET).append("\r\n");
+            // output.append(Color.MAGENTA + "Who--------------------------------" + Color.RESET).append("\r\n");
             Table t = new Table(4, BorderStyle.BLANKS,
                     ShownBorders.NONE);
             t.setColumnWidth(0, 14, 24);
@@ -49,8 +48,6 @@ public class WhoCommand extends Command {
             }
             output.append(t.render());
             write(output.toString());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

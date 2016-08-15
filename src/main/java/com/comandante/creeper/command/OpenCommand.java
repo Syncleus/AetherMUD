@@ -5,18 +5,14 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-/**
- * Created by kearney on 6/12/15.
- */
 public class OpenCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("open", "o");
@@ -29,10 +25,10 @@ public class OpenCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        OpenCommand openCommand = this;
+        execCommand(ctx, e, () -> {
             if (creeperSession.getGrabMerchant().isPresent()) {
-                creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>absent());
+                creeperSession.setGrabMerchant(Optional.empty());
                 return;
             }
             originalMessageParts.remove(0);
@@ -45,12 +41,9 @@ public class OpenCommand extends Command {
                 if (merchant.getValidTriggers().contains(desiredMerchantTalk)) {
                     write(merchant.getWelcomeMessage() + "\r\n");
                     write(LockerCommand.getPrompt());
-                    creeperSession.setGrabMerchant(Optional.of(
-                            new CreeperEntry<Merchant, SimpleChannelUpstreamHandler>(merchant, this)));
+                    creeperSession.setGrabMerchant(Optional.of(new CreeperEntry<>(merchant, openCommand)));
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

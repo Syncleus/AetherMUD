@@ -25,8 +25,7 @@ public class LootCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() > 1) {
                 for (Item item : player.getInventory()) {
                     if (item.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
@@ -39,9 +38,9 @@ public class LootCommand extends Command {
                             }
                             Set<Item> items = lootManager.lootItemsReturn(loot);
                             for (Item i: items) {
-                                    gameManager.acquireItem(player, i.getItemId());
-                                    write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
-                                }
+                                gameManager.acquireItem(player, i.getItemId(), true);
+                                write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
+                            }
                             if (gold < 0 && items.size() == 0) {
                                 write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
@@ -52,8 +51,6 @@ public class LootCommand extends Command {
                     }
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

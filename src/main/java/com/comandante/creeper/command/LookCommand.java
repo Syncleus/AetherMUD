@@ -3,6 +3,7 @@ package com.comandante.creeper.command;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.player.Levels;
 import com.comandante.creeper.player.Player;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -22,10 +23,9 @@ public class LookCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
-                currentRoomLogic();
+                printCurrentRoomInformation();
                 return;
             }
             originalMessageParts.remove(0);
@@ -53,11 +53,9 @@ public class LookCommand extends Command {
             for (String npcId : npcIds) {
                 Npc currentNpc = gameManager.getEntityManager().getNpcEntity(npcId);
                 if (currentNpc.getValidTriggers().contains(target)) {
-                    write(gameManager.getLookString(currentNpc) + "\r\n");
+                    write(gameManager.getLookString(currentNpc, Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience())) + "\r\n");
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

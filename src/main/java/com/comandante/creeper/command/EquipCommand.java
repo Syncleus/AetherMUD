@@ -21,8 +21,7 @@ public class EquipCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
                 write("No equipment item specified.");
                 return;
@@ -44,8 +43,6 @@ public class EquipCommand extends Command {
             } else {
                 write("Your inventory is empty.");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

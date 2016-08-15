@@ -19,6 +19,7 @@ public class NpcBuilder {
     private Set<String> validTriggers;
     private Loot loot;
     private Set<SpawnRule> spawnRules;
+    private Temperament temperament;
 
     public NpcBuilder() {
     }
@@ -34,6 +35,7 @@ public class NpcBuilder {
         this.loot = npc.getLoot();
         this.spawnRules = npc.getSpawnRules();
         this.gameManager = npc.getGameManager();
+        this.temperament = npc.getTemperament();
     }
 
     public NpcBuilder setGameManager(GameManager gameManager) {
@@ -66,6 +68,11 @@ public class NpcBuilder {
         return this;
     }
 
+    public NpcBuilder setTemperament(Temperament temperament) {
+        this.temperament = temperament;
+        return this;
+    }
+
     public NpcBuilder setRoamAreas(Set<Area> roamAreas) {
         this.roamAreas = roamAreas;
         return this;
@@ -87,6 +94,6 @@ public class NpcBuilder {
     }
 
     public Npc createNpc() {
-        return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, roamAreas, validTriggers, loot, spawnRules);
+        return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules);
     }
 }

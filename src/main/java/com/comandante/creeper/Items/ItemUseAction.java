@@ -7,12 +7,12 @@ import com.comandante.creeper.spells.Effect;
 import java.util.Set;
 
 public interface ItemUseAction {
-    public Integer getItemTypeId();
+    Integer getItemTypeId();
 
-    public void executeAction(GameManager gameManager, Player player, Item item);
+    void executeAction(GameManager gameManager, Player player, Item item);
 
-    public void postExecuteAction(GameManager gameManager, Player player, Item item);
+    void postExecuteAction(GameManager gameManager, Player player, Item item);
 
-    public Set<Effect> getEffects();
+    Set<Effect> getEffects();
 
 }

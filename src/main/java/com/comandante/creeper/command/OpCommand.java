@@ -1,19 +1,13 @@
 package com.comandante.creeper.command;
 
-import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
 
@@ -38,8 +32,7 @@ public class OpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             //ghetto and will only work for one channel bots.
             if (originalMessageParts.size() <= 1) {
                 return;
@@ -54,11 +47,9 @@ public class OpCommand extends Command {
             }
             ImmutableSortedSet<Channel> channels = user.getChannels();
             for (Channel channel : channels) {
-                    channel.send().op(user);
-                    write("Ops given in channel " + channel.getName());
-                }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+                channel.send().op(user);
+                write("Ops given in channel " + channel.getName());
+            }
+        });
     }
 }

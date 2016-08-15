@@ -4,7 +4,9 @@ import com.comandante.creeper.managers.GameManager;
 import com.google.api.client.util.Lists;
 import com.google.common.collect.EvictingQueue;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GossipCache {
 
@@ -22,12 +24,8 @@ public class GossipCache {
 
     public List<String> getRecent(int size) {
         List<String> recent = Lists.newArrayList();
-        List<String> currentEntries = Lists.newArrayList();
-        Iterator<String> iterator = evictingQueue.iterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
-            currentEntries.add(next);
-        }
+        List<String> currentEntries = evictingQueue.stream().collect(Collectors.toList());
+
         Collections.reverse(currentEntries);
         int i = 0;
         for (String s : currentEntries) {

@@ -19,11 +19,12 @@ public class QuitCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        if (player.getActiveFights().size() > 0) {
-            write("You can't quit in the middle of a fight!");
-        } else {
-            gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
-        }
+        execCommand(ctx, e, () -> {
+            if (player.getActiveFights().size() > 0) {
+                write("You can't quit in the middle of a fight!");
+            } else {
+                gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
+            }
+        });
     }
 }

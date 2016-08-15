@@ -24,8 +24,10 @@ public class PlayerMetadata implements Serializable {
     private List<String> effects;
     private boolean isMarkedForDelete;
     private Map<String, String> playerSettings;
+    private String[] learnedSpells;
+    private Map<String, Long> npcKillLog;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells, Map<String, Long> npcKillLog) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -34,6 +36,8 @@ public class PlayerMetadata implements Serializable {
         this.playerRoleSet = playerRoleSet;
         this.playerEquipment = playerEquipment;
         this.goldInBank = goldInBank;
+        this.learnedSpells = learnedSpells;
+        this.npcKillLog = npcKillLog;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -59,9 +63,15 @@ public class PlayerMetadata implements Serializable {
             this.effects = Lists.newArrayList(playerMetadata.getEffects());
         }
         if (playerMetadata.playerSettings != null) {
-            this.playerSettings = new HashMap<String, String>(playerMetadata.getPlayerSettings());
+            this.playerSettings = new HashMap<>(playerMetadata.getPlayerSettings());
+        }
+        if (playerMetadata.learnedSpells != null) {
+            this.learnedSpells = Arrays.copyOf(playerMetadata.learnedSpells, playerMetadata.learnedSpells.length);
         }
         this.isMarkedForDelete = new Boolean(playerMetadata.isMarkedForDelete);
+        if (playerMetadata.npcKillLog != null) {
+            this.npcKillLog = new HashMap<>(playerMetadata.getNpcKillLog());
+        }
     }
 
     public List<String> getInventory() {
@@ -92,6 +102,19 @@ public class PlayerMetadata implements Serializable {
         lockerInventory.add(newEntityId);
     }
 
+    protected void addNpcKill(String npcName) {
+        if (this.npcKillLog == null) {
+            npcKillLog = Maps.newHashMap();
+        }
+        if (npcKillLog.containsKey(npcName)) {
+            Long aLong = npcKillLog.get(npcName);
+            Long newLong = aLong + 1;
+            npcKillLog.put(npcName, newLong);
+        } else {
+            npcKillLog.put(npcName, 1L);
+        }
+    }
+
 
     protected void removeLockerEntityId(String newEntityId) {
         lockerInventory.remove(newEntityId);
@@ -99,6 +122,27 @@ public class PlayerMetadata implements Serializable {
 
     protected void removeInventoryEntityId(String itemId) {
         inventory.remove(itemId);
+    }
+
+    protected void addLearnedSpellByName(String spellName) {
+        if (learnedSpells == null) {
+            learnedSpells = new String[0];
+        }
+        String[] result = Arrays.copyOf(learnedSpells, learnedSpells.length + 1);
+        result[learnedSpells.length] = spellName;
+        this.learnedSpells = result;
+    }
+
+    protected void removeLearnedSpellByName(String spellName) {
+        List<String> learnedSpellsKeep = new ArrayList<String>(Arrays.asList(learnedSpells));
+        learnedSpellsKeep.remove(spellName);
+        String[] newSpells = new String[learnedSpellsKeep.size()];
+        int i = 0;
+        for (String id : learnedSpellsKeep) {
+            newSpells[i] = id;
+            i++;
+        }
+        this.learnedSpells = newSpells;
     }
 
     protected void addEquipmentEntityId(String equipmentItemId) {
@@ -159,6 +203,17 @@ public class PlayerMetadata implements Serializable {
 
     public long getGoldInBank() {
         return goldInBank;
+    }
+
+    public String[] getLearnedSpells() {
+        return learnedSpells;
+    }
+
+    public Map<String, Long> getNpcKillLog() {
+        if (this.npcKillLog == null) {
+            npcKillLog = Maps.newHashMap();
+        }
+        return npcKillLog;
     }
 
     protected void setGold(long amt) {

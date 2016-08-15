@@ -18,14 +18,10 @@ import static com.codahale.metrics.MetricRegistry.name;
 
 public class PlayerManager {
 
-    private ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<String, Player>();
-    private HTreeMap<String, PlayerMetadata> playerMetadataStore;
     private final DB db;
     private final SessionManager sessionManager;
-
-    public SessionManager getSessionManager() {
-        return sessionManager;
-    }
+    private ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<String, Player>();
+    private HTreeMap<String, PlayerMetadata> playerMetadataStore;
 
     public PlayerManager(DB db, SessionManager sessionManager) {
         this.db = db;
@@ -39,12 +35,8 @@ public class PlayerManager {
         this.sessionManager = sessionManager;
     }
 
-    public PlayerMetadata getPlayerMetadata(String playerId) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
-        if (playerMetadata == null) {
-            return playerMetadata;
-        }
-        return new PlayerMetadata(playerMetadata);
+    public SessionManager getSessionManager() {
+        return sessionManager;
     }
 
     public void savePlayerMetadata(PlayerMetadata playerMetadata) {
@@ -55,16 +47,12 @@ public class PlayerManager {
         return players.put(player.getPlayerId(), player);
     }
 
-    public Player getPlayerByUsername(String username) {
-        return getPlayer(new String(Base64.encodeBase64(username.getBytes())));
-    }
-
-    public Player getPlayer(String playerId) {
-        return players.get(playerId);
-    }
-
     public Iterator<java.util.Map.Entry<String, Player>> getPlayers() {
         return players.entrySet().iterator();
+    }
+
+    public Map<String, Player> getAllPlayersMap() {
+        return players;
     }
 
     public void removePlayer(String username) {
@@ -73,6 +61,14 @@ public class PlayerManager {
             player.getChannel().disconnect();
         }
         players.remove(player.getPlayerId());
+    }
+
+    public Player getPlayerByUsername(String username) {
+        return getPlayer(new String(Base64.encodeBase64(username.getBytes())));
+    }
+
+    public Player getPlayer(String playerId) {
+        return players.get(playerId);
     }
 
     public boolean doesPlayerExist(String username) {
@@ -89,6 +85,14 @@ public class PlayerManager {
         }
     }
 
+    public PlayerMetadata getPlayerMetadata(String playerId) {
+        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
+        if (playerMetadata == null) {
+            return playerMetadata;
+        }
+        return new PlayerMetadata(playerMetadata);
+    }
+
     public boolean hasAnyOfRoles(Player player, Set<PlayerRole> checkRoles) {
         PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
         Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
@@ -102,6 +106,14 @@ public class PlayerManager {
             return false;
         }
         return false;
+    }
+
+    public void createAllGauges() {
+        Iterator<Map.Entry<String, PlayerMetadata>> iterator = playerMetadataStore.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, PlayerMetadata> next = iterator.next();
+            createGauges(next.getValue());
+        }
     }
 
     public void createGauges(final PlayerMetadata playerMetadata) {
@@ -136,14 +148,6 @@ public class PlayerManager {
                             return getPlayerMetadata(playerMetadata.getPlayerId()).getStats().getExperience();
                         }
                     });
-        }
-    }
-
-    public void createAllGauges() {
-        Iterator<Map.Entry<String, PlayerMetadata>> iterator = playerMetadataStore.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, PlayerMetadata> next = iterator.next();
-            createGauges(next.getValue());
         }
     }
 

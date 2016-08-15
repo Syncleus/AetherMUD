@@ -4,7 +4,7 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.world.RoomManager;
 
-public class ChannelUtils {
+public class ChannelUtils implements ChannelCommunicationUtils {
 
     private final PlayerManager playerManager;
     private final RoomManager roomManager;

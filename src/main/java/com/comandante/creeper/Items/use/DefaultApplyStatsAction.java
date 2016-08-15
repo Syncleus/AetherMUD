@@ -1,13 +1,14 @@
 package com.comandante.creeper.Items.use;
 
-import com.codahale.metrics.MetricRegistry;
-import com.comandante.creeper.Items.*;
-import com.comandante.creeper.Main;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.Items.ItemUseAction;
+import com.comandante.creeper.Items.ItemUseHandler;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
+import org.apache.log4j.Logger;
 
 import java.util.Set;
 
@@ -16,6 +17,7 @@ public class DefaultApplyStatsAction implements ItemUseAction {
     private final Integer itemTypeId;
     private final Stats stats;
     private final Set<Effect> effectSet;
+    private static final Logger log = Logger.getLogger(DefaultApplyStatsAction.class);
 
     public DefaultApplyStatsAction(ItemType itemType, Stats stats, Set<Effect> effects) {
         this.itemTypeId = itemType.getItemTypeCode();
@@ -41,12 +43,12 @@ public class DefaultApplyStatsAction implements ItemUseAction {
         }
         player.addMana(stats.getCurrentMana());
         player.updatePlayerHealth(stats.getCurrentHealth(), null);
-        ItemUseRegistry.processEffects(gameManager, player, effectSet);
+        processEffects(gameManager, player, effectSet);
     }
 
     @Override
     public void postExecuteAction(GameManager gameManager, Player player, Item item) {
-        ItemUseRegistry.incrementUses(item);
+        ItemUseHandler.incrementUses(item);
         if (ItemType.itemTypeFromCode(item.getItemTypeId()).isDisposable()) {
             if (item.getNumberOfUses() < ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses()) {
                 gameManager.getEntityManager().saveItem(item);
@@ -60,5 +62,28 @@ public class DefaultApplyStatsAction implements ItemUseAction {
     @Override
     public Set<Effect> getEffects() {
         return effectSet;
+    }
+
+    public static void processEffects(GameManager gameManager, Player player, Set<Effect> effects) {
+        if (effects == null) {
+            return;
+        }
+        for (Effect effect : effects) {
+            Effect nEffect = new Effect(effect);
+            nEffect.setPlayerId(player.getPlayerId());
+            gameManager.getEntityManager().saveEffect(nEffect);
+            boolean effectResult = player.addEffect(nEffect.getEntityId());
+            if (effect.getDurationStats() != null) {
+                if (effect.getDurationStats().getCurrentHealth() < 0) {
+                    log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
+                    continue;
+                }
+            }
+            if (effectResult) {
+                gameManager.getChannelUtils().write(player.getPlayerId(), "You feel " + effect.getEffectName() + "\r\n");
+            } else {
+                gameManager.getChannelUtils().write(player.getPlayerId(), "Unable to apply effect.\r\n");
+            }
+        }
     }
 }

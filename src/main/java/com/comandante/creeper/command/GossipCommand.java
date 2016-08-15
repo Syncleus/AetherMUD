@@ -4,13 +4,13 @@ package com.comandante.creeper.command;
 import com.comandante.creeper.bot.commands.BotCommand;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.server.Color;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import static com.comandante.creeper.server.Color.*;
 
@@ -26,8 +26,7 @@ public class GossipCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
                 write("Nothing to gossip about?");
                 return;
@@ -42,21 +41,16 @@ public class GossipCommand extends Command {
             } catch (Exception ex) {
                 log.error("Problem executing bot command from gossip channel!", ex);
             }
-            Iterator<Map.Entry<String, Player>> players = playerManager.getPlayers();
-            String gossipMessage = null;
-            while (players.hasNext()) {
-                final Player next = players.next().getValue();
-                gossipMessage =   WHITE + "[" + RESET + MAGENTA + player.getPlayerName() +  WHITE + "] " + RESET + CYAN + msg + RESET;
-                if (next.getPlayerId().equals(playerId)) {
+            String gossipMessage = WHITE + "[" + RESET + MAGENTA + this.player.getPlayerName() +  WHITE + "] " + RESET + CYAN + msg + RESET;
+            playerManager.getAllPlayersMap().forEach((s, destinationPlayer) -> {
+                if (destinationPlayer.getPlayerId().equals(playerId)) {
                     write(gossipMessage);
                 } else {
-                    channelUtils.write(next.getPlayerId(), gossipMessage + "\r\n", true);
+                    channelUtils.write(destinationPlayer.getPlayerId(), gossipMessage + "\r\n", true);
                 }
-            }
+            });
             gameManager.getGossipCache().addGossipLine(gossipMessage);
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     private String getBotCommandOutput(String cmd) {

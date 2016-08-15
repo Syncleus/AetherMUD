@@ -3,7 +3,10 @@ package com.comandante.creeper.bot;
 import com.comandante.creeper.bot.commands.*;
 import com.google.common.collect.Maps;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class BotCommandFactory {
 
@@ -16,6 +19,8 @@ public class BotCommandFactory {
         addCommand(new DictionaryBotCommand(botCommandManager));
         addCommand(new ImdbBotCommand(botCommandManager));
         addCommand(new ForecastCommand(botCommandManager));
+        addCommand(new RandomRoomDescriptionCommand(botCommandManager));
+        addCommand(new CardsCommand(botCommandManager));
     }
 
     public BotCommand getCommand(String originalFullCmd) {

@@ -1,6 +1,5 @@
 package com.comandante.creeper.command;
 
-import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerSettings;
 import com.google.api.client.util.Lists;
@@ -22,8 +21,7 @@ public class SetCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             write("'set help' for full settings help.\r\n");
             if (originalMessageParts.size() <= 1) {
                 write(returnAllSettings());
@@ -43,9 +41,7 @@ public class SetCommand extends Command {
             } else {
                 write ("Unknown Setting.\r\n");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     private String returnAllSettings() {

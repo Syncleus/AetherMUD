@@ -5,21 +5,17 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.world.*;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BuildCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("build", "b");
+    final static List<String> validTriggers = Arrays.asList("build");
     final static String description = "Build new rooms in the world.";
     final static String correctUsage = "build [n|s|e|w|enter <name>|notable <name>]";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
@@ -30,8 +26,7 @@ public class BuildCommand extends Command {
 
     @Override
     public synchronized void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() > 1) {
                 String desiredBuildDirection = originalMessageParts.get(1);
                 if (desiredBuildDirection.equalsIgnoreCase("notable")) {
@@ -79,13 +74,7 @@ public class BuildCommand extends Command {
                                 .setDownId(Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setUpId(Optional.of(newRoomId));
-                        entityManager.addEntity(basicRoom);
-                        newFloorModel.setRoomModels(Sets.newHashSet(Iterators.transform(Sets.newHashSet(basicRoom).iterator(), WorldExporter.buildRoomModelsFromRooms())));
-                        floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
-                        mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
-                        mapsManager.generateAllMaps();
-                        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
-                        gameManager.currentRoomLogic(player.getPlayerId());
+                        addNewRoomAndFloorAndMovePlayer(basicRoom, newFloorModel, Optional.empty());
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("d") | desiredBuildDirection.equalsIgnoreCase("down")) {
@@ -102,16 +91,14 @@ public class BuildCommand extends Command {
                                 .setUpId(Optional.of(currentRoom.getRoomId()))
                                 .createBasicRoom();
                         currentRoom.setDownId(Optional.of(newRoomId));
-                        entityManager.addEntity(basicRoom);
-                        newFloorModel.setRoomModels(Sets.newHashSet(Iterators.transform(Sets.newHashSet(basicRoom).iterator(), WorldExporter.buildRoomModelsFromRooms())));
-                        floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
-                        mapsManager.addFloorMatrix(newFloorModel.getId(), MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv()));
-                        mapsManager.generateAllMaps();
-                        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
-                        gameManager.currentRoomLogic(player.getPlayerId());
+                        addNewRoomAndFloorAndMovePlayer(basicRoom, newFloorModel, Optional.empty());
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("enter")) {
+                    if (originalMessageParts.size() != 3) {
+                        channelUtils.write(playerId, "Must specify a name for new \"enter\"");
+                        return;
+                    }
                     String enterName = originalMessageParts.get(2);
                     Integer newRoomId = findUnusedRoomId();
                     Integer newFloorId = findUnusedFloorId();
@@ -125,25 +112,12 @@ public class BuildCommand extends Command {
                             .addEnterExit(returnRemoteExit)
                             .createBasicRoom();
                     currentRoom.addEnterExit(remoteExit);
-                    entityManager.addEntity(basicRoom);
-                    newFloorModel.setRoomModels(Sets.newHashSet(Iterators.transform(Sets.newHashSet(basicRoom).iterator(), WorldExporter.buildRoomModelsFromRooms())));
-                    floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
-                    MapMatrix matrixFromCsv = MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv());
-                    matrixFromCsv.addRemote(basicRoom.getRoomId(), returnRemoteExit);
-                    mapsManager.addFloorMatrix(newFloorModel.getId(), matrixFromCsv);
-                    mapsManager.generateAllMaps();
-                    player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
-                    gameManager.currentRoomLogic(player.getPlayerId());
+                    addNewRoomAndFloorAndMovePlayer(basicRoom, newFloorModel, Optional.of(returnRemoteExit));
                     return;
                 }
                 channelUtils.write(playerId, "Room already exists at that location.");
             }
-        } finally
-
-        {
-            super.messageReceived(ctx, e);
-        }
-
+        });
     }
 
     private FloorModel newFloorModel(Integer floorId, Integer newRoomId, Integer currentRoomId, RemoteExit remoteExit) {
@@ -181,7 +155,7 @@ public class BuildCommand extends Command {
         rebuildExits(currentRoom, mapMatrix);
         processExits(basicRoom, mapMatrix);
         mapsManager.generateAllMaps();
-        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), null, "", ""));
+        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), "", ""));
         gameManager.currentRoomLogic(player.getPlayerId());
         write("Room Created.");
     }
@@ -214,7 +188,7 @@ public class BuildCommand extends Command {
         if (mapMatrix.getWesternExit(room.getRoomId()) > 0) {
             room.setWestId(Optional.of(mapMatrix.getWesternExit(room.getRoomId())));
         }
-        room.setEnterExits(Lists.<RemoteExit>newArrayList());
+        room.setEnterExits(Lists.newArrayList());
         if (mapMatrix.getRemotes().containsKey(room.getRoomId())) {
             Set<RemoteExit> remoteExits = mapMatrix.getRemotes().get(room.getRoomId());
             for (RemoteExit next : remoteExits) {
@@ -227,6 +201,21 @@ public class BuildCommand extends Command {
                 }
             }
         }
+    }
+
+    private void addNewRoomAndFloorAndMovePlayer(Room newRoom, FloorModel newFloorModel, Optional<RemoteExit> returnRemoteExit) {
+        entityManager.addEntity(newRoom);
+        Set<RoomModel> roomModels = Sets.newHashSet(newRoom).stream().map(WorldExporter.buildRoomModelsFromRooms()).collect(Collectors.toSet());
+        newFloorModel.setRoomModels(roomModels);
+        floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
+        MapMatrix matrixFromCsv = MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv());
+        if (returnRemoteExit.isPresent()) {
+            matrixFromCsv.addRemote(newRoom.getRoomId(), returnRemoteExit.get());
+        }
+        mapsManager.addFloorMatrix(newFloorModel.getId(), matrixFromCsv);
+        mapsManager.generateAllMaps();
+        player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), newRoom.getRoomId(), "", ""));
+        gameManager.currentRoomLogic(player.getPlayerId());
     }
 
     private synchronized Integer findUnusedRoomId() {

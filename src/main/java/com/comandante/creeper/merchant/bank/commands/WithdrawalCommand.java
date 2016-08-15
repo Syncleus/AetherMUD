@@ -3,6 +3,7 @@ package com.comandante.creeper.merchant.bank.commands;
 import com.comandante.creeper.command.Command;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -24,7 +25,7 @@ public class WithdrawalCommand extends BankCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            if (originalMessageParts.size() > 1 && Command.isInteger(originalMessageParts.get(1))) {
+            if (originalMessageParts.size() > 1 && NumberUtils.isNumber(originalMessageParts.get(1))) {
                 int withdrawalAmount = Integer.parseInt(originalMessageParts.get(1));
                 if (areBankFundsAvailable(withdrawalAmount)) {
                     player.transferBankGoldToPlayer(withdrawalAmount);

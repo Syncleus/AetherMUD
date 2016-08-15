@@ -3,7 +3,7 @@ package com.comandante.creeper.Items.use;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseAction;
-import com.comandante.creeper.Items.ItemUseRegistry;
+import com.comandante.creeper.Items.ItemUseHandler;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.Effect;
@@ -32,7 +32,7 @@ public class ResetAllEffectsUseAction implements ItemUseAction {
 
     @Override
     public void postExecuteAction(GameManager gameManager, Player player, Item item) {
-        ItemUseRegistry.incrementUses(item);
+        ItemUseHandler.incrementUses(item);
         if (ItemType.itemTypeFromCode(item.getItemTypeId()).isDisposable()) {
             if (item.getNumberOfUses() < ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses()) {
                 gameManager.getEntityManager().saveItem(item);

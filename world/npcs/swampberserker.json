@@ -2,10 +2,11 @@
   "name": "swamp berserker",
   "colorName": "swamp \u001B[1m\u001B[35mberserker\u001B[0m",
   "dieMessage": "a swamp \u001B[1m\u001B[35mberserker\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
+  "temperament": "passive",
   "loot": {
-    "lootGoldMin": 3,
-    "lootGoldMax": 10,
-    "lootItems": []
+    "lootGoldMin": 10,
+    "lootGoldMax": 19,
+    "lootItems": [3]
   },
   "roamAreas": [
     "north1_zone"
@@ -13,29 +14,29 @@
   "stats": {
     "agile": 1,
     "aim": 1,
-    "armorRating": 8,
-    "currentHealth": 230,
-    "currentMana": 100,
-    "experience": 250,
-    "maxHealth": 230,
-    "maxMana": 100,
-    "meleSkill": 6,
+    "armorRating": 6,
+    "currentHealth": 105,
+    "currentMana": 105,
+    "experience": 22500,
+    "maxHealth": 105,
+    "maxMana": 105,
+    "meleSkill": 16,
     "numberOfWeaponRolls": 1,
-    "strength": 11,
-    "weaponRatingMax": 13,
-    "weaponRatingMin": 10,
+    "strength": 10,
+    "weaponRatingMax": 15,
+    "weaponRatingMin": 9,
     "willPower": 1
   },
   "spawnAreas": {
-    "north2_zone": {
+    "north1_zone": {
       "randomChance": 100,
-      "maxPerRoom": 3,
+      "maxPerRoom": 6,
       "spawnIntervalTicks": 600,
-      "maxInstances": 12
+      "maxInstances": 24
     }
   },
   "validTriggers": [
-    "t",
+    "s",
     "swamp berserker",
     "berserker",
     "b"

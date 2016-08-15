@@ -3,9 +3,6 @@ package com.comandante.creeper.world;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.GsonBuilder;
@@ -15,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.function.Function;
 
 public class WorldExporter {
 
@@ -59,78 +57,67 @@ public class WorldExporter {
         floorModel.setRawMatrixCsv(mapMatrix.getCsv());
         floorModel.setRoomModels((new HashSet<RoomModel>()));
         floorModel.setName(floorManager.getName(floorId));
-        Iterator<RoomModel> roomModels = Iterators.transform(rooms.iterator(), buildRoomModelsFromRooms());
-        while (roomModels.hasNext()) {
-            RoomModel next = roomModels.next();
-            floorModel.getRoomModels().add(next);
-        }
+        rooms.stream()
+                .map(buildRoomModelsFromRooms())
+                .forEach(roomModel -> floorModel.getRoomModels()
+                        .add(roomModel));
         return floorModel;
     }
 
     public static Function<Room, RoomModel> buildRoomModelsFromRooms() {
-        return new Function<Room, RoomModel>() {
-            @Override
-            public RoomModel apply(Room room) {
-                RoomModelBuilder roomModelBuilder = new RoomModelBuilder();
-                for (RemoteExit remoteExit : room.getEnterExits()) {
-                    roomModelBuilder.addEnterExitName(remoteExit.getRoomId(), remoteExit.getExitDetail());
-                }
-                roomModelBuilder.setRoomDescription(room.getRoomDescription());
-                roomModelBuilder.setRoomTitle(room.getRoomTitle());
-                roomModelBuilder.setRoomId(room.getRoomId());
-                roomModelBuilder.setRoomTags(room.getRoomTags());
-                roomModelBuilder.setFloorId(room.getFloorId());
-                for (Area area : room.getAreas()) {
-                    roomModelBuilder.addAreaName(area.getName());
-                }
-                for (Map.Entry<String, String> notable : room.getNotables().entrySet()) {
-                    roomModelBuilder.addNotable(notable.getKey(), notable.getValue());
-                }
-                return roomModelBuilder.build();
+        return room -> {
+            RoomModelBuilder roomModelBuilder = new RoomModelBuilder();
+            for (RemoteExit remoteExit : room.getEnterExits()) {
+                roomModelBuilder.addEnterExitName(remoteExit.getRoomId(), remoteExit.getExitDetail());
             }
+            roomModelBuilder.setRoomDescription(room.getRoomDescription());
+            roomModelBuilder.setRoomTitle(room.getRoomTitle());
+            roomModelBuilder.setRoomId(room.getRoomId());
+            roomModelBuilder.setRoomTags(room.getRoomTags());
+            roomModelBuilder.setFloorId(room.getFloorId());
+            for (Area area : room.getAreas()) {
+                roomModelBuilder.addAreaName(area.getName());
+            }
+            for (Map.Entry<String, String> notable : room.getNotables().entrySet()) {
+                roomModelBuilder.addNotable(notable.getKey(), notable.getValue());
+            }
+            return roomModelBuilder.build();
         };
     }
 
     public Function<RoomModel, BasicRoom> getBasicRoom(final MapMatrix mapMatrix) {
-        return new Function<RoomModel, BasicRoom>() {
-            @Override
-            public BasicRoom apply(RoomModel roomModel) {
-                BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder(gameManager)
-                        .setRoomId(roomModel.getRoomId())
-                        .setFloorId(roomModel.getFloorId())
-                        .setRoomDescription(roomModel.getRoomDescription())
-                        .setRoomTitle(roomModel.getRoomTitle());
+        return roomModel -> {
+            BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder(gameManager)
+                    .setRoomId(roomModel.getRoomId())
+                    .setFloorId(roomModel.getFloorId())
+                    .setRoomDescription(roomModel.getRoomDescription())
+                    .setRoomTitle(roomModel.getRoomTitle());
 
-                for (String tag : roomModel.getRoomTags()) {
-                    basicRoomBuilder.addTag(tag);
-                }
-                for (String areaName : roomModel.getAreaNames()) {
-                    Area byName = Area.getByName(areaName);
-                    if (byName != null) {
-                        basicRoomBuilder.addArea(byName);
-                    }
-                }
-                Map<String, String> enterExitNames = roomModel.getEnterExitNames();
-                if (enterExitNames != null) {
-                    Iterator<Map.Entry<String, String>> iterator = enterExitNames.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, String> next = iterator.next();
-                        RemoteExit remoteExit = new RemoteExit(RemoteExit.Direction.ENTER, Integer.parseInt(next.getKey()), next.getValue());
-                        basicRoomBuilder.addEnterExit(remoteExit);
-                        mapMatrix.addRemote(roomModel.getRoomId(), remoteExit);
-                    }
-                }
-                Map<String, String> notables = roomModel.getNotables();
-                if (notables != null) {
-                    Iterator<Map.Entry<String, String>> iterator = notables.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, String> next = iterator.next();
-                        basicRoomBuilder.addNotable(next.getKey(), next.getValue());
-                    }
-                }
-                configureExits(basicRoomBuilder, mapMatrix, roomModel.getRoomId());
-                return basicRoomBuilder.createBasicRoom();
+            for (String tag : roomModel.getRoomTags()) {
+                basicRoomBuilder.addTag(tag);
             }
+            for (String areaName : roomModel.getAreaNames()) {
+                Area byName = Area.getByName(areaName);
+                if (byName != null) {
+                    basicRoomBuilder.addArea(byName);
+                }
+            }
+            Map<String, String> enterExitNames = roomModel.getEnterExitNames();
+            if (enterExitNames != null) {
+                for (Map.Entry<String, String> next : enterExitNames.entrySet()) {
+                    RemoteExit remoteExit = new RemoteExit(RemoteExit.Direction.ENTER, Integer.parseInt(next.getKey()), next.getValue());
+                    basicRoomBuilder.addEnterExit(remoteExit);
+                    mapMatrix.addRemote(roomModel.getRoomId(), remoteExit);
+                }
+            }
+            Map<String, String> notables = roomModel.getNotables();
+            if (notables != null) {
+                for (Map.Entry<String, String> next : notables.entrySet()) {
+                    basicRoomBuilder.addNotable(next.getKey(), next.getValue());
+                }
+            }
+            configureExits(basicRoomBuilder, mapMatrix, roomModel.getRoomId());
+            return basicRoomBuilder.createBasicRoom();
         };
     }
 
@@ -189,17 +176,26 @@ public class WorldExporter {
             mapsManager.addFloorMatrix(floorModel.getId(), matrixFromCsv);
             return;
         }
-        Iterator<BasicRoom> transform = Iterators.transform(floorModel.getRoomModels().iterator(), getBasicRoom(matrixFromCsv));
-        while (transform.hasNext()) {
-            BasicRoom next = transform.next();
-            entityManager.addEntity(next);
-        }
+        floorModel.getRoomModels().stream().map(getBasicRoom(matrixFromCsv)).forEach(entityManager::addEntity);
         floorManager.addFloor(floorModel.getId(), floorModel.getName());
         mapsManager.addFloorMatrix(floorModel.getId(), matrixFromCsv);
     }
 
     public void readWorldFromDisk() throws FileNotFoundException {
         WorldModel worldModel = new GsonBuilder().create().fromJson(Files.newReader(new File(("world/world.json")), Charset.defaultCharset()), WorldModel.class);
+        worldModel.getFloorModelList()
+                .forEach(this::buildFloor);
+    }
+
+    public void buildTestworld() {
+        WorldModel worldModel = new GsonBuilder().create().fromJson("{\n" +
+                "  \"floorModelList\": [\n" +
+                "    {\n" +
+                "      \"name\": \"main\",\n" +
+                "      \"id\": 0,\n" +
+                "      \"rawMatrixCsv\": \"0,1\"\n" +
+                "}]\n" +
+                "}", WorldModel.class);
         for (FloorModel next : worldModel.getFloorModelList()) {
             buildFloor(next);
         }

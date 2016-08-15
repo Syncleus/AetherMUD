@@ -20,8 +20,7 @@ public class RecentGossipCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             List<String> recent = null;
             if (originalMessageParts.size() > 1) {
                 String size = originalMessageParts.get(1);
@@ -38,8 +37,6 @@ public class RecentGossipCommand extends Command {
             for (String line : recent) {
                 write(line + "\r\n");
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

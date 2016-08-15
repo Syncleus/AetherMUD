@@ -5,8 +5,10 @@ import com.comandante.creeper.command.UnknownCommand;
 import com.comandante.creeper.command.admin.*;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.bank.commands.*;
-import com.comandante.creeper.merchant.bank.commands.DoneCommand;
-import com.comandante.creeper.merchant.lockers.*;
+import com.comandante.creeper.merchant.lockers.GetCommand;
+import com.comandante.creeper.merchant.lockers.LockerCommandRegistry;
+import com.comandante.creeper.merchant.lockers.PutCommand;
+import com.comandante.creeper.merchant.lockers.QueryCommand;
 import com.comandante.creeper.server.CreeperCommandRegistry;
 
 public class ConfigureCommands {
@@ -31,9 +33,7 @@ public class ConfigureCommands {
         lockerCommandRegistry.addCommand(new GetCommand(gameManager));
         lockerCommandRegistry.addCommand(new QueryCommand(gameManager));
         lockerCommandRegistry.addCommand(new com.comandante.creeper.merchant.lockers.DoneCommand(gameManager));
-
     }
-
 
     public static void configure(GameManager gameManager) {
         creeperCommandRegistry = new CreeperCommandRegistry(new UnknownCommand(gameManager));
@@ -88,5 +88,11 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new SetCommand(gameManager));
         creeperCommandRegistry.addCommand(new DelCommand(gameManager));
         creeperCommandRegistry.addCommand(new OpCommand(gameManager));
+        creeperCommandRegistry.addCommand(new KillTallyCommand(gameManager));
+        creeperCommandRegistry.addCommand(new CompareCommand(gameManager));
+        creeperCommandRegistry.addCommand(new CardsCommand(gameManager));
+        creeperCommandRegistry.addCommand(new SpellsCommand(gameManager));
+        creeperCommandRegistry.addCommand(new LeaveCommand(gameManager));
+        creeperCommandRegistry.addCommand(new BackCommand(gameManager));
     }
 }

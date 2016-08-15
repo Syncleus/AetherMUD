@@ -2,7 +2,6 @@ package com.comandante.creeper.command;
 
 
 import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemUseHandler;
 import com.comandante.creeper.managers.GameManager;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -23,8 +22,7 @@ public class UseCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
                 write("No item specified.");
                 return;
@@ -37,8 +35,6 @@ public class UseCommand extends Command {
                 return;
             }
             gameManager.getItemUseHandler().handle(player, inventoryItem);
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

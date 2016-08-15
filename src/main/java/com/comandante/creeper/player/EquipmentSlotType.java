@@ -36,14 +36,6 @@ public enum EquipmentSlotType {
     }
 
     public static List<EquipmentSlotType> getAll() {
-        List<EquipmentSlotType> theName = Lists.newArrayList();
-        theName.add(EquipmentSlotType.HEAD);
-        theName.add(EquipmentSlotType.CHEST);
-        theName.add(EquipmentSlotType.WRISTS);
-        theName.add(EquipmentSlotType.HAND);
-        theName.add(EquipmentSlotType.LEGS);
-        theName.add(EquipmentSlotType.FEET);
-        theName.add(EquipmentSlotType.BAG);
-        return theName;
+        return Lists.newArrayList(EquipmentSlotType.values());
     }
 }

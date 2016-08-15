@@ -7,6 +7,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class RecentChangesCommand extends Command {
 
@@ -20,11 +21,12 @@ public class RecentChangesCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
-            write(RecentChangesManager.getRecentChanges());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        execCommandBackgroundThread(ctx, e, () -> {
+            try {
+                write(RecentChangesManager.getRecentChanges());
+            } catch (ExecutionException ex) {
+                log.error("Unable to retrieve recent changes.", ex);
+            }
+        });
     }
 }

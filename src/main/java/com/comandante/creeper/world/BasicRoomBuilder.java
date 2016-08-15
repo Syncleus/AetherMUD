@@ -1,25 +1,25 @@
 package com.comandante.creeper.world;
 
 import com.comandante.creeper.managers.GameManager;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class BasicRoomBuilder {
     private Integer roomId;
     private String roomTitle;
     private Integer floorId;
-    private Optional<Integer> northId = Optional.absent();
-    private Optional<Integer> southId = Optional.absent();
-    private Optional<Integer> eastId = Optional.absent();
-    private Optional<Integer> westId = Optional.absent();
-    private Optional<Integer> upId = Optional.absent();
-    private Optional<Integer> downId = Optional.absent();
+    private Optional<Integer> northId = Optional.empty();
+    private Optional<Integer> southId = Optional.empty();
+    private Optional<Integer> eastId = Optional.empty();
+    private Optional<Integer> westId = Optional.empty();
+    private Optional<Integer> upId = Optional.empty();
+    private Optional<Integer> downId = Optional.empty();
     private List<RemoteExit> enterExits = Lists.newArrayList();
     private String roomDescription;
     private Set<String> roomTags = Sets.newConcurrentHashSet();

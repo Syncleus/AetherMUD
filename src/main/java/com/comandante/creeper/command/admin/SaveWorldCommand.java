@@ -1,6 +1,7 @@
 package com.comandante.creeper.command.admin;
 
 import com.comandante.creeper.command.Command;
+import com.comandante.creeper.command.CommandRunnable;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
@@ -24,12 +25,9 @@ public class SaveWorldCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommandThreadSafe(ctx, e, SaveWorldCommand.class, () -> {
             worldExporter.saveWorld();
             write("World saved.");
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

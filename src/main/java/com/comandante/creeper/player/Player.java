@@ -2,6 +2,8 @@ package com.comandante.creeper.player;
 
 
 import com.codahale.metrics.Meter;
+import com.comandante.creeper.CreeperUtils;
+import com.comandante.creeper.Items.ForageManager;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Main;
@@ -10,39 +12,43 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
+import com.comandante.creeper.npc.Temperament;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
 import com.comandante.creeper.world.Room;
-import com.google.common.base.Optional;
 import com.google.common.collect.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.Channel;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
+import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player extends CreeperEntity {
 
-    private String playerName;
-    private Channel channel;
-    private Optional<String> returnDirection = Optional.absent();
+    private static final Logger log = Logger.getLogger(Player.class);
     private final GameManager gameManager;
-    private Room currentRoom;
-    private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
     private final String playerId;
-    private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
     private final Interner<String> interner = Interners.newWeakInterner();
     private final Random random = new Random();
+    private String playerName;
+    private Channel channel;
+    private Optional<String> returnDirection = Optional.empty();
+    private Room currentRoom;
+    private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
+    private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
     private int tickBucket = 0;
     private int fightTickBucket = 0;
-
-    private static final Logger log = Logger.getLogger(Player.class);
+    private List<NpcAggroCountDown> aggroCountDowns = Lists.newArrayList();
+    private boolean hasAlertedNpc;
+    private Room previousRoom;
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -94,22 +100,21 @@ public class Player extends CreeperEntity {
     }
 
     private void processFightRounds() {
-        for (ActiveFight activeFight : activeFights.values()) {
-            doFightRound(activeFight);
-        }
+        activeFights.forEach((aLong, activeFight) -> doFightRound(activeFight));
     }
 
     private void processRegens() {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             Stats stats = getPlayerStatsWithEquipmentAndLevel();
-            if (!isActive(CoolDownType.DEATH)) {
-                if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-                    updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
-                }
-                if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
-                    addMana((int) (stats.getMaxMana() * .03));
-                }
+            if (isActive(CoolDownType.NPC_FIGHT) || isActive(CoolDownType.DEATH)) {
+                return;
+            }
+            if (playerMetadata.getStats().getCurrentHealth() < stats.getMaxHealth()) {
+                updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
+            }
+            if (playerMetadata.getStats().getCurrentMana() < stats.getMaxMana()) {
+                addMana((int) (stats.getMaxMana() * .03));
             }
         }
     }
@@ -160,9 +165,8 @@ public class Player extends CreeperEntity {
                 CoolDown death = new CoolDown(CoolDownType.DEATH);
                 addCoolDown(death);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
-                PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, null, "vanished into the ether.", "");
+                PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
                 movePlayer(playerMovement);
-                gameManager.currentRoomLogic(getPlayerId());
                 String prompt = gameManager.buildPrompt(playerId);
                 gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
             }
@@ -193,6 +197,18 @@ public class Player extends CreeperEntity {
             }
         }
         return false;
+    }
+
+    public Room getPreviousRoom() {
+        synchronized (interner.intern(playerId)) {
+            return previousRoom;
+        }
+    }
+
+    public void setPreviousRoom(Room previousRoom) {
+        synchronized (interner.intern(playerId)) {
+            this.previousRoom = previousRoom;
+        }
     }
 
     private void addHealth(long addAmt, PlayerMetadata playerMetadata) {
@@ -247,6 +263,14 @@ public class Player extends CreeperEntity {
         }
     }
 
+    private PlayerMetadata getPlayerMetadata() {
+        return gameManager.getPlayerManager().getPlayerMetadata(playerId);
+    }
+
+    private void savePlayerMetadata(PlayerMetadata playerMetadata) {
+        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+    }
+
     public long getCurrentHealth() {
         synchronized (interner.intern(playerId)) {
             return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentHealth();
@@ -289,43 +313,59 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public void resetEffects(){
-        synchronized (interner){
+    public void resetEffects() {
+        synchronized (interner) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
             playerMetadata.resetEffects();
             gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
         }
     }
 
-    public void addLockerInventoryId(String entityId) {
+    public void addLearnedSpellByName(String spellName) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
-            playerMetadata.addLockerEntityId(entityId);
+            playerMetadata.addLearnedSpellByName(spellName);
             savePlayerMetadata(playerMetadata);
         }
     }
 
-    public void removeLockerInventoryId(String lockerInventoryId) {
+    public boolean doesHaveSpellLearned(String spellName) {
+        PlayerMetadata playerMetadata = getPlayerMetadata();
+        if (playerMetadata.getLearnedSpells() == null || playerMetadata.getLearnedSpells().length == 0) {
+            return false;
+        }
+        List<String> learnedSpells = Arrays.asList(playerMetadata.getLearnedSpells());
+        return learnedSpells.contains(spellName);
+    }
+
+    public void removeLearnedSpellByName(String spellName) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
-            playerMetadata.removeLockerEntityId(lockerInventoryId);
+            playerMetadata.removeLearnedSpellByName(spellName);
             savePlayerMetadata(playerMetadata);
         }
     }
 
-    public void addEquipmentId(String equipmentId) {
+    public List<String> getLearnedSpells() {
+        PlayerMetadata playerMetadata = getPlayerMetadata();
+        return Lists.newArrayList(playerMetadata.getLearnedSpells());
+    }
+
+    public boolean isActiveAlertNpcStatus() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
-            playerMetadata.addEquipmentEntityId(equipmentId);
-            savePlayerMetadata(playerMetadata);
+            return hasAlertedNpc;
         }
     }
 
-    public void removeEquipmentId(String equipmentId) {
+    public void setIsActiveAlertNpcStatus() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
-            playerMetadata.removeEquipmentEntityId(equipmentId);
-            savePlayerMetadata(playerMetadata);
+            hasAlertedNpc = true;
+        }
+    }
+
+    public void removeActiveAlertStatus() {
+        synchronized (interner.intern(playerId)) {
+            hasAlertedNpc = false;
         }
     }
 
@@ -337,6 +377,13 @@ public class Player extends CreeperEntity {
         }
     }
 
+    public void transferItemToLocker(String inventoryId) {
+        synchronized (interner.intern(playerId)) {
+            removeInventoryId(inventoryId);
+            addLockerInventoryId(inventoryId);
+        }
+    }
+
     public void removeInventoryId(String inventoryId) {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
@@ -345,11 +392,22 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public void transferItemToLocker(String inventoryId) {
+    public void addLockerInventoryId(String entityId) {
         synchronized (interner.intern(playerId)) {
-            removeInventoryId(inventoryId);
-            addLockerInventoryId(inventoryId);
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.addLockerEntityId(entityId);
+            savePlayerMetadata(playerMetadata);
         }
+    }
+
+    public void addNpcKillLog(String npcName) {
+        gameManager.getEventProcessor().addEvent(() -> {
+            synchronized (interner.intern(playerId)) {
+                PlayerMetadata playerMetadata = getPlayerMetadata();
+                playerMetadata.addNpcKill(npcName);
+                savePlayerMetadata(playerMetadata);
+            }
+        });
     }
 
     public void transferItemFromLocker(String entityId) {
@@ -357,6 +415,14 @@ public class Player extends CreeperEntity {
             if (gameManager.acquireItem(this, entityId)) {
                 removeLockerInventoryId(entityId);
             }
+        }
+    }
+
+    public void removeLockerInventoryId(String lockerInventoryId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.removeLockerEntityId(lockerInventoryId);
+            savePlayerMetadata(playerMetadata);
         }
     }
 
@@ -386,17 +452,6 @@ public class Player extends CreeperEntity {
         return coolDowns;
     }
 
-    public boolean isActive(CoolDownType coolDownType) {
-        for (CoolDown c : coolDowns) {
-            if (c.getCoolDownType().equals(coolDownType)) {
-                if (c.isActive()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public boolean isActiveCoolDown() {
         return coolDowns.size() > 0;
     }
@@ -407,6 +462,17 @@ public class Player extends CreeperEntity {
                 isActive(CoolDownType.FORAGE_SHORT) ||
                 isActive(CoolDownType.FORAGE_SUPERSHORT)) {
             return true;
+        }
+        return false;
+    }
+
+    public boolean isActive(CoolDownType coolDownType) {
+        for (CoolDown c : coolDowns) {
+            if (c.getCoolDownType().equals(coolDownType)) {
+                if (c.isActive()) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -437,10 +503,6 @@ public class Player extends CreeperEntity {
         gameManager.getChannelUtils().write(playerId, prompt, true);
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
     public String getPlayerId() {
         return playerId;
     }
@@ -469,6 +531,12 @@ public class Player extends CreeperEntity {
         this.currentRoom = currentRoom;
     }
 
+    public Map<String, Long> getNpcKillLog() {
+        ImmutableMap.Builder<String, Long> builder = ImmutableMap.builder();
+        getPlayerMetadata().getNpcKillLog().forEach(builder::put);
+        return builder.build();
+    }
+
     public void movePlayer(PlayerMovement playerMovement) {
         synchronized (interner.intern(playerId)) {
             Room sourceRoom = gameManager.getRoomManager().getRoom(playerMovement.getSourceRoomId());
@@ -481,14 +549,38 @@ public class Player extends CreeperEntity {
                 gameManager.getChannelUtils().write(next.getPlayerId(), sb.toString(), true);
             }
             destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
+            setPreviousRoom(currentRoom);
             playerMovement.getPlayer().setCurrentRoom(destinationRoom);
             for (Player next : gameManager.getRoomManager().getPresentPlayers(destinationRoom)) {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
                     continue;
                 }
-                gameManager.getChannelUtils().write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
+            }
+            setReturnDirection(java.util.Optional.of(playerMovement.getReturnDirection()));
+            gameManager.currentRoomLogic(playerId, gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId()));
+            gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
+            if (!isActive(CoolDownType.DEATH)) {
+                processNpcAggro();
             }
         }
+    }
+
+    private void processNpcAggro() {
+        List<Npc> aggresiveRoomNpcs = currentRoom.getNpcIds().stream()
+                .map(npcId -> gameManager.getEntityManager().getNpcEntity(npcId))
+                .filter(npc -> npc.getTemperament().equals(Temperament.AGGRESSIVE))
+                .filter(npc -> {Npc.NpcLevelColor levelColor = npc.getLevelColor((int) Levels.getLevel(getPlayerStatsWithEquipmentAndLevel().getExperience()));
+                    return !levelColor.equals(Npc.NpcLevelColor.WHITE);
+                })
+                .collect(Collectors.toList());
+
+        aggresiveRoomNpcs.forEach(npc -> {
+            gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
+            gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
+            setIsActiveAlertNpcStatus();
+            NpcAggroCountDown npcAggroCountDown = new NpcAggroCountDown(5, gameManager, this, npc, currentRoom);
+            npcAggroCountDown.startAsync();
+        });
     }
 
     public Item getInventoryItem(String itemKeyword) {
@@ -508,54 +600,8 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public List<Item> getInventory() {
-        synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
-            List<Item> inventoryItems = Lists.newArrayList();
-            List<String> inventory = playerMetadata.getInventory();
-            if (inventory != null) {
-                for (String itemId : inventory) {
-                    Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (itemEntity == null) {
-                        log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
-                        continue;
-                    }
-                    inventoryItems.add(itemEntity);
-                }
-            }
-            Collections.sort(inventoryItems, new Comparator<Item>() {
-                @Override
-                public int compare(final Item object1, final Item object2) {
-                    return object1.getItemName().compareTo(object2.getItemName());
-                }
-            });
-            return inventoryItems;
-        }
-    }
-
-    public List<Item> getLockerInventory() {
-        synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
-            List<Item> inventoryItems = Lists.newArrayList();
-            List<String> inventory = playerMetadata.getLockerInventory();
-            if (inventory != null) {
-                for (String itemId : inventory) {
-                    Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (itemEntity == null) {
-                        log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
-                        continue;
-                    }
-                    inventoryItems.add(itemEntity);
-                }
-            }
-            Collections.sort(inventoryItems, new Comparator<Item>() {
-                @Override
-                public int compare(final Item object1, final Item object2) {
-                    return object1.getItemName().compareTo(object2.getItemName());
-                }
-            });
-            return inventoryItems;
-        }
+    public String getPlayerName() {
+        return playerName;
     }
 
     public List<String> getRolledUpLockerInventory() {
@@ -599,6 +645,31 @@ public class Player extends CreeperEntity {
         }
     }
 
+    public List<Item> getLockerInventory() {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            List<Item> inventoryItems = Lists.newArrayList();
+            List<String> inventory = playerMetadata.getLockerInventory();
+            if (inventory != null) {
+                for (String itemId : inventory) {
+                    Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
+                    if (itemEntity == null) {
+                        log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
+                        continue;
+                    }
+                    inventoryItems.add(itemEntity);
+                }
+            }
+            Collections.sort(inventoryItems, new Comparator<Item>() {
+                @Override
+                public int compare(final Item object1, final Item object2) {
+                    return object1.getItemName().compareTo(object2.getItemName());
+                }
+            });
+            return inventoryItems;
+        }
+    }
+
     public List<String> getRolledUpIntentory() {
         synchronized (interner.intern(playerId)) {
             List<String> rolledUp = Lists.newArrayList();
@@ -637,6 +708,31 @@ public class Player extends CreeperEntity {
                 rolledUp.add(inventoryLine.toString());
             }
             return rolledUp;
+        }
+    }
+
+    public List<Item> getInventory() {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            List<Item> inventoryItems = Lists.newArrayList();
+            List<String> inventory = playerMetadata.getInventory();
+            if (inventory != null) {
+                for (String itemId : inventory) {
+                    Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
+                    if (itemEntity == null) {
+                        log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
+                        continue;
+                    }
+                    inventoryItems.add(itemEntity);
+                }
+            }
+            Collections.sort(inventoryItems, new Comparator<Item>() {
+                @Override
+                public int compare(final Item object1, final Item object2) {
+                    return object1.getItemName().compareTo(object2.getItemName());
+                }
+            });
+            return inventoryItems;
         }
     }
 
@@ -704,6 +800,44 @@ public class Player extends CreeperEntity {
         }
     }
 
+    public void addEquipmentId(String equipmentId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.addEquipmentEntityId(equipmentId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public void removeEquipmentId(String equipmentId) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.removeEquipmentEntityId(equipmentId);
+            savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    public String getLookString() {
+        StringBuilder sb = new StringBuilder();
+        Stats origStats = gameManager.getStatsModifierFactory().getStatsModifier(this);
+        Stats modifiedStats = getPlayerStatsWithEquipmentAndLevel();
+        Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
+        sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
+        sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
+        sb.append("Foraging Level ").append(ForageManager.getLevel(modifiedStats.getForaging())).append("\r\n");
+        sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(buildEquipmentString()).append("\r\n");
+        sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
+        sb.append(gameManager.buildLookString(playerName, modifiedStats, diffStats)).append("\r\n");
+        PlayerMetadata playerMetadata = getPlayerMetadata();
+        if (playerMetadata.getEffects() != null && playerMetadata.getEffects().size() > 0) {
+            sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
+            sb.append(buldEffectsString()).append("\r\n");
+        }
+        StringBuilder finalString = new StringBuilder();
+        Lists.newArrayList(sb.toString().split("[\\r\\n]+")).forEach(s -> finalString.append(CreeperUtils.trimTrailingBlanks(s)).append("\r\n"));
+        return finalString.toString();
+    }
+
     public Stats getPlayerStatsWithEquipmentAndLevel() {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
@@ -733,28 +867,8 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public String getLookString() {
-        StringBuilder sb = new StringBuilder();
-        Stats origStats = gameManager.getStatsModifierFactory().getStatsModifier(this);
-        Stats modifiedStats = getPlayerStatsWithEquipmentAndLevel();
-        Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
-        sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
-        sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
-        sb.append("Foraging Level ").append(gameManager.getForageManager().getLevel(modifiedStats.getForaging())).append("\r\n");
-        sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
-        sb.append(buildEquipmentString()).append("\r\n");
-        sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
-        sb.append(gameManager.buildLookString(playerName, modifiedStats, diffStats)).append("\r\n");
-        PlayerMetadata playerMetadata = getPlayerMetadata();
-        if (playerMetadata.getEffects() != null && playerMetadata.getEffects().size() > 0) {
-            sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
-            sb.append(buldEffectsString()).append("\r\n");
-        }
-        return sb.toString();
-    }
-
     public String buildEquipmentString() {
-        org.nocrala.tools.texttablefmt.Table t = new org.nocrala.tools.texttablefmt.Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
         t.setColumnWidth(0, 16, 20);
 
@@ -771,6 +885,7 @@ public class Player extends CreeperEntity {
         return t.render();
     }
 
+    /* FIGHT FIGHT FIGHT FIGHT */
 
     public String buldEffectsString() {
         PlayerMetadata playerMetadata = getPlayerMetadata();
@@ -789,8 +904,6 @@ public class Player extends CreeperEntity {
     private String capitalize(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
-
-    /* FIGHT FIGHT FIGHT FIGHT */
 
     public void removeAllActiveFights() {
         synchronized (interner.intern(playerId)) {
@@ -828,24 +941,11 @@ public class Player extends CreeperEntity {
         return getPlayerMetadata().getPlayerSettings();
     }
 
-    public void removeActiveFight(Npc npc) {
-        synchronized (interner.intern(playerId)) {
-            Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Long, ActiveFight> next = iterator.next();
-                if (next.getValue().getNpcId().equals(npc.getEntityId())) {
-                    if (next.getValue().isPrimary) {
-                    }
-                    iterator.remove();
-                }
-            }
-        }
-    }
-
     public boolean addActiveFight(Npc npc) {
         synchronized (interner.intern(playerId)) {
             if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) != null) {
                 if (!doesActiveFightExist(npc)) {
+                    addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
                     ActiveFight activeFight = new ActiveFight(npc.getEntityId(), false);
                     activeFights.put(System.nanoTime(), activeFight);
                     return true;
@@ -867,6 +967,20 @@ public class Player extends CreeperEntity {
                 }
             }
             return false;
+        }
+    }
+
+    public void removeActiveFight(Npc npc) {
+        synchronized (interner.intern(playerId)) {
+            Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Long, ActiveFight> next = iterator.next();
+                if (next.getValue().getNpcId().equals(npc.getEntityId())) {
+                    if (next.getValue().isPrimary) {
+                    }
+                    iterator.remove();
+                }
+            }
         }
     }
 
@@ -935,18 +1049,19 @@ public class Player extends CreeperEntity {
             }
             if (damageToVictim > 0) {
                 if (randInt(0, 100) > 95) {
-                   final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack!" + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
-                   npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(damageToVictim*3)).createStats());
-                   npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg)); 
+                    long criticalDamage = damageToVictim * 3;
+                    final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(criticalDamage) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                    npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(criticalDamage)).createStats());
+                    npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
                 } else {
                     final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
                     npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
-                    npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
+                    npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
                 }
             } else {
                 final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + "You MISS " + npc.getName() + "!";
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
-                npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
+                npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
             }
         }
         if (this.doesActiveFightExist(npc)) {
@@ -955,12 +1070,12 @@ public class Player extends CreeperEntity {
             if (randInt(0, 100) < chanceToHitBack) {
                 final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());
-                npcStatsChangeBuilder.setPlayerDamageStrings(Arrays.asList(fightMsg));
+                npcStatsChangeBuilder.setPlayerDamageStrings(Collections.singletonList(fightMsg));
 
             } else {
                 final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(0).createStats());
-                npcStatsChangeBuilder.setPlayerDamageStrings(Arrays.asList(fightMsg));
+                npcStatsChangeBuilder.setPlayerDamageStrings(Collections.singletonList(fightMsg));
             }
             npc.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
         }
@@ -993,6 +1108,10 @@ public class Player extends CreeperEntity {
         return random.nextInt((max - min) + 1) + min;
     }
 
+    public Interner<String> getInterner() {
+        return interner;
+    }
+
     class ActiveFight {
         private final String npcId;
         private boolean isPrimary;
@@ -1014,17 +1133,5 @@ public class Player extends CreeperEntity {
             this.isPrimary = isPrimary;
         }
 
-    }
-
-    private PlayerMetadata getPlayerMetadata() {
-        return gameManager.getPlayerManager().getPlayerMetadata(playerId);
-    }
-
-    private void savePlayerMetadata(PlayerMetadata playerMetadata) {
-        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
-    }
-
-    public Interner<String> getInterner() {
-        return interner;
     }
 }

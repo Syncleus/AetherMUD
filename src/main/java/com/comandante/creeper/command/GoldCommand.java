@@ -23,11 +23,6 @@ public class GoldCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
-          write("You have " + NumberFormat.getNumberInstance(Locale.US).format(playerManager.getPlayerMetadata(playerId).getGold()) + Color.YELLOW + " gold." + Color.RESET);
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        execCommand(ctx, e, () -> write("You have " + NumberFormat.getNumberInstance(Locale.US).format(playerManager.getPlayerMetadata(playerId).getGold()) + Color.YELLOW + " gold." + Color.RESET));
     }
 }

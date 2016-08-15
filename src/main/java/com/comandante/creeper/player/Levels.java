@@ -5,7 +5,7 @@ import static java.lang.StrictMath.sqrt;
 
 public class Levels {
 
-    private static double CONSTANT_MODIFIER = 0.005;
+    private static double CONSTANT_MODIFIER = 0.02;
 
     public static long getLevel(long experience) {
         double v = CONSTANT_MODIFIER * sqrt(experience);

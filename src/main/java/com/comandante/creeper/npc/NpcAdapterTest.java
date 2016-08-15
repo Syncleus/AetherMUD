@@ -9,14 +9,11 @@ import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.Area;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -56,7 +53,7 @@ public class NpcAdapterTest {
                 .setWillpower(randomGenerator.nextInt(100))
                 .createStats();
 
-        Loot npcOneLoot = new Loot(randomGenerator.nextInt(100), randomGenerator.nextInt(100), Sets.newHashSet(ItemType.BEER));
+        Loot npcOneLoot = new Loot(randomGenerator.nextInt(100), randomGenerator.nextInt(100), Sets.newHashSet(ItemType.SMALL_HEALTH_POTION));
         SpawnRule npcOneSpawnRule1 = new SpawnRuleBuilder().setArea(Area.BLOODRIDGE10_ZONE).setSpawnIntervalTicks(randomGenerator.nextInt(100)).setMaxInstances(randomGenerator.nextInt(100)).setMaxPerRoom(randomGenerator.nextInt(100)).setRandomPercent(randomGenerator.nextInt(100)).createSpawnRule();
         SpawnRule npcOneSpawnRule2 = new SpawnRuleBuilder().setArea(Area.BLOODRIDGE10_ZONE).setSpawnIntervalTicks(randomGenerator.nextInt(100)).setMaxInstances(randomGenerator.nextInt(100)).setMaxPerRoom(randomGenerator.nextInt(100)).setRandomPercent(randomGenerator.nextInt(100)).createSpawnRule();
         npcOne = new NpcBuilder()
@@ -114,16 +111,6 @@ public class NpcAdapterTest {
         assertEquals(npcOne.getStats().getWillpower(), npc.getStats().getWillpower());
 
         assertEquals(npcOne.getValidTriggers(), npc.getValidTriggers());
-
-    }
-
-    @Test
-    public void testRawJson() throws Exception {
-        String testJson = Files.toString(new File("/Users/kearney/Desktop/npcs/tunnelcobra.json"), Charset.defaultCharset());
-        System.out.println(testJson);
-
-        Npc npc = gson.fromJson(testJson, Npc.class);
-
 
     }
 }

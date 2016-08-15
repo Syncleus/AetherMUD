@@ -3,11 +3,10 @@ package com.comandante.creeper.Items.use;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseAction;
-import com.comandante.creeper.Items.ItemUseRegistry;
+import com.comandante.creeper.Items.ItemUseHandler;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
-import com.comandante.creeper.player.EquipmentSlotType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spells.Effect;
@@ -17,7 +16,6 @@ import com.comandante.creeper.world.Room;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 
 public class DirtyBombUseAction implements ItemUseAction {
@@ -65,7 +63,7 @@ public class DirtyBombUseAction implements ItemUseAction {
 
     @Override
     public void postExecuteAction(GameManager gameManager, Player player, Item item) {
-        ItemUseRegistry.incrementUses(item);
+        ItemUseHandler.incrementUses(item);
         if (ItemType.itemTypeFromCode(item.getItemTypeId()).isDisposable()) {
             if (item.getNumberOfUses() < ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses()) {
                 gameManager.getEntityManager().saveItem(item);
@@ -82,7 +80,7 @@ public class DirtyBombUseAction implements ItemUseAction {
     }
 
     private boolean allRadSuit(Player player) {
-        if (player.getSlotItem(EquipmentSlotType.CHEST) == null || !Objects.equals(player.getSlotItem(EquipmentSlotType.CHEST).getItemTypeId(), ItemType.RADSUIT_CHESTPLATE.getItemTypeCode())) {
+ /*       if (player.getSlotItem(EquipmentSlotType.CHEST) == null || !Objects.equals(player.getSlotItem(EquipmentSlotType.CHEST).getItemTypeId(), ItemType.RADSUIT_CHESTPLATE.getItemTypeCode())) {
             return false;
         }
         if (player.getSlotItem(EquipmentSlotType.LEGS)  == null || !Objects.equals(player.getSlotItem(EquipmentSlotType.LEGS).getItemTypeId(), ItemType.RADSUIT_LEGGINGS.getItemTypeCode())) {
@@ -96,7 +94,7 @@ public class DirtyBombUseAction implements ItemUseAction {
         }
         if (player.getSlotItem(EquipmentSlotType.FEET) == null || !Objects.equals(player.getSlotItem(EquipmentSlotType.FEET).getItemTypeId(), ItemType.RADSUIT_BOOTS.getItemTypeCode())) {
             return false;
-        }
+        }*/
         return true;
 
     }

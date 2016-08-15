@@ -26,20 +26,19 @@ public class SayCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             originalMessageParts.remove(0);
             String message = Joiner.on(" ").join(originalMessageParts);
             Set<Player> presentPlayers = roomManager.getPresentPlayers(currentRoom);
             for (Player presentPlayer : presentPlayers) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(RED);
-                stringBuilder.append("<").append(player.getPlayerName()).append("> ").append(message);
-                stringBuilder.append(RESET);
+                StringBuilder sb = new StringBuilder();
+                sb.append(RED);
+                sb.append("<").append(player.getPlayerName()).append("> ").append(message);
+                sb.append(RESET);
                 if (presentPlayer.getPlayerId().equals(playerId)) {
-                    write(stringBuilder.toString());
+                    write(sb.toString());
                 } else {
-                    channelUtils.write(presentPlayer.getPlayerId(), stringBuilder.append("\r\n").toString(), true);
+                    channelUtils.write(presentPlayer.getPlayerId(), sb.append("\r\n").toString(), true);
                 }
             }
             if (gameManager.getCreeperConfiguration().isIrcEnabled && (Objects.equals(gameManager.getCreeperConfiguration().ircBridgeRoomId, currentRoom.getRoomId()))) {
@@ -47,8 +46,6 @@ public class SayCommand extends Command {
                     gameManager.getIrcBotService().getBot().getUserChannelDao().getChannel(gameManager.getCreeperConfiguration().ircChannel).send().message(player.getPlayerName() + ": " + message);
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

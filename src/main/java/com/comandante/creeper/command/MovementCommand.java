@@ -12,7 +12,6 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class MovementCommand extends Command {
@@ -36,73 +35,70 @@ public class MovementCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        try {
-            configure(e);
+        this.execCommand(ctx, e, () -> {
             if (player.isActiveFights()) {
-                write("You can't move while in a fight!");
+                MovementCommand.this.write("You can't move while in a fight!");
                 return;
             }
             if (player.isActive(CoolDownType.DEATH)) {
-                write("You are dead and can not move.");
+                MovementCommand.this.write("You are dead and can not move.");
+                return;
+            }
+            if (player.isActiveAlertNpcStatus()) {
+                MovementCommand.this.write("You are unable to progress, but can return to where you came from by typing \"back\".");
                 return;
             }
             for (String effectId : playerManager.getPlayerMetadata(playerId).getEffects()) {
                 Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
                 if (effect.isFrozenMovement()) {
-                    write("You are frozen and can not move.");
+                    MovementCommand.this.write("You are frozen and can not move.");
                     return;
                 }
             }
-            final String command = getRootCommand(e);
+            final String command = rootCommand;
             PlayerMovement playerMovement = null;
             if (!validTriggers.contains(command.toLowerCase())) {
                 throw new RuntimeException("Malformed movement command.");
             } else if (northTriggers.contains(command.toLowerCase()) && currentRoom.getNorthId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getNorthId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited to the north.", "south");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "exited to the north.", "south");
             } else if (southTriggers.contains(command.toLowerCase()) && currentRoom.getSouthId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getSouthId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited to the south.", "north");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "exited to the south.", "north");
             } else if (eastTriggers.contains(command.toLowerCase()) && currentRoom.getEastId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getEastId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited to the east.", "west");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "exited to the east.", "west");
             } else if (westTriggers.contains(command.toLowerCase()) && currentRoom.getWestId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getWestId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited to the west.", "east");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "exited to the west.", "east");
             } else if (upTriggers.contains(command.toLowerCase()) && currentRoom.getUpId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getUpId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited up.", "down");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "exited up.", "down");
             } else if (downTriggers.contains(command.toLowerCase()) && currentRoom.getDownId().isPresent()) {
                 Room destinationRoom = roomManager.getRoom(currentRoom.getDownId().get());
-                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "exited down.", "up");
+                playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "exited down.", "up");
             } else if (enterTriggers.contains(command.toLowerCase())) {
-                Optional<RemoteExit> remoteExitOptional = doesEnterExitExist();
+                Optional<RemoteExit> remoteExitOptional = MovementCommand.this.doesEnterExitExist();
                 if (remoteExitOptional.isPresent()) {
                     Room destinationRoom = roomManager.getRoom(remoteExitOptional.get().getRoomId());
-                    playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), this, "entered " + remoteExitOptional.get().getExitDetail() + ".", "N/A");
+                    playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), destinationRoom.getRoomId(), "entered " + remoteExitOptional.get().getExitDetail() + ".", "N/A");
                 } else {
-                    write("There's no where to go with that name. (" + command + ")");
+                    MovementCommand.this.write("There's no where to go with that name. (" + command + ")");
                     return;
                 }
             } else {
-                write("There's no exit in that direction. (" + command + ")");
+                MovementCommand.this.write("There's no exit in that direction. (" + command + ")");
                 return;
             }
             player.movePlayer(playerMovement);
-            if (playerMovement != null) {
-                player.setReturnDirection(Optional.of(playerMovement.getReturnDirection()));
-                currentRoomLogic(roomManager.getRoom(playerMovement.getDestinationRoomId()));
-            }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 
     private Optional<RemoteExit> doesEnterExitExist() {
         if (originalMessageParts.size() > 1) {
             String enterExitName = originalMessageParts.get(1);
             for (RemoteExit remoteExit : currentRoom.getEnterExits()) {
-                if (remoteExit.getExitDetail().equals(enterExitName)) {
+                if (remoteExit.getExitDetail().equalsIgnoreCase(enterExitName)) {
                     return Optional.of(remoteExit);
                 }
             }

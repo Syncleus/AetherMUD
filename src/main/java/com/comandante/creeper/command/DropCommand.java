@@ -21,8 +21,7 @@ public class DropCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             if (originalMessageParts.size() == 1) {
                 write("No item specified.");
                 return;
@@ -40,8 +39,6 @@ public class DropCommand extends Command {
                     return;
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

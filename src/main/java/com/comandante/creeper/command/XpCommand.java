@@ -31,34 +31,27 @@ public class XpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
             long nextLevel = Levels.getLevel(playerMetadata.getStats().getExperience()) + 1;
             long expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
             Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
-            StringBuilder sb = new StringBuilder();
-            sb.append(NumberFormat.getNumberInstance(Locale.US).format(expToNextLevel)).append(" experience to level ").append(nextLevel).append(".\r\n");
 
-            Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
-                    ShownBorders.NONE);
+            Table table = new Table(2, BorderStyle.CLASSIC_COMPATIBLE, ShownBorders.NONE);
 
-            t.setColumnWidth(0, 8, 20);
-            t.setColumnWidth(1, 10, 20);
+            table.setColumnWidth(0, 8, 20);
+            table.setColumnWidth(1, 10, 20);
+            table.addCell("Window");
+            table.addCell("XP/sec");
+            table.addCell(" 1 min");
+            table.addCell(String.valueOf(round(meter.getOneMinuteRate())));
+            table.addCell(" 5 min");
+            table.addCell(String.valueOf(round(meter.getFiveMinuteRate())));
+            table.addCell("15 min");
+            table.addCell(String.valueOf(round(meter.getFifteenMinuteRate())));
 
-
-            t.addCell("Window");
-            t.addCell("XP/sec");
-            t.addCell(" 1 min");
-            t.addCell(String.valueOf(round(meter.getOneMinuteRate())));
-            t.addCell(" 5 min");
-            t.addCell(String.valueOf(round(meter.getFiveMinuteRate())));
-            t.addCell("15 min");
-            t.addCell(String.valueOf(round(meter.getFifteenMinuteRate())));
-            write(sb.toString() + t.render());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+            write(NumberFormat.getNumberInstance(Locale.US).format(expToNextLevel) + " experience to level " + nextLevel + ".\r\n" + table.render());
+        });
     }
 
     public static double round(double value) {

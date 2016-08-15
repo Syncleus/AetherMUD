@@ -22,8 +22,7 @@ public class PickUpCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             Set<String> itemIds = currentRoom.getItemIds();
             originalMessageParts.remove(0);
             String desiredPickUpItem = Joiner.on(" ").join(originalMessageParts);
@@ -39,8 +38,6 @@ public class PickUpCommand extends Command {
                     }
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

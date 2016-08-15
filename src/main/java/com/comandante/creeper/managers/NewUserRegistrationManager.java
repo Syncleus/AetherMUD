@@ -8,6 +8,7 @@ import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.player.PlayerStats;
 import com.comandante.creeper.server.CreeperSession;
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -46,7 +47,7 @@ public class NewUserRegistrationManager {
             newUserRegistrationFlow(session, e);
             return false;
         }
-        session.setUsername(Optional.of(username));
+        session.setUsername(java.util.Optional.of(username));
         return true;
     }
 
@@ -63,7 +64,7 @@ public class NewUserRegistrationManager {
             return;
         }
         session.setPassword(Optional.of(password));
-        PlayerMetadata playerMetadata = new PlayerMetadata(session.getUsername().get(), session.getPassword().get(), Main.createPlayerId(session.getUsername().get()), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0);
+        PlayerMetadata playerMetadata = new PlayerMetadata(session.getUsername().get(), session.getPassword().get(), Main.createPlayerId(session.getUsername().get()), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap());
         playerManager.savePlayerMetadata(playerMetadata);
         e.getChannel().write("User created.\r\n");
         session.setState(CreeperSession.State.newUserRegCompleted);

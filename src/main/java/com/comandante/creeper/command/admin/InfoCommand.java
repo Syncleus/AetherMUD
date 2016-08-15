@@ -23,11 +23,8 @@ public class InfoCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        configure(e);
-        try {
+        execCommand(ctx, e, () -> {
             write("roomId: " + currentRoom.getRoomId());
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }

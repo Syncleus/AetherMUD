@@ -6,7 +6,7 @@ import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.Spell;
-import com.comandante.creeper.spells.SpellRegistry;
+import com.comandante.creeper.spells.SpellTriggerRegistry;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -27,8 +27,7 @@ public class CastCommand extends Command {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        try {
-            configure(e);
+        execCommand(ctx, e, () -> {
             if (player.getCurrentHealth() <= 0) {
                 write("You have no health and as such you can not attack.");
                 return;
@@ -42,8 +41,8 @@ public class CastCommand extends Command {
                 return;
             }
             String desiredSpellName = originalMessageParts.get(1);
-            Spell spell = SpellRegistry.getSpell(desiredSpellName);
-            if (spell == null) {
+            Spell spell = SpellTriggerRegistry.getSpell(desiredSpellName);
+            if (spell == null || !player.doesHaveSpellLearned(spell.getSpellName())) {
                 write("No spell found with the name: " + desiredSpellName + "\r\n");
                 return;
             }
@@ -81,8 +80,6 @@ public class CastCommand extends Command {
                     return;
                 }
             }
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        });
     }
 }
