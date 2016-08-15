@@ -8,7 +8,6 @@ import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NpcMover {
 
@@ -38,21 +38,18 @@ public class NpcMover {
         }
         Room npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(npcEntity).get();
         Set<Integer> possibleExits = getPossibleExits(npcCurrentRoom);
-        Predicate<Integer> roamableByArea = new Predicate<Integer>() {
-            @Override
-            public boolean apply(Integer roomId) {
-                Room room = gameManager.getRoomManager().getRoom(roomId);
-                for (Area roomArea : room.getAreas()) {
-                    if (npcEntity.getRoamAreas().contains(roomArea)) {
-                        if (doesRoomHaveEmptyNpcsSpots(room, npcEntity, roomArea)){
-                            return true;
-                        }
+        Predicate<Integer> roamableByArea = roomId -> {
+            Room room = gameManager.getRoomManager().getRoom(roomId);
+            for (Area roomArea : room.getAreas()) {
+                if (npcEntity.getRoamAreas().contains(roomArea)) {
+                    if (doesRoomHaveEmptyNpcsSpots(room, npcEntity, roomArea)){
+                        return true;
                     }
                 }
-                return false;
             }
+            return false;
         };
-        List<Integer> canRoam = Lists.newArrayList(Iterables.filter(possibleExits, roamableByArea));
+        List<Integer> canRoam = Lists.newArrayList(possibleExits.stream().filter(roamableByArea::apply).collect(Collectors.toList()));
         if (canRoam.size() <= 0) {
             return;
         }
