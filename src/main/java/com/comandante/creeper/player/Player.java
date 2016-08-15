@@ -29,6 +29,8 @@ import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Player extends CreeperEntity {
@@ -46,9 +48,10 @@ public class Player extends CreeperEntity {
     private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
     private int tickBucket = 0;
     private int fightTickBucket = 0;
-    private List<NpcAggroCountDown> aggroCountDowns = Lists.newArrayList();
     private boolean hasAlertedNpc;
     private Room previousRoom;
+    private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
+
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -162,6 +165,7 @@ public class Player extends CreeperEntity {
                 playerMetadata.setGold(newGold);
                 gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
                 gameManager.getChannelUtils().write(getPlayerId(), "You just " + Color.BOLD_ON + Color.RED + "lost " + Color.RESET + newGold + Color.YELLOW + " gold" + Color.RESET + "!\r\n");
+                removeActiveAlertStatus();
                 CoolDown death = new CoolDown(CoolDownType.DEATH);
                 addCoolDown(death);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
@@ -559,28 +563,37 @@ public class Player extends CreeperEntity {
             setReturnDirection(java.util.Optional.of(playerMovement.getReturnDirection()));
             gameManager.currentRoomLogic(playerId, gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId()));
             gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
-            if (!isActive(CoolDownType.DEATH)) {
-                processNpcAggro();
-            }
+            processNpcAggro();
         }
     }
 
-    private void processNpcAggro() {
-        List<Npc> aggresiveRoomNpcs = currentRoom.getNpcIds().stream()
-                .map(npcId -> gameManager.getEntityManager().getNpcEntity(npcId))
-                .filter(npc -> npc.getTemperament().equals(Temperament.AGGRESSIVE))
-                .filter(npc -> {Npc.NpcLevelColor levelColor = npc.getLevelColor((int) Levels.getLevel(getPlayerStatsWithEquipmentAndLevel().getExperience()));
-                    return !levelColor.equals(Npc.NpcLevelColor.WHITE);
-                })
-                .collect(Collectors.toList());
+    public void processNpcAggro() {
+        synchronized (interner.intern(playerId)) {
+            if (isActive(CoolDownType.DEATH)) {
+                return;
+            }
+            List<Npc> aggresiveRoomNpcs = currentRoom.getNpcIds().stream()
+                    .map(npcId -> gameManager.getEntityManager().getNpcEntity(npcId))
+                    .filter(npc -> npc.getTemperament().equals(Temperament.AGGRESSIVE))
+                    .filter(npc -> {
+                        Npc.NpcLevelColor levelColor = npc.getLevelColor((int) Levels.getLevel(getPlayerStatsWithEquipmentAndLevel().getExperience()));
+                        return !levelColor.equals(Npc.NpcLevelColor.WHITE);
+                    })
+                    .collect(Collectors.toList());
 
-        aggresiveRoomNpcs.forEach(npc -> {
-            gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
-            gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
-            setIsActiveAlertNpcStatus();
-            NpcAggroCountDown npcAggroCountDown = new NpcAggroCountDown(5, gameManager, this, npc, currentRoom);
-            npcAggroCountDown.startAsync();
-        });
+            aggresiveRoomNpcs.forEach(npc -> {
+                gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
+                gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
+                setIsActiveAlertNpcStatus();
+                scheduledExecutor.schedule(() -> {
+                    if (!getCurrentRoom().getRoomId().equals(currentRoom.getRoomId())) {
+                        return;
+                    }
+                    gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has " + Color.BOLD_ON + Color.RED + "ANGERED" + Color.RESET + " a " + npc.getColorName() + "\r\n");
+                    addActiveFight(npc);
+                }, 5, TimeUnit.SECONDS);
+            });
+        }
     }
 
     public Item getInventoryItem(String itemKeyword) {

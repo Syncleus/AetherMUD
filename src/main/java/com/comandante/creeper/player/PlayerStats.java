@@ -23,5 +23,4 @@ public class PlayerStats {
             .setForaging(0)
             .setInventorySize(10)
             .setMaxEffects(4);
-
 }

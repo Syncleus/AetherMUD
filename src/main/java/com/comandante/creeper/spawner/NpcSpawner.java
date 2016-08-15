@@ -7,6 +7,7 @@ import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.world.Area;
 import com.comandante.creeper.world.Room;
 
@@ -76,6 +77,7 @@ public class NpcSpawner extends CreeperEntity {
         gameManager.getEntityManager().addEntity(newNpc);
         room.addPresentNpc(newNpc.getEntityId());
         gameManager.writeToRoom(room.getRoomId(), newNpc.getColorName() + " appears." + "\r\n");
+        gameManager.getRoomManager().getPresentPlayers(room).forEach(Player::processNpcAggro);
         Main.metrics.counter(MetricRegistry.name(NpcSpawner.class, npc.getName() + "-spawn")).inc();
     }
 
