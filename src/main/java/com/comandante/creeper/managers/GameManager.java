@@ -726,6 +726,10 @@ public class GameManager {
                 sb.append(Color.GREEN + "F" + Color.RESET);
             }
         }
+        if (player.isActiveAlertNpcStatus()) {
+            sb.append(" ");
+            sb.append(Color.RED + "ALERT" + Color.RESET);
+        }
         sb.append(Color.BOLD_ON + Color.WHITE);
         sb.append("] ");
         sb.append(Color.RESET);
