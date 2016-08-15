@@ -90,7 +90,7 @@ public class NpcTestHarness {
     @Test
     public void testCombat() throws Exception {
         List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
-        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
+        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
         int totalIterations = 100;
         Player player;
         Npc npc = null;
