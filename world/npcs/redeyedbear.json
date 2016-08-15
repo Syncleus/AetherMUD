@@ -34,13 +34,13 @@
       "randomChance": 100,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
-      "maxInstances": 22
+      "maxInstances": 12
     },
     "toft2_zone": {
       "randomChance": 100,
       "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
-      "maxInstances": 22
+      "maxInstances": 12
     }
   },
   "validTriggers": [

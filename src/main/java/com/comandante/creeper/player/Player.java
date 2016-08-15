@@ -1042,6 +1042,7 @@ public class Player extends CreeperEntity {
     }
 
     private void doFightRound(ActiveFight activeFight) {
+        removeActiveAlertStatus();
         Npc npc = gameManager.getEntityManager().getNpcEntity(activeFight.getNpcId());
         if (npc == null) {
             return;
