@@ -34,12 +34,12 @@ public class CreeperUtilsTest {
         when(gameManager.getEntityManager()).thenReturn(entityManager);
         Player usertest = new Player("usertest", gameManager);
 
-        String s = CreeperUtils.printStringsNextToEachOther(Lists.newArrayList(usertest.getLookString(), usertest.getLookString()), "");
+        String s = CreeperUtils.printStringsNextToEachOther(Lists.newArrayList(usertest.getLookString(), usertest.getLookString())," | ");
 
         System.out.println(s);
 
 
-        System.out.println(usertest.getLookString().replaceAll("\u001B\\[[;\\d]*m", ""));
+       // System.out.println(usertest.getLookString().replaceAll("\u001B\\[[;\\d]*m", " | "));
 
 
     }
