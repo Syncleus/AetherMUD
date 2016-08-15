@@ -46,6 +46,9 @@ public class Player extends CreeperEntity {
     private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
     private int tickBucket = 0;
     private int fightTickBucket = 0;
+    private List<NpcAggroCountDown> aggroCountDowns = Lists.newArrayList();
+    private boolean hasAlertedNpc;
+    private Room previousRoom;
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -164,7 +167,6 @@ public class Player extends CreeperEntity {
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
                 PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
                 movePlayer(playerMovement);
-                gameManager.currentRoomLogic(getPlayerId());
                 String prompt = gameManager.buildPrompt(playerId);
                 gameManager.getChannelUtils().write(getPlayerId(), prompt, true);
             }
@@ -195,6 +197,18 @@ public class Player extends CreeperEntity {
             }
         }
         return false;
+    }
+
+    public Room getPreviousRoom() {
+        synchronized (interner.intern(playerId)) {
+            return previousRoom;
+        }
+    }
+
+    public void setPreviousRoom(Room previousRoom) {
+        synchronized (interner.intern(playerId)) {
+            this.previousRoom = previousRoom;
+        }
     }
 
     private void addHealth(long addAmt, PlayerMetadata playerMetadata) {
@@ -335,6 +349,24 @@ public class Player extends CreeperEntity {
     public List<String> getLearnedSpells() {
         PlayerMetadata playerMetadata = getPlayerMetadata();
         return Lists.newArrayList(playerMetadata.getLearnedSpells());
+    }
+
+    public boolean isActiveAlertNpcStatus() {
+        synchronized (interner.intern(playerId)) {
+            return hasAlertedNpc;
+        }
+    }
+
+    public void setIsActiveAlertNpcStatus() {
+        synchronized (interner.intern(playerId)) {
+            hasAlertedNpc = true;
+        }
+    }
+
+    public void removeActiveAlertStatus() {
+        synchronized (interner.intern(playerId)) {
+            hasAlertedNpc = false;
+        }
     }
 
     public void addInventoryId(String inventoryId) {
@@ -517,6 +549,7 @@ public class Player extends CreeperEntity {
                 gameManager.getChannelUtils().write(next.getPlayerId(), sb.toString(), true);
             }
             destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
+            setPreviousRoom(currentRoom);
             playerMovement.getPlayer().setCurrentRoom(destinationRoom);
             for (Player next : gameManager.getRoomManager().getPresentPlayers(destinationRoom)) {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
@@ -526,7 +559,9 @@ public class Player extends CreeperEntity {
             setReturnDirection(java.util.Optional.of(playerMovement.getReturnDirection()));
             gameManager.currentRoomLogic(playerId, gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId()));
             gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
-            processNpcAggro();
+            if (!isActive(CoolDownType.DEATH)) {
+                processNpcAggro();
+            }
         }
     }
 
@@ -540,8 +575,11 @@ public class Player extends CreeperEntity {
                 .collect(Collectors.toList());
 
         aggresiveRoomNpcs.forEach(npc -> {
-            gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has angered a " + npc.getColorName() + "\r\n");
-            addActiveFight(npc);
+            gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
+            gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
+            setIsActiveAlertNpcStatus();
+            NpcAggroCountDown npcAggroCountDown = new NpcAggroCountDown(5, gameManager, this, npc, currentRoom);
+            npcAggroCountDown.startAsync();
         });
     }
 

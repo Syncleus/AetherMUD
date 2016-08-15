@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class BuildCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("build", "b");
+    final static List<String> validTriggers = Arrays.asList("build");
     final static String description = "Build new rooms in the world.";
     final static String correctUsage = "build [n|s|e|w|enter <name>|notable <name>]";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
