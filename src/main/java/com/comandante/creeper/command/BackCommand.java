@@ -22,6 +22,10 @@ public class BackCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
+            if (player.isActiveFights()) {
+                write("You can't move while in a fight!");
+                return;
+            }
             Room returnRoom = player.getPreviousRoom();
             player.removeActiveAlertStatus();
             PlayerMovement playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), returnRoom.getRoomId(), "fleed to where they came from.", "up");

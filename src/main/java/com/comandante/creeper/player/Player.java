@@ -726,12 +726,7 @@ public class Player extends CreeperEntity {
                     inventoryItems.add(itemEntity);
                 }
             }
-            Collections.sort(inventoryItems, new Comparator<Item>() {
-                @Override
-                public int compare(final Item object1, final Item object2) {
-                    return object1.getItemName().compareTo(object2.getItemName());
-                }
-            });
+            Collections.sort(inventoryItems, (a, b) -> a.getItemName().compareTo(b.getItemName()));
             return inventoryItems;
         }
     }
