@@ -1,11 +1,11 @@
 {
-  "name": "red-eyed bear",
-  "colorName": "red-eyed \u001B[1m\u001B[35mbear\u001B[0m",
-  "dieMessage": "a red-eyed \u001B[1m\u001B[35mbear\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
-  "temperament": "aggressive",
+  "name": "swamp bear",
+  "colorName": "swamp \u001B[1m\u001B[35mbear\u001B[0m",
+  "dieMessage": "a swamp \u001B[1m\u001B[35mbear\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
+  "temperament": "passive",
   "loot": {
-    "lootGoldMin": 15,
-    "lootGoldMax": 25,
+    "lootGoldMin": 19,
+    "lootGoldMax": 30,
     "lootItems": []
   },
   "roamAreas": [
@@ -16,7 +16,7 @@
     "agile": 6,
     "aim": 3,
     "armorRating": 20,
-    "currentHealth": 150,
+    "currentHealth": 175,
     "currentMana": 105,
     "experience": 90000,
     "maxHealth": 150,
@@ -24,8 +24,8 @@
     "meleSkill": 22,
     "numberOfWeaponRolls": 1,
     "strength": 13,
-    "weaponRatingMax": 22,
-    "weaponRatingMin": 16,
+    "weaponRatingMax": 25,
+    "weaponRatingMin": 19,
     "willPower": 4
   },
   "spawnAreas": {
@@ -43,10 +43,9 @@
     }
   },
   "validTriggers": [
-    "r",
-    "red-eyed bear",
-    "red",
-    "red-eyed",
+    "s",
+    "swamp bear",
+    "swamp",
     "b",
     "bear"
   ]
