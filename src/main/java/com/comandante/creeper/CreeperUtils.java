@@ -51,16 +51,18 @@ Bag             25        (+15)       | Bag             25        (+15)
         // Make them all even length.  This is terrible streams api usage.
         // remove any hidden ascii color characters as they mess with the line length math
         List<List<String>> textToJoin =
-                inputStrings.stream().map(CreeperUtils::splitToArrayLines).map(strings -> {
-                    maxLineLength[0] = getLongestStringLength(strings);
-                    List<String> newStrings = Lists.newArrayList();
-                    strings.forEach(s -> {
-                        int diff = maxLineLength[0] - removeAllAsciiColorCodes(s).length();
-                        String whiteSpacePadded = addTrailingWhiteSpace(s, diff);
-                        newStrings.add(whiteSpacePadded);
-                    });
-                    return newStrings;
-                }).collect(Collectors.toList());
+                inputStrings.stream()
+                        .map(CreeperUtils::splitToArrayLines)
+                        .map(strings -> {
+                            maxLineLength[0] = getLongestStringLength(strings);
+                            List<String> newStrings = Lists.newArrayList();
+                            strings.forEach(s -> {
+                                int diff = maxLineLength[0] - removeAllAsciiColorCodes(s).length();
+                                String whiteSpacePadded = addTrailingWhiteSpace(s, diff);
+                                newStrings.add(whiteSpacePadded);
+                            });
+                            return newStrings;
+                        }).collect(Collectors.toList());
 
 
         // Go through and piece together the lines, by removing the top of each list and concatenating it
