@@ -581,12 +581,13 @@ public class Player extends CreeperEntity {
                     })
                     .collect(Collectors.toList());
 
+            final Room originalRoom = currentRoom;
             aggresiveRoomNpcs.forEach(npc -> {
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
                 gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
                 setIsActiveAlertNpcStatus();
                 scheduledExecutor.schedule(() -> {
-                    if (!getCurrentRoom().getRoomId().equals(currentRoom.getRoomId())) {
+                    if (!getCurrentRoom().getRoomId().equals(originalRoom.getRoomId())) {
                         return;
                     }
                     gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has " + Color.BOLD_ON + Color.RED + "ANGERED" + Color.RESET + " a " + npc.getColorName() + "\r\n");
@@ -1142,5 +1143,19 @@ public class Player extends CreeperEntity {
             this.isPrimary = isPrimary;
         }
 
+    }
+
+    public class DelayNpcAggro implements Runnable {
+
+        private final Room originalRoom;
+
+        public DelayNpcAggro(Room originalRoom) {
+            this.originalRoom = originalRoom;
+        }
+
+        @Override
+        public void run() {
+
+        }
     }
 }
