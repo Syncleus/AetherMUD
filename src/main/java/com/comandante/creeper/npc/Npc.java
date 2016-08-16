@@ -218,6 +218,7 @@ public class Npc extends CreeperEntity {
 
     private void killNpc(Player player) {
         isAlive.set(false);
+        player.removeActiveAlertStatus(this);
         Map<String, Double> damagePercents;
         Item corpse = new Item(getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, getLoot());
         if (!player.isActive(CoolDownType.DEATH)) {
