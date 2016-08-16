@@ -21,6 +21,7 @@ import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.EffectsManager;
+import com.comandante.creeper.spells.Spells;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.world.*;
@@ -68,6 +69,7 @@ public class GameManager {
     private final TimeTracker timeTracker;
     private final ItemUseHandler itemUseHandler;
     private final NpcMover npcMover;
+    private final Spells spells;
     private final SingleThreadedCreeperEventProcessor eventProcessor = new SingleThreadedCreeperEventProcessor(new ArrayBlockingQueue<>(100000));
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils) {
@@ -94,7 +96,12 @@ public class GameManager {
         this.entityManager.addEntity(itemDecayManager);
         this.itemUseHandler = new ItemUseHandler(this);
         this.npcMover = new NpcMover(this);
+        this.spells = new Spells(this);
         this.eventProcessor.startAsync();
+    }
+
+    public Spells getSpells() {
+        return spells;
     }
 
     public NpcMover getNpcMover() {
@@ -458,6 +465,13 @@ public class GameManager {
         t.addCell(getFormattedNumber(stats.getStrength()));
         if (diff.getStrength() > 0)
             sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getStrength())).append(Color.RESET).append(")");
+        t.addCell(sb.toString());
+
+        sb = new StringBuilder();
+        t.addCell("Intelligence");
+        t.addCell(getFormattedNumber(stats.getIntelligence()));
+        if (diff.getStrength() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getIntelligence())).append(Color.RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();

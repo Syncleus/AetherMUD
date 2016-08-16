@@ -3,12 +3,14 @@ package com.comandante.creeper;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CreeperUtils {
 
     public static String asciiColorPattern = "\u001B\\[[;\\d]*m";
 
+    private static Random random = new Random();
 
     /*  Prints things "next" to each other, like this:
 -+=[ fibs ]=+-                        | -+=[ fibs ]=+-
@@ -131,5 +133,9 @@ Bag             25        (+15)       | Bag             25        (+15)
             }
         }
         return str.substring(0, len);
+    }
+
+    public static int randInt(int min, int max) {
+        return random.nextInt((max - min) + 1) + min;
     }
 }

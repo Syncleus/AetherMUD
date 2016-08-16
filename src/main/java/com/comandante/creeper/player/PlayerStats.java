@@ -7,6 +7,7 @@ public class PlayerStats {
 
     public final static StatsBuilder DEFAULT_PLAYER = new StatsBuilder()
             .setStrength(10)
+            .setIntelligence(5)
             .setWillpower(1)
             .setAim(1)
             .setAgile(1)

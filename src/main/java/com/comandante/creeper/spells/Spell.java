@@ -13,10 +13,7 @@ import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import org.apache.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 
 public abstract class Spell {

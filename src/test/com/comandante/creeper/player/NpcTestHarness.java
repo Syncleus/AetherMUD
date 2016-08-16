@@ -227,4 +227,26 @@ public class NpcTestHarness {
         PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap());
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
     }
+
+    private int getLightningSpellDamage(int level, int intelligence, int npcIntelligence) {
+        return (level * 1) + (3 * intelligence);
+
+    }
+
+    @Test
+    public void screwingAround() throws Exception {
+
+        int lightningSpellDamage = getLightningSpellDamage(4, 7, 4);
+        System.out.println("Level 1 player with 7 intelligence vs 4 intelligence npc: " + lightningSpellDamage);
+
+        lightningSpellDamage = getLightningSpellDamage(5, 11, 6);
+        System.out.println("Level 5 player with 11 intelligence vs 6 intelligence npc: " + lightningSpellDamage);
+        lightningSpellDamage = getLightningSpellDamage(7, 14, 8);
+        System.out.println("Level 7 player with 14 intelligence vs 8 intelligence npc: " + lightningSpellDamage);
+        lightningSpellDamage = getLightningSpellDamage(9,16, 10);
+        System.out.println("Level 9 player with 16 intelligence vs 10 intelligence npc: " + lightningSpellDamage);
+        lightningSpellDamage = getLightningSpellDamage(12, 21, 13);
+        System.out.println("Level 12 player with 21 intelligence vs 13 intelligence npc: " + lightningSpellDamage);
+
+    }
 }

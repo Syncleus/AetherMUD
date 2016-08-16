@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Stats implements Serializable {
     private long strength;
+    private long intelligence;
     private long willpower;
     private long aim;
     private long agile;
@@ -23,6 +24,7 @@ public class Stats implements Serializable {
 
     public Stats(Stats stats) {
         this.strength = stats.strength;
+        this.intelligence = stats.intelligence;
         this.willpower = stats.willpower;
         this.aim = stats.aim;
         this.agile = stats.agile;
@@ -44,6 +46,7 @@ public class Stats implements Serializable {
     }
 
     public Stats(long strength,
+                 long intelligence,
                  long willpower,
                  long aim,
                  long agile,
@@ -61,6 +64,7 @@ public class Stats implements Serializable {
                  long inventorySize,
                  long maxEffects) {
         this.strength = strength;
+        this.intelligence = intelligence;
         this.willpower = willpower;
         this.aim = aim;
         this.agile = agile;
@@ -79,6 +83,14 @@ public class Stats implements Serializable {
         this.maxEffects = maxEffects;
     }
 
+
+    public long getIntelligence() {
+        return intelligence;
+    }
+
+    public void setIntelligence(long intelligence) {
+        this.intelligence = intelligence;
+    }
 
     public long getMaxEffects() {
         return maxEffects;

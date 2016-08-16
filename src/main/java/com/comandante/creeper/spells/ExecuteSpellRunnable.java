@@ -1,0 +1,13 @@
+package com.comandante.creeper.spells;
+
+
+import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.npc.Npc;
+import com.comandante.creeper.player.Player;
+
+import java.util.Optional;
+
+public interface ExecuteSpellRunnable {
+    void run(Player sourcePlayer, Optional<Npc> destinationNpc, Optional<Player> destinationPlayer, GameManager gameManager);
+    String getName();
+}

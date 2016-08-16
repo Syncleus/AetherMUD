@@ -5,8 +5,10 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.spells.ExecuteSpellRunnable;
 import com.comandante.creeper.spells.Spell;
 import com.comandante.creeper.spells.SpellTriggerRegistry;
+import com.comandante.creeper.spells.Spells;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -14,6 +16,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class CastCommand extends Command {
 
@@ -41,42 +44,37 @@ public class CastCommand extends Command {
                 return;
             }
             String desiredSpellName = originalMessageParts.get(1);
-            Spell spell = SpellTriggerRegistry.getSpell(desiredSpellName);
-            if (spell == null || !player.doesHaveSpellLearned(spell.getSpellName())) {
+            Optional<ExecuteSpellRunnable> spellRunnable = gameManager.getSpells().getSpellRunnable(desiredSpellName);
+            if (!spellRunnable.isPresent() || !player.doesHaveSpellLearned(spellRunnable.get().getName())) {
                 write("No spell found with the name: " + desiredSpellName + "\r\n");
                 return;
             }
-            if (player.isActiveSpellCoolDown(spell.getSpellName())) {
+            if (player.isActiveSpellCoolDown(spellRunnable.get().getName())) {
                 write("That spell is still in cooldown.\r\n");
                 write(gameManager.renderCoolDownString(player.getCoolDowns()));
                 return;
             }
             if (originalMessageParts.size() == 2) {
-                if (spell.isAreaSpell()) {
-                    spell.attackSpell(currentRoom.getNpcIds(), player);
-                    return;
-                } else {
-                    write("Spell is not an area of attack. Need to specify a target.\r\n");
-                    return;
-                }
+                gameManager.getSpells().executeSpell(player, Optional.empty(), Optional.empty(), spellRunnable.get());
+                return;
             }
             originalMessageParts.remove(0);
             originalMessageParts.remove(0);
             String target = Joiner.on(" ").join(originalMessageParts);
             if (player.getPlayerName().equals(target)) {
-                spell.attackSpell(this.player, this.player);
+                gameManager.getSpells().executeSpell(player, Optional.empty(), Optional.ofNullable(player), spellRunnable.get());
                 return;
             }
             for (Player destinationPlayer : roomManager.getPresentPlayers(currentRoom)) {
                 if (destinationPlayer.getPlayerName().equalsIgnoreCase(target)) {
-                    spell.attackSpell(destinationPlayer, this.player);
+                    gameManager.getSpells().executeSpell(player, Optional.empty(), Optional.of(destinationPlayer), spellRunnable.get());
                     return;
                 }
             }
             for (String npcId : currentRoom.getNpcIds()) {
                 Npc npcEntity = entityManager.getNpcEntity(npcId);
                 if (npcEntity.getValidTriggers().contains(target)) {
-                    spell.attackSpell(Sets.newHashSet(npcId), player);
+                    gameManager.getSpells().executeSpell(player, Optional.of(npcEntity), Optional.empty(), spellRunnable.get());
                     return;
                 }
             }

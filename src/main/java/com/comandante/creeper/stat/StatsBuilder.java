@@ -2,6 +2,7 @@ package com.comandante.creeper.stat;
 
 public class StatsBuilder {
     private long strength;
+    private long intelligence;
     private long willpower;
     private long aim;
     private long agile;
@@ -24,6 +25,7 @@ public class StatsBuilder {
 
     public StatsBuilder(Stats stats) {
         this.strength = stats.getStrength();
+        this.intelligence = stats.getIntelligence();
         this.willpower = stats.getWillpower();
         this.aim = stats.getAim();
         this.agile = stats.getAgile();
@@ -41,6 +43,11 @@ public class StatsBuilder {
         this.currentMana = stats.getCurrentMana();
         this.inventorySize = stats.getInventorySize();
         this.maxEffects = stats.getMaxEffects();
+    }
+
+    public StatsBuilder setIntelligence(long intelligence) {
+        this.intelligence = intelligence;
+        return this;
     }
 
     public StatsBuilder setStrength(long strength) {
@@ -129,6 +136,6 @@ public class StatsBuilder {
     }
 
     public Stats createStats() {
-        return new Stats(strength, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize, maxEffects);
+        return new Stats(strength, intelligence, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize, maxEffects);
     }
 }

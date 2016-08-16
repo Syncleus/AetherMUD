@@ -216,6 +216,15 @@ public class Player extends CreeperEntity {
         }
     }
 
+    public void writeMessage(String msg) {
+        gameManager.getChannelUtils().write(getPlayerId(), msg);
+    }
+
+    public long getAvailableMana(){
+        return getPlayerStatsWithEquipmentAndLevel().getCurrentMana();
+    }
+
+
     private void addHealth(long addAmt, PlayerMetadata playerMetadata) {
         long currentHealth = playerMetadata.getStats().getCurrentHealth();
         Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
@@ -266,6 +275,10 @@ public class Player extends CreeperEntity {
             }
             savePlayerMetadata(playerMetadata);
         }
+    }
+
+    public long getLevel() {
+        return Levels.getLevel(getPlayerMetadata().getStats().getExperience());
     }
 
     private PlayerMetadata getPlayerMetadata() {
