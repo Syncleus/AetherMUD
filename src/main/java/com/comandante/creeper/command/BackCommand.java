@@ -27,7 +27,6 @@ public class BackCommand extends Command {
                 return;
             }
             Room returnRoom = player.getPreviousRoom();
-            player.removeActiveAlertStatus();
             PlayerMovement playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), returnRoom.getRoomId(), "fleed to where they came from.", "up");
             player.movePlayer(playerMovement);
         });

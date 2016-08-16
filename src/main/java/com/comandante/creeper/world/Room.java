@@ -6,6 +6,7 @@ import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
+import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class Room extends CreeperEntity {
 
@@ -258,6 +260,10 @@ public abstract class Room extends CreeperEntity {
 
     public GameManager getGameManager() {
         return gameManager;
+    }
+
+    public List<Npc> getPresentNpcs() {
+        return npcIds.stream().map(s -> gameManager.getEntityManager().getNpcEntity(s)).collect(Collectors.toList());
     }
 
     @Override

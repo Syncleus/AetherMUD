@@ -49,6 +49,7 @@ public class Player extends CreeperEntity {
     private int tickBucket = 0;
     private int fightTickBucket = 0;
     private boolean hasAlertedNpc;
+    private final Set<Npc> alertedNpcs = Sets.newHashSet();
     private Room previousRoom;
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
 
@@ -355,22 +356,42 @@ public class Player extends CreeperEntity {
         return Lists.newArrayList(playerMetadata.getLearnedSpells());
     }
 
-    public boolean isActiveAlertNpcStatus() {
+    public boolean isActiveAlertNpcStatus(Npc npc) {
         synchronized (interner.intern(playerId)) {
-            return hasAlertedNpc;
+            return alertedNpcs.contains(npc);
         }
     }
 
-    public void setIsActiveAlertNpcStatus() {
+    public boolean isActiveAlertNpcStatus() {
         synchronized (interner.intern(playerId)) {
-            hasAlertedNpc = true;
+            return alertedNpcs.size() > 0;
+        }
+    }
+
+    public boolean isAlertedNpcPresentInCurrentRoom() {
+        return currentRoom.getPresentNpcs().stream().filter(this::isActiveAlertNpcStatus).count() > 0;
+    }
+
+    public void setIsActiveAlertNpcStatus(Npc npc) {
+        synchronized (interner.intern(playerId)) {
+            alertedNpcs.add(npc);
         }
     }
 
     public void removeActiveAlertStatus() {
         synchronized (interner.intern(playerId)) {
-            hasAlertedNpc = false;
+            alertedNpcs.clear();
         }
+    }
+
+    public void removeActiveAlertStatus(Npc npc) {
+        synchronized (interner.intern(playerId)) {
+            alertedNpcs.clear();
+        }
+    }
+
+    public Set<Npc> getAlertedNpcs() {
+        return alertedNpcs;
     }
 
     public void addInventoryId(String inventoryId) {
@@ -497,6 +518,9 @@ public class Player extends CreeperEntity {
             if (coolDown.isActive()) {
                 coolDown.decrementTick();
             } else {
+                if (coolDown.equals(CoolDownType.DEATH)) {
+                    gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
+                }
                 iterator.remove();
             }
         }
@@ -585,8 +609,9 @@ public class Player extends CreeperEntity {
             aggresiveRoomNpcs.forEach(npc -> {
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
                 gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
-                setIsActiveAlertNpcStatus();
+                setIsActiveAlertNpcStatus(npc);
                 scheduledExecutor.schedule(() -> {
+                    removeActiveAlertStatus(npc);
                     if (!getCurrentRoom().getRoomId().equals(originalRoom.getRoomId())) {
                         return;
                     }
