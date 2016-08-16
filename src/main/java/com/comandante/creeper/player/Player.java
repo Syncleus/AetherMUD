@@ -368,8 +368,12 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public boolean isAlertedNpcPresentInCurrentRoom() {
+    public boolean areAnyAlertedNpcsInCurrentRoom() {
         return currentRoom.getPresentNpcs().stream().filter(this::isActiveAlertNpcStatus).count() > 0;
+    }
+
+    public boolean areInTheSameRoom(Npc npc) {
+        return currentRoom.getPresentNpcs().contains(npc);
     }
 
     public void setIsActiveAlertNpcStatus(Npc npc) {
@@ -605,14 +609,13 @@ public class Player extends CreeperEntity {
                     })
                     .collect(Collectors.toList());
 
-            final Room originalRoom = currentRoom;
             aggresiveRoomNpcs.forEach(npc -> {
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
                 gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
                 setIsActiveAlertNpcStatus(npc);
                 scheduledExecutor.schedule(() -> {
                     removeActiveAlertStatus(npc);
-                    if (!getCurrentRoom().getRoomId().equals(originalRoom.getRoomId())) {
+                    if (!areInTheSameRoom(npc)) {
                         return;
                     }
                     if (!npc.getIsAlive().get()) {

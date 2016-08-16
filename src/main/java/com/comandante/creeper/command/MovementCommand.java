@@ -44,7 +44,7 @@ public class MovementCommand extends Command {
                 MovementCommand.this.write("You are dead and can not move.");
                 return;
             }
-            if (player.isAlertedNpcPresentInCurrentRoom()) {
+            if (player.areAnyAlertedNpcsInCurrentRoom()) {
                 MovementCommand.this.write("You are unable to progress, but can return to where you came from by typing \"back\".");
                 return;
             }

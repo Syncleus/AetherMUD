@@ -726,7 +726,7 @@ public class GameManager {
                 sb.append(Color.GREEN + "F" + Color.RESET);
             }
         }
-        if (player.isAlertedNpcPresentInCurrentRoom()) {
+        if (player.areAnyAlertedNpcsInCurrentRoom()) {
             sb.append(" ");
             sb.append(Color.RED + "ALERT" + Color.RESET);
         }
