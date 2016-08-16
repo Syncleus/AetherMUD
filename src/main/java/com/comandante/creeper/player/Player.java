@@ -590,6 +590,12 @@ public class Player extends CreeperEntity {
                     if (!getCurrentRoom().getRoomId().equals(originalRoom.getRoomId())) {
                         return;
                     }
+                    if (!npc.getIsAlive().get()) {
+                        return;
+                    }
+                    if (isActive(CoolDownType.DEATH)) {
+                        return;
+                    }
                     gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has " + Color.BOLD_ON + Color.RED + "ANGERED" + Color.RESET + " a " + npc.getColorName() + "\r\n");
                     addActiveFight(npc);
                 }, 5, TimeUnit.SECONDS);
