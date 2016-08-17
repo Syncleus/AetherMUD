@@ -3,6 +3,7 @@ package com.comandante.creeper.player;
 
 import com.codahale.metrics.Meter;
 import com.comandante.creeper.CreeperUtils;
+import com.comandante.creeper.Items.Effect;
 import com.comandante.creeper.Items.ForageManager;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
@@ -14,7 +15,6 @@ import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.npc.Temperament;
 import com.comandante.creeper.server.Color;
-import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;

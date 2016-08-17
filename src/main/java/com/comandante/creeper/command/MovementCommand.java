@@ -1,9 +1,9 @@
 package com.comandante.creeper.command;
 
+import com.comandante.creeper.Items.Effect;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.PlayerMovement;
-import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.world.RemoteExit;
 import com.comandante.creeper.world.Room;
 import com.google.common.base.Optional;

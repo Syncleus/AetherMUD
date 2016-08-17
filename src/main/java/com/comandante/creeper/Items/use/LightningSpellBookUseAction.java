@@ -1,11 +1,11 @@
 package com.comandante.creeper.Items.use;
 
+import com.comandante.creeper.Items.Effect;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.spells.LightningSpellRunnable;
 
 import java.util.Set;

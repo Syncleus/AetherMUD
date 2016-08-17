@@ -19,8 +19,6 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.server.GossipCache;
 import com.comandante.creeper.server.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
-import com.comandante.creeper.spells.Effect;
-import com.comandante.creeper.spells.EffectsManager;
 import com.comandante.creeper.spells.Spells;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;

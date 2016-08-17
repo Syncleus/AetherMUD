@@ -240,6 +240,9 @@ public class NpcTestHarness {
         System.out.println("Level 1 player with 7 intelligence vs 4 intelligence npc: " + lightningSpellDamage);
 
         lightningSpellDamage = getLightningSpellDamage(5, 11, 6);
+        System.out.println("Level 1 player with 11 intelligence vs 6 intelligence npc: " + lightningSpellDamage);
+
+        lightningSpellDamage = getLightningSpellDamage(5, 11, 6);
         System.out.println("Level 5 player with 11 intelligence vs 6 intelligence npc: " + lightningSpellDamage);
         lightningSpellDamage = getLightningSpellDamage(7, 14, 8);
         System.out.println("Level 7 player with 14 intelligence vs 8 intelligence npc: " + lightningSpellDamage);
