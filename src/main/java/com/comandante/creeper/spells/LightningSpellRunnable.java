@@ -67,7 +67,7 @@ public class LightningSpellRunnable implements SpellRunnable {
     }
 
     private String getDamageMessage(long amt, String name) {
-        return Color.BOLD_ON + Color.YELLOW + "[spell] " + Color.RESET'' + Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + getAttackMessage() + Color.BOLD_ON + Color.RED + " >>>> " + Color.RESET + name;
+        return Color.BOLD_ON + Color.YELLOW + "[spell] " + Color.RESET + Color.YELLOW + "+" + amt + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE " + Color.RESET + getAttackMessage() + Color.BOLD_ON + Color.RED + " >>>> " + Color.RESET + name;
     }
 
     private void announceSpellCastToCurrentRoom(Player player, String name) {
