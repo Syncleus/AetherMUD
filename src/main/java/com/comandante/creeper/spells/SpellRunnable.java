@@ -7,7 +7,7 @@ import com.comandante.creeper.player.Player;
 
 import java.util.Optional;
 
-public interface ExecuteSpellRunnable {
+public interface SpellRunnable {
     void run(Player sourcePlayer, Optional<Npc> destinationNpc, Optional<Player> destinationPlayer, GameManager gameManager);
     String getName();
 }

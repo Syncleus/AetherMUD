@@ -10,17 +10,55 @@ import com.comandante.creeper.server.Color;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
+import org.apache.log4j.Logger;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Set;
 
 public class EffectsManager {
 
     private final GameManager gameManager;
 
+    private static final Logger log = Logger.getLogger(EffectsManager.class);
+
     public EffectsManager(GameManager gameManager) {
         this.gameManager = gameManager;
+    }
+
+    public void applyEffectsToNpcs(Player player, Set<Npc> npcs, Set<Effect> effects) {
+        effects.forEach(effect ->
+                npcs.forEach(npc -> {
+                    Effect nEffect = new Effect(effect);
+                    nEffect.setPlayerId(player.getPlayerId());
+                    if (effect.getDurationStats().getCurrentHealth() < 0) {
+                        log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
+                        return;
+                    }
+                    StatsHelper.combineStats(npc.getStats(), effect.getDurationStats());
+                    npc.addEffect(nEffect);
+                }));
+    }
+
+    public void applyEffectsToPlayer(Player destinationPlayer, Player player, Set<Effect> effects) {
+        for (Effect effect : effects) {
+            Effect nEffect = new Effect(effect);
+            nEffect.setPlayerId(player.getPlayerId());
+            gameManager.getEntityManager().saveEffect(nEffect);
+            if (effect.getDurationStats().getCurrentHealth() < 0) {
+                log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
+                continue;
+            }
+            String effectApplyMessage;
+            if (destinationPlayer.addEffect(effect.getEntityId())) {
+                effectApplyMessage = Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + nEffect.getEffectName() + " applied!" + "\r\n";
+                gameManager.getChannelUtils().write(destinationPlayer.getPlayerId(), effectApplyMessage);
+            } else {
+                effectApplyMessage = Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + Color.RED + "Unable to apply " + nEffect.getEffectName() + "!" + "\r\n";
+                gameManager.getChannelUtils().write(player.getPlayerId(), effectApplyMessage);
+            }
+        }
     }
 
     public void application(Effect effect, Player player) {

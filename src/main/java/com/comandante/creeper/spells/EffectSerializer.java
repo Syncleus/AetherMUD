@@ -1,4 +1,4 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.spells;
 
 import com.comandante.creeper.spells.Effect;
 import com.google.gson.GsonBuilder;

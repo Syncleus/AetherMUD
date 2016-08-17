@@ -101,7 +101,5 @@ public class ConfigureNpc {
         gameManager.getForageManager().addForageToArea(Area.NORTH3_ZONE, marijuanaForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, marijuanaForageBuilder);
         gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE1_ZONE, marijuanaForageBuilder);
-
-        SpellTriggerRegistry.addSpell(new LightningSpell(gameManager));
     }
 }

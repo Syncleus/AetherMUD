@@ -6,7 +6,7 @@ import com.comandante.creeper.Items.ItemUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.Effect;
-import com.comandante.creeper.spells.LightningSpell;
+import com.comandante.creeper.spells.LightningSpellRunnable;
 
 import java.util.Set;
 
@@ -27,13 +27,13 @@ public class LightningSpellBookUseAction implements ItemUseAction {
 
     @Override
     public void executeAction(GameManager gameManager, Player player, Item item) {
-        if (player.getLearnedSpells().contains(LightningSpell.NAME)) {
-            gameManager.getChannelUtils().write(player.getPlayerId(), "You already know how to use " + LightningSpell.NAME);
+        if (player.getLearnedSpells().contains(LightningSpellRunnable.name)) {
+            gameManager.getChannelUtils().write(player.getPlayerId(), "You already know how to use " + LightningSpellRunnable.name);
             dontDelete = true;
             return;
         }
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " reads a leatherbound aging spell book and gains knowledge about lightning spells.");
-        player.addLearnedSpellByName(LightningSpell.NAME);
+        player.addLearnedSpellByName(LightningSpellRunnable.name);
     }
 
     @Override

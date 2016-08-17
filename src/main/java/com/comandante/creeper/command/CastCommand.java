@@ -5,12 +5,10 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.spells.ExecuteSpellRunnable;
+import com.comandante.creeper.spells.SpellRunnable;
 import com.comandante.creeper.spells.Spell;
 import com.comandante.creeper.spells.SpellTriggerRegistry;
-import com.comandante.creeper.spells.Spells;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -44,7 +42,7 @@ public class CastCommand extends Command {
                 return;
             }
             String desiredSpellName = originalMessageParts.get(1);
-            Optional<ExecuteSpellRunnable> spellRunnable = gameManager.getSpells().getSpellRunnable(desiredSpellName);
+            Optional<SpellRunnable> spellRunnable = gameManager.getSpells().getSpellRunnable(desiredSpellName);
             if (!spellRunnable.isPresent() || !player.doesHaveSpellLearned(spellRunnable.get().getName())) {
                 write("No spell found with the name: " + desiredSpellName + "\r\n");
                 return;
