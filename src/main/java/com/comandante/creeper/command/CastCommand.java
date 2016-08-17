@@ -6,8 +6,6 @@ import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.SpellRunnable;
-import com.comandante.creeper.spells.Spell;
-import com.comandante.creeper.spells.SpellTriggerRegistry;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
