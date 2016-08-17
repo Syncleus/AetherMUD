@@ -3,11 +3,11 @@ package com.comandante.creeper.bot.commands;
 import com.comandante.creeper.blackjack.BlackJack;
 import com.comandante.creeper.blackjack.Deck;
 import com.comandante.creeper.bot.BotCommandManager;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CardsCommand extends BotCommand {
 
@@ -24,9 +24,8 @@ public class CardsCommand extends BotCommand {
         Deck deck = new Deck();
         deck.shuffle();
         List<BlackJack.Card> cards = com.google.common.collect.Lists.newArrayList(deck.next(), deck.next(), deck.next(), deck.next(), deck.deal());
-        String asciiPlayingCardHand = BlackJack.getAsciiPlayingCardHand(cards);
-        List<String> resp = Lists.newArrayList();
-        resp.addAll(Lists.newArrayList(asciiPlayingCardHand.split("[\\r\\n]+")));
-        return resp;
+        return cards.stream()
+                .map(card -> card.type.textRepresentation + card.suit.textRepresentation + " / ")
+                .collect(Collectors.toList());
     }
 }
