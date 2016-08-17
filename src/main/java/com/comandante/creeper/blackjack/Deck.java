@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Deck implements Iterator<BlackJack.Card> {
 
-    enum Type {
+    public enum Type {
         ACE(1, "A"),
         KING(10, "K"),
         QUEEN(10, "Q"),
@@ -38,7 +38,7 @@ public class Deck implements Iterator<BlackJack.Card> {
         }
     }
 
-    enum Suit {
+    public enum Suit {
         SPADES("♠"),
         HEARTS("♥"),
         DIAMONDS("♦"),

@@ -34,6 +34,8 @@ public class PickUpCommand extends Command {
                             String playerName = player.getPlayerName();
                             gameManager.roomSay(currentRoom.getRoomId(), playerName + " picked up " + itemEntity.getItemName(), playerId);
                             return;
+                        } else {
+                            return;
                         }
                     }
                 }

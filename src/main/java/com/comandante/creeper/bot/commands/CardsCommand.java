@@ -1,5 +1,6 @@
 package com.comandante.creeper.bot.commands;
 
+import com.comandante.creeper.CreeperUtils;
 import com.comandante.creeper.blackjack.BlackJack;
 import com.comandante.creeper.blackjack.Deck;
 import com.comandante.creeper.bot.BotCommandManager;
@@ -24,9 +25,8 @@ public class CardsCommand extends BotCommand {
         Deck deck = new Deck();
         deck.shuffle();
         List<BlackJack.Card> cards = com.google.common.collect.Lists.newArrayList(deck.next(), deck.next(), deck.next(), deck.next(), deck.deal());
-        String asciiPlayingCardHand = BlackJack.getAsciiPlayingCardHand(cards);
-        List<String> resp = Lists.newArrayList();
-        resp.addAll(Lists.newArrayList(asciiPlayingCardHand.split("[\\r\\n]+")));
-        return resp;
+        StringBuilder sb = new StringBuilder();
+        cards.forEach(card -> sb.append(card.type.textRepresentation).append(card.suit.textRepresentation).append(" / "));
+        return Lists.newArrayList(CreeperUtils.replaceLast(sb.toString(), " / ", ""));
     }
 }

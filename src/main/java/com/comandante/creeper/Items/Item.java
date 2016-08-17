@@ -2,7 +2,6 @@ package com.comandante.creeper.Items;
 
 
 import com.comandante.creeper.player.Equipment;
-import com.comandante.creeper.spells.Effect;
 
 import java.io.Serializable;
 import java.util.List;

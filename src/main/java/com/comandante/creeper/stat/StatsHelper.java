@@ -5,6 +5,7 @@ public class StatsHelper {
     public static Stats getDifference(Stats modifiedStats, Stats origStats) {
         StatsBuilder statsBuilder = new StatsBuilder();
         statsBuilder.setAgile(modifiedStats.getAgile() - origStats.getAgile());
+        statsBuilder.setIntelligence(modifiedStats.getIntelligence() - origStats.getIntelligence());
         statsBuilder.setAim(modifiedStats.getAim() - origStats.getAim());
         statsBuilder.setArmorRating(modifiedStats.getArmorRating() - origStats.getArmorRating());
         statsBuilder.setCurrentHealth(modifiedStats.getCurrentHealth() - origStats.getCurrentHealth());
@@ -26,6 +27,7 @@ public class StatsHelper {
 
     public static void combineStats(Stats orig, Stats combine) {
         orig.setAgile(orig.getAgile() + combine.getAgile());
+        orig.setIntelligence(orig.getIntelligence() + combine.getIntelligence());
         orig.setAim(orig.getAim() + combine.getAim());
         orig.setArmorRating(orig.getArmorRating() + combine.getArmorRating());
         orig.setCurrentHealth(orig.getCurrentHealth() + combine.getCurrentHealth());
@@ -47,6 +49,7 @@ public class StatsHelper {
     public static void inverseStats(Stats stats) {
         stats.setAgile(-stats.getAgile());
         stats.setAim(-stats.getAim());
+        stats.setIntelligence(-stats.getIntelligence());
         stats.setArmorRating(-stats.getArmorRating());
         stats.setCurrentHealth(-stats.getCurrentHealth());
         stats.setMaxHealth(-stats.getMaxHealth());

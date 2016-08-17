@@ -2,7 +2,6 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.spells.Effect;
 
 import java.util.Set;
 

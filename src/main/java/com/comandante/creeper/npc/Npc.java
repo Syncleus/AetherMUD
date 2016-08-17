@@ -1,6 +1,7 @@
 package com.comandante.creeper.npc;
 
 
+import com.comandante.creeper.Items.Effect;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.Items.Rarity;
@@ -10,7 +11,6 @@ import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.*;
 import com.comandante.creeper.server.Color;
 import com.comandante.creeper.spawner.SpawnRule;
-import com.comandante.creeper.spells.Effect;
 import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.comandante.creeper.stat.StatsHelper;
@@ -112,7 +112,7 @@ public class Npc extends CreeperEntity {
                         processNpcStatChange(npcStatsChange);
                     }
                     if (!isActiveCooldown(CoolDownType.NPC_FIGHT) && !isActiveCooldown(CoolDownType.NPC_ROAM) && currentRoom != null) {
-                        if (getRandPercent(.1)) {
+                        if (getRandPercent(.01)) {
                             gameManager.getNpcMover().roam(getEntityId());
                         }
                     }
