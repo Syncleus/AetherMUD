@@ -19,7 +19,7 @@ import static com.comandante.creeper.server.Color.BOLD_ON;
 public class LightningSpellRunnable implements SpellRunnable {
 
     public final static String name = BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + " bolt";
-    public final static String description = "A powerful bolt of lightning.";
+    public final static String description = "A powerful bolt of lightning that leaves its victim with a burn effect.";
 
     private final static int manaCost = 60;
 
