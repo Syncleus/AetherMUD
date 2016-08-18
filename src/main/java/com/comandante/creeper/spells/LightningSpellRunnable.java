@@ -50,12 +50,21 @@ public class LightningSpellRunnable implements SpellRunnable {
 
     private void executeSpellAgainstNpc(Player player, Npc npc) {
         announceSpellCastToCurrentRoom(player, npc.getColorName());
-        long intelligence = player.getPlayerStatsWithEquipmentAndLevel().getIntelligence();
-        long power = (player.getLevel() * 1) + (3 * intelligence);
+        Stats stats = player.getPlayerStatsWithEquipmentAndLevel();
+        long power = (player.getLevel() * 1) + (3 * stats.getIntelligence());
         player.addActiveFight(npc);
-        long burnEffectPower = (long) ((player.getLevel() * .05) + (1 * intelligence));
-        gameManager.getEffectsManager().applyEffectsToNpcs(player, Sets.newHashSet(npc), Sets.newHashSet(getBurnEffect(burnEffectPower, 2).createEffect()));
+        gameManager.getEffectsManager().applyEffectsToNpcs(player, Sets.newHashSet(npc), Sets.newHashSet(selectEffect(stats).createEffect()));
         npc.doHealthDamage(player, Arrays.asList(getDamageMessage(power, npc.getColorName())), -power);
+    }
+
+    private EffectBuilder selectEffect(Stats stats) {
+        if (Math.random() < 0.1) {
+            long electrofiedPower = (long) ((stats.getLevel() * .3) + (5 * stats.getIntelligence()));
+            return getElectrofried(electrofiedPower, 4);
+        }
+        long burnEffectPower = (long) ((stats.getLevel() * .05) + (1 * stats.getIntelligence()));
+        return getBurnEffect(burnEffectPower, 2);
+
     }
 
     private void executeSpellAgainstPlayer(Player player, Player destinationPlayer) {
@@ -79,6 +88,17 @@ public class LightningSpellRunnable implements SpellRunnable {
                 .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning" + Color.RESET + " from the lightning strike!"))
                 .setEffectDescription(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
                 .setEffectName(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
+                .setDurationStats(new StatsBuilder().createStats())
+                .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-amt).createStats())
+                .setFrozenMovement(false)
+                .setLifeSpanTicks(ticksDuration);
+    }
+
+    private EffectBuilder getElectrofried(long amt, int ticksDuration) {
+        return new EffectBuilder()
+                .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.YELLOW + "ELECTROFIED" + Color.RESET + " from the lightning strike!"))
+                .setEffectDescription(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.YELLOW + " ELECTROFIED" + Color.RESET)
+                .setEffectName(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.YELLOW + " ELECTROFIED" + Color.RESET)
                 .setDurationStats(new StatsBuilder().createStats())
                 .setApplyStatsOnTick(new StatsBuilder().setCurrentHealth(-amt).createStats())
                 .setFrozenMovement(false)
