@@ -65,7 +65,6 @@ public class LightningSpellRunnable implements SpellRunnable {
         }
         long burnEffectPower = (long) ((stats.getLevel() * .05) + (1 * stats.getIntelligence()));
         return getBurnEffect(burnEffectPower, 2);
-
     }
 
     private void executeSpellAgainstPlayer(Player player, Player destinationPlayer) {

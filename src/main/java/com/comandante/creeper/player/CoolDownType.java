@@ -11,7 +11,8 @@ public enum CoolDownType {
     SPELL("",0),
     NPC_FIGHT("fight",30),
     NPC_ROAM("npc-roam", 1200),
-    NPC_ALERTED("npc-alerted", 30);
+    NPC_ALERTED("npc-alerted", 30),
+    PLAYER_RECALL("recall", 600);
     private final String name;
     private final int ticks;
 

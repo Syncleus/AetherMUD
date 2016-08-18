@@ -94,5 +94,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new SpellsCommand(gameManager));
         creeperCommandRegistry.addCommand(new LeaveCommand(gameManager));
         creeperCommandRegistry.addCommand(new BackCommand(gameManager));
+        creeperCommandRegistry.addCommand(new RecallCommand(gameManager));
     }
 }
