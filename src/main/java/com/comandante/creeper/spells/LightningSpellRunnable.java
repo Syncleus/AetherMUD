@@ -7,6 +7,7 @@ import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.Color;
+import com.comandante.creeper.stat.Stats;
 import com.comandante.creeper.stat.StatsBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
