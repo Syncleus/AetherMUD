@@ -27,6 +27,7 @@ public class CardsCommand extends Command {
             deck.shuffle();
             List<BlackJack.Card> cards = Lists.newArrayList(deck.next(), deck.next(), deck.next(), deck.next(), deck.deal());
             String asciiPlayingCardHand = BlackJack.getAsciiPlayingCardHand(cards);
+
             write(asciiPlayingCardHand + "\r\n");
         });
     }

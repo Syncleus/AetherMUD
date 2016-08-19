@@ -3,14 +3,14 @@ package com.comandante.creeper.command;
 
 import com.comandante.creeper.bot.commands.BotCommand;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.Player;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.comandante.creeper.server.Color.*;
 
@@ -57,7 +57,7 @@ public class GossipCommand extends Command {
         ArrayList<String> originalMessageParts = Lists.newArrayList(Arrays.asList(cmd.split("!!")));
         originalMessageParts.remove(0);
         final String msg = Joiner.on(" ").join(originalMessageParts);
-        BotCommand command = gameManager.getBotCommandFactory().getCommand(msg);
+        BotCommand command = gameManager.getBotCommandFactory().getCommand(null, msg);
         if (command != null) {
             List<String> process = command.process();
             StringBuilder sb = new StringBuilder();
