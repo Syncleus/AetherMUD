@@ -8,6 +8,7 @@ import com.comandante.creeper.Items.ForageManager;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
@@ -52,7 +53,6 @@ public class Player extends CreeperEntity {
     private final Set<Npc> alertedNpcs = Sets.newHashSet();
     private Room previousRoom;
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
-
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -220,7 +220,7 @@ public class Player extends CreeperEntity {
         gameManager.getChannelUtils().write(getPlayerId(), msg);
     }
 
-    public long getAvailableMana(){
+    public long getAvailableMana() {
         return getPlayerStatsWithEquipmentAndLevel().getCurrentMana();
     }
 
@@ -920,6 +920,20 @@ public class Player extends CreeperEntity {
                 }
             }
             return newStats;
+        }
+    }
+
+    public PlayerClass getPlayerClass() {
+        synchronized (interner.intern(playerId)) {
+            return getPlayerMetadata().getPlayerClass();
+        }
+    }
+
+    public void setPlayerClass(PlayerClass playerClass) {
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.setPlayerClass(playerClass);
+            savePlayerMetadata(playerMetadata);
         }
     }
 
