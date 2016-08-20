@@ -877,8 +877,12 @@ public class Player extends CreeperEntity {
         Stats origStats = gameManager.getStatsModifierFactory().getStatsModifier(this);
         Stats modifiedStats = getPlayerStatsWithEquipmentAndLevel();
         Stats diffStats = StatsHelper.getDifference(modifiedStats, origStats);
-        sb.append(Color.MAGENTA + "-+=[ " + Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET).append("\r\n");
-        sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append("\r\n");
+        sb.append(Color.MAGENTA)
+                .append("-+=[ ").append(Color.RESET).append(playerName).append(Color.MAGENTA + " ]=+- " + Color.RESET)
+                .append("\r\n");
+        sb.append("Level ").append(Levels.getLevel(origStats.getExperience())).append(" ")
+                .append(Color.YELLOW).append("[").append(Color.RESET).append(CreeperUtils.capitalize(getPlayerClass().getIdentifier())).append(Color.YELLOW).append("]").append(Color.RESET)
+                .append("\r\n");
         sb.append("Foraging Level ").append(ForageManager.getLevel(modifiedStats.getForaging())).append("\r\n");
         sb.append(Color.MAGENTA + "Equip--------------------------------" + Color.RESET).append("\r\n");
         sb.append(buildEquipmentString()).append("\r\n");
@@ -925,7 +929,11 @@ public class Player extends CreeperEntity {
 
     public PlayerClass getPlayerClass() {
         synchronized (interner.intern(playerId)) {
-            return getPlayerMetadata().getPlayerClass();
+            PlayerClass playerClass = getPlayerMetadata().getPlayerClass();
+            if (playerClass == null) {
+                return PlayerClass.BASIC;
+            }
+            return playerClass;
         }
     }
 

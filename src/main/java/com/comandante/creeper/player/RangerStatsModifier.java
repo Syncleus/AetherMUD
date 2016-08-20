@@ -7,23 +7,23 @@ import com.comandante.creeper.stat.StatsBuilder;
 import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;
 
-public class BasicPlayerLevelStatsModifier implements StatsModifier {
+public class RangerStatsModifier implements StatsModifier {
 
     private final GameManager gameManager;
 
-    public BasicPlayerLevelStatsModifier(GameManager gameManager) {
+    public RangerStatsModifier(GameManager gameManager) {
         this.gameManager = gameManager;
     }
 
-    private static double MELE_CONSTANT_MODIFIER = .02;
-    private static double WILLPOWER_CONSTANT_MODIFIER = .02;
-    private static double INTELLIGENCE_CONSTANT_MODIFIER = .02;
-    private static double AGILE_CONSTANT_MODIFIER = .02;
-    private static double AIM_CONSTANT_MODIFIER = .02;
-    private static double HEALTH_CONSTANT_MODIFIER = 2;
-    private static double ARMOR_CONSTANT_MODIFIER = .02;
-    private static double STRENGTH_CONSTANT_MODIFIER = .02;
-    private static double MANA_CONSTANT_MODIFIER = 1;
+    private static double MELE_CONSTANT_MODIFIER = .3;
+    private static double WILLPOWER_CONSTANT_MODIFIER = .5;
+    private static double INTELLIGENCE_CONSTANT_MODIFIER = .8;
+    private static double AGILE_CONSTANT_MODIFIER = .3;
+    private static double AIM_CONSTANT_MODIFIER = .5;
+    private static double HEALTH_CONSTANT_MODIFIER = 3;
+    private static double ARMOR_CONSTANT_MODIFIER = .2;
+    private static double STRENGTH_CONSTANT_MODIFIER = .3;
+    private static double MANA_CONSTANT_MODIFIER = 4;
 
     public static long getMeleForLevel(long baseStat, long level) {
         double v = (level) * sqrt(pow(level, MELE_CONSTANT_MODIFIER));

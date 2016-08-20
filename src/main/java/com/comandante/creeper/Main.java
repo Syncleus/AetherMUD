@@ -107,6 +107,9 @@ public class Main {
         startUpMessage("Configure Locker commands");
         ConfigureCommands.configureLockerCommands(gameManager);
 
+        startUpMessage("Configure Player Class Selection commands");
+        ConfigureCommands.configurePlayerClassSelector(gameManager);
+
         startUpMessage("Configuring npcs and merchants");
         ConfigureNpc.configure(entityManager, gameManager);
         CreeperServer creeperServer = new CreeperServer(creeperConfiguration.telnetPort);

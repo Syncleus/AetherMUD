@@ -13,7 +13,25 @@ public class StatsModifierFactory {
     }
 
     public Stats getStatsModifier(Player player) {
-        BasicPlayerLevelStatsModifier basicPlayerLevelStatsModifier = new BasicPlayerLevelStatsModifier(gameManager);
-        return basicPlayerLevelStatsModifier.modify(player);
+        StatsModifier modifer = new BasicPlayerLevelStatsModifier(gameManager);
+        switch (player.getPlayerClass()) {
+            case WARRIOR:
+                modifer = new WarriorStatsModifier(gameManager);
+                break;
+            case WIZARD:
+                modifer = new WizardStatsModifier(gameManager);
+                break;
+            case RANGER:
+                modifer = new RangerStatsModifier(gameManager);
+                break;
+            case SHAMAN:
+                modifer = new ShamanStatsModifier(gameManager);
+                break;
+            default:
+                modifer = new BasicPlayerLevelStatsModifier(gameManager);
+                break;
+
+        }
+        return modifer.modify(player);
     }
 }

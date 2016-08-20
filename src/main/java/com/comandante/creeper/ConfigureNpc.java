@@ -1,6 +1,8 @@
 package com.comandante.creeper;
 
-import com.comandante.creeper.Items.*;
+import com.comandante.creeper.Items.ForageBuilder;
+import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.*;
@@ -10,7 +12,6 @@ import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.spawner.SpawnRuleBuilder;
-import com.comandante.creeper.spells.*;
 import com.comandante.creeper.world.Area;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -25,11 +26,11 @@ public class ConfigureNpc {
     public static void configureAllNpcs(GameManager gameManager) throws IOException {
         EntityManager entityManager = gameManager.getEntityManager();
         List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
-        for (Npc npc: npcsFromFile) {
+        for (Npc npc : npcsFromFile) {
             Main.startUpMessage("Added " + npc.getName());
             entityManager.addEntity(npc);
             Set<SpawnRule> spawnRules = npc.getSpawnRules();
-            for (SpawnRule spawnRule: spawnRules) {
+            for (SpawnRule spawnRule : spawnRules) {
                 entityManager.addEntity(new NpcSpawner(npc, gameManager, spawnRule));
             }
         }
@@ -43,7 +44,7 @@ public class ConfigureNpc {
         ItemSpawner itemSpawner = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.NEWBIE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(100).setMaxPerRoom(5).setRandomPercent(40).createSpawnRule(), gameManager);
         ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
         ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
-         ItemSpawner itemSpawner5 = new ItemSpawner(ItemType.KEY, new SpawnRuleBuilder().setArea(Area.LOBBY).setSpawnIntervalTicks(600).setMaxInstances(1).setMaxPerRoom(1).setRandomPercent(5).createSpawnRule(), gameManager);
+        ItemSpawner itemSpawner5 = new ItemSpawner(ItemType.KEY, new SpawnRuleBuilder().setArea(Area.LOBBY).setSpawnIntervalTicks(600).setMaxInstances(1).setMaxPerRoom(1).setRandomPercent(5).createSpawnRule(), gameManager);
 
         entityManager.addEntity(itemSpawner);
         entityManager.addEntity(itemSpawner1);
@@ -57,10 +58,10 @@ public class ConfigureNpc {
 
         LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
         gameManager.getRoomManager().addMerchant(64, lloydBartender);
-        
+
         Map<Integer, MerchantItemForSale> nigelForSale = Maps.newLinkedHashMap();
         nigelForSale.put(1, new MerchantItemForSale(ItemType.SMALL_HEALTH_POTION, 6));
-        
+
         NigelBartender nigelBartender = new NigelBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), nigelForSale);
         gameManager.getRoomManager().addMerchant(377, nigelBartender);
 
@@ -86,6 +87,9 @@ public class ConfigureNpc {
         JimBanker jimBanker = new JimBanker(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(65, jimBanker);
         gameManager.getRoomManager().addMerchant(209, jimBanker);
+
+        OldWiseMan oldWiseMan = new OldWiseMan(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
+        gameManager.getRoomManager().addMerchant(2, oldWiseMan);
 
         LockerRoomGuy lockerRoomGuy = new LockerRoomGuy(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
         gameManager.getRoomManager().addMerchant(63, lockerRoomGuy);
