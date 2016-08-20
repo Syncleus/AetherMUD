@@ -9,6 +9,7 @@ import com.comandante.creeper.world.Room;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 import java.util.*;
@@ -30,11 +31,14 @@ public class MyListener extends ListenerAdapter {
         PlayerManager playerManager = gameManager.getPlayerManager();
 
         try {
+            if (!(event instanceof MessageEvent)) {
+                return;
+            }
             if (event.getMessage().startsWith("!!")) {
                 ArrayList<String> originalMessageParts = Lists.newArrayList(Arrays.asList(event.getMessage().split("!!")));
                 originalMessageParts.remove(0);
                 final String msg = Joiner.on(" ").join(originalMessageParts);
-                BotCommand command = gameManager.getBotCommandFactory().getCommand(msg);
+                BotCommand command = gameManager.getBotCommandFactory().getCommand((MessageEvent) event, msg);
                 List<String> response = command.process();
                 for (String line: response) {
                     gameManager.getIrcBotService().getBot().getUserChannelDao().getChannel(gameManager.getCreeperConfiguration().ircChannel).send().message(line);

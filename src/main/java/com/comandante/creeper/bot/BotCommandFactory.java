@@ -2,6 +2,7 @@ package com.comandante.creeper.bot;
 
 import com.comandante.creeper.bot.commands.*;
 import com.google.common.collect.Maps;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class BotCommandFactory {
         addCommand(new CardsCommand(botCommandManager));
     }
 
-    public BotCommand getCommand(String originalFullCmd) {
+    public BotCommand getCommand(MessageEvent event, String originalFullCmd) {
         List<String> originalMessageParts = new ArrayList<>(Arrays.asList(originalFullCmd.split(" ")));
         if (originalMessageParts.size() == 0) {
             return null;
@@ -31,6 +32,9 @@ public class BotCommandFactory {
         String rootCommand = originalMessageParts.get(0);
         BotCommand botCommand = botCommandRegistry.get(rootCommand);
         if (botCommand != null) {
+            if (event != null) {
+                botCommand.setMessageEvent(event);
+            }
             botCommand.setOriginalFullCommand(originalFullCmd);
         }
         return botCommand;

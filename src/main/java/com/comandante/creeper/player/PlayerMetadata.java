@@ -1,6 +1,7 @@
 package com.comandante.creeper.player;
 
 
+import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.stat.Stats;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;
@@ -26,8 +27,9 @@ public class PlayerMetadata implements Serializable {
     private Map<String, String> playerSettings;
     private String[] learnedSpells;
     private Map<String, Long> npcKillLog;
+    private PlayerClass playerClass;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells, Map<String, Long> npcKillLog) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells, Map<String, Long> npcKillLog, PlayerClass playerClass) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -38,6 +40,7 @@ public class PlayerMetadata implements Serializable {
         this.goldInBank = goldInBank;
         this.learnedSpells = learnedSpells;
         this.npcKillLog = npcKillLog;
+        this.playerClass = playerClass;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -71,6 +74,9 @@ public class PlayerMetadata implements Serializable {
         this.isMarkedForDelete = new Boolean(playerMetadata.isMarkedForDelete);
         if (playerMetadata.npcKillLog != null) {
             this.npcKillLog = new HashMap<>(playerMetadata.getNpcKillLog());
+        }
+        if (playerMetadata.playerClass != null) {
+            this.playerClass = playerMetadata.playerClass;
         }
     }
 
@@ -318,4 +324,13 @@ public class PlayerMetadata implements Serializable {
     public void deleteSetting(String key) {
         playerSettings.remove(key);
     }
+
+    public PlayerClass getPlayerClass() {
+        return playerClass;
+    }
+
+    public void setPlayerClass(PlayerClass playerClass) {
+        this.playerClass = playerClass;
+    }
 }
+

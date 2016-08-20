@@ -13,6 +13,7 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommandHandler;
 import com.comandante.creeper.merchant.lockers.LockerCommandHandler;
+import com.comandante.creeper.merchant.playerclass_selector.PlayerClassCommandHandler;
 import com.comandante.creeper.player.Player;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
@@ -43,6 +44,8 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
                 addLastHandler(e, new BankCommandHandler(gameManager, merchant));
             } else if (merchant.getMerchantType() == Merchant.MerchantType.LOCKER) {
                 addLastHandler(e, new LockerCommandHandler(gameManager, merchant));
+            } else if (merchant.getMerchantType() == Merchant.MerchantType.PLAYERCLASS_SELECTOR) {
+                addLastHandler(e, new PlayerClassCommandHandler(gameManager, merchant));
             } else {
                 addLastHandler(e, new MerchantCommandHandler(gameManager, merchant));
             }

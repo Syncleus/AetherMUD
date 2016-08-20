@@ -2,6 +2,8 @@ package com.comandante.creeper.stat;
 
 import java.io.Serializable;
 
+import static java.lang.StrictMath.sqrt;
+
 public class Stats implements Serializable {
     private long strength;
     private long intelligence;
@@ -227,4 +229,12 @@ public class Stats implements Serializable {
     public void setInventorySize(long inventorySize) {
         this.inventorySize = inventorySize;
     }
+
+    private static double CONSTANT_MODIFIER = 0.02;
+
+    public long getLevel() {
+        double v = CONSTANT_MODIFIER * sqrt(getExperience());
+        return (long) Math.floor(v);
+    }
+
 }

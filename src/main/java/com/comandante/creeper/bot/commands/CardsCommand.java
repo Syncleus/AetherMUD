@@ -26,6 +26,10 @@ public class CardsCommand extends BotCommand {
         deck.shuffle();
         List<BlackJack.Card> cards = com.google.common.collect.Lists.newArrayList(deck.next(), deck.next(), deck.next(), deck.next(), deck.deal());
         StringBuilder sb = new StringBuilder();
+        if (getMessageEvent() != null) {
+            String nickName = getMessageEvent().getUser().getNick();
+            sb.append(nickName).append(": ");
+        }
         cards.forEach(card -> sb.append(card.type.textRepresentation).append(card.suit.textRepresentation).append(" / "));
         return Lists.newArrayList(CreeperUtils.replaceLast(sb.toString(), " / ", ""));
     }

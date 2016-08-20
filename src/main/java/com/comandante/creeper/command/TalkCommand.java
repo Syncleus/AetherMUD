@@ -2,15 +2,16 @@ package com.comandante.creeper.command;
 
 
 import com.comandante.creeper.CreeperEntry;
+import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommand;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
+import com.comandante.creeper.merchant.playerclass_selector.PlayerClassCommand;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +49,16 @@ public class TalkCommand extends Command {
                         write(BankCommand.getPrompt());
                     } else if (merchant.getMerchantType() == Merchant.MerchantType.LOCKER) {
                         write(LockerCommand.getPrompt());
+                    } else if (merchant.getMerchantType() == Merchant.MerchantType.PLAYERCLASS_SELECTOR) {
+                        if (player.getLevel() < 4) {
+                            write("You must be at least level 4 before you can engage in conversation with the old wise man.");
+                            return;
+                        }
+                        if (!player.getPlayerClass().equals(PlayerClass.BASIC)) {
+                            write("You have nothing to discuss with the old wise man.  Perhaps presenting him with a gift would change his mind?");
+                            return;
+                        }
+                        write(PlayerClassCommand.getPrompt());
                     }
                     creeperSession.setGrabMerchant(Optional.of(
                             new CreeperEntry<>(merchant, talkCommand)));

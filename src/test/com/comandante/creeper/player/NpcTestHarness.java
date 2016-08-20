@@ -5,6 +5,7 @@ import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SessionManager;
@@ -90,12 +91,11 @@ public class NpcTestHarness {
     @Test
     public void testCombat() throws Exception {
         List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
-        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
+        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
         int totalIterations = 100;
         Player player;
         Npc npc = null;
-        Table t = new Table(8, BorderStyle.BLANKS,
-                ShownBorders.NONE);
+        Table t = new Table(8, BorderStyle.BLANKS, ShownBorders.NONE);
         t.setColumnWidth(0, 20, 20);
         t.setColumnWidth(1, 15, 20);
         t.setColumnWidth(2, 13, 16);
@@ -114,14 +114,14 @@ public class NpcTestHarness {
         t.addCell("XP Earned");
         t.addCell("Drops");
         Set<Item> equipment = Sets.newHashSet();
-        equipment.add(ItemType.BERSEKER_BOOTS.create());
-        equipment.add(ItemType.BERSERKER_BATON.create());
-        equipment.add(ItemType.BERSERKER_CHEST.create());
-        equipment.add(ItemType.BERSEKER_SHORTS.create());
-        equipment.add(ItemType.BERSERKER_BRACERS.create());
-        equipment.add(ItemType.BERSEKER_HELM.create());
+       // equipment.add(ItemType.BERSEKER_BOOTS.create());
+       // equipment.add(ItemType.BERSERKER_BATON.create());
+       // equipment.add(ItemType.BERSERKER_CHEST.create());
+       // equipment.add(ItemType.BERSEKER_SHORTS.create());
+       // equipment.add(ItemType.BERSERKER_BRACERS.create());
+       // equipment.add(ItemType.BERSEKER_HELM.create());
 
-        for (int level = 0; level < 10; level++) {
+        for (int level = 20; level < 30; level++) {
             int playerWins = 0;
             int npcWins = 0;
             int totalGold = 0;
@@ -212,6 +212,7 @@ public class NpcTestHarness {
         gameManager.placePlayerInLobby(player);
         gameManager.getPlayerManager().getSessionManager().putSession(creeperSession);
         player.addExperience(Levels.getXp(level));
+        player.setPlayerClass(PlayerClass.WARRIOR);
         return player;
     }
 
@@ -224,7 +225,7 @@ public class NpcTestHarness {
     }
 
     private void createUser(String username, String password) {
-        PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap());
+        PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC);
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
     }
 

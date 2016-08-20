@@ -3,6 +3,7 @@ package com.comandante.creeper.bot.commands;
 import com.comandante.creeper.bot.BotCommandManager;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -19,6 +20,8 @@ public abstract class BotCommand  {
     private final String helpDescription;
     public final BotCommandManager botCommandManager;
     public List<String> args;
+
+    private MessageEvent messageEvent;
 
     public BotCommand(BotCommandManager botCommandManager, Set<String> triggers, String helpUsage, String helpDescription) {
         this.botCommandManager = botCommandManager;
@@ -62,6 +65,14 @@ public abstract class BotCommand  {
         this.originalFullCommand = originalFullCommand;
     }
 
+    public MessageEvent getMessageEvent() {
+        return messageEvent;
+    }
+
+    public void setMessageEvent(MessageEvent messageEvent) {
+        this.messageEvent = messageEvent;
+    }
+
     public String getHelpUsage() {
         return helpUsage;
     }
@@ -70,5 +81,7 @@ public abstract class BotCommand  {
         return helpDescription;
     }
 
-
+    public BotCommandManager getBotCommandManager() {
+        return botCommandManager;
+    }
 }

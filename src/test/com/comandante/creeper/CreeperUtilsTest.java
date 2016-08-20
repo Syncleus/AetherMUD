@@ -1,6 +1,7 @@
 package com.comandante.creeper;
 
 import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.*;
@@ -20,7 +21,7 @@ public class CreeperUtilsTest {
         String[] strings = new String[2];
         strings[0] = "feet";
         strings[1] = "hand";
-        PlayerMetadata playerMetadata = new PlayerMetadata("usertest", "Testtest", Main.createPlayerId("usertest"), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), strings, 0, new String[0], Maps.newHashMap());
+        PlayerMetadata playerMetadata = new PlayerMetadata("usertest", "Testtest", Main.createPlayerId("usertest"), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), strings, 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC);
         GameManager gameManager = mock(GameManager.class);
         StatsModifierFactory statsModifierFactory = mock(StatsModifierFactory.class);
         when(statsModifierFactory.getStatsModifier(Matchers.any())).thenReturn(PlayerStats.DEFAULT_PLAYER.createStats());
