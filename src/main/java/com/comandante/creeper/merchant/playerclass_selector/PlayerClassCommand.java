@@ -91,7 +91,7 @@ public class PlayerClassCommand extends SimpleChannelUpstreamHandler {
         sb.append("Choose from one of the following classes.  Make your choice wisely, as you won't be able to change your mind.").append("\r\n").append("\r\n");
         Arrays.stream(PlayerClass.values()).forEach(playerClass -> sb.append(CreeperUtils.capitalize(playerClass.getIdentifier())).append(" - ").append(playerClass.getDescription()).append("\r\n"));
         sb.append("\r\n");
-        sb.append("[").append(Color.GREEN).append("Player Class Selection (Type \"leave\" to decide later)").append(Color.RESET).append("] ");
+        sb.append("[").append(Color.GREEN).append("Enter a desired player class or \"leave\" to choose later").append(Color.RESET).append("] ");
         return sb.toString();
     }
 

@@ -9,6 +9,7 @@ import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommand;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.comandante.creeper.merchant.playerclass_selector.PlayerClassCommand;
+import com.comandante.creeper.server.Color;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -50,12 +51,14 @@ public class TalkCommand extends Command {
                     } else if (merchant.getMerchantType() == Merchant.MerchantType.LOCKER) {
                         write(LockerCommand.getPrompt());
                     } else if (merchant.getMerchantType() == Merchant.MerchantType.PLAYERCLASS_SELECTOR) {
-                        if (player.getLevel() < 4) {
-                            write("You must be at least level 4 before you can engage in conversation with the old wise man.");
+                        if (player.getLevel() < 2) {
+                            write("Before you can pick a character class, you must be at least level 2.");
                             return;
                         }
                         if (!player.getPlayerClass().equals(PlayerClass.BASIC)) {
-                            write("You have nothing to discuss with the old wise man.  Perhaps presenting him with a gift would change his mind?");
+                            write("You've already selected a character class. " +
+                                    "\r\nIf you'd like to re-select you must present the old wise man with a " +
+                                    "" + Color.YELLOW + "golden" + Color.MAGENTA + " fortune cookie" + Color.RESET);
                             return;
                         }
                         write(PlayerClassCommand.getPrompt());

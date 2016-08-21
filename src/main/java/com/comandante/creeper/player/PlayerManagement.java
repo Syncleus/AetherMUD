@@ -2,6 +2,7 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.Color;
 import com.google.api.client.util.Lists;
@@ -10,10 +11,11 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PlayerManagement implements PlayerManagementMBean {
 
@@ -210,6 +212,25 @@ public class PlayerManagement implements PlayerManagementMBean {
         }
         final String msgWithoutColorCodes = item.getItemName().replaceAll("\u001B\\[[;\\d]*m", "");
         return msgWithoutColorCodes + " created.";
+    }
+
+    @Override
+    public void setPlayerClass(String playerClassName) {
+        List<PlayerClass> collect = Arrays.stream(PlayerClass.values()).filter(playerClass -> playerClass.getIdentifier().equalsIgnoreCase(playerClassName)).collect(Collectors.toList());
+        if (collect.size() == 0) {
+            return;
+        }
+        synchronized (findInterner().intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadata.setPlayerClass(collect.get(0));
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+
+    }
+
+    @Override
+    public String getPlayerClass() {
+        return gameManager.getPlayerManager().getPlayerMetadata(playerId).getPlayerClass().getIdentifier();
     }
 
     private Interner<String> findInterner() {

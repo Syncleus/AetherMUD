@@ -1,6 +1,5 @@
 package com.comandante.creeper.player;
 
-import java.util.List;
 import java.util.Map;
 
 public interface PlayerManagementMBean {
@@ -44,4 +43,8 @@ public interface PlayerManagementMBean {
     Map<String, String> getLockerInventory();
 
     public String createItemInInventory(int itemTypeId);
+
+    public void setPlayerClass(String playerClassName);
+
+    public String getPlayerClass();
 }

@@ -1,10 +1,15 @@
 package com.comandante.creeper.merchant.playerclass_selector;
 
+import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.CreeperUtils;
 import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.merchant.Merchant;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+
+import java.util.Optional;
 
 
 public class ChooseClassCommand extends PlayerClassCommand {
@@ -18,16 +23,13 @@ public class ChooseClassCommand extends PlayerClassCommand {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        try {
-            configure(e);
-            player.setPlayerClass(playerClass);
-            write("You are now and forever, a " + CreeperUtils.capitalize(playerClass.getIdentifier()) + "\r\n");
-            e.getChannel().getPipeline().remove("executed_command");
-            e.getChannel().getPipeline().remove("executed_playerclass_command");
-            String s = gameManager.buildPrompt(playerId);
-            write(s);
-        } finally {
-            super.messageReceived(ctx, e);
-        }
+        configure(e);
+        creeperSession.setGrabMerchant(Optional.<CreeperEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
+        player.setPlayerClass(playerClass);
+        write("You are now and forever, a " + CreeperUtils.capitalize(playerClass.getIdentifier()) + "\r\n");
+        e.getChannel().getPipeline().remove("executed_command");
+        e.getChannel().getPipeline().remove("executed_playerclass_command");
+        String s = gameManager.buildPrompt(playerId);
+        write(s);
     }
 }
