@@ -2,8 +2,8 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.CreeperConfiguration;
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.EntityManager;
@@ -16,10 +16,10 @@ import com.comandante.creeper.server.player_communication.ChannelCommunicationUt
 import com.comandante.creeper.stats.DefaultStats;
 import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.stats.experience.Experience;
-import com.comandante.creeper.storage.NpcExporter;
+import com.comandante.creeper.storage.NpcPersistence;
+import com.comandante.creeper.storage.WorldPersistence;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
-import com.comandante.creeper.world.WorldExporter;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.configuration.MapConfiguration;
@@ -65,7 +65,7 @@ public class NpcTestHarness {
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
         EntityManager entityManager = new EntityManager(roomManager, playerManager, db);
         GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
-        WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
+        WorldPersistence worldExporter = new WorldPersistence(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.buildTestworld();
         ConfigureCommands.configure(gameManager);
         this.entityManager = entityManager;
@@ -82,7 +82,7 @@ public class NpcTestHarness {
         String username = UUID.randomUUID().toString();
         Player player = createRandomPlayer(username, 0);
         equipArmor(player, equipment);
-        List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = NpcPersistence.getNpcsFromFile(gameManager);
         Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
         Npc npc = new NpcBuilder(treeBerseker).createNpc();
         gameManager.getEntityManager().addEntity(npc);
@@ -93,7 +93,7 @@ public class NpcTestHarness {
 
     @Test
     public void testCombat() throws Exception {
-        List<Npc> npcsFromFile = NpcExporter.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = NpcPersistence.getNpcsFromFile(gameManager);
         Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
         int totalIterations = 100;
         Player player;

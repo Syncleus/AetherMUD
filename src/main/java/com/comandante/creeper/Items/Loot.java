@@ -1,4 +1,4 @@
-package com.comandante.creeper.items;
+package com.comandante.creeper.Items;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

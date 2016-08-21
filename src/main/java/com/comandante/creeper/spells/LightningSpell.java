@@ -1,6 +1,6 @@
 package com.comandante.creeper.spells;
 
-import com.comandante.creeper.items.EffectBuilder;
+import com.comandante.creeper.Items.EffectBuilder;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDown;

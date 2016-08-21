@@ -1,8 +1,12 @@
-package com.comandante.creeper.world;
+package com.comandante.creeper.storage;
 
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
+import com.comandante.creeper.world.FloorManager;
+import com.comandante.creeper.world.MapMatrix;
+import com.comandante.creeper.world.MapsManager;
+import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.model.*;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
@@ -15,7 +19,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Function;
 
-public class WorldExporter {
+public class WorldPersistence {
 
     private final static String WORLD_DIR = "world/";
 
@@ -25,7 +29,7 @@ public class WorldExporter {
     private final EntityManager entityManager;
     private final GameManager gameManager;
 
-    public WorldExporter(RoomManager roomManager, MapsManager mapsManager, FloorManager floorManager, EntityManager entityManager, GameManager gameManager) {
+    public WorldPersistence(RoomManager roomManager, MapsManager mapsManager, FloorManager floorManager, EntityManager entityManager, GameManager gameManager) {
         this.roomManager = roomManager;
         this.mapsManager = mapsManager;
         this.floorManager = floorManager;

@@ -1,6 +1,5 @@
-package com.comandante.creeper.storage;
+package com.comandante.creeper.player;
 
-import com.comandante.creeper.player.PlayerMetadata;
 import com.google.gson.GsonBuilder;
 import org.mapdb.Serializer;
 

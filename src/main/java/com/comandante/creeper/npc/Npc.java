@@ -1,14 +1,16 @@
 package com.comandante.creeper.npc;
 
 
-import com.comandante.creeper.items.Effect;
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.Loot;
-import com.comandante.creeper.items.Rarity;
+import com.comandante.creeper.Items.Effect;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.Loot;
+import com.comandante.creeper.Items.Rarity;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
-import com.comandante.creeper.player.*;
+import com.comandante.creeper.player.CoolDown;
+import com.comandante.creeper.player.CoolDownType;
+import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.player_communication.Color;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.stats.Levels;

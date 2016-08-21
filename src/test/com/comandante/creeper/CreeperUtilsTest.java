@@ -1,10 +1,13 @@
 package com.comandante.creeper;
 
-import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.*;
+import com.comandante.creeper.player.Player;
+import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.stats.DefaultStats;
 import com.comandante.creeper.stats.modifier.StatsModifierFactory;
 import com.google.common.collect.Lists;

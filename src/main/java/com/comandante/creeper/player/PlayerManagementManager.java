@@ -1,8 +1,6 @@
-package com.comandante.creeper.player.jmx;
+package com.comandante.creeper.player;
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.PlayerJMXManagement;
-import com.comandante.creeper.player.PlayerMetadata;
 import org.apache.log4j.Logger;
 
 import javax.management.*;
@@ -25,7 +23,7 @@ public class PlayerManagementManager {
         for (Map.Entry<String, PlayerMetadata> entry : gameManager.getPlayerManager().getPlayerMetadataStore().entrySet()) {
             String playerId = entry.getKey();
             PlayerMetadata playerMetadata = entry.getValue();
-            PlayerJMXManagement playerJMXManagement = new PlayerJMXManagement(gameManager, playerId);
+            PlayerManagement playerJMXManagement = new PlayerManagement(gameManager, playerId);
             mbs.registerMBean(playerJMXManagement, new ObjectName("CreeperManagement:00=Players,name=" + playerMetadata.getPlayerName()));
         }
     }

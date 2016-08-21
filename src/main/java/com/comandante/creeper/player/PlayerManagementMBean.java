@@ -1,4 +1,4 @@
-package com.comandante.creeper.player.jmx;
+package com.comandante.creeper.player;
 
 import java.util.Map;
 

@@ -8,13 +8,13 @@ import com.codahale.metrics.graphite.PickledGraphite;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SessionManager;
-import com.comandante.creeper.player.jmx.PlayerManagementManager;
+import com.comandante.creeper.player.PlayerManagementManager;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.server.player_communication.ChannelUtils;
 import com.comandante.creeper.server.telnet.CreeperServer;
+import com.comandante.creeper.storage.WorldPersistence;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
-import com.comandante.creeper.world.WorldExporter;
 import com.google.common.io.Files;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.*;
@@ -90,7 +90,7 @@ public class Main {
         GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
 
         startUpMessage("Reading world from disk.");
-        WorldExporter worldExporter = new WorldExporter(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
+        WorldPersistence worldExporter = new WorldPersistence(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.readWorldFromDisk();
 
         startUpMessage("Creating and registering Player Management MBeans.");

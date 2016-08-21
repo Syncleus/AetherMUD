@@ -1,8 +1,8 @@
-package com.comandante.creeper.items;
+package com.comandante.creeper.Items;
 
 
-import com.comandante.creeper.items.use.DefaultApplyStatsAction;
-import com.comandante.creeper.items.use.LightningSpellBookUseAction;
+import com.comandante.creeper.Items.use.DefaultApplyStatsAction;
+import com.comandante.creeper.Items.use.LightningSpellBookUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.stats.Stats;

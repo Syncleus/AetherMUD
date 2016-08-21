@@ -1,10 +1,10 @@
 package com.comandante.creeper.spawner;
 
 import com.codahale.metrics.MetricRegistry;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.entity.CreeperEntity;
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.world.model.Area;
 import com.comandante.creeper.world.model.Room;

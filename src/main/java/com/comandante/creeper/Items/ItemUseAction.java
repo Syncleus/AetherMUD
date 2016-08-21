@@ -1,4 +1,4 @@
-package com.comandante.creeper.items;
+package com.comandante.creeper.Items;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;

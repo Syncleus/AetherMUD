@@ -1,4 +1,4 @@
-package com.comandante.creeper.items;
+package com.comandante.creeper.Items;
 
 public class ForageBuilder {
     private ItemType itemType;

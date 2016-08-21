@@ -1,7 +1,7 @@
-package com.comandante.creeper.items;
+package com.comandante.creeper.Items;
 
-import com.comandante.creeper.server.player_communication.Color;
 import com.comandante.creeper.TimeTracker;
+import com.comandante.creeper.server.player_communication.Color;
 import com.google.common.collect.Sets;
 
 import java.util.Arrays;

@@ -1,6 +1,6 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.items.Loot;
+import com.comandante.creeper.Items.Loot;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 

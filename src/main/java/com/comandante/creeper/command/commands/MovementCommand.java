@@ -1,6 +1,6 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.items.Effect;
+import com.comandante.creeper.Items.Effect;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.PlayerMovement;

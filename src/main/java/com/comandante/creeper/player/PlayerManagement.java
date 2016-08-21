@@ -1,13 +1,9 @@
 package com.comandante.creeper.player;
 
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMetadata;
-import com.comandante.creeper.player.PlayerRole;
-import com.comandante.creeper.player.jmx.PlayerManagementMBean;
 import com.comandante.creeper.server.player_communication.Color;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;
@@ -21,12 +17,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class PlayerJMXManagement implements PlayerManagementMBean {
+public class PlayerManagement implements PlayerManagementMBean {
 
     private final GameManager gameManager;
     private final String playerId;
 
-    public PlayerJMXManagement(GameManager gameManager, String playerId) {
+    public PlayerManagement(GameManager gameManager, String playerId) {
         this.gameManager = gameManager;
         this.playerId = playerId;
     }

@@ -1,9 +1,9 @@
-package com.comandante.creeper.items.use;
+package com.comandante.creeper.Items.use;
 
-import com.comandante.creeper.items.Effect;
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
-import com.comandante.creeper.items.ItemUseAction;
+import com.comandante.creeper.Items.Effect;
+import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.Items.ItemUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.LightningSpell;

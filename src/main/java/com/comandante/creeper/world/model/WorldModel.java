@@ -1,6 +1,4 @@
-package com.comandante.creeper.world;
-
-import com.comandante.creeper.world.model.FloorModel;
+package com.comandante.creeper.world.model;
 
 import java.util.Set;
 

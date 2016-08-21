@@ -5,7 +5,6 @@ import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcAdapter;
-import com.comandante.creeper.world.WorldModel;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.gson.GsonBuilder;
@@ -14,10 +13,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
-public class NpcExporter {
+public class NpcPersistence {
 
     public static List<Npc> getNpcsFromFile(GameManager gameManager) throws FileNotFoundException {
         final GsonBuilder gsonBuilder = new GsonBuilder();

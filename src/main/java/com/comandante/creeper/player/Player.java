@@ -3,7 +3,7 @@ package com.comandante.creeper.player;
 
 import com.codahale.metrics.Meter;
 import com.comandante.creeper.CreeperUtils;
-import com.comandante.creeper.items.*;
+import com.comandante.creeper.Items.*;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.CreeperEntity;
