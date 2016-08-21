@@ -1,8 +1,8 @@
 package com.comandante.creeper.command.commands.admin;
 
-import com.comandante.creeper.ConfigureNpc;
 import com.comandante.creeper.command.commands.Command;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.configuration.ConfigureNpc;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;

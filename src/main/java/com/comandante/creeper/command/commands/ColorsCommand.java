@@ -1,7 +1,7 @@
 package com.comandante.creeper.command.commands;
 
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;

@@ -1,6 +1,6 @@
 package com.comandante.creeper.Items;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChange;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;

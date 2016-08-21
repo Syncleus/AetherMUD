@@ -3,7 +3,7 @@ package com.comandante.creeper.command.commands.admin;
 
 import com.comandante.creeper.Items.Effect;
 import com.comandante.creeper.command.commands.Command;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMovement;

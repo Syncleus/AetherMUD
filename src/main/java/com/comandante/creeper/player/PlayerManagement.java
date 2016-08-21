@@ -2,8 +2,7 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.classes.PlayerClass;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;

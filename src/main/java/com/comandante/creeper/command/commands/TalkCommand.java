@@ -1,14 +1,14 @@
 package com.comandante.creeper.command.commands;
 
 
-import com.comandante.creeper.CreeperEntry;
-import com.comandante.creeper.classes.PlayerClass;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.common.CreeperEntry;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommand;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.comandante.creeper.merchant.playerclass_selector.PlayerClassCommand;
+import com.comandante.creeper.player.PlayerClass;
 import com.comandante.creeper.server.player_communication.Color;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;

@@ -1,13 +1,16 @@
 package com.comandante.creeper.command.commands.admin;
 
 import com.comandante.creeper.command.commands.Command;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class NotablesCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("notables");

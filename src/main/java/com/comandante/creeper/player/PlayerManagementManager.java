@@ -1,6 +1,6 @@
 package com.comandante.creeper.player;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import org.apache.log4j.Logger;
 
 import javax.management.*;

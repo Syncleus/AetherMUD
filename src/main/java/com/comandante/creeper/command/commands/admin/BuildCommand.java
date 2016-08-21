@@ -1,10 +1,10 @@
 package com.comandante.creeper.command.commands.admin;
 
 import com.comandante.creeper.command.commands.Command;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.player.PlayerRole;
-import com.comandante.creeper.storage.WorldPersistence;
+import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.MapMatrix;
 import com.comandante.creeper.world.model.*;
 import com.google.common.collect.Lists;
@@ -207,7 +207,7 @@ public class BuildCommand extends Command {
 
     private void addNewRoomAndFloorAndMovePlayer(Room newRoom, FloorModel newFloorModel, Optional<RemoteExit> returnRemoteExit) {
         entityManager.addEntity(newRoom);
-        Set<RoomModel> roomModels = Sets.newHashSet(newRoom).stream().map(WorldPersistence.buildRoomModelsFromRooms()).collect(Collectors.toSet());
+        Set<RoomModel> roomModels = Sets.newHashSet(newRoom).stream().map(WorldStorage.buildRoomModelsFromRooms()).collect(Collectors.toSet());
         newFloorModel.setRoomModels(roomModels);
         floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
         MapMatrix matrixFromCsv = MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv());

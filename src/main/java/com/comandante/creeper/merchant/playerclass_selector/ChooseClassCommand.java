@@ -1,10 +1,10 @@
 package com.comandante.creeper.merchant.playerclass_selector;
 
-import com.comandante.creeper.CreeperEntry;
-import com.comandante.creeper.CreeperUtils;
-import com.comandante.creeper.classes.PlayerClass;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.common.CreeperEntry;
+import com.comandante.creeper.common.CreeperUtils;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.merchant.Merchant;
+import com.comandante.creeper.player.PlayerClass;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;

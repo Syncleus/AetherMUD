@@ -3,8 +3,8 @@ package com.comandante.creeper.spawner;
 
 import com.codahale.metrics.MetricRegistry;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.CreeperEntity;
-import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.player.Player;

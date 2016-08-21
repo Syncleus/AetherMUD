@@ -1,13 +1,16 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.PlayerSettings;
 import com.google.api.client.util.Lists;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 
 public class SetCommand extends Command {

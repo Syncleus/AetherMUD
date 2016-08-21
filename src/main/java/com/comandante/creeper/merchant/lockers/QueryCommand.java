@@ -1,6 +1,6 @@
 package com.comandante.creeper.merchant.lockers;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.PlayerMetadata;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;

@@ -1,8 +1,8 @@
 package com.comandante.creeper.command.commands.admin;
 
-import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.command.commands.Command;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.common.CreeperEntry;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.multiline.MultiLineInputManager;
 import com.google.common.base.Joiner;

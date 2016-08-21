@@ -2,8 +2,8 @@ package com.comandante.creeper.server.auth;
 
 import com.comandante.creeper.Main;
 import com.comandante.creeper.command.CreeperCommandHandler;
-import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.managers.SentryManager;
+import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.server.model.CreeperSession;
 import com.google.common.base.Optional;
 import org.apache.log4j.Logger;

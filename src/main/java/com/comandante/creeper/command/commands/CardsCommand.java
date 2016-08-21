@@ -2,7 +2,7 @@ package com.comandante.creeper.command.commands;
 
 import com.comandante.creeper.blackjack.BlackJack;
 import com.comandante.creeper.blackjack.Deck;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;

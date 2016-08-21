@@ -1,6 +1,6 @@
 package com.comandante.creeper.server.player_communication;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.google.api.client.util.Lists;
 import com.google.common.collect.EvictingQueue;
 

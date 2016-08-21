@@ -1,12 +1,14 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CountdownCommand extends Command {
 

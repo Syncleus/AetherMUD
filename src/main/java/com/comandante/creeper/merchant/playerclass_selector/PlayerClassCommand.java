@@ -1,14 +1,14 @@
 package com.comandante.creeper.merchant.playerclass_selector;
 
-import com.comandante.creeper.CreeperUtils;
 import com.comandante.creeper.Main;
-import com.comandante.creeper.classes.PlayerClass;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.common.CreeperUtils;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.player.PlayerClass;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.server.model.CreeperSession;
 import com.comandante.creeper.server.player_communication.ChannelCommunicationUtils;
 import com.comandante.creeper.server.player_communication.Color;
-import com.comandante.creeper.server.model.CreeperSession;
 import com.comandante.creeper.world.model.Room;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;

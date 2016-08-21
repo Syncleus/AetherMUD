@@ -1,7 +1,7 @@
 package com.comandante.creeper.npc;
 
 import com.comandante.creeper.Items.Loot;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.world.model.Area;

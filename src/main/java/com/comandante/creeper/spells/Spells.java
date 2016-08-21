@@ -1,6 +1,6 @@
 package com.comandante.creeper.spells;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.google.common.collect.Sets;

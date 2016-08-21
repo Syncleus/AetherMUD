@@ -1,7 +1,7 @@
 package com.comandante.creeper.server.telnet;
 
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.auth.CreeperAuthenticationHandler;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelException;

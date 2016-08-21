@@ -1,7 +1,7 @@
 package com.comandante.creeper.server;
 
-import com.comandante.creeper.CreeperConfiguration;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.configuration.CreeperConfiguration;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.GossipCache;
 import com.google.api.client.util.Maps;
 import org.apache.commons.configuration.MapConfiguration;

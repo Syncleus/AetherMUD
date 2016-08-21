@@ -1,7 +1,7 @@
 package com.comandante.creeper.merchant;
 
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.CreeperEntity;
-import com.comandante.creeper.managers.GameManager;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;

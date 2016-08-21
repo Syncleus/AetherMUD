@@ -1,7 +1,7 @@
 package com.comandante.creeper.blackjack;
 
 
-import com.comandante.creeper.CreeperUtils;
+import com.comandante.creeper.common.CreeperUtils;
 import com.google.common.collect.Lists;
 
 import java.text.MessageFormat;

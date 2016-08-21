@@ -1,10 +1,10 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.CreeperUtils;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.common.CreeperUtils;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.npc.Npc;
-import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.stats.Levels;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;

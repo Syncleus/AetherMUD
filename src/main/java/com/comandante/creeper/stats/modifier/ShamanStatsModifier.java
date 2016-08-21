@@ -1,12 +1,11 @@
 package com.comandante.creeper.stats.modifier;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.stats.StatsBuilder;
-import com.comandante.creeper.stats.modifier.StatsModifier;
 
 import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;

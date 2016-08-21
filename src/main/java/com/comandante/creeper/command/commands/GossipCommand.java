@@ -1,8 +1,8 @@
 package com.comandante.creeper.command.commands;
 
 
-import com.comandante.creeper.bot.commands.BotCommand;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.bot.command.commands.BotCommand;
+import com.comandante.creeper.core_game.GameManager;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.jboss.netty.channel.ChannelHandlerContext;

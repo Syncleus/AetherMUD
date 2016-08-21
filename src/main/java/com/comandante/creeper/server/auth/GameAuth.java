@@ -1,10 +1,9 @@
 package com.comandante.creeper.server.auth;
 
 import com.comandante.creeper.Main;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
-import com.comandante.creeper.server.auth.CreeperAuthenticator;
 import com.comandante.creeper.world.model.Room;
 import org.jboss.netty.channel.Channel;
 

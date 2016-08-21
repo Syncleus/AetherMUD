@@ -1,7 +1,7 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.CreeperEntry;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.common.CreeperEntry;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.lockers.LockerCommand;
 import com.google.common.base.Joiner;

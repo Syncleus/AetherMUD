@@ -1,7 +1,7 @@
 package com.comandante.creeper.server.model;
 
-import com.comandante.creeper.CreeperEntry;
 import com.comandante.creeper.command.commands.Command;
+import com.comandante.creeper.common.CreeperEntry;
 import com.comandante.creeper.merchant.Merchant;
 import com.google.common.base.Optional;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;

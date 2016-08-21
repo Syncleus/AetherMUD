@@ -1,8 +1,8 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.stats.Levels;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.stats.Levels;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.nocrala.tools.texttablefmt.BorderStyle;

@@ -2,13 +2,13 @@ package com.comandante.creeper.command;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.command.commands.Command;
 import com.comandante.creeper.command.commands.CommandAuditLog;
 import com.comandante.creeper.command.commands.UnknownCommand;
-import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.managers.SentryManager;
+import com.comandante.creeper.configuration.ConfigureCommands;
+import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantCommandHandler;
 import com.comandante.creeper.merchant.bank.commands.BankCommandHandler;

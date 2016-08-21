@@ -4,7 +4,7 @@ import com.comandante.creeper.Items.Effect;
 import com.comandante.creeper.Items.Item;
 import com.comandante.creeper.Items.ItemType;
 import com.comandante.creeper.Items.ItemUseAction;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spells.LightningSpell;
 

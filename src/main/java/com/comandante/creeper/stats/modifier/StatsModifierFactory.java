@@ -1,9 +1,9 @@
 package com.comandante.creeper.stats.modifier;
 
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.stats.*;
+import com.comandante.creeper.stats.Stats;
 
 public class StatsModifierFactory {
 

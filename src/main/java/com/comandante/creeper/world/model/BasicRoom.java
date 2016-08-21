@@ -1,6 +1,6 @@
 package com.comandante.creeper.world.model;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 
 import java.util.List;
 import java.util.Map;

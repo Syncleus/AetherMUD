@@ -1,6 +1,6 @@
 package com.comandante.creeper.merchant.bank.commands;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;

@@ -1,7 +1,6 @@
 package com.comandante.creeper.player;
 
 
-import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.stats.Stats;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;

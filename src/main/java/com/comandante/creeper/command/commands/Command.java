@@ -2,14 +2,14 @@ package com.comandante.creeper.command.commands;
 
 import com.comandante.creeper.Items.LootManager;
 import com.comandante.creeper.Main;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.model.CreeperSession;
 import com.comandante.creeper.server.player_communication.ChannelCommunicationUtils;
-import com.comandante.creeper.storage.WorldPersistence;
+import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.FloorManager;
 import com.comandante.creeper.world.MapMatrix;
 import com.comandante.creeper.world.MapsManager;
@@ -51,7 +51,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public MapMatrix mapMatrix;
     public Coords currentRoomCoords;
     public List<String> originalMessageParts;
-    public WorldPersistence worldExporter;
+    public WorldStorage worldExporter;
     public String rootCommand;
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
@@ -69,7 +69,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.entityManager = gameManager.getEntityManager();
         this.playerManager = gameManager.getPlayerManager();
         this.channelUtils = gameManager.getChannelUtils();
-        this.worldExporter = new WorldPersistence(roomManager, mapsManager, floorManager, entityManager, gameManager);
+        this.worldExporter = new WorldStorage(roomManager, mapsManager, floorManager, entityManager, gameManager);
         this.lootManager = gameManager.getLootManager();
         this.roles = roles;
     }

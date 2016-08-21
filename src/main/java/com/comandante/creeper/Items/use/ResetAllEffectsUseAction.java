@@ -1,7 +1,7 @@
 package com.comandante.creeper.Items.use;
 
 import com.comandante.creeper.Items.*;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 
 import java.util.Set;

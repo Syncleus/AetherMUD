@@ -1,9 +1,9 @@
 package com.comandante.creeper.Items;
 
+import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.managers.SentryManager;
 import org.apache.log4j.Logger;
 
 import java.util.Map;

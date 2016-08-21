@@ -1,6 +1,6 @@
 package com.comandante.creeper.Items;
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.math.JVMRandom;
 

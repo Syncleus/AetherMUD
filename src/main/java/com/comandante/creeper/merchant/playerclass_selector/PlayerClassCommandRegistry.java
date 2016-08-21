@@ -1,7 +1,7 @@
 package com.comandante.creeper.merchant.playerclass_selector;
 
-import com.comandante.creeper.classes.PlayerClass;
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.player.PlayerClass;
 
 import java.util.Arrays;
 import java.util.List;

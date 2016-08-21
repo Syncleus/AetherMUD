@@ -2,13 +2,12 @@ package com.comandante.creeper.player;
 
 
 import com.codahale.metrics.Meter;
-import com.comandante.creeper.CreeperUtils;
 import com.comandante.creeper.Items.*;
 import com.comandante.creeper.Main;
-import com.comandante.creeper.classes.PlayerClass;
+import com.comandante.creeper.common.CreeperUtils;
+import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
-import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.npc.Temperament;

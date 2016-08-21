@@ -1,7 +1,7 @@
 package com.comandante.creeper.command.commands;
 
 
-import com.comandante.creeper.managers.GameManager;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.world.model.Coords;
 import com.comandante.creeper.world.model.Room;
