@@ -2,8 +2,8 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.ConfigureCommands;
 import com.comandante.creeper.CreeperConfiguration;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.EntityManager;
@@ -11,9 +11,12 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SessionManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
-import com.comandante.creeper.npc.NpcExporter;
-import com.comandante.creeper.server.ChannelCommunicationUtils;
-import com.comandante.creeper.server.CreeperSession;
+import com.comandante.creeper.server.model.CreeperSession;
+import com.comandante.creeper.server.player_communication.ChannelCommunicationUtils;
+import com.comandante.creeper.stats.DefaultStats;
+import com.comandante.creeper.stats.Levels;
+import com.comandante.creeper.stats.experience.Experience;
+import com.comandante.creeper.storage.NpcExporter;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.WorldExporter;
@@ -44,7 +47,7 @@ public class NpcTestHarness {
 
     @Before
     public void setUp() throws Exception {
-        ChannelCommunicationUtils channelUtils = new ChannelCommunicationUtils() {
+        ChannelCommunicationUtils channelUtils = new ChannelCommunicationUtils(){
             @Override
             public void write(String playerId, String message) {
                 //System.out.println(message);
@@ -167,7 +170,7 @@ public class NpcTestHarness {
             } else {
                 t.addCell(String.valueOf(totalGold / playerWins));
             }
-            t.addCell(String.valueOf(new ExperienceManager().calculateNpcXp(level, (int) Levels.getLevel(npc.getStats().getExperience()))));
+            t.addCell(String.valueOf(new Experience().calculateNpcXp(level, (int) Levels.getLevel(npc.getStats().getExperience()))));
             StringBuilder sb = new StringBuilder();
             drops.entrySet().stream().map(entry -> entry.getKey() + "(" + entry.getValue().get() + ")").forEach(s -> sb.append(s).append(","));
             t.addCell(sb.toString());
@@ -175,7 +178,7 @@ public class NpcTestHarness {
         System.out.println("#### 100 round fight simulation results ####");
         System.out.println(t.render());
 
-        // Stats difference = StatsHelper.getDifference(player.getPlayerStatsWithEquipmentAndLevel(), new PlayerStats().DEFAULT_PLAYER.createStats());
+        // Stats difference = StatsHelper.getDifference(player.getPlayerStatsWithEquipmentAndLevel(), new DefaultStats().DEFAULT_PLAYER.createStats());
         // String player1 = gameManager.buildLookString("player", player.getPlayerStatsWithEquipmentAndLevel(),difference );
         // System.out.println(player1);
         // System.out.println("");
@@ -225,7 +228,7 @@ public class NpcTestHarness {
     }
 
     private void createUser(String username, String password) {
-        PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), PlayerStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC);
+        PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), DefaultStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC);
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
     }
 

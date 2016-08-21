@@ -1,6 +1,6 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.ItemType;
 
 
 public class MerchantItemForSale {

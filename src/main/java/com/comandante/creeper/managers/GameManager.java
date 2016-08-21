@@ -1,11 +1,8 @@
 package com.comandante.creeper.managers;
 
 
-import com.comandante.creeper.CreeperConfiguration;
-import com.comandante.creeper.IrcBotService;
-import com.comandante.creeper.Items.*;
-import com.comandante.creeper.Main;
-import com.comandante.creeper.SingleThreadedCreeperEventProcessor;
+import com.comandante.creeper.*;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.bot.BotCommandFactory;
 import com.comandante.creeper.bot.BotCommandManager;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -14,15 +11,20 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcMover;
 import com.comandante.creeper.player.*;
-import com.comandante.creeper.server.ChannelCommunicationUtils;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.server.GossipCache;
-import com.comandante.creeper.server.MultiLineInputManager;
+import com.comandante.creeper.server.player_communication.ChannelCommunicationUtils;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.server.player_communication.GossipCache;
+import com.comandante.creeper.server.multiline.MultiLineInputManager;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spells.Spells;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
+import com.comandante.creeper.stats.Levels;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.stats.StatsBuilder;
+import com.comandante.creeper.stats.modifier.StatsModifierFactory;
 import com.comandante.creeper.world.*;
+import com.comandante.creeper.world.model.Coords;
+import com.comandante.creeper.world.model.RemoteExit;
+import com.comandante.creeper.world.model.Room;
 import com.google.api.client.util.Lists;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
@@ -38,7 +40,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import static com.comandante.creeper.server.Color.*;
+import static com.comandante.creeper.server.player_communication.Color.*;
 
 public class GameManager {
 
@@ -182,7 +184,7 @@ public class GameManager {
         Room room = roomManager.getRoom(LOBBY_ID);
         room.addPresentPlayer(player.getPlayerId());
         player.setCurrentRoom(room);
-        for (Player next : roomManager.getPresentPlayers(room)) {
+        for (Player next : room.getPresentPlayers()) {
             if (next.getPlayerId().equals(player.getPlayerId())) {
                 continue;
             }
@@ -203,7 +205,7 @@ public class GameManager {
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             Room room = next.getValue();
-            Set<Player> presentPlayers = roomManager.getPresentPlayers(room);
+            Set<Player> presentPlayers = room.getPresentPlayers();
             for (Player player : presentPlayers) {
                 builder.add(player);
             }
@@ -240,7 +242,7 @@ public class GameManager {
         for (Merchant merchant : merchants) {
             sb.append(merchant.getColorName()).append(" is here.").append(RESET).append("\r\n");
         }
-        for (Player searchPlayer : roomManager.getPresentPlayers(playerCurrentRoom)) {
+        for (Player searchPlayer : playerCurrentRoom.getPresentPlayers()) {
             if (searchPlayer.getPlayerId().equals(player.getPlayerId())) {
                 continue;
             }
@@ -411,7 +413,7 @@ public class GameManager {
     }
 
     public void roomSay(Integer roomId, String message, String sourcePlayerId) {
-        Set<Player> presentPlayers = roomManager.getPresentPlayers(roomManager.getRoom(roomId));
+        Set<Player> presentPlayers = roomManager.getRoom(roomId).getPresentPlayers();
         for (Player player : presentPlayers) {
             if (player.getPlayerId().equals(sourcePlayerId)) {
                 channelUtils.write(player.getPlayerId(), message, false);
@@ -616,7 +618,7 @@ public class GameManager {
         }
         Player player = playerManager.getPlayer(playerId);
         Room playerCurrentRoom = roomManager.getPlayerCurrentRoom(player).get();
-        Set<Player> presentPlayers = roomManager.getPresentPlayers(playerCurrentRoom);
+        Set<Player> presentPlayers = playerCurrentRoom.getPresentPlayers();
         for (Player presentPlayer : presentPlayers) {
             channelUtils.write(presentPlayer.getPlayerId(), message, true);
         }
@@ -624,7 +626,7 @@ public class GameManager {
 
     public void writeToRoom(Integer roomId, String message) {
         Room room = roomManager.getRoom(roomId);
-        Set<Player> presentPlayers = roomManager.getPresentPlayers(room);
+        Set<Player> presentPlayers = room.getPresentPlayers();
         for (Player presentPlayer : presentPlayers) {
             channelUtils.write(presentPlayer.getPlayerId(), message, true);
         }

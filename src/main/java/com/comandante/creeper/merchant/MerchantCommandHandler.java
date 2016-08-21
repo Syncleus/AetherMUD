@@ -1,12 +1,12 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.command.CommandAuditLog;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.command.commands.CommandAuditLog;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.server.CreeperSession;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.server.model.CreeperSession;
 import com.google.common.collect.Maps;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;

@@ -1,9 +1,9 @@
-package com.comandante.creeper.Items.use;
+package com.comandante.creeper.items.use;
 
-import com.comandante.creeper.Items.*;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stats.Stats;
 import org.apache.log4j.Logger;
 
 import java.util.Set;

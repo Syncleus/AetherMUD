@@ -2,7 +2,7 @@ package com.comandante.creeper.merchant.bank.commands;
 
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.player_communication.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 

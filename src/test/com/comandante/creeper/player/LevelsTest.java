@@ -1,5 +1,6 @@
 package com.comandante.creeper.player;
 
+import com.comandante.creeper.stats.Levels;
 import org.junit.Assert;
 import org.junit.Test;
 

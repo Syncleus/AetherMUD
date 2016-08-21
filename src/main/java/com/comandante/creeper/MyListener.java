@@ -5,7 +5,7 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.world.model.Room;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -14,7 +14,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 
 import java.util.*;
 
-import static com.comandante.creeper.server.Color.*;
+import static com.comandante.creeper.server.player_communication.Color.*;
 
 public class MyListener extends ListenerAdapter {
 
@@ -62,7 +62,7 @@ public class MyListener extends ListenerAdapter {
                 return;
             }
             Room bridgeRoom = gameManager.getRoomManager().getRoom(bridgeRoomId);
-            Set<Player> presentPlayers = gameManager.getRoomManager().getPresentPlayers(bridgeRoom);
+            Set<Player> presentPlayers = bridgeRoom.getPresentPlayers();
             for (Player presentPlayer : presentPlayers) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(RED);

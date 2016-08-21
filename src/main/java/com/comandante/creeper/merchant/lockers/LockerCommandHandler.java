@@ -1,10 +1,10 @@
 package com.comandante.creeper.merchant.lockers;
 
 import com.comandante.creeper.ConfigureCommands;
-import com.comandante.creeper.command.CommandAuditLog;
+import com.comandante.creeper.command.commands.CommandAuditLog;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.Merchant;
-import com.comandante.creeper.server.CreeperSession;
+import com.comandante.creeper.server.model.CreeperSession;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;

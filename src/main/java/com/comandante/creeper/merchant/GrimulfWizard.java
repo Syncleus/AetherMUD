@@ -1,16 +1,16 @@
 package com.comandante.creeper.merchant;
 
 
-import com.comandante.creeper.Items.Loot;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.player_communication.Color;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.comandante.creeper.server.Color.BOLD_ON;
+import static com.comandante.creeper.server.player_communication.Color.BOLD_ON;
 
 public class GrimulfWizard extends Merchant {
     private final static long phraseIntervalMs = 300000;

@@ -1,12 +1,12 @@
 package com.comandante.creeper.npc;
 
-import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.Items.Loot;
+import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.spawner.SpawnRuleBuilder;
-import com.comandante.creeper.stat.StatsBuilder;
-import com.comandante.creeper.world.Area;
+import com.comandante.creeper.stats.StatsBuilder;
+import com.comandante.creeper.world.model.Area;
 import com.google.common.collect.Sets;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

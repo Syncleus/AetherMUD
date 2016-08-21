@@ -1,7 +1,7 @@
 package com.comandante.creeper.managers;
 
 import com.comandante.creeper.Main;
-import com.comandante.creeper.server.CreeperSession;
+import com.comandante.creeper.server.model.CreeperSession;
 
 import java.util.concurrent.ConcurrentHashMap;
 

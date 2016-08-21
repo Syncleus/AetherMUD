@@ -4,7 +4,9 @@ import com.codahale.metrics.Timer;
 import com.comandante.creeper.CreeperConfiguration;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.world.model.Coords;
+import com.comandante.creeper.world.model.Room;
 import com.google.common.collect.Maps;
 import org.apache.log4j.Logger;
 

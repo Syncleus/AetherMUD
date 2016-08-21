@@ -1,5 +1,6 @@
 package com.comandante.creeper.player;
 
+import com.comandante.creeper.stats.experience.Experience;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,11 +8,11 @@ import org.junit.Test;
 
 public class ExperienceManagerTest {
 
-    private ExperienceManager experienceManager;
+    private Experience experienceManager;
 
     @Before
     public void setUp() throws Exception {
-        experienceManager = new ExperienceManager();
+        experienceManager = new Experience();
     }
 
     @Test

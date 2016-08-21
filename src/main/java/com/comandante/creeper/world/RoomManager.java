@@ -4,7 +4,8 @@ import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
-import com.google.common.collect.ImmutableSet;
+import com.comandante.creeper.world.model.Area;
+import com.comandante.creeper.world.model.Room;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -22,18 +23,6 @@ public class RoomManager {
 
     public void addRoom(Room room) {
         rooms.put(room.getRoomId(), room);
-    }
-
-    public Set<Player> getPresentPlayers(Room room) {
-        Set<String> presentPlayerIds = room.getPresentPlayerIds();
-        Set<Player> players = Sets.newHashSet();
-        for (String playerId : presentPlayerIds) {
-            Player player = playerManager.getPlayer(playerId);
-            if (player != null) {
-                players.add(player);
-            }
-        }
-        return ImmutableSet.copyOf(players);
     }
 
     public Optional<List<Integer>> getRoomsForTag(String tag) {

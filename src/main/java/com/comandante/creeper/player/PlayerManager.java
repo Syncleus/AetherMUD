@@ -3,8 +3,9 @@ package com.comandante.creeper.player;
 
 import com.codahale.metrics.Gauge;
 import com.comandante.creeper.Main;
-import com.comandante.creeper.MapDbAutoCommitService;
+import com.comandante.creeper.storage.MapDbAutoCommitService;
 import com.comandante.creeper.managers.SessionManager;
+import com.comandante.creeper.storage.PlayerMetadataSerializer;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;

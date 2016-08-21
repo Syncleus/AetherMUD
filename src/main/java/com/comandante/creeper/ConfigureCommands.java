@@ -1,8 +1,7 @@
 package com.comandante.creeper;
 
-import com.comandante.creeper.command.*;
-import com.comandante.creeper.command.UnknownCommand;
-import com.comandante.creeper.command.admin.*;
+import com.comandante.creeper.command.commands.*;
+import com.comandante.creeper.command.commands.admin.*;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.bank.commands.*;
 import com.comandante.creeper.merchant.lockers.GetCommand;
@@ -10,7 +9,7 @@ import com.comandante.creeper.merchant.lockers.LockerCommandRegistry;
 import com.comandante.creeper.merchant.lockers.PutCommand;
 import com.comandante.creeper.merchant.lockers.QueryCommand;
 import com.comandante.creeper.merchant.playerclass_selector.PlayerClassCommandRegistry;
-import com.comandante.creeper.server.CreeperCommandRegistry;
+import com.comandante.creeper.command.CreeperCommandRegistry;
 
 public class ConfigureCommands {
 
@@ -41,10 +40,8 @@ public class ConfigureCommands {
        playerClassCommandRegistry = new PlayerClassCommandRegistry(gameManager);
     }
 
-
-
     public static void configure(GameManager gameManager) {
-        creeperCommandRegistry = new CreeperCommandRegistry(new UnknownCommand(gameManager));
+        creeperCommandRegistry = new CreeperCommandRegistry(new com.comandante.creeper.command.commands.UnknownCommand(gameManager));
         creeperCommandRegistry.addCommand(new DropCommand(gameManager));
         creeperCommandRegistry.addCommand(new GossipCommand(gameManager));
         creeperCommandRegistry.addCommand(new InventoryCommand(gameManager));

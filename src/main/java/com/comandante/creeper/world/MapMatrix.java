@@ -1,5 +1,7 @@
 package com.comandante.creeper.world;
 
+import com.comandante.creeper.world.model.Coords;
+import com.comandante.creeper.world.model.RemoteExit;
 import com.google.common.base.Predicate;
 import com.google.common.collect.*;
 
@@ -208,19 +210,6 @@ public class MapMatrix {
             return Integer.valueOf(us[1].split("[a-zA-Z]")[0]);
         }
         return Integer.valueOf(us[1]);
-    }
-
-    private static Integer getEnter(String csvInputCell) {
-        String[] us = csvInputCell.split("e\\|");
-        if (us[1].matches(".*\\|\\|.*")) {
-            return Integer.valueOf(us[1].split("\\|\\|")[0]);
-        }
-        return Integer.valueOf(us[1]);
-    }
-
-    private static String getEnterDescription(String csvInputCell) {
-        String[] us = csvInputCell.split("\\|\\|");
-        return us[1];
     }
 
     public static MapMatrix createMatrixFromCsv(String mapCSV) {

@@ -1,21 +1,23 @@
 package com.comandante.creeper.npc;
 
 
-import com.comandante.creeper.Items.Effect;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.Loot;
-import com.comandante.creeper.Items.Rarity;
+import com.comandante.creeper.items.Effect;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.Loot;
+import com.comandante.creeper.items.Rarity;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.*;
-import com.comandante.creeper.server.Color;
+import com.comandante.creeper.server.player_communication.Color;
 import com.comandante.creeper.spawner.SpawnRule;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
-import com.comandante.creeper.stat.StatsHelper;
-import com.comandante.creeper.world.Area;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.stats.Levels;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.stats.StatsBuilder;
+import com.comandante.creeper.stats.StatsHelper;
+import com.comandante.creeper.stats.experience.Experience;
+import com.comandante.creeper.world.model.Area;
+import com.comandante.creeper.world.model.Room;
 import com.google.api.client.util.Sets;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
@@ -30,8 +32,8 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.comandante.creeper.server.Color.RED;
-import static com.comandante.creeper.server.Color.RESET;
+import static com.comandante.creeper.server.player_communication.Color.RED;
+import static com.comandante.creeper.server.player_communication.Color.RESET;
 
 
 public class Npc extends CreeperEntity {
@@ -57,7 +59,7 @@ public class Npc extends CreeperEntity {
     private Room currentRoom;
     private int effectsTickBucket = 0;
     private Set<CoolDown> coolDowns = Sets.newHashSet();
-    private final ExperienceManager experienceManager = new ExperienceManager();
+    private final Experience experience = new Experience();
 
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
@@ -243,7 +245,7 @@ public class Npc extends CreeperEntity {
             int playerLevel = (int) Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience());
             int npcLevel = (int) Levels.getLevel(this.getStats().getExperience());
 
-            long xpEarned = (long) (experienceManager.calculateNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
+            long xpEarned = (long) (experience.calculateNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
             p.addExperience(xpEarned);
             gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) + "\r\n", true);
             p.addNpcKillLog(getName());
@@ -407,7 +409,7 @@ public class Npc extends CreeperEntity {
     }
 
     public NpcLevelColor getLevelColor(int playerLevel) {
-        return experienceManager.getLevelColor(playerLevel, (int) Levels.getLevel(this.getStats().getExperience()));
+        return experience.getLevelColor(playerLevel, (int) Levels.getLevel(this.getStats().getExperience()));
     }
 
     public enum NpcLevelColor {

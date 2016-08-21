@@ -1,6 +1,6 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.items;
 
-import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stats.Stats;
 
 import java.util.List;
 

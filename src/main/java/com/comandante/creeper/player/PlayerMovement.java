@@ -1,7 +1,5 @@
 package com.comandante.creeper.player;
 
-import com.comandante.creeper.command.MovementCommand;
-
 public class PlayerMovement {
 
     private final Player player;

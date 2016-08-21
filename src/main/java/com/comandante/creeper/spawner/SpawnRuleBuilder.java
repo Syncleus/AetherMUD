@@ -1,5 +1,5 @@
 package com.comandante.creeper.spawner;
-import com.comandante.creeper.world.Area;
+import com.comandante.creeper.world.model.Area;
 
 public class SpawnRuleBuilder {
     private Area area;

@@ -1,7 +1,5 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.items;
 
-
-import com.comandante.creeper.player.Equipment;
 
 import java.io.Serializable;
 import java.util.List;

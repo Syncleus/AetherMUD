@@ -1,13 +1,13 @@
-package com.comandante.creeper.Items.use;
+package com.comandante.creeper.items.use;
 
-import com.comandante.creeper.Items.*;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.stat.StatsBuilder;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.stats.StatsBuilder;
+import com.comandante.creeper.world.model.Room;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public class DirtyBombUseAction implements ItemUseAction {
             npcStatsChangeBuilder.setIsItemDamage(true);
             npc.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
         }
-        Set<Player> presentPlayers = gameManager.getRoomManager().getPresentPlayers(currentRoom);
+        Set<Player> presentPlayers = currentRoom.getPresentPlayers();
         for (Player presentPlayer : presentPlayers) {
             if (allRadSuit(presentPlayer)) {
                 gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), presentPlayer.getPlayerName() + " is immune to " + item.getItemName() + "!");

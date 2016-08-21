@@ -1,17 +1,12 @@
 package com.comandante.creeper.spells;
 
-import com.comandante.creeper.CreeperUtils;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsHelper;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class Spells {
 
@@ -33,7 +28,7 @@ public class Spells {
 
     public Optional<SpellRunnable> getSpellRunnable(String triggerName) {
         if (Sets.newHashSet("lightning", "l").contains(triggerName)) {
-            return Optional.of(new LightningSpellRunnable(gameManager));
+            return Optional.of(new LightningSpell(gameManager));
         }
         return Optional.empty();
     }

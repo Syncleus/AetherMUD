@@ -1,8 +1,7 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.items;
 
-import com.comandante.creeper.player.EquipmentBuilder;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.world.TimeTracker;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.TimeTracker;
 import com.google.common.collect.Sets;
 
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.comandante.creeper.server.Color.*;
+import static com.comandante.creeper.server.player_communication.Color.*;
 
 public enum ItemType {
 

@@ -8,10 +8,10 @@ import com.codahale.metrics.graphite.PickledGraphite;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.managers.SessionManager;
-import com.comandante.creeper.player.PlayerManagementManager;
+import com.comandante.creeper.player.jmx.PlayerManagementManager;
 import com.comandante.creeper.player.PlayerManager;
-import com.comandante.creeper.server.ChannelUtils;
-import com.comandante.creeper.server.CreeperServer;
+import com.comandante.creeper.server.player_communication.ChannelUtils;
+import com.comandante.creeper.server.telnet.CreeperServer;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.WorldExporter;
@@ -116,14 +116,6 @@ public class Main {
 
         startUpMessage("Generating map data.");
         mapsManager.generateAllMaps();
-
-        startUpMessage("Configuring default inventorySize limits");
-        BackportCommands.configureDefaultInventorySize(entityManager, gameManager);
-
-        startUpMessage("Configuring default maxEffects limits");
-        BackportCommands.configureDefaultMaxEffectSize(entityManager, gameManager);
-
-        BackportCommands.configureFibsHealth(entityManager, gameManager);
 
         startUpMessage("Creeper MUD engine started");
 

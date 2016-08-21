@@ -5,8 +5,8 @@ import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.spawner.SpawnRule;
-import com.comandante.creeper.world.Area;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.world.model.Area;
+import com.comandante.creeper.world.model.Room;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -62,7 +62,7 @@ public class NpcMover {
         destinationRoom.getNpcIds().add(npcId);
         npcEntity.addCoolDown(new CoolDown(CoolDownType.NPC_ROAM));
         gameManager.roomSay(destinationRoomId, npcEntity.getColorName() + " has arrived.", "");
-        gameManager.getRoomManager().getPresentPlayers(destinationRoom).forEach(Player::processNpcAggro);
+        destinationRoom.getPresentPlayers().forEach(Player::processNpcAggro);
     }
 
     private boolean doesRoomHaveEmptyNpcsSpots(Room room, Npc npc, Area area) {

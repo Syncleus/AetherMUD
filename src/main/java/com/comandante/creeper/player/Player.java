@@ -3,10 +3,7 @@ package com.comandante.creeper.player;
 
 import com.codahale.metrics.Meter;
 import com.comandante.creeper.CreeperUtils;
-import com.comandante.creeper.Items.Effect;
-import com.comandante.creeper.Items.ForageManager;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.classes.PlayerClass;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -15,11 +12,12 @@ import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.npc.Temperament;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
-import com.comandante.creeper.stat.StatsHelper;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.stats.Levels;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.stats.StatsBuilder;
+import com.comandante.creeper.stats.StatsHelper;
+import com.comandante.creeper.world.model.Room;
 import com.google.common.collect.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
@@ -587,7 +585,7 @@ public class Player extends CreeperEntity {
             Room sourceRoom = gameManager.getRoomManager().getRoom(playerMovement.getSourceRoomId());
             Room destinationRoom = gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
             sourceRoom.removePresentPlayer(playerMovement.getPlayer().getPlayerId());
-            for (Player next : gameManager.getRoomManager().getPresentPlayers(sourceRoom)) {
+            for (Player next : sourceRoom.getPresentPlayers()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(playerMovement.getPlayer().getPlayerName());
                 sb.append(" ").append(playerMovement.getRoomExitMessage());
@@ -596,7 +594,7 @@ public class Player extends CreeperEntity {
             destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
             setPreviousRoom(currentRoom);
             playerMovement.getPlayer().setCurrentRoom(destinationRoom);
-            for (Player next : gameManager.getRoomManager().getPresentPlayers(destinationRoom)) {
+            for (Player next : destinationRoom.getPresentPlayers()) {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
                     continue;
                 }

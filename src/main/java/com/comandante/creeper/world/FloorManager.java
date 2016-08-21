@@ -18,15 +18,6 @@ public class FloorManager {
         return floorIdLookup.get(fid);
     }
 
-    public Integer getId(String name) {
-        for (Map.Entry<Integer, String> next : floorIdLookup.entrySet()) {
-            if (next.getValue().equals(name)) {
-                return next.getKey();
-            }
-        }
-        return 0;
-    }
-
     public Set<Integer> getFloorIds() {
         Set<Integer> ids = Sets.newHashSet();
         for (Map.Entry<Integer, String> next : floorIdLookup.entrySet()) {

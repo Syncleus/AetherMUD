@@ -1,20 +1,18 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.items;
 
 import com.comandante.creeper.managers.GameManager;
-import com.comandante.creeper.managers.SentryManager;
 import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.world.Area;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.world.model.Area;
+import com.comandante.creeper.world.model.Room;
 import org.apache.log4j.Logger;
 
 import java.util.Random;
 import java.util.Set;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;
 

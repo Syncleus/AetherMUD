@@ -1,4 +1,4 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.items;
 
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
@@ -6,10 +6,10 @@ import com.comandante.creeper.npc.NpcStatsChange;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
-import com.comandante.creeper.server.Color;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
-import com.comandante.creeper.stat.StatsHelper;
+import com.comandante.creeper.server.player_communication.Color;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.stats.StatsBuilder;
+import com.comandante.creeper.stats.StatsHelper;
 import org.apache.log4j.Logger;
 
 import java.text.NumberFormat;

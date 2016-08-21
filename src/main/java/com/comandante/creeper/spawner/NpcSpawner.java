@@ -8,8 +8,8 @@ import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.world.Area;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.world.model.Area;
+import com.comandante.creeper.world.model.Room;
 
 import java.util.List;
 import java.util.Random;
@@ -77,7 +77,7 @@ public class NpcSpawner extends CreeperEntity {
         gameManager.getEntityManager().addEntity(newNpc);
         room.addPresentNpc(newNpc.getEntityId());
         gameManager.writeToRoom(room.getRoomId(), newNpc.getColorName() + " appears." + "\r\n");
-        gameManager.getRoomManager().getPresentPlayers(room).forEach(Player::processNpcAggro);
+        room.getPresentPlayers().forEach(Player::processNpcAggro);
         Main.metrics.counter(MetricRegistry.name(NpcSpawner.class, npc.getName() + "-spawn")).inc();
     }
 

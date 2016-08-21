@@ -1,12 +1,12 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.items;
 
 
-import com.comandante.creeper.Items.use.DefaultApplyStatsAction;
-import com.comandante.creeper.Items.use.LightningSpellBookUseAction;
+import com.comandante.creeper.items.use.DefaultApplyStatsAction;
+import com.comandante.creeper.items.use.LightningSpellBookUseAction;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.stat.Stats;
-import com.comandante.creeper.stat.StatsBuilder;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.stats.StatsBuilder;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
 

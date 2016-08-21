@@ -1,10 +1,6 @@
 package com.comandante.creeper.spawner;
 
-import com.comandante.creeper.world.Area;
-import com.comandante.creeper.world.TimeTracker;
-import com.google.common.base.Optional;
-
-import java.util.Set;
+import com.comandante.creeper.world.model.Area;
 
 public class SpawnRule {
 

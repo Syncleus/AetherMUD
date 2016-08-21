@@ -1,18 +1,18 @@
 package com.comandante.creeper;
 
-import com.comandante.creeper.Items.ForageBuilder;
-import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.Items.Loot;
+import com.comandante.creeper.items.ForageBuilder;
+import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.managers.GameManager;
 import com.comandante.creeper.merchant.*;
 import com.comandante.creeper.npc.Npc;
-import com.comandante.creeper.npc.NpcExporter;
+import com.comandante.creeper.storage.NpcExporter;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.spawner.SpawnRuleBuilder;
-import com.comandante.creeper.world.Area;
+import com.comandante.creeper.world.model.Area;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 

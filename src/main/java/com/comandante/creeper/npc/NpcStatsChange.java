@@ -1,7 +1,7 @@
 package com.comandante.creeper.npc;
 
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.stat.Stats;
+import com.comandante.creeper.stats.Stats;
 
 import java.util.List;
 

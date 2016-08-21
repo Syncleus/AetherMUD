@@ -2,8 +2,7 @@ package com.comandante.creeper.bot.commands;
 
 
 import com.comandante.creeper.bot.BotCommandManager;
-import com.comandante.creeper.world.Coords;
-import com.comandante.creeper.world.Room;
+import com.comandante.creeper.world.model.Room;
 import com.google.api.client.util.Lists;
 import com.google.common.collect.Sets;
 
