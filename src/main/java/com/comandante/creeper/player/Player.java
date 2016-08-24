@@ -1129,7 +1129,7 @@ public class Player extends CreeperEntity {
                 damageToVictim = playerDamageProcessor.getAttackAmount(this, npc);
             }
             if (damageToVictim > 0) {
-                if (randInt(0, 100) > 95) {
+                if (randInt(0, 100) > (100 - playerDamageProcessor.getCriticalChance(this, npc))) {
                     long criticalDamage = damageToVictim * 3;
                     final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(criticalDamage) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
                     npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(criticalDamage)).createStats());

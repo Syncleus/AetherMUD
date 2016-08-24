@@ -36,6 +36,12 @@ public class BasicNpcPlayerDamageProcessor implements DamageProcessor {
         return (int) ((npcStats.getStrength() + npcStats.getMeleSkill()) * 5 - playerStats.getAgile() * 5);
     }
 
+    @Override
+    public int getCriticalChance(Player player, Npc npc) {
+        //y =.20({x}) + 0
+        return (int) (5 + (.20f * npc.getStats().getAim()));
+    }
+
     private int randInt(int min, int max) {
         return random.nextInt((max - min) + 1) + min;
     }
