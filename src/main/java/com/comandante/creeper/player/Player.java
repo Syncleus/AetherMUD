@@ -46,7 +46,6 @@ public class Player extends CreeperEntity {
     private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
     private int tickBucket = 0;
     private int fightTickBucket = 0;
-    private boolean hasAlertedNpc;
     private final Set<Npc> alertedNpcs = Sets.newHashSet();
     private Room previousRoom;
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
@@ -101,7 +100,15 @@ public class Player extends CreeperEntity {
     }
 
     private void processFightRounds() {
-        activeFights.forEach((aLong, activeFight) -> doFightRound(activeFight));
+        DamageProcessor playerDamageProcesor = getPlayerClass().getDamageProcessor();
+        Set<Map.Entry<Long, ActiveFight>> entries = activeFights.entrySet();
+        for (Map.Entry<Long, ActiveFight> next : entries) {
+            Npc npc = gameManager.getEntityManager().getNpcEntity(next.getValue().npcId);
+            if (npc == null) {
+                continue;
+            }
+            doFightRound(playerDamageProcesor, npc.getDamageProcessor(), next.getValue());
+        }
     }
 
     private void processRegens() {
@@ -1108,20 +1115,18 @@ public class Player extends CreeperEntity {
         }
     }
 
-    private void doFightRound(ActiveFight activeFight) {
+    private void doFightRound(DamageProcessor playerDamageProcessor, DamageProcessor npcDamageProcessor, ActiveFight activeFight) {
         removeActiveAlertStatus();
         Npc npc = gameManager.getEntityManager().getNpcEntity(activeFight.getNpcId());
         if (npc == null) {
             return;
         }
-        Stats npcStats = npc.getStats();
-        Stats playerStats = getPlayerStatsWithEquipmentAndLevel();
         NpcStatsChangeBuilder npcStatsChangeBuilder = new NpcStatsChangeBuilder().setPlayer(this);
         if (this.isValidPrimaryActiveFight(npc)) {
             long damageToVictim = 0;
-            long chanceToHit = getChanceToHit(playerStats, npcStats);
+            long chanceToHit = playerDamageProcessor.getChanceToHit(this, npc);
             if (randInt(0, 100) < chanceToHit) {
-                damageToVictim = getAttackAmt(playerStats, npcStats);
+                damageToVictim = playerDamageProcessor.getAttackAmount(this, npc);
             }
             if (damageToVictim > 0) {
                 if (randInt(0, 100) > 95) {
@@ -1141,8 +1146,8 @@ public class Player extends CreeperEntity {
             }
         }
         if (this.doesActiveFightExist(npc)) {
-            int chanceToHitBack = getChanceToHit(npcStats, playerStats);
-            long damageBack = getAttackAmt(npcStats, playerStats);
+            int chanceToHitBack = npcDamageProcessor.getChanceToHit(this, npc);
+            long damageBack = npcDamageProcessor.getAttackAmount(this, npc);
             if (randInt(0, 100) < chanceToHitBack) {
                 final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());

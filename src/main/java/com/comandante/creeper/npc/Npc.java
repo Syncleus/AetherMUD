@@ -10,6 +10,7 @@ import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
+import com.comandante.creeper.player.DamageProcessor;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.player_communication.Color;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -412,6 +413,10 @@ public class Npc extends CreeperEntity {
 
     public NpcLevelColor getLevelColor(int playerLevel) {
         return experience.getLevelColor(playerLevel, (int) Levels.getLevel(this.getStats().getExperience()));
+    }
+
+    public DamageProcessor getDamageProcessor() {
+        return new BasicNpcPlayerDamageProcessor();
     }
 
     public enum NpcLevelColor {
