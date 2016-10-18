@@ -103,6 +103,9 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     private String getRootCommand(MessageEvent e) {
         String origMessage = (String) e.getMessage();
+        if (origMessage.trim().isEmpty()) {
+            return " ";
+        }
         return origMessage.split(" ")[0].toLowerCase();
     }
 
