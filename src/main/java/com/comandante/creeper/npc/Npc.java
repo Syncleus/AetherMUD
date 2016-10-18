@@ -245,7 +245,7 @@ public class Npc extends CreeperEntity {
             }
             Double playerDamagePercentValue = playerDamagePercent.getValue();
 
-            int playerLevel = (int) Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience());
+            int playerLevel = (int) Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(p).getExperience());
             int npcLevel = (int) Levels.getLevel(this.getStats().getExperience());
 
             long xpEarned = (long) (experience.calculateNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
