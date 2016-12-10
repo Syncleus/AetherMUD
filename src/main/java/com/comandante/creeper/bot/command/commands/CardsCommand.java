@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.sun.corba.se.spi.ior.iiop.GIOPVersion;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,7 +36,11 @@ public class CardsCommand extends BotCommand {
         Set<Hand.Card> collect = handOfCards.stream()
                 .map(convertCardFormats())
                 .collect(Collectors.toSet());
-        String handDescription = new Hand(collect).getCategory().getName();
+        Hand.Category category = new Hand(collect).getCategory();
+        Optional<String> handDescription = Optional.empty();
+        if (category.equals(Hand.Category.FLUSH) || category.equals(Hand.Category.FOUR_OF_A_KIND) || category.equals(Hand.Category.FULL_HOUSE) || category.equals(Hand.Category.THREE_OF_A_KIND) || category.equals(Hand.Category.STRAIGHT) || category.equals(Hand.Category.STRAIGHT_FLUSH)) {
+            handDescription = Optional.of(category.getName());
+        }
 
         StringBuilder sb = new StringBuilder();
         if (getMessageEvent() != null) {
@@ -43,7 +48,11 @@ public class CardsCommand extends BotCommand {
             sb.append(nickName).append(": ");
         }
         handOfCards.forEach(card -> sb.append(card.type.textRepresentation).append(card.suit.textRepresentation).append(" / "));
-        return Lists.newArrayList(CreeperUtils.replaceLast(sb.toString(), " / ", "") + " - [" + handDescription + "]");
+        String responseMessage = CreeperUtils.replaceLast(sb.toString(), " / ", "");
+        if (handDescription.isPresent()) {
+            responseMessage += " - [" + handDescription.get() + "]";
+        }
+        return Lists.newArrayList(responseMessage);
     }
 
     private Function<BlackJack.Card, Hand.Card> convertCardFormats() {
