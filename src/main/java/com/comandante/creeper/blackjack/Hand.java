@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.Multiset;
@@ -27,7 +28,10 @@ public class Hand implements Comparable<Hand> {
 
     private final LinkedList<Rank> distinctRanks = new LinkedList<>();
 
+    private final Set<Card> cards;
+
     public Hand(Set<Card> cards) {
+        this.cards = cards;
         checkArgument(cards.size() == 5);
         Set<Suit> suits = EnumSet.noneOf(Suit.class);
         Multiset<Rank> ranks = EnumMultiset.create(Rank.class);
@@ -78,6 +82,8 @@ public class Hand implements Comparable<Hand> {
     private static final Ordering<Entry<Rank>> byCountThenRank;
 
     private static final Comparator<Hand> byCategoryThenRanks;
+
+
 
     static {
         Comparator<Entry<Rank>> byCount = comparingInt(Entry::getCount);
@@ -210,5 +216,49 @@ public class Hand implements Comparable<Hand> {
                 throw new RuntimeException("Cards problem");
             }
         }
+
+        public Rank getRank() {
+            return rank;
+        }
+
+        public Suit getSuit() {
+            return suit;
+        }
+    }
+
+    public boolean isRoyalFlush() {
+        Optional<Card> aceCard = cards.stream().filter(card -> card.getRank().equals(Rank.ACE)).findAny();
+        Suit desiredSuit;
+        if (aceCard.isPresent()) {
+            desiredSuit = aceCard.get().getSuit();
+        } else {
+            return false;
+        }
+
+        Optional<Card> kingSuitedCard = cards.stream().filter(card -> card.getRank().equals(KING)).filter(card -> card.getSuit().equals(desiredSuit)).findAny();
+
+        if (!kingSuitedCard.isPresent()) {
+           return false;
+        }
+
+        Optional<Card> queenSuitedCard = cards.stream().filter(card -> card.getRank().equals(QUEEN)).filter(card -> card.getSuit().equals(desiredSuit)).findAny();
+
+        if (!queenSuitedCard.isPresent()) {
+            return false;
+        }
+
+        Optional<Card> jackSuitedCard = cards.stream().filter(card -> card.getRank().equals(JACK)).filter(card -> card.getSuit().equals(desiredSuit)).findAny();
+
+        if (!jackSuitedCard.isPresent()) {
+            return false;
+        }
+
+        Optional<Card> tenSuitedCard = cards.stream().filter(card -> card.getRank().equals(TEN)).filter(card -> card.getSuit().equals(desiredSuit)).findAny();
+
+        if (!tenSuitedCard.isPresent()) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -55,7 +55,7 @@ public class CardsCommand extends BotCommand {
         return Lists.newArrayList(responseMessage);
     }
 
-    private Function<BlackJack.Card, Hand.Card> convertCardFormats() {
+    public static Function<BlackJack.Card, Hand.Card> convertCardFormats() {
         return card -> {
             Hand.Suit suit = null;
             if (card.suit.equals(Deck.Suit.SPADES)) {

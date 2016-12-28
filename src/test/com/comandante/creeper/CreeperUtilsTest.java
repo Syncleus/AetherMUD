@@ -1,6 +1,9 @@
 package com.comandante.creeper;
 
 import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.blackjack.BlackJack;
+import com.comandante.creeper.blackjack.Deck;
+import com.comandante.creeper.blackjack.Hand;
 import com.comandante.creeper.common.CreeperUtils;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
@@ -13,6 +16,12 @@ import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.comandante.creeper.bot.command.commands.CardsCommand.convertCardFormats;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,14 +46,44 @@ public class CreeperUtilsTest {
         when(gameManager.getEntityManager()).thenReturn(entityManager);
         Player usertest = new Player("usertest", gameManager);
 
-        String s = CreeperUtils.printStringsNextToEachOther(Lists.newArrayList(usertest.getLookString(), usertest.getLookString())," | ");
+        String s = CreeperUtils.printStringsNextToEachOther(Lists.newArrayList(usertest.getLookString(), usertest.getLookString()), " | ");
 
         System.out.println(s);
 
 
-       // System.out.println(usertest.getLookString().replaceAll("\u001B\\[[;\\d]*m", " | "));
+        // System.out.println(usertest.getLookString().replaceAll("\u001B\\[[;\\d]*m", " | "));
 
 
     }
 
+    @Test
+    public void simulatePokerHands() throws Exception {
+        for (int i = 1; i < Integer.MAX_VALUE; i++) {
+            Deck deck = new Deck();
+            deck.shuffle();
+            List<BlackJack.Card> handOfCards = Lists.newArrayList();
+            for (int o = 0; o < 5; o++) {
+                handOfCards.add(deck.next());
+            }
+            Set<Hand.Card> collect = handOfCards.stream()
+                    .map(convertCardFormats())
+                    .collect(Collectors.toSet());
+            Hand hand = new Hand(collect);
+            if (i % 10000 == 0) {
+                System.out.println("Attempt: " + i);
+            }
+            HashSet<Hand.Card> compareHand = Sets.newHashSet();
+            compareHand.add(Hand.Card.FOUR_SPADES);
+            compareHand.add(Hand.Card.FIVE_SPADES);
+            compareHand.add(Hand.Card.SIX_SPADES);
+            compareHand.add(Hand.Card.TWO_SPADES);
+            compareHand.add(Hand.Card.THREE_SPADES);
+            Hand benchmark = new Hand(compareHand);
+            int i1 = benchmark.compareTo(hand);
+            if (benchmark.compareTo(hand) == 0) {
+                System.out.println("It took " + i + " attempts to beat svens hand.");
+                break;
+            }
+        }
+    }
 }
