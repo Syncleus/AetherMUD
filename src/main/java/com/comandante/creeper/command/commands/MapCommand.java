@@ -38,7 +38,7 @@ public class MapCommand extends Command {
                     sb.append(playerCurrentRoom.getMapData().get()).append("\r\n");
                     channelUtils.write(player1.getPlayerId(), sb.toString());
                 } else {
-                    channelUtils.write(player1.getPlayerId(), "No map data.");
+                    channelUtils.write(player1.getPlayerId(), "You are in an uncharted location.");
                 }
             }
         });

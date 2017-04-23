@@ -23,16 +23,18 @@ public class RecallCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            if (player.isActiveFights()) {
-                write("You can't move while in a fight!");
+            if (player.isActive(CoolDownType.DETAINMENT)) {
+                write("You can not recall while being detained.");
                 return;
             }
-
+            if (player.isActiveFights()) {
+                write("You can not recall while in a fight.");
+                return;
+            }
             if (player.isActive(CoolDownType.PLAYER_RECALL)) {
                 write("You can not recall right now.");
                 return;
             }
-
             PlayerMovement playerMovement = new PlayerMovement(player, player.getCurrentRoom().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
             player.addCoolDown(new CoolDown(CoolDownType.PLAYER_RECALL));
             player.movePlayer(playerMovement);

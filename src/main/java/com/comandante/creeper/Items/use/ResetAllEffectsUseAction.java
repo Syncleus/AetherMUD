@@ -1,6 +1,7 @@
 package com.comandante.creeper.Items.use;
 
 import com.comandante.creeper.Items.*;
+import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 
@@ -21,7 +22,7 @@ public class ResetAllEffectsUseAction implements ItemUseAction {
 
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item) {
+    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
         player.resetEffects();
         gameManager.getChannelUtils().write(player.getPlayerId(), "All Effects are removed." + "\r\n");
     }

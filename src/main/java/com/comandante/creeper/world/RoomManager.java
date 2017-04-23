@@ -16,7 +16,6 @@ public class RoomManager {
 
     private final PlayerManager playerManager;
     private ConcurrentHashMap<Integer, Room> rooms = new ConcurrentHashMap<>();
-
     public RoomManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
@@ -137,3 +136,4 @@ public class RoomManager {
         return null;
     }
 }
+

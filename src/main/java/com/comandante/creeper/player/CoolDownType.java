@@ -12,7 +12,9 @@ public enum CoolDownType {
     NPC_FIGHT("fight",30),
     NPC_ROAM("npc-roam", 1200),
     NPC_ALERTED("npc-alerted", 30),
-    PLAYER_RECALL("recall", 600);
+    PLAYER_RECALL("recall", 600),
+    DETAINMENT("detained", 32768),
+    NEWBIE("newbie", 20000);
     private final String name;
     private final int ticks;
 

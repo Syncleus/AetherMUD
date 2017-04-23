@@ -24,10 +24,7 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Command extends SimpleChannelUpstreamHandler {
 
@@ -48,8 +45,8 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public Player player;
     public Room currentRoom;
     public String playerId;
-    public MapMatrix mapMatrix;
-    public Coords currentRoomCoords;
+    public Optional<MapMatrix> mapMatrix;
+    public Optional<Coords> currentRoomCoords;
     public List<String> originalMessageParts;
     public WorldStorage worldExporter;
     public String rootCommand;
@@ -92,13 +89,16 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.player = playerManager.getPlayer(Main.createPlayerId(creeperSession.getUsername().get()));
         this.playerId = player.getPlayerId();
         this.currentRoom = gameManager.getRoomManager().getPlayerCurrentRoom(player).get();
-        this.mapMatrix = mapsManager.getFloorMatrixMaps().get(currentRoom.getFloorId());
-        this.currentRoomCoords = mapMatrix.getCoords(currentRoom.getRoomId());
+        this.mapMatrix = Optional.ofNullable(mapsManager.getFloorMatrixMaps().get(currentRoom.getFloorId()));
+        mapMatrix.ifPresent(mapMatrix -> this.currentRoomCoords = Optional.ofNullable(mapMatrix.getCoords(currentRoom.getRoomId())));
     }
 
     private List<String> getOriginalMessageParts(MessageEvent e) {
-        String origMessage = (String) e.getMessage();
-        return new ArrayList<>(Arrays.asList(origMessage.split(" ")));
+        return getOriginalMessageParts((String) e.getMessage());
+    }
+
+    public static List<String> getOriginalMessageParts(String originalMessage) {
+        return new ArrayList<>(Arrays.asList(originalMessage.split(" ")));
     }
 
     private String getRootCommand(MessageEvent e) {

@@ -43,11 +43,10 @@ public class Player extends CreeperEntity {
     private Optional<String> returnDirection = Optional.empty();
     private Room currentRoom;
     private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
-    private Set<CoolDown> coolDowns = Collections.synchronizedSet(new HashSet<CoolDown>());
     private int tickBucket = 0;
     private int fightTickBucket = 0;
     private final Set<Npc> alertedNpcs = Sets.newHashSet();
-    private Room previousRoom;
+    private Optional<Room> previousRoom = Optional.empty();
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
 
     public Player(String playerName, GameManager gameManager) {
@@ -208,7 +207,7 @@ public class Player extends CreeperEntity {
         return false;
     }
 
-    public Room getPreviousRoom() {
+    public Optional<Room> getPreviousRoom() {
         synchronized (interner.intern(playerId)) {
             return previousRoom;
         }
@@ -216,7 +215,7 @@ public class Player extends CreeperEntity {
 
     public void setPreviousRoom(Room previousRoom) {
         synchronized (interner.intern(playerId)) {
-            this.previousRoom = previousRoom;
+            this.previousRoom = Optional.ofNullable(previousRoom);
         }
     }
 
@@ -491,15 +490,24 @@ public class Player extends CreeperEntity {
     }
 
     public void addCoolDown(CoolDown coolDown) {
-        this.coolDowns.add(coolDown);
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            playerMetadata.addCoolDown(coolDown);
+            savePlayerMetadata(playerMetadata);
+        }
     }
 
     public Set<CoolDown> getCoolDowns() {
-        return coolDowns;
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            return playerMetadata.getCoolDowns();
+        }
     }
 
     public boolean isActiveCoolDown() {
-        return coolDowns.size() > 0;
+        synchronized (interner.intern(playerId)) {
+            return getPlayerMetadata().getCoolDowns().size() > 0;
+        }
     }
 
     public boolean isActiveForageCoolDown() {
@@ -513,10 +521,14 @@ public class Player extends CreeperEntity {
     }
 
     public boolean isActive(CoolDownType coolDownType) {
-        for (CoolDown c : coolDowns) {
-            if (c.getCoolDownType().equals(coolDownType)) {
-                if (c.isActive()) {
-                    return true;
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            Set<CoolDown> coolDowns = playerMetadata.getCoolDowns();
+            for (CoolDown c : coolDowns) {
+                if (c.getCoolDownType().equals(coolDownType)) {
+                    if (c.isActive()) {
+                        return true;
+                    }
                 }
             }
         }
@@ -524,25 +536,33 @@ public class Player extends CreeperEntity {
     }
 
     public boolean isActiveSpellCoolDown(String spellName) {
-        for (CoolDown coolDown : coolDowns) {
-            if (coolDown.getName().equalsIgnoreCase(spellName)) {
-                return true;
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            Set<CoolDown> coolDowns = playerMetadata.getCoolDowns();
+            for (CoolDown coolDown : coolDowns) {
+                if (coolDown.getName().equalsIgnoreCase(spellName)) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     }
 
     private void tickAllActiveCoolDowns() {
-        Iterator<CoolDown> iterator = coolDowns.iterator();
-        while (iterator.hasNext()) {
-            CoolDown coolDown = iterator.next();
-            if (coolDown.isActive()) {
-                coolDown.decrementTick();
-            } else {
-                if (coolDown.equals(CoolDownType.DEATH)) {
-                    gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
+        synchronized (interner.intern(playerId)) {
+            PlayerMetadata playerMetadata = getPlayerMetadata();
+            Set<CoolDown> coolDowns = playerMetadata.getCoolDowns();
+            Iterator<CoolDown> iterator = coolDowns.iterator();
+            while (iterator.hasNext()) {
+                CoolDown coolDown = iterator.next();
+                if (coolDown.isActive()) {
+                    coolDown.decrementTick();
+                } else {
+                    if (coolDown.equals(CoolDownType.DEATH)) {
+                        gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
+                    }
+                    iterator.remove();
                 }
-                iterator.remove();
             }
         }
     }
@@ -586,26 +606,41 @@ public class Player extends CreeperEntity {
         return builder.build();
     }
 
+    public void removePlayerFromRoom(Room room) {
+        synchronized (interner.intern(playerId)) {
+            room.removePresentPlayer(getPlayerId());
+        }
+    }
+
     public void movePlayer(PlayerMovement playerMovement) {
         synchronized (interner.intern(playerId)) {
-            Room sourceRoom = gameManager.getRoomManager().getRoom(playerMovement.getSourceRoomId());
-            Room destinationRoom = gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
-            sourceRoom.removePresentPlayer(playerMovement.getPlayer().getPlayerId());
-            for (Player next : sourceRoom.getPresentPlayers()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(playerMovement.getPlayer().getPlayerName());
-                sb.append(" ").append(playerMovement.getRoomExitMessage());
-                gameManager.getChannelUtils().write(next.getPlayerId(), sb.toString(), true);
+            Optional<Room> sourceRoom = Optional.empty();
+            if (playerMovement.getSourceRoomId() != null) {
+                sourceRoom = Optional.ofNullable(gameManager.getRoomManager().getRoom(playerMovement.getSourceRoomId()));
             }
+
+            Room destinationRoom = gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
+
+            if (sourceRoom.isPresent()) {
+                removePlayerFromRoom(sourceRoom.get());
+                sourceRoom.get().removePresentPlayer(playerMovement.getPlayer().getPlayerId());
+                for (Player next : sourceRoom.get().getPresentPlayers()) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(playerMovement.getPlayer().getPlayerName());
+                    sb.append(" ").append(playerMovement.getRoomExitMessage());
+                    gameManager.getChannelUtils().write(next.getPlayerId(), sb.toString(), true);
+                }
+                setPreviousRoom(currentRoom);
+            }
+
             destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
-            setPreviousRoom(currentRoom);
             playerMovement.getPlayer().setCurrentRoom(destinationRoom);
             for (Player next : destinationRoom.getPresentPlayers()) {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
                     continue;
                 }
             }
-            setReturnDirection(java.util.Optional.of(playerMovement.getReturnDirection()));
+            setReturnDirection(java.util.Optional.ofNullable(playerMovement.getReturnDirection()));
             gameManager.currentRoomLogic(playerId, gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId()));
             gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId());
             processNpcAggro();

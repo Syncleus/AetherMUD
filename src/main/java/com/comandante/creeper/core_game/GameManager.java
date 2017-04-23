@@ -28,6 +28,7 @@ import com.comandante.creeper.stats.modifier.StatsModifierFactory;
 import com.comandante.creeper.world.FloorManager;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
+import com.comandante.creeper.world.model.BasicRoomBuilder;
 import com.comandante.creeper.world.model.Coords;
 import com.comandante.creeper.world.model.RemoteExit;
 import com.comandante.creeper.world.model.Room;
@@ -77,6 +78,7 @@ public class GameManager {
     private final NpcMover npcMover;
     private final Spells spells;
     private final SingleThreadedCreeperEventProcessor eventProcessor = new SingleThreadedCreeperEventProcessor(new ArrayBlockingQueue<>(100000));
+    private final Room detainmentRoom;
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils) {
         this.roomManager = roomManager;
@@ -104,6 +106,19 @@ public class GameManager {
         this.npcMover = new NpcMover(this);
         this.spells = new Spells(this);
         this.eventProcessor.startAsync();
+        this.detainmentRoom = buildDetainmentRoom();
+    }
+
+    private Room buildDetainmentRoom() {
+        BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder(this);
+        basicRoomBuilder.setRoomDescription("The room is covered in a white soft padded material.  There are no visible exits.");
+        basicRoomBuilder.setRoomTitle("Detainment");
+        Room detainmentRoom = basicRoomBuilder
+                .setRoomId(-187)
+                .setFloorId(-187)
+                .createBasicRoom();
+        roomManager.addRoom(detainmentRoom);
+        return detainmentRoom;
     }
 
     public Spells getSpells() {
@@ -745,6 +760,10 @@ public class GameManager {
                 sb.append(" ");
                 sb.append(Color.GREEN + "F" + Color.RESET);
             }
+            if (player.isActive(CoolDownType.DETAINMENT)) {
+                sb.append(" ");
+                sb.append(Color.BOLD_ON + Color.RED + "DETAINED" + Color.RESET);
+            }
         }
         if (player.areAnyAlertedNpcsInCurrentRoom()) {
             sb.append(" ");
@@ -754,6 +773,10 @@ public class GameManager {
         sb.append("] ");
         sb.append(Color.RESET);
         return sb.toString();
+    }
+
+    public Room getDetainmentRoom() {
+        return detainmentRoom;
     }
 }
 

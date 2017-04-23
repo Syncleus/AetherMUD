@@ -3,6 +3,8 @@ package com.comandante.creeper.Items;
 
 import com.comandante.creeper.Items.use.DefaultApplyStatsAction;
 import com.comandante.creeper.Items.use.LightningSpellBookUseAction;
+import com.comandante.creeper.Items.use.StickOfJusticeUseAction;
+import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.stats.Stats;
@@ -19,7 +21,7 @@ public class ItemUseHandler {
         this.gameManager = gameManager;
     }
 
-    public void handle(Player player, Item item) {
+    public void handle(Player player, Item item, UseCommand.UseItemOn useItemOn) {
         ItemUseAction itemUseAction = null;
         switch (ItemType.itemTypeFromCode(item.getItemTypeId())) {
             case LIGHTNING_SPELLBOOKNG:
@@ -34,9 +36,11 @@ public class ItemUseHandler {
             case SMALL_HEALTH_POTION:
                 itemUseAction = new DefaultApplyStatsAction(ItemType.SMALL_HEALTH_POTION, buildStats(100, 0), Sets.newHashSet());
                 break;
+            case STICK_OF_JUSTICE:
+                itemUseAction = new StickOfJusticeUseAction(ItemType.STICK_OF_JUSTICE);
         }
         if (itemUseAction != null) {
-            itemUseAction.executeAction(gameManager, player, item);
+            itemUseAction.executeAction(gameManager, player, item, useItemOn);
             itemUseAction.postExecuteAction(gameManager, player, item);
         }
     }

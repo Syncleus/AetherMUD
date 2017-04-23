@@ -146,16 +146,56 @@ public enum ItemType {
             Rarity.BASIC,
             3000, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
-    LIGHTNING_SPELLBOOKNG(13, Arrays.asList("lightning book", "lightning spell book", "book", "spell book"),
+    LIGHTNING_SPELLBOOKNG(
+            // itemTypeCode
+            13,
+            // triggers
+            Arrays.asList("lightning book", "lightning spell book", "book", "spell book"),
+            // name
             "a " + Color.YELLOW + "lightning" + Color.RESET + " spell book." + Color.RESET,
+            // resting name
             "a " + Color.YELLOW + "lightning" + Color.RESET + " spell book." + Color.RESET,
+            // description
             "a " + Color.YELLOW + "lightning" + Color.RESET + " spell book." + Color.RESET,
+            // disposable?
             true,
+            // max uses
             0,
+            // half life ticks
             60,
+            // equipment/can you wear it?
             false,
+            // controls how often it will spawn (if configured in a spawn)
             Rarity.RARE,
-            3000, Sets.<TimeTracker.TimeOfDay>newHashSet()),;
+            // default sell value (gold)
+            3000,
+            // Some items have time of days where they are "valid" and times when they are not.  If they are not valid for MORNING (for example) they will turn to dust as soon as the world switches to morning.
+            Sets.<TimeTracker.TimeOfDay>newHashSet()),
+    STICK_OF_JUSTICE(
+            // itemTypeCode
+            14,
+            // triggers
+            Arrays.asList("stick of justice", "justice", "stick"),
+            // name
+            "a " + Color.BOLD_ON + Color.MAGENTA + "stick" + Color.BOLD_OFF + Color.GREEN + " of " + Color.BOLD_ON + Color.BLUE + "justice" + Color.RESET,
+            // resting name
+            "a " + Color.BOLD_ON + Color.MAGENTA + "stick" + Color.BOLD_OFF + Color.GREEN + " of " + Color.BOLD_ON + Color.BLUE + "justice" + Color.RESET,
+            // description
+            "a " + Color.BOLD_ON + Color.MAGENTA + "stick" + Color.BOLD_OFF + Color.GREEN + " of " + Color.BOLD_ON + Color.BLUE + "justice" + Color.RESET,
+            // disposable?
+            true,
+            // max uses
+            0,
+            // half life ticks
+            60,
+            // equipment/can you wear it?
+            false,
+            // controls how often it will spawn (if configured in a spawn)
+            Rarity.RARE,
+            // default sell value (gold)
+            3000,
+            // Some items have time of days where they are "valid" and times when they are not.  If they are not valid for MORNING (for example) they will turn to dust as soon as the world switches to morning.
+            Sets.<TimeTracker.TimeOfDay>newHashSet()),;
 
             
     private final Integer itemTypeCode;

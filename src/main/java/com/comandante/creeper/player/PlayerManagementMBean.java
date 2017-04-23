@@ -47,4 +47,6 @@ public interface PlayerManagementMBean {
     public void setPlayerClass(String playerClassName);
 
     public String getPlayerClass();
+
+    public void clearAllCoolDowns();
 }

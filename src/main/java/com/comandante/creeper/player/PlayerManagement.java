@@ -232,6 +232,16 @@ public class PlayerManagement implements PlayerManagementMBean {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId).getPlayerClass().getIdentifier();
     }
 
+    @Override
+    public void clearAllCoolDowns() {
+        synchronized (findInterner().intern(playerId)) {
+            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadata.resetCoolDowns();
+
+            gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+    }
+
     private Interner<String> findInterner() {
         Player player = gameManager.getPlayerManager().getPlayer(playerId);
         Interner<String> interner;

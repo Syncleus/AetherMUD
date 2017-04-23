@@ -1,6 +1,7 @@
 package com.comandante.creeper.Items.use;
 
 import com.comandante.creeper.Items.*;
+import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.stats.Stats;
@@ -27,7 +28,7 @@ public class DefaultApplyStatsAction implements ItemUseAction {
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item) {
+    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
         String playerName = player.getPlayerName();
         ItemType itemType = ItemType.itemTypeFromCode(item.getItemTypeId());
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), playerName + " uses " + itemType.getItemName() + ".\r\n");

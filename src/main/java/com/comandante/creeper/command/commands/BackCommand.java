@@ -8,6 +8,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class BackCommand extends Command {
 
@@ -26,8 +27,12 @@ public class BackCommand extends Command {
                 write("You can't move while in a fight!");
                 return;
             }
-            Room returnRoom = player.getPreviousRoom();
-            PlayerMovement playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), returnRoom.getRoomId(), "returned to where they came from.", "N/A");
+            Optional<Room> returnRoom = player.getPreviousRoom();
+            if (!returnRoom.isPresent()) {
+                write("I don't know where you came from.");
+                return;
+            }
+            PlayerMovement playerMovement = new PlayerMovement(player, currentRoom.getRoomId(), returnRoom.get().getRoomId(), "returned to where they came from.", "N/A");
             player.movePlayer(playerMovement);
         });
     }

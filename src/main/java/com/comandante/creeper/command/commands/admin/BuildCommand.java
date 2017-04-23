@@ -29,6 +29,10 @@ public class BuildCommand extends Command {
     @Override
     public synchronized void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
+            if (!currentRoomCoords.isPresent() || !mapMatrix.isPresent()) {
+                write("I don't know where you are, but I'm not going to let you build here.");
+                return;
+            }
             if (originalMessageParts.size() > 1) {
                 String desiredBuildDirection = originalMessageParts.get(1);
                 if (desiredBuildDirection.equalsIgnoreCase("notable")) {
@@ -43,23 +47,23 @@ public class BuildCommand extends Command {
                     }
                 }
                 if (desiredBuildDirection.equalsIgnoreCase("n") | desiredBuildDirection.equalsIgnoreCase("north")) {
-                    if (!currentRoom.getNorthId().isPresent() && mapMatrix.isNorthernMapSpaceEmpty(currentRoom.getRoomId())) {
-                        buildBasicRoomAndProcessAllExits(mapMatrix.getNorthCords(currentRoomCoords));
+                    if (!currentRoom.getNorthId().isPresent() && mapMatrix.get().isNorthernMapSpaceEmpty(currentRoom.getRoomId())) {
+                        buildBasicRoomAndProcessAllExits(mapMatrix.get().getNorthCords(currentRoomCoords.get()));
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("s") | desiredBuildDirection.equalsIgnoreCase("south")) {
-                    if (!currentRoom.getSouthId().isPresent() && mapMatrix.isSouthernMapSpaceEmpty(currentRoom.getRoomId())) {
-                        buildBasicRoomAndProcessAllExits(mapMatrix.getSouthCoords(currentRoomCoords));
+                    if (!currentRoom.getSouthId().isPresent() && mapMatrix.get().isSouthernMapSpaceEmpty(currentRoom.getRoomId())) {
+                        buildBasicRoomAndProcessAllExits(mapMatrix.get().getSouthCoords(currentRoomCoords.get()));
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("e") | desiredBuildDirection.equalsIgnoreCase("east")) {
-                    if (!currentRoom.getEastId().isPresent() && mapMatrix.isEasternMapSpaceEmpty(currentRoom.getRoomId())) {
-                        buildBasicRoomAndProcessAllExits(mapMatrix.getEastCoords(currentRoomCoords));
+                    if (!currentRoom.getEastId().isPresent() && mapMatrix.get().isEasternMapSpaceEmpty(currentRoom.getRoomId())) {
+                        buildBasicRoomAndProcessAllExits(mapMatrix.get().getEastCoords(currentRoomCoords.get()));
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("w") | desiredBuildDirection.equalsIgnoreCase("west")) {
-                    if (!currentRoom.getWestId().isPresent() && mapMatrix.isWesternMapSpaceEmpty(currentRoom.getRoomId())) {
-                        buildBasicRoomAndProcessAllExits(mapMatrix.getWestCoords(currentRoomCoords));
+                    if (!currentRoom.getWestId().isPresent() && mapMatrix.get().isWesternMapSpaceEmpty(currentRoom.getRoomId())) {
+                        buildBasicRoomAndProcessAllExits(mapMatrix.get().getWestCoords(currentRoomCoords.get()));
                         return;
                     }
                 } else if (desiredBuildDirection.equalsIgnoreCase("u") | desiredBuildDirection.equalsIgnoreCase("up")) {
@@ -68,7 +72,7 @@ public class BuildCommand extends Command {
                         Integer newFloorId = findUnusedFloorId();
                         RemoteExit remoteExit = new RemoteExit(RemoteExit.Direction.UP, newRoomId, "");
                         RemoteExit returnRemoteExit = new RemoteExit(RemoteExit.Direction.DOWN, currentRoom.getRoomId(), "");
-                        mapMatrix.addRemote(currentRoom.getRoomId(), remoteExit);
+                        mapMatrix.get().addRemote(currentRoom.getRoomId(), remoteExit);
                         FloorModel newFloorModel = newFloorModel(newFloorId, newRoomId, currentRoom.getRoomId(), returnRemoteExit);
                         BasicRoom basicRoom = newBasic()
                                 .setRoomId(newRoomId)
@@ -85,7 +89,7 @@ public class BuildCommand extends Command {
                         Integer newFloorId = findUnusedFloorId();
                         RemoteExit remoteExit = new RemoteExit(RemoteExit.Direction.DOWN, newRoomId, "");
                         RemoteExit returnRemoteExit = new RemoteExit(RemoteExit.Direction.UP, currentRoom.getRoomId(), "");
-                        mapMatrix.addRemote(currentRoom.getRoomId(), remoteExit);
+                        mapMatrix.get().addRemote(currentRoom.getRoomId(), remoteExit);
                         FloorModel newFloorModel = newFloorModel(newFloorId, newRoomId, currentRoom.getRoomId(), returnRemoteExit);
                         BasicRoom basicRoom = newBasic()
                                 .setRoomId(newRoomId)
@@ -106,7 +110,7 @@ public class BuildCommand extends Command {
                     Integer newFloorId = findUnusedFloorId();
                     RemoteExit remoteExit = new RemoteExit(RemoteExit.Direction.ENTER, newRoomId, enterName);
                     RemoteExit returnRemoteExit = new RemoteExit(RemoteExit.Direction.ENTER, currentRoom.getRoomId(), "Leave");
-                    mapMatrix.addRemote(currentRoom.getRoomId(), remoteExit);
+                    mapMatrix.get().addRemote(currentRoom.getRoomId(), remoteExit);
                     FloorModel newFloorModel = newFloorModel(newFloorId, newRoomId, currentRoom.getRoomId(), returnRemoteExit);
                     BasicRoom basicRoom = newBasic()
                             .setRoomId(newRoomId)
@@ -146,16 +150,16 @@ public class BuildCommand extends Command {
 
     private void buildBasicRoomAndProcessAllExits(Coords newCords) {
         Integer newRroomId = findUnusedRoomId();
-        mapMatrix.setCoordsValue(newCords, newRroomId);
+        mapMatrix.get().setCoordsValue(newCords, newRroomId);
         BasicRoom basicRoom = newBasic()
                 .setRoomId(newRroomId)
                 .setFloorId(currentRoom.getFloorId())
                 .createBasicRoom();
         roomManager.addRoom(basicRoom);
         entityManager.addEntity(basicRoom);
-        rebuildExits(basicRoom, mapMatrix);
-        rebuildExits(currentRoom, mapMatrix);
-        processExits(basicRoom, mapMatrix);
+        rebuildExits(basicRoom, mapMatrix.get());
+        rebuildExits(currentRoom, mapMatrix.get());
+        processExits(basicRoom, mapMatrix.get());
         mapsManager.generateAllMaps();
         player.movePlayer(new PlayerMovement(player, currentRoom.getRoomId(), basicRoom.getRoomId(), "", ""));
         gameManager.currentRoomLogic(player.getPlayerId());

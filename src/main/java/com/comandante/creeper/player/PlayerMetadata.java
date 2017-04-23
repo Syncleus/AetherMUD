@@ -27,8 +27,9 @@ public class PlayerMetadata implements Serializable {
     private String[] learnedSpells;
     private Map<String, Long> npcKillLog;
     private PlayerClass playerClass;
+    private Set<CoolDown> coolDowns;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells, Map<String, Long> npcKillLog, PlayerClass playerClass) {
+    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells, Map<String, Long> npcKillLog, PlayerClass playerClass, Set<CoolDown> coolDowns) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -40,6 +41,7 @@ public class PlayerMetadata implements Serializable {
         this.learnedSpells = learnedSpells;
         this.npcKillLog = npcKillLog;
         this.playerClass = playerClass;
+        this.coolDowns = coolDowns;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -56,7 +58,7 @@ public class PlayerMetadata implements Serializable {
         this.gold = new Long(playerMetadata.gold);
         this.goldInBank = new Long(playerMetadata.goldInBank);
         if (playerMetadata.playerRoleSet != null) {
-            this.playerRoleSet = Sets.newHashSet(playerMetadata.playerRoleSet);
+            this.playerRoleSet = Sets.newConcurrentHashSet(playerMetadata.playerRoleSet);
         }
         if (playerMetadata.playerEquipment != null) {
             this.playerEquipment = Arrays.copyOf(playerMetadata.playerEquipment, playerMetadata.playerEquipment.length);
@@ -76,6 +78,9 @@ public class PlayerMetadata implements Serializable {
         }
         if (playerMetadata.playerClass != null) {
             this.playerClass = playerMetadata.playerClass;
+        }
+        if (playerMetadata.coolDowns != null) {
+            this.coolDowns = Sets.newConcurrentHashSet(playerMetadata.coolDowns);
         }
     }
 
@@ -118,6 +123,13 @@ public class PlayerMetadata implements Serializable {
         } else {
             npcKillLog.put(npcName, 1L);
         }
+    }
+
+    protected void addCoolDown(CoolDown coolDown) {
+        if (this.coolDowns == null) {
+            coolDowns = Sets.newConcurrentHashSet();
+        }
+        coolDowns.add(coolDown);
     }
 
 
@@ -255,7 +267,11 @@ public class PlayerMetadata implements Serializable {
     }
 
     public void resetPlayerRoles() {
-        this.playerRoleSet = Sets.newHashSet();
+        this.playerRoleSet = Sets.newConcurrentHashSet();
+    }
+
+    public void resetCoolDowns() {
+        this.coolDowns = Sets.newConcurrentHashSet();
     }
 
     public String[] getPlayerEquipment() {
@@ -330,6 +346,17 @@ public class PlayerMetadata implements Serializable {
 
     public void setPlayerClass(PlayerClass playerClass) {
         this.playerClass = playerClass;
+    }
+
+    public Set<CoolDown> getCoolDowns() {
+        if (coolDowns == null) {
+            coolDowns = Sets.newConcurrentHashSet();
+        }
+        return coolDowns;
+    }
+
+    public void setCoolDowns(Set<CoolDown> coolDowns) {
+        this.coolDowns = coolDowns;
     }
 }
 

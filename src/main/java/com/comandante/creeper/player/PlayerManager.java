@@ -5,12 +5,14 @@ import com.codahale.metrics.Gauge;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.SessionManager;
 import com.comandante.creeper.storage.MapDbAutoCommitService;
+import com.comandante.creeper.world.model.Room;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,6 +71,16 @@ public class PlayerManager {
 
     public Player getPlayer(String playerId) {
         return players.get(playerId);
+    }
+
+    public Optional<Player> getPlayerByCommandTarget(Room room, String target) {
+        Set<Player> presentPlayers = room.getPresentPlayers();
+        for (Player presentPlayer : presentPlayers) {
+            if (presentPlayer != null && presentPlayer.getPlayerName().equals(target)) {
+                return Optional.of(presentPlayer);
+            }
+        }
+        return Optional.empty();
     }
 
     public boolean doesPlayerExist(String username) {

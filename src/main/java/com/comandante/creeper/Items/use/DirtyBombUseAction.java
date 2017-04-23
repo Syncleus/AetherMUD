@@ -1,6 +1,7 @@
 package com.comandante.creeper.Items.use;
 
 import com.comandante.creeper.Items.*;
+import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
@@ -28,7 +29,7 @@ public class DirtyBombUseAction implements ItemUseAction {
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item) {
+    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
         Room currentRoom = player.getCurrentRoom();
         if (currentRoom.getRoomId().equals(1)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " tried to detonate a " + item.getItemName() + "!");
