@@ -45,8 +45,8 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public Player player;
     public Room currentRoom;
     public String playerId;
-    public Optional<MapMatrix> mapMatrix;
-    public Optional<Coords> currentRoomCoords;
+    public Optional<MapMatrix> mapMatrix = Optional.empty();
+    public Optional<Coords> currentRoomCoords = Optional.empty();
     public List<String> originalMessageParts;
     public WorldStorage worldExporter;
     public String rootCommand;

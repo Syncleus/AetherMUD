@@ -10,11 +10,19 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
 public class NewUserRegistrationManager {
 
     private final PlayerManager playerManager;
 
-    public NewUserRegistrationManager(PlayerManager playerManager) {
+    static final int MAX_USERNAME_LENGTH = 22;
+    static final int MIN_USERNAME_LENGTH = 3;
+
+    static final CharsetEncoder ASCII_ENCODER = Charset.forName("US-ASCII").newEncoder(); // or "ISO-8859-1" for ISO Latin 1
+
+    NewUserRegistrationManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
 
@@ -40,6 +48,10 @@ public class NewUserRegistrationManager {
         String name = (String) e.getMessage();
         String username = name.replaceAll("[^a-zA-Z0-9]", "");
         PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(Main.createPlayerId(username));
+        if (!isValidUsername(username)) {
+            e.getChannel().write("Username is in invalid.\r\n");
+            return false;
+        }
         if (playerMetadata != null) {
             e.getChannel().write("Username is in use.\r\n");
             newUserRegistrationFlow(session, e);
@@ -77,6 +89,19 @@ public class NewUserRegistrationManager {
         playerManager.savePlayerMetadata(playerMetadata);
         e.getChannel().write("User created.\r\n");
         session.setState(CreeperSession.State.newUserRegCompleted);
+    }
+
+    public static boolean isValidUsername(String desired) {
+        if (desired.length() > MAX_USERNAME_LENGTH) {
+            return false;
+        }
+        if (desired.length() < MIN_USERNAME_LENGTH) {
+            return false;
+        }
+        if (!ASCII_ENCODER.canEncode(desired)) {
+            return false;
+        }
+        return true;
     }
 
 }
