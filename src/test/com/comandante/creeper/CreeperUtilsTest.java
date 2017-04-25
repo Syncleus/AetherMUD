@@ -1,6 +1,6 @@
 package com.comandante.creeper;
 
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.blackjack.BlackJack;
 import com.comandante.creeper.blackjack.Deck;
 import com.comandante.creeper.blackjack.Hand;

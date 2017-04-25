@@ -1,7 +1,7 @@
 package com.comandante.creeper.command.commands.admin;
 
-import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.Items.Loot;
+import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.command.commands.Command;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.npc.Npc;

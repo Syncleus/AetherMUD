@@ -2,7 +2,7 @@ package com.comandante.creeper.merchant;
 
 
 import com.codahale.metrics.Timer;
-import com.comandante.creeper.Items.Item;
+import com.comandante.creeper.items.Item;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;

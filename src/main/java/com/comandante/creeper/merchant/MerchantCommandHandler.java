@@ -1,7 +1,7 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.command.commands.CommandAuditLog;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;

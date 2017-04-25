@@ -1,9 +1,9 @@
-package com.comandante.creeper.Items.use;
+package com.comandante.creeper.items.use;
 
-import com.comandante.creeper.Items.Effect;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
-import com.comandante.creeper.Items.ItemUseAction;
+import com.comandante.creeper.items.Effect;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.ItemUseAction;
 import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.CoolDown;

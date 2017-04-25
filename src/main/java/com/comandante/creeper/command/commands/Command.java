@@ -1,6 +1,6 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.Items.LootManager;
+import com.comandante.creeper.items.LootManager;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;

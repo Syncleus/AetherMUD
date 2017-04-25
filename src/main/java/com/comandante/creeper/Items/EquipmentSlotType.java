@@ -1,4 +1,4 @@
-package com.comandante.creeper.Items;
+package com.comandante.creeper.items;
 
 
 import com.google.common.collect.Lists;

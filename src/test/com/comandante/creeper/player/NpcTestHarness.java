@@ -1,7 +1,7 @@
 package com.comandante.creeper.player;
 
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.configuration.ConfigureCommands;
 import com.comandante.creeper.configuration.CreeperConfiguration;

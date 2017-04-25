@@ -1,9 +1,9 @@
 package com.comandante.creeper.entity;
 
-import com.comandante.creeper.Items.Effect;
-import com.comandante.creeper.Items.EffectSerializer;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemSerializer;
+import com.comandante.creeper.items.Effect;
+import com.comandante.creeper.items.EffectSerializer;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemSerializer;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.npc.Npc;

@@ -1,8 +1,8 @@
 package com.comandante.creeper.world.model;
 
-import com.comandante.creeper.Items.Forage;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.Forage;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.service.TimeTracker;
 import com.comandante.creeper.entity.CreeperEntity;

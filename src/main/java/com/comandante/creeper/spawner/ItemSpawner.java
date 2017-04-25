@@ -1,8 +1,8 @@
 package com.comandante.creeper.spawner;
 
 import com.codahale.metrics.MetricRegistry;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.ItemType;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.CreeperEntity;

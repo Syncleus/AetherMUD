@@ -1,10 +1,10 @@
 package com.comandante.creeper.npc;
 
 
-import com.comandante.creeper.Items.Effect;
-import com.comandante.creeper.Items.Item;
-import com.comandante.creeper.Items.Loot;
-import com.comandante.creeper.Items.Rarity;
+import com.comandante.creeper.items.Effect;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.Loot;
+import com.comandante.creeper.items.Rarity;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;

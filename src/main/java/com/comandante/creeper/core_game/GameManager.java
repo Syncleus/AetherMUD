@@ -1,7 +1,7 @@
 package com.comandante.creeper.core_game;
 
 
-import com.comandante.creeper.Items.*;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.bot.IrcBotService;
 import com.comandante.creeper.bot.command.BotCommandFactory;
