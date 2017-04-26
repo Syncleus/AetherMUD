@@ -84,7 +84,7 @@ public class GameManager {
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
-        this.newUserRegistrationManager = new NewUserRegistrationManager(playerManager);
+        this.newUserRegistrationManager = new NewUserRegistrationManager(this);
         this.multiLineInputManager = new MultiLineInputManager();
         this.mapsManager = mapsManager;
         this.floorManager = new FloorManager();

@@ -10,21 +10,16 @@ import java.util.Map;
 public class PlayerManagementManager {
 
     private final GameManager gameManager;
-    private final MBeanServer mbs;
     private static final Logger log = Logger.getLogger(PlayerManagementManager.class);
 
 
     public PlayerManagementManager(GameManager gameManager) {
         this.gameManager = gameManager;
-        this.mbs = ManagementFactory.getPlatformMBeanServer();
     }
 
     public void createAndRegisterAllPlayerManagementMBeans() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
         for (Map.Entry<String, PlayerMetadata> entry : gameManager.getPlayerManager().getPlayerMetadataStore().entrySet()) {
-            String playerId = entry.getKey();
-            PlayerMetadata playerMetadata = entry.getValue();
-            PlayerManagement playerJMXManagement = new PlayerManagement(gameManager, playerId);
-            mbs.registerMBean(playerJMXManagement, new ObjectName("CreeperManagement:00=Players,name=" + playerMetadata.getPlayerName()));
+            registerPlayer(entry.getValue().getPlayerName(), entry.getValue().getPlayerId(), gameManager);
         }
     }
 
@@ -47,5 +42,11 @@ public class PlayerManagementManager {
                     log.info(playerMetadata.getPlayerName() + " has been removed from the game.");
             }
         }
+    }
+
+    public static void registerPlayer(String playerName, String playerId, GameManager gameManager) throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
+        MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
+        PlayerManagement playerJMXManagement = new PlayerManagement(gameManager, playerId);
+        platformMBeanServer.registerMBean(playerJMXManagement, new ObjectName("CreeperManagement:00=Players,name=" + playerName));
     }
 }

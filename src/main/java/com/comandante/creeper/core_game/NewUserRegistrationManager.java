@@ -8,6 +8,7 @@ import com.comandante.creeper.stats.DefaultStats;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.apache.log4j.Logger;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.nio.charset.Charset;
@@ -15,15 +16,17 @@ import java.nio.charset.CharsetEncoder;
 
 public class NewUserRegistrationManager {
 
-    private final PlayerManager playerManager;
+    private final GameManager gameManager;
 
     static final int MAX_USERNAME_LENGTH = 22;
     static final int MIN_USERNAME_LENGTH = 3;
 
     static final CharsetEncoder ASCII_ENCODER = Charset.forName("US-ASCII").newEncoder(); // or "ISO-8859-1" for ISO Latin 1
 
-    NewUserRegistrationManager(PlayerManager playerManager) {
-        this.playerManager = playerManager;
+    private static final Logger log = Logger.getLogger(NewUserRegistrationManager.class);
+
+    NewUserRegistrationManager(GameManager gameManager) {
+        this.gameManager = gameManager;
     }
 
     public void handle(CreeperSession session, MessageEvent e) {
@@ -47,7 +50,7 @@ public class NewUserRegistrationManager {
     private boolean setDesiredUsername(CreeperSession session, MessageEvent e) {
         String name = (String) e.getMessage();
         String username = name.replaceAll("[^a-zA-Z0-9]", "");
-        PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(Main.createPlayerId(username));
+        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
         if (!isValidUsername(username)) {
             e.getChannel().write("Username is in invalid.\r\n");
             return false;
@@ -66,11 +69,11 @@ public class NewUserRegistrationManager {
         session.setState(CreeperSession.State.newUserPromptedForPassword);
     }
 
-    private void createUser(CreeperSession session, MessageEvent e) {
-        String password = (String) e.getMessage();
+    private void createUser(CreeperSession session, MessageEvent messageEvent) {
+        String password = (String) messageEvent.getMessage();
         if (password.length() < 8) {
-            e.getChannel().write("Passwords must be at least 8 characters.\r\n");
-            newUserRegistrationFlow(session, e);
+            messageEvent.getChannel().write("Passwords must be at least 8 characters.\r\n");
+            newUserRegistrationFlow(session, messageEvent);
             return;
         }
         session.setPassword(Optional.of(password));
@@ -86,9 +89,14 @@ public class NewUserRegistrationManager {
                 Maps.newHashMap(),
                 PlayerClass.BASIC,
                 Sets.newConcurrentHashSet(Sets.newHashSet(new CoolDown(CoolDownType.NEWBIE))));
-        playerManager.savePlayerMetadata(playerMetadata);
-        e.getChannel().write("User created.\r\n");
+        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        messageEvent.getChannel().write("User created.\r\n");
         session.setState(CreeperSession.State.newUserRegCompleted);
+        try {
+            PlayerManagementManager.registerPlayer(playerMetadata.getPlayerName(), playerMetadata.getPlayerId(), gameManager);
+        } catch (Exception e) {
+            log.error("Problem registering new player in the MBean server!");
+        }
     }
 
     public static boolean isValidUsername(String desired) {
