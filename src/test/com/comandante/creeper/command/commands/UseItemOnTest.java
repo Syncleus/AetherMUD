@@ -26,9 +26,9 @@ public class UseItemOnTest {
     }
 
     @Test
-    public void testUseItemOnParseWithTargetSpecified() {
+    public void testUseItemOnParseWithTargetSpecifiedHasOnInName() {
         String itemTrigger = "a spell book wow.";
-        String itemTarget = "big bad wolf";
+        String itemTarget = "BONONONIGBOGCHRNGVONJAONL";
         String fullCommand = "use " + itemTrigger + " on " + itemTarget;
         List<String> originalMessageParts = Command.getOriginalMessageParts(fullCommand);
         UseCommand.UseItemOn useItemOn = new UseCommand.UseItemOn(originalMessageParts);

@@ -129,6 +129,9 @@ public class PlayerMetadata implements Serializable {
         if (this.coolDowns == null) {
             coolDowns = Sets.newConcurrentHashSet();
         }
+        if (coolDowns.stream().anyMatch(c -> c.getCoolDownType().equals(coolDown.getCoolDownType()))) {
+            return;
+        }
         coolDowns.add(coolDown);
     }
 

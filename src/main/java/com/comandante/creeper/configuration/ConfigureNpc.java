@@ -1,11 +1,12 @@
 package com.comandante.creeper.configuration;
 
-import com.comandante.creeper.items.ForageBuilder;
-import com.comandante.creeper.items.ItemType;
-import com.comandante.creeper.items.Loot;
+
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.items.ForageBuilder;
+import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.merchant.*;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spawner.ItemSpawner;

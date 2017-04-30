@@ -1,7 +1,6 @@
 package com.comandante.creeper.core_game;
 
 
-import com.comandante.creeper.items.*;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.bot.IrcBotService;
 import com.comandante.creeper.bot.command.BotCommandFactory;
@@ -11,6 +10,7 @@ import com.comandante.creeper.core_game.service.SingleThreadedCreeperEventProces
 import com.comandante.creeper.core_game.service.TimeTracker;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcMover;
@@ -111,7 +111,7 @@ public class GameManager {
 
     private Room buildDetainmentRoom() {
         BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder(this);
-        basicRoomBuilder.setRoomDescription("The room is covered in a white soft padded material.  There are no visible exits.");
+        basicRoomBuilder.setRoomDescription("The room is covered in a white soft padded material.");
         basicRoomBuilder.setRoomTitle("Detainment");
         Room detainmentRoom = basicRoomBuilder
                 .setRoomId(-187)

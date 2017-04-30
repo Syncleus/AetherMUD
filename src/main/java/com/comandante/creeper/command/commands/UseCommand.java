@@ -1,8 +1,8 @@
 package com.comandante.creeper.command.commands;
 
 
-import com.comandante.creeper.items.Item;
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.items.Item;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import org.apache.commons.lang.StringUtils;
@@ -62,7 +62,7 @@ public class UseCommand extends Command {
             if (!StringUtils.containsIgnoreCase(fullCommand, ON_KEYWORD)) {
                 return fullCommand;
             }
-            List<String> parts = Arrays.asList(fullCommand.split("(?i)" + ON_KEYWORD));
+            List<String> parts = Arrays.asList(fullCommand.split("(?i)" + ON_KEYWORD, 2));
             String item = parts.get(0);
             return item.trim();
         }
@@ -71,7 +71,7 @@ public class UseCommand extends Command {
             if (!StringUtils.containsIgnoreCase(fullCommand, ON_KEYWORD)) {
                 return Optional.empty();
             }
-            List<String> parts = Arrays.asList(fullCommand.split("(?i)" + ON_KEYWORD));
+            List<String> parts = Arrays.asList(fullCommand.split("(?i)" + ON_KEYWORD, 2));
             if (parts.size() > 1) {
                 String item = parts.get(1);
                 return Optional.of(item.trim());

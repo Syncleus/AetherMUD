@@ -69,7 +69,9 @@ public class NpcSpawner extends CreeperEntity {
     }
 
     private void createAndAddItem(Area spawnArea) {
-        List<Room> rooms = gameManager.getRoomManager().getRoomsByArea(spawnArea).stream().filter(getRoomsWithRoom()).collect(Collectors.toList());
+        List<Room> rooms = gameManager.getRoomManager().getRoomsByArea(spawnArea).stream()
+                .filter(findRoomsWithOccupancy(npc))
+                .collect(Collectors.toList());
         Room room = rooms.get(random.nextInt(rooms.size()));
         NpcBuilder npcBuilder = new NpcBuilder(npc);
         Npc newNpc = npcBuilder.createNpc();
@@ -81,30 +83,14 @@ public class NpcSpawner extends CreeperEntity {
         Main.metrics.counter(MetricRegistry.name(NpcSpawner.class, npc.getName() + "-spawn")).inc();
     }
 
-    private Predicate<Room> getRoomsWithRoomNew() {
+    private Predicate<Room> findRoomsWithOccupancy(Npc npc) {
         return room -> {
-            int count = room.getNpcIds().stream().filter(npcId -> {
-                Npc npcEntity = gameManager.getEntityManager().getNpcEntity(npcId);
-                return npcEntity.getName().equals(npc.getName());
-            }).collect(Collectors.toList()).size();
-            return count < spawnRule.getMaxPerRoom();
-        };
-    }
+            long count = room.getNpcIds().stream()
+                    .map(npcId -> gameManager.getEntityManager().getNpcEntity(npcId))
+                    .filter(n -> n.getName().equals(npc.getName()))
+                    .count();
 
-    private Predicate<Room> getRoomsWithRoom() {
-        return room -> {
-            int count = 0;
-            Set<String> npcIds = room.getNpcIds();
-            for (String npcId : npcIds) {
-                Npc npcEntity = gameManager.getEntityManager().getNpcEntity(npcId);
-                if (npcEntity.getName().equals(npc.getName())) {
-                    count++;
-                }
-            }
-            if (count < spawnRule.getMaxPerRoom()) {
-                return true;
-            }
-            return false;
+            return count < spawnRule.getMaxPerRoom();
         };
     }
 }
