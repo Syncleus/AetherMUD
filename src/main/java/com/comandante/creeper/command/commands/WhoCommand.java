@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class WhoCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("who", "/who");
+    final static List<String> validTriggers = Arrays.asList("who");
     final static String description = "Display who is currently logged into the mud.";
     final static String correctUsage = "who";
 

@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class SystemInfo extends Command {
-    final static List<String> validTriggers = Arrays.asList("sysinfo", "systeminfo", "sys", "/sys");
+    final static List<String> validTriggers = Arrays.asList("sysinfo", "systeminfo", "sys");
     final static String description = "Display System information.";
     final static String correctUsage = "systeminfo";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);

@@ -14,7 +14,7 @@ import java.util.*;
 
 public class UsersCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("users", "/users");
+    final static List<String> validTriggers = Arrays.asList("users");
     final static String description = "Display extended inforation about who is logged in.";
     final static String correctUsage = "users";
 

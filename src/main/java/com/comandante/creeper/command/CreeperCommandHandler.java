@@ -60,10 +60,12 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
         Command commandByTrigger = null;
 
         String rootCommand = getRootCommand(e);
-        if (rootCommand.startsWith("/")) {
-            commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand);
-        } else if (player.isChatModeOn()) {
-            commandByTrigger = new GossipCommand(gameManager);
+        if (player.isChatModeOn()) {
+            if (rootCommand.startsWith("/")) {
+                commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand.substring(1));
+            } else {
+                commandByTrigger = new GossipCommand(gameManager);
+            }
         } else {
             commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand);
         }
