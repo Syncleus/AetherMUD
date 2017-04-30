@@ -2,12 +2,12 @@ package com.comandante.creeper.player;
 
 
 import com.codahale.metrics.Meter;
-import com.comandante.creeper.items.*;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.common.CreeperUtils;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.npc.Temperament;
@@ -29,6 +29,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Player extends CreeperEntity {
@@ -48,6 +49,8 @@ public class Player extends CreeperEntity {
     private final Set<Npc> alertedNpcs = Sets.newHashSet();
     private Optional<Room> previousRoom = Optional.empty();
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
+    private AtomicBoolean isChatMode = new AtomicBoolean(false);
+
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -1264,5 +1267,29 @@ public class Player extends CreeperEntity {
         public void run() {
 
         }
+    }
+
+    public boolean toggleChat() {
+        synchronized (interner.intern(playerId)) {
+            if (isChatModeOn()) {
+                setNotIsChatMode();
+                return false;
+            } else {
+                setIsChatMode();
+                return true;
+            }
+        }
+    }
+
+    public void setIsChatMode() {
+        this.isChatMode.compareAndSet(false, true);
+    }
+
+    public void setNotIsChatMode() {
+        this.isChatMode.compareAndSet(true, false);
+    }
+
+    public boolean isChatModeOn() {
+        return isChatMode.get();
     }
 }

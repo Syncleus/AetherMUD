@@ -10,7 +10,7 @@ import java.util.List;
 
 public class RecentGossipCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("recentgossip", "rg");
+    final static List<String> validTriggers = Arrays.asList("recentgossip", "rg", "/rg");
     final static String description = "Replay recent gossip.";
     final static String correctUsage = "recentgossip 30";
 

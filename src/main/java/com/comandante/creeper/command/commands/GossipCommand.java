@@ -27,11 +27,13 @@ public class GossipCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            if (originalMessageParts.size() == 1) {
-                write("Nothing to gossip about?");
-                return;
+            if (!player.isChatModeOn()) {
+                if (originalMessageParts.size() == 1) {
+                    write("Nothing to gossip about?");
+                    return;
+                }
+                originalMessageParts.remove(0);
             }
-            originalMessageParts.remove(0);
             String msg = Joiner.on(" ").join(originalMessageParts);
             try {
                 if (msg.startsWith("!!")) {
@@ -41,7 +43,7 @@ public class GossipCommand extends Command {
             } catch (Exception ex) {
                 log.error("Problem executing bot command from gossip channel!", ex);
             }
-            String gossipMessage = WHITE + "[" + RESET + MAGENTA + this.player.getPlayerName() +  WHITE + "] " + RESET + CYAN + msg + RESET;
+            String gossipMessage = WHITE + "[" + RESET + MAGENTA + this.player.getPlayerName() + WHITE + "] " + RESET + CYAN + msg + RESET;
             playerManager.getAllPlayersMap().forEach((s, destinationPlayer) -> {
                 if (destinationPlayer.getPlayerId().equals(playerId)) {
                     write(gossipMessage);

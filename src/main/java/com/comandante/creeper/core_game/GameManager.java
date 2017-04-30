@@ -790,6 +790,10 @@ public class GameManager {
         sb.append(Color.BOLD_ON + Color.WHITE);
         sb.append("] ");
         sb.append(Color.RESET);
+        if (player.isChatModeOn()) {
+            sb.append("<" + Color.GREEN + "=" + Color.RESET + "> ");
+        }
+
         return sb.toString();
     }
 

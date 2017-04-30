@@ -5,6 +5,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.command.commands.Command;
 import com.comandante.creeper.command.commands.CommandAuditLog;
+import com.comandante.creeper.command.commands.GossipCommand;
 import com.comandante.creeper.command.commands.UnknownCommand;
 import com.comandante.creeper.configuration.ConfigureCommands;
 import com.comandante.creeper.core_game.GameManager;
@@ -32,14 +33,15 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        String rootCommand = getRootCommand(e);
         CreeperSession session = (CreeperSession) e.getChannel().getAttachment();
+        Player player = gameManager.getPlayerManager().getPlayerByUsername(session.getUsername().get());
         session.setLastActivity(System.currentTimeMillis());
         if (session.getGrabMultiLineInput().isPresent()) {
             addLastHandler(e, new MultiLineInputHandler(gameManager));
             super.messageReceived(ctx, e);
             return;
         }
+
         if (session.getGrabMerchant().isPresent()) {
             Merchant merchant = session.getGrabMerchant().get().getKey();
             if (merchant.getMerchantType() == Merchant.MerchantType.BANK) {
@@ -54,9 +56,18 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
             super.messageReceived(ctx, e);
             return;
         }
-        Command commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand);
 
-        Player player = gameManager.getPlayerManager().getPlayerByUsername(session.getUsername().get());
+        Command commandByTrigger = null;
+
+        String rootCommand = getRootCommand(e);
+        if (rootCommand.startsWith("/")) {
+            commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand);
+        } else if (player.isChatModeOn()) {
+            commandByTrigger = new GossipCommand(gameManager);
+        } else {
+            commandByTrigger = ConfigureCommands.creeperCommandRegistry.getCommandByTrigger(rootCommand);
+        }
+
         if ((commandByTrigger.roles != null) && commandByTrigger.roles.size() > 0) {
             boolean roleMatch = gameManager.getPlayerManager().hasAnyOfRoles(player, commandByTrigger.roles);
             if (!roleMatch) {
@@ -65,10 +76,12 @@ public class CreeperCommandHandler extends SimpleChannelUpstreamHandler {
                 return;
             }
         }
+
         if (commandByTrigger.getDescription() != null) {
             Main.metrics.counter(MetricRegistry.name(CreeperCommandHandler.class, rootCommand)).inc();
             CommandAuditLog.logCommand((String) e.getMessage(), session.getUsername().get());
         }
+
         commandMeter.mark();
         // Always create a copy of the command.
         addLastHandler(e, commandByTrigger.copy());
