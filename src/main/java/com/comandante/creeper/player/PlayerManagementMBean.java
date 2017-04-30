@@ -24,7 +24,7 @@ public interface PlayerManagementMBean {
 
     void setMana(long amt);
 
-    void sendMessageFromGod(String message);
+    void sendAdminMessage(String message);
 
     void setExperience(long amt);
 
