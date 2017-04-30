@@ -213,6 +213,24 @@ public class GameManager {
         }
     }
 
+    public void detainPlayer(Player player) {
+        // Source room Id is null, meaning it will disable things like the "Back" command.  Since its null you need to
+        // remove the player from the current room manually.
+        PlayerMovement playerMovement = new PlayerMovement(player,
+                null,
+                detainmentRoom.getRoomId(),
+                "has been placed under arrest.",
+                null);
+
+        player.removePlayerFromRoom(player.getCurrentRoom());
+        player.movePlayer(playerMovement);
+        playerManager.getAllPlayersMap().forEach((s, destinationPlayer) -> {
+            channelUtils.write(destinationPlayer.getPlayerId(),
+                    player.getPlayerName() + " has been " + Color.BOLD_ON + Color.RED + "DETAINED" + Color.RESET + "!" + "\r\n", true);
+        });
+        player.addCoolDown(new CoolDown(CoolDownType.DETAINMENT));
+    }
+
     public void announceConnect(String userName) {
         Set<Player> allPlayers = getAllPlayers();
         for (Player p : allPlayers) {

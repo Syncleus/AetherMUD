@@ -8,45 +8,47 @@ public interface PlayerManagementMBean {
 
     boolean getMarkForDelete();
 
-    public long getGold();
+    long getGold();
 
-    public long getGoldInBankAmount();
+    long getGoldInBankAmount();
 
-    public void setGoldInBankAmount(long amt);
+    void setGoldInBankAmount(long amt);
 
-    public void setGold(long amt);
+    void setGold(long amt);
 
-    public long getHealth();
+    long getHealth();
 
-    public long getMana();
+    long getMana();
 
-    public void setHealth(long amt);
+    void setHealth(long amt);
 
-    public void setMana(long amt);
+    void setMana(long amt);
 
-    public void sendMessageFromGod(String message);
+    void sendMessageFromGod(String message);
 
-    public void setExperience(long amt);
+    void setExperience(long amt);
 
-    public long getExperience();
+    long getExperience();
 
-    public void setRoles(String roles);
+    void setRoles(String roles);
 
-    public String getRoles();
+    String getRoles();
 
-    public Map<String, String> getInventory();
+    Map<String, String> getInventory();
 
-    public String getPassword();
+    String getPassword();
 
-    public void setPassword(String password);
+    void setPassword(String password);
 
     Map<String, String> getLockerInventory();
 
-    public String createItemInInventory(int itemTypeId);
+    String createItemInInventory(int itemTypeId);
 
-    public void setPlayerClass(String playerClassName);
+    void setPlayerClass(String playerClassName);
 
-    public String getPlayerClass();
+    String getPlayerClass();
 
-    public void clearAllCoolDowns();
+    void clearAllCoolDowns();
+
+    void detain();
 }

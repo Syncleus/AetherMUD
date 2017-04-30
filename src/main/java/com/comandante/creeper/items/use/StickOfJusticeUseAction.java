@@ -1,16 +1,12 @@
 package com.comandante.creeper.items.use;
 
+import com.comandante.creeper.command.commands.UseCommand;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.items.Item;
 import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.items.ItemUseAction;
-import com.comandante.creeper.command.commands.UseCommand;
-import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.player.CoolDown;
-import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMovement;
-import com.comandante.creeper.server.player_communication.Color;
 
 import java.util.Optional;
 import java.util.Set;
@@ -44,20 +40,7 @@ public class StickOfJusticeUseAction implements ItemUseAction {
 
         Player targetedPlayer = playerByCommandTarget.get();
 
-        // Source room Id is null, meaning it will disable things like the "Back" command.  Since its null you need to
-        // remove the player from the current room manually.
-        PlayerMovement playerMovement = new PlayerMovement(targetedPlayer,
-                null,
-                gameManager.getDetainmentRoom().getRoomId(),
-                "has been placed under arrest.",
-                null);
-
-        targetedPlayer.removePlayerFromRoom(player.getCurrentRoom());
-        targetedPlayer.movePlayer(playerMovement);
-        gameManager.getPlayerManager().getAllPlayersMap().forEach((s, destinationPlayer) -> {
-            gameManager.getChannelUtils().write(destinationPlayer.getPlayerId(), targetedPlayer.getPlayerName() + " has been " + Color.BOLD_ON + Color.RED + "DETAINED" + Color.RESET + "!" + "\r\n", true);
-        });
-        targetedPlayer.addCoolDown(new CoolDown(CoolDownType.DETAINMENT));
+        gameManager.detainPlayer(targetedPlayer);
     }
 
     @Override

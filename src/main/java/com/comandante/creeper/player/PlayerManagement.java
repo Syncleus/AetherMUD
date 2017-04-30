@@ -1,8 +1,8 @@
 package com.comandante.creeper.player;
 
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.Item;
 import com.comandante.creeper.items.ItemType;
-import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;
@@ -239,6 +239,13 @@ public class PlayerManagement implements PlayerManagementMBean {
             playerMetadata.resetCoolDowns();
 
             gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        }
+    }
+
+    @Override
+    public void detain() {
+        synchronized (findInterner().intern(playerId)) {
+            gameManager.detainPlayer(gameManager.getPlayerManager().getPlayer(playerId));
         }
     }
 
