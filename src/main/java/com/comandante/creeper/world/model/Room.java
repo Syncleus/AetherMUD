@@ -190,9 +190,6 @@ public abstract class Room extends CreeperEntity {
         Set<Player> players = Sets.newHashSet();
         for (String playerId : presentPlayerIds) {
             Player player = gameManager.getPlayerManager().getPlayer(playerId);
-            if (player.getCurrentRoom() != null && !player.getCurrentRoom().getRoomId().equals(this.roomId)) {
-                removePresentPlayer(playerId);
-            }
             if (player != null) {
                 players.add(player);
             }
