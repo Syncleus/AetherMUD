@@ -6,14 +6,17 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class SingleThreadedCreeperEventProcessor extends AbstractScheduledService {
+public class MultiThreadedEventProcessor extends AbstractScheduledService {
 
     private final ArrayBlockingQueue<CreeperEvent> creeperEventQueue;
-    private static final Logger log = Logger.getLogger(SingleThreadedCreeperEventProcessor.class);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private static final Logger log = Logger.getLogger(MultiThreadedEventProcessor.class);
 
-    public SingleThreadedCreeperEventProcessor(ArrayBlockingQueue<CreeperEvent> creeperEventQueue) {
+    public MultiThreadedEventProcessor(ArrayBlockingQueue<CreeperEvent> creeperEventQueue) {
         this.creeperEventQueue = creeperEventQueue;
     }
 
@@ -21,7 +24,9 @@ public class SingleThreadedCreeperEventProcessor extends AbstractScheduledServic
     protected void runOneIteration() throws Exception {
         ArrayList<CreeperEvent> events = Lists.newArrayList();
         creeperEventQueue.drainTo(events);
-        events.forEach(this::safeRun);
+        for (CreeperEvent event: events) {
+            executorService.submit(() -> safeRun(event));
+        }
     }
 
     public void addEvent(CreeperEvent event) {
@@ -42,6 +47,6 @@ public class SingleThreadedCreeperEventProcessor extends AbstractScheduledServic
 
     @Override
     protected Scheduler scheduler() {
-        return Scheduler.newFixedDelaySchedule(0, 50, TimeUnit.MILLISECONDS);
+        return Scheduler.newFixedDelaySchedule(0, 10, TimeUnit.MILLISECONDS);
     }
 }

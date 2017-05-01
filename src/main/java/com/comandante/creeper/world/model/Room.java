@@ -1,11 +1,11 @@
 package com.comandante.creeper.world.model;
 
-import com.comandante.creeper.items.Forage;
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.service.TimeTracker;
 import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.items.Forage;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
@@ -190,6 +190,9 @@ public abstract class Room extends CreeperEntity {
         Set<Player> players = Sets.newHashSet();
         for (String playerId : presentPlayerIds) {
             Player player = gameManager.getPlayerManager().getPlayer(playerId);
+            if (player.getCurrentRoom() != null && !player.getCurrentRoom().getRoomId().equals(this.roomId)) {
+                removePresentPlayer(playerId);
+            }
             if (player != null) {
                 players.add(player);
             }

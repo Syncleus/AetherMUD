@@ -88,7 +88,8 @@ public class NewUserRegistrationManager {
                 new String[0],
                 Maps.newHashMap(),
                 PlayerClass.BASIC,
-                Sets.newConcurrentHashSet(Sets.newHashSet(new CoolDown(CoolDownType.NEWBIE))));
+                Sets.newConcurrentHashSet(Sets.newHashSet(new CoolDown(CoolDownType.NEWBIE))),
+                null);
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
         messageEvent.getChannel().write("User created.\r\n");
         session.setState(CreeperSession.State.newUserRegCompleted);

@@ -6,7 +6,7 @@ import com.comandante.creeper.bot.IrcBotService;
 import com.comandante.creeper.bot.command.BotCommandFactory;
 import com.comandante.creeper.bot.command.BotCommandManager;
 import com.comandante.creeper.configuration.CreeperConfiguration;
-import com.comandante.creeper.core_game.service.SingleThreadedCreeperEventProcessor;
+import com.comandante.creeper.core_game.service.MultiThreadedEventProcessor;
 import com.comandante.creeper.core_game.service.TimeTracker;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.entity.EntityManager;
@@ -77,7 +77,7 @@ public class GameManager {
     private final ItemUseHandler itemUseHandler;
     private final NpcMover npcMover;
     private final Spells spells;
-    private final SingleThreadedCreeperEventProcessor eventProcessor = new SingleThreadedCreeperEventProcessor(new ArrayBlockingQueue<>(100000));
+    private final MultiThreadedEventProcessor eventProcessor = new MultiThreadedEventProcessor(new ArrayBlockingQueue<>(10000));
     private final Room detainmentRoom;
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils) {
@@ -197,14 +197,14 @@ public class GameManager {
         return timeTracker;
     }
 
-    public SingleThreadedCreeperEventProcessor getEventProcessor() {
+    public MultiThreadedEventProcessor getEventProcessor() {
         return eventProcessor;
     }
 
     public void placePlayerInLobby(Player player) {
         Room room = roomManager.getRoom(LOBBY_ID);
         room.addPresentPlayer(player.getPlayerId());
-        player.setCurrentRoom(room);
+        player.setCurrentRoomAndPersist(room);
         for (Player next : room.getPresentPlayers()) {
             if (next.getPlayerId().equals(player.getPlayerId())) {
                 continue;

@@ -36,9 +36,15 @@ public class GameAuth implements CreeperAuthenticator {
                 currentRoom = playerCurrentRoom.get();
             }
         }
+
         Player player = new Player(username, gameManager);
         if (currentRoom != null) {
-            player.setCurrentRoom(currentRoom);
+            player.setCurrentRoomAndPersist(currentRoom);
+        } else {
+            currentRoom = player.getCurrentRoom();
+            if (currentRoom != null) {
+                player.setCurrentRoom(player.getCurrentRoom());
+            }
         }
         player.setChannel(channel);
         gameManager.getPlayerManager().addPlayer(player);

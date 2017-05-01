@@ -1,13 +1,13 @@
 package com.comandante.creeper.player;
 
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.configuration.ConfigureCommands;
 import com.comandante.creeper.configuration.CreeperConfiguration;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SessionManager;
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.server.model.CreeperSession;
@@ -227,7 +227,7 @@ public class NpcTestHarness {
     }
 
     private void createUser(String username, String password) {
-        PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), DefaultStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC, Sets.newHashSet());
+        PlayerMetadata playerMetadata = new PlayerMetadata(username, password, Main.createPlayerId(username), DefaultStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), new String[0], 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC, Sets.newHashSet(), null);
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
     }
 

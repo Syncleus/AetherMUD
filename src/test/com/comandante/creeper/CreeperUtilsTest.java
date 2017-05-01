@@ -1,12 +1,12 @@
 package com.comandante.creeper;
 
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.blackjack.BlackJack;
 import com.comandante.creeper.blackjack.Deck;
 import com.comandante.creeper.blackjack.Hand;
 import com.comandante.creeper.common.CreeperUtils;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.player.*;
 import com.comandante.creeper.stats.DefaultStats;
 import com.comandante.creeper.stats.modifier.StatsModifierFactory;
@@ -32,7 +32,7 @@ public class CreeperUtilsTest {
         String[] strings = new String[2];
         strings[0] = "feet";
         strings[1] = "hand";
-        PlayerMetadata playerMetadata = new PlayerMetadata("usertest", "Testtest", Main.createPlayerId("usertest"), DefaultStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), strings, 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC, Sets.newHashSet());
+        PlayerMetadata playerMetadata = new PlayerMetadata("usertest", "Testtest", Main.createPlayerId("usertest"), DefaultStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), strings, 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC, Sets.newHashSet(), null);
         GameManager gameManager = mock(GameManager.class);
         StatsModifierFactory statsModifierFactory = mock(StatsModifierFactory.class);
         when(statsModifierFactory.getStatsModifier(Matchers.any())).thenReturn(DefaultStats.DEFAULT_PLAYER.createStats());

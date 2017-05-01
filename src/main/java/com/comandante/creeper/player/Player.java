@@ -597,11 +597,29 @@ public class Player extends CreeperEntity {
     }
 
     public Room getCurrentRoom() {
+        if (currentRoom == null) {
+            Integer currentRoomId = getPlayerMetadata().getCurrentRoomId();
+            if (currentRoomId != null) {
+                return gameManager.getRoomManager().getRoom(currentRoomId);
+            }
+        }
         return currentRoom;
     }
 
-    public void setCurrentRoom(Room currentRoom) {
-        this.currentRoom = currentRoom;
+    public void setCurrentRoomAndPersist(Room currentRoom) {
+        // Persisting lazily so that performance doesn't suffer.
+        gameManager.getEventProcessor().addEvent(() -> {
+            synchronized (interner.intern(playerId)) {
+                PlayerMetadata playerMetadata = getPlayerMetadata();
+                playerMetadata.setCurrentRoomId(currentRoom.getRoomId());
+                savePlayerMetadata(playerMetadata);
+            }
+        });
+        setCurrentRoom(currentRoom);
+    }
+
+    public void setCurrentRoom(Room room) {
+        this.currentRoom = room;
     }
 
     public Map<String, Long> getNpcKillLog() {
@@ -627,7 +645,6 @@ public class Player extends CreeperEntity {
 
             if (sourceRoom.isPresent()) {
                 removePlayerFromRoom(sourceRoom.get());
-                sourceRoom.get().removePresentPlayer(playerMovement.getPlayer().getPlayerId());
                 for (Player next : sourceRoom.get().getPresentPlayers()) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(playerMovement.getPlayer().getPlayerName());
@@ -638,7 +655,7 @@ public class Player extends CreeperEntity {
             }
 
             destinationRoom.addPresentPlayer(playerMovement.getPlayer().getPlayerId());
-            playerMovement.getPlayer().setCurrentRoom(destinationRoom);
+            setCurrentRoomAndPersist(destinationRoom);
             for (Player next : destinationRoom.getPresentPlayers()) {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
                     continue;

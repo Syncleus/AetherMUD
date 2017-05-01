@@ -28,8 +28,21 @@ public class PlayerMetadata implements Serializable {
     private Map<String, Long> npcKillLog;
     private PlayerClass playerClass;
     private Set<CoolDown> coolDowns;
+    private Integer currentRoomId;
 
-    public PlayerMetadata(String playerName, String password, String playerId, Stats stats, int gold, Set<PlayerRole> playerRoleSet, String[] playerEquipment, int goldInBank, String[] learnedSpells, Map<String, Long> npcKillLog, PlayerClass playerClass, Set<CoolDown> coolDowns) {
+    public PlayerMetadata(String playerName,
+                          String password,
+                          String playerId,
+                          Stats stats,
+                          int gold,
+                          Set<PlayerRole> playerRoleSet,
+                          String[] playerEquipment,
+                          int goldInBank,
+                          String[] learnedSpells,
+                          Map<String, Long> npcKillLog,
+                          PlayerClass playerClass,
+                          Set<CoolDown> coolDowns,
+                          Integer currentRoomId) {
         this.playerName = playerName;
         this.password = password;
         this.playerId = playerId;
@@ -42,6 +55,7 @@ public class PlayerMetadata implements Serializable {
         this.npcKillLog = npcKillLog;
         this.playerClass = playerClass;
         this.coolDowns = coolDowns;
+        this.currentRoomId = currentRoomId;
     }
 
     public PlayerMetadata(PlayerMetadata playerMetadata) {
@@ -81,6 +95,9 @@ public class PlayerMetadata implements Serializable {
         }
         if (playerMetadata.coolDowns != null) {
             this.coolDowns = Sets.newConcurrentHashSet(playerMetadata.coolDowns);
+        }
+        if (playerMetadata.currentRoomId != null) {
+            this.currentRoomId = new Integer(playerMetadata.currentRoomId);
         }
     }
 
@@ -191,6 +208,14 @@ public class PlayerMetadata implements Serializable {
             effects = Lists.newArrayList();
         }
         effects.add(effectId);
+    }
+
+    public Integer getCurrentRoomId() {
+        return currentRoomId;
+    }
+
+    public void setCurrentRoomId(Integer currentRoomId) {
+        this.currentRoomId = currentRoomId;
     }
 
     protected void removeEffectID(String effectId) {
