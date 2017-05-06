@@ -12,12 +12,12 @@
     "north1_zone"
   ],
   "stats": {
-    "agile": 1,
+    "agile": 4,
     "aim": 1,
     "armorRating": 6,
     "currentHealth": 105,
     "currentMana": 105,
-    "experience": 22500,
+    "experience": 10000,
     "maxHealth": 105,
     "maxMana": 105,
     "meleSkill": 16,

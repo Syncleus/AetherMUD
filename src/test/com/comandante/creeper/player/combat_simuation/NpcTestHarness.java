@@ -7,6 +7,7 @@ import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SessionManager;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.player.*;
@@ -44,20 +45,61 @@ public class NpcTestHarness {
     private GameManager gameManager;
     private EntityManager entityManager;
 
+    // Levels 1-3
     @Test
     public void testDemonCat() throws Exception {
         List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("demon cat")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 95f, 90f, 10, 5);
+        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3);
+    }
 
-        CombatSimulationDetails combatSimulationDetailsLevel1 = new CombatSimulationDetails(1, 100, Sets.newHashSet(), npcFromFile);
-        CombatSimulationResult combatSimulationResultLevel1 = executeCombat(combatSimulationDetailsLevel1);
-        printCombatResults(combatSimulationDetailsLevel1, combatSimulationResultLevel1);
-        Assert.assertTrue(combatSimulationResultLevel1.getPlayerWinPercent() > 90.0f);
+    // Levels 2-4
+    @Test
+    public void testSwampBerserker() throws Exception {
+        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0);
+        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0);
+        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0);
+    }
 
-        CombatSimulationDetails combatSimulationDetailsLevel2 = new CombatSimulationDetails(2, 100, Sets.newHashSet(), npcFromFile);
-        CombatSimulationResult combatSimulationResultLevel2 = executeCombat(combatSimulationDetailsLevel2);
-        printCombatResults(combatSimulationDetailsLevel2, combatSimulationResultLevel2);
-        Assert.assertTrue(combatSimulationResultLevel2.getPlayerWinPercent() > 97.0f);
+    // Levels 4-6
+    @Test
+    public void testTreeBerserker() throws Exception {
+        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0);
+        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0);
+        processRunAndVerify(npcFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0);
+        processRunAndVerify(npcFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0);
+    }
+
+    // Levels 6-8
+    @Test
+    public void testSwampBear() throws Exception {
+        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0);
+        processRunAndVerify(npcFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0);
+        processRunAndVerify(npcFromFile, 8, getEarlyLevelArmorSet(), 95f, 86f, 10, 0);
+        processRunAndVerify(npcFromFile, 9, getEarlyLevelArmorSet(), 100f, 0f, 10, 0);
+    }
+
+    private Set<Item> getEarlyLevelArmorSet() {
+        return Sets.newHashSet(ItemType.BERSERKER_BATON.create(), ItemType.BERSEKER_BOOTS.create(), ItemType.BERSEKER_SHORTS.create());
+    }
+
+    private void processRunAndVerify(Npc testNpc, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds) throws Exception {
+        CombatSimulationDetails combatSimulationDetailsLevel = new CombatSimulationDetails(desiredLevel, equipment, testNpc);
+        CombatSimulationResult combatSimulationResultLevel = executeCombat(combatSimulationDetailsLevel);
+        printCombatResults(combatSimulationDetailsLevel, combatSimulationResultLevel);
+        Assert.assertTrue("player at level: " + desiredLevel + " does not win enough.", combatSimulationResultLevel.getPlayerWinPercent() >= winPctMin);
+        Assert.assertTrue("player at level: " + desiredLevel + " wins too often.", combatSimulationResultLevel.getPlayerWinPercent() <= winPctMax);
+        Assert.assertTrue("player at level: " + desiredLevel + " wins too quickly", combatSimulationResultLevel.getAverageRounds() >= minRounds);
+        Assert.assertTrue("player at level: " + desiredLevel + " wins too slowly.", combatSimulationResultLevel.getAverageRounds() <= maxRounds);
     }
 
     public CombatSimulationResult executeCombat(CombatSimulationDetails combatSimulationDetails) throws Exception {
@@ -68,7 +110,7 @@ public class NpcTestHarness {
         int totalGold = 0;
         int totalFightRounds = 0;
         Map<String, AtomicInteger> drops = new HashMap<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < combatSimulationDetails.getTotalIterations(); i++) {
             player = createRandomPlayer(combatSimulationDetails.getLevel());
             equipArmor(player, combatSimulationDetails.getEquipmentSet());
             npc = new NpcBuilder(combatSimulationDetails.getNpc()).createNpc();

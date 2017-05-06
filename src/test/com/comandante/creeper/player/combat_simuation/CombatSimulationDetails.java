@@ -13,9 +13,9 @@ public class CombatSimulationDetails {
     private final Set<Item> equipmentSet;
     private final Npc npc;
 
-    public CombatSimulationDetails(int level, int totalIterations, Set<Item> equipmentSet, Npc npc) {
+    public CombatSimulationDetails(int level, Set<Item> equipmentSet, Npc npc) {
         this.level = level;
-        this.totalIterations = totalIterations;
+        this.totalIterations = 1000;
         this.equipmentSet = equipmentSet;
         this.npc = npc;
     }

@@ -17,7 +17,7 @@ public class AreaCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("area", "a");
     final static String description = "Alter area settings for the current room.";
     final static String correctUsage = "area <area name>,<area name>";
-    final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
+    final static Set<PlayerRole> roles = Sets.newHashSet();
 
     public AreaCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description, correctUsage, roles);

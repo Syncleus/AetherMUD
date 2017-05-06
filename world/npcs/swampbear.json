@@ -21,11 +21,11 @@
     "experience": 90000,
     "maxHealth": 150,
     "maxMana": 105,
-    "meleSkill": 22,
+    "meleSkill": 16,
     "numberOfWeaponRolls": 1,
     "strength": 13,
-    "weaponRatingMax": 25,
-    "weaponRatingMin": 19,
+    "weaponRatingMax": 20,
+    "weaponRatingMin": 14,
     "willPower": 4
   },
   "spawnAreas": {

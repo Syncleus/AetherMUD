@@ -32,14 +32,14 @@ public class EquipmentBuilder {
     }
 
     public static Item getBerserkerBaton(Item item) {
-        Stats stats = new StatsBuilder().setWeaponRatingMin(2).setWeaponRatingMax(3).createStats();
+        Stats stats = new StatsBuilder().setWeaponRatingMin(4).setWeaponRatingMax(6).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.HAND, stats);
         item.setEquipment(equipment);
         return item;
     }
 
     public static Item getBerserkerBoots(Item item) {
-        Stats stats = new StatsBuilder().setArmorRating(1).createStats();
+        Stats stats = new StatsBuilder().setArmorRating(3).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.FEET, stats);
         item.setEquipment(equipment);
         return item;
@@ -53,7 +53,7 @@ public class EquipmentBuilder {
     }
 
     public static Item getBerserkerShorts(Item item) {
-        Stats stats = new StatsBuilder().setArmorRating(3).createStats();
+        Stats stats = new StatsBuilder().setArmorRating(4).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.LEGS, stats);
         item.setEquipment(equipment);
         return item;
