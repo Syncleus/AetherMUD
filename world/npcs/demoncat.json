@@ -12,7 +12,7 @@
     "newbie_zone"
   ],
   "stats": {
-    "agile": 2,
+    "agile": 3,
     "aim": 1,
     "armorRating": 2,
     "currentHealth": 60,
@@ -20,9 +20,9 @@
     "experience": 500,
     "maxHealth": 60,
     "maxMana": 60,
-    "meleSkill": 4,
+    "meleSkill": 7,
     "numberOfWeaponRolls": 1,
-    "strength": 9,
+    "strength": 5,
     "weaponRatingMax": 12,
     "weaponRatingMin": 7,
     "willPower": 1
