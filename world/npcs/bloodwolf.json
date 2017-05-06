@@ -35,13 +35,12 @@
       "spawnIntervalTicks": 600,
       "maxInstances": 48
     },
-    "spawnAreas": {
-      "bloodridge2_zone": {
-        "randomChance": 100,
-        "maxPerRoom": 6,
-        "spawnIntervalTicks": 600,
-        "maxInstances": 48
-      }
+    "bloodridge2_zone": {
+      "randomChance": 100,
+      "maxPerRoom": 6,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 48
+    }
   },
   "validTriggers": [
     "b",
