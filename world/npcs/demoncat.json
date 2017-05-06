@@ -1,0 +1,45 @@
+{
+  "name": "demon cat",
+  "colorName": "demon \u001B[1m\u001B[35mcat\u001B[0m",
+  "dieMessage": "a demon \u001B[1m\u001B[35mcat\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
+  "temperament": "passive",
+  "loot": {
+    "lootGoldMin": 1,
+    "lootGoldMax": 4,
+    "lootItems": [2]
+  },
+  "roamAreas": [
+    "newbie_zone"
+  ],
+  "stats": {
+    "agile": 2,
+    "aim": 1,
+    "armorRating": 2,
+    "currentHealth": 60,
+    "currentMana": 60,
+    "experience": 500,
+    "maxHealth": 60,
+    "maxMana": 60,
+    "meleSkill": 4,
+    "numberOfWeaponRolls": 1,
+    "strength": 9,
+    "weaponRatingMax": 12,
+    "weaponRatingMin": 7,
+    "willPower": 1
+  },
+  "spawnAreas": {
+    "newbie_zone": {
+      "randomChance": 100,
+      "maxPerRoom": 6,
+      "spawnIntervalTicks": 600,
+      "maxInstances": 24
+    }
+  },
+  "validTriggers": [
+    "d",
+    "demon",
+    "demon cat",
+    "demon",
+    "c"
+  ]
+}

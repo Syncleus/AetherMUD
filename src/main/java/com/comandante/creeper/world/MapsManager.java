@@ -42,8 +42,12 @@ public class MapsManager {
         while (rooms.hasNext()) {
             Map.Entry<Integer, Room> next = rooms.next();
             Integer roomId = next.getValue().getRoomId();
-            String s = drawMap(roomId, new Coords(maxRows, maxColumns));
-            next.getValue().setMapData(Optional.of(s));
+            try {
+                String s = drawMap(roomId, new Coords(maxRows, maxColumns));
+                next.getValue().setMapData(Optional.of(s));
+            } catch (Exception e) {
+                log.error("Unable to generate room map for roomId: " + roomId);
+            }
         }
         time.stop();
     }
@@ -94,7 +98,11 @@ public class MapsManager {
     class MapGeneration implements Runnable {
         @Override
         public void run() {
-            generate();
+            try {
+                generate();
+            } catch (Exception e) {
+                log.error("Unable to generate map data!", e);
+            }
         }
     }
 }

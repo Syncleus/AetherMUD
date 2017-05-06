@@ -162,14 +162,11 @@ public class MapMatrix {
     }
 
     private Predicate<Integer> removeZeros() {
-        return new Predicate<Integer>() {
-            @Override
-            public boolean apply(Integer integer) {
-                if (integer > 0) {
-                    return true;
-                }
-                return false;
+        return integer -> {
+            if (integer > 0) {
+                return true;
             }
+            return false;
         };
     }
 

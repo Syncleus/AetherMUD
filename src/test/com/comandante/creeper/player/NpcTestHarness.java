@@ -90,13 +90,7 @@ public class NpcTestHarness {
         conductFight(player, npc);
     }
 
-    @Test
-    public void testCombat() throws Exception {
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
-        Npc treeBerseker = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
-        int totalIterations = 100;
-        Player player;
-        Npc npc = null;
+    private Table configureTableOutput() {
         Table t = new Table(8, BorderStyle.BLANKS, ShownBorders.NONE);
         t.setColumnWidth(0, 20, 20);
         t.setColumnWidth(1, 15, 20);
@@ -105,7 +99,6 @@ public class NpcTestHarness {
         t.setColumnWidth(4, 13, 16);
         t.setColumnWidth(5, 10, 16);
         t.setColumnWidth(6, 13, 16);
-        //t.setColumnWidth(6, 16, 16);
 
         t.addCell("Npc");
         t.addCell("Player Level");
@@ -115,6 +108,18 @@ public class NpcTestHarness {
         t.addCell("Avg Gold");
         t.addCell("XP Earned");
         t.addCell("Drops");
+        return t;
+    }
+
+    @Test
+    public void testCombat() throws Exception {
+        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
+        int totalIterations = 100;
+        Player player;
+        Npc npc = null;
+        Table t = configureTableOutput();
+
         Set<Item> equipment = Sets.newHashSet();
        // equipment.add(ItemType.BERSEKER_BOOTS.create());
        // equipment.add(ItemType.BERSERKER_BATON.create());
@@ -123,7 +128,7 @@ public class NpcTestHarness {
        // equipment.add(ItemType.BERSERKER_BRACERS.create());
        // equipment.add(ItemType.BERSEKER_HELM.create());
 
-        for (int level = 20; level < 30; level++) {
+        for (int level = 1; level < 40; level++) {
             int playerWins = 0;
             int npcWins = 0;
             int totalGold = 0;
@@ -133,7 +138,7 @@ public class NpcTestHarness {
                 String username = UUID.randomUUID().toString();
                 player = createRandomPlayer(username, level);
                 equipArmor(player, equipment);
-                npc = new NpcBuilder(treeBerseker).createNpc();
+                npc = new NpcBuilder(npcFromFile).createNpc();
                 npc.setCurrentRoom(player.getCurrentRoom());
                 gameManager.getEntityManager().addEntity(npc);
                 player.getCurrentRoom().addPresentNpc(npc.getEntityId());
