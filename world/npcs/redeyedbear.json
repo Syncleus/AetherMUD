@@ -6,7 +6,7 @@
   "loot": {
     "lootGoldMin": 18,
     "lootGoldMax": 24,
-    "lootItems": []
+    "lootItems": [8, 15, 16, 17]
   },
   "roamAreas": [
     "toft1_zone",

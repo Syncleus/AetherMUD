@@ -66,6 +66,17 @@ public class NpcTestHarness {
         processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 10, 5);
     }
 
+    // Levels 2-4
+    @Test
+    public void testBloodWolf() throws Exception {
+        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("blood wolf")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 14, 5);
+        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 14, 5);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0,14, 5);
+        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 14, 5);
+    }
+
     // Levels 4-6
     @Test
     public void testTreeBerserker() throws Exception {
@@ -93,7 +104,7 @@ public class NpcTestHarness {
     public void testRedEyeBear() throws Exception {
         List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 8, getMidLevelArmorSet(), 55, 40f, 10, 0, 24, 18);
+        processRunAndVerify(npcFromFile, 8, getMidLevelArmorSet(), 55, 36f, 10, 0, 24, 18);
         processRunAndVerify(npcFromFile, 9, getMidLevelArmorSet(), 85, 70f, 10, 0, 24, 18);
         processRunAndVerify(npcFromFile, 10, getMidLevelArmorSet(), 100f, 0f, 10, 0, 24, 18);
     }
@@ -116,8 +127,8 @@ public class NpcTestHarness {
         Assert.assertTrue("player at level: " + desiredLevel + " wins too often.", combatSimulationResultLevel.getPlayerWinPercent() <= winPctMax);
         Assert.assertTrue("player at level: " + desiredLevel + " wins too quickly", combatSimulationResultLevel.getAverageRounds() >= minRounds);
         Assert.assertTrue("player at level: " + desiredLevel + " wins too slowly.", combatSimulationResultLevel.getAverageRounds() <= maxRounds);
-        Assert.assertTrue("Too much gold.", combatSimulationResultLevel.getAverageGoldPerWin() >= minAvgGold);
-        Assert.assertTrue("Not enough gold.",combatSimulationResultLevel.getAverageGoldPerWin() <= maxAvgGold);
+        Assert.assertTrue("Not enough gold.", combatSimulationResultLevel.getAverageGoldPerWin() >= minAvgGold);
+        Assert.assertTrue("Too much gold.",combatSimulationResultLevel.getAverageGoldPerWin() <= maxAvgGold);
     }
 
     public CombatSimulationResult executeCombat(CombatSimulationDetails combatSimulationDetails) throws Exception {

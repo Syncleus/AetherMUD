@@ -28,10 +28,10 @@ public class ItemUseHandler {
                 itemUseAction = new LightningSpellBookUseAction(ItemType.LIGHTNING_SPELLBOOKNG);
                 break;
             case PURPLE_DRANK:
-                itemUseAction = new DefaultApplyStatsAction(ItemType.PURPLE_DRANK, buildStats(500, 0), Sets.newHashSet());
+                itemUseAction = new DefaultApplyStatsAction(ItemType.PURPLE_DRANK, buildStats(300, 0), Sets.newHashSet());
                 break;
             case MARIJUANA:
-                itemUseAction = new DefaultApplyStatsAction(ItemType.MARIJUANA, buildStats(500, 500), Sets.newHashSet());
+                itemUseAction = new DefaultApplyStatsAction(ItemType.MARIJUANA, buildStats(175, 175), Sets.newHashSet());
                 break;
             case SMALL_HEALTH_POTION:
                 itemUseAction = new DefaultApplyStatsAction(ItemType.SMALL_HEALTH_POTION, buildStats(100, 0), Sets.newHashSet());

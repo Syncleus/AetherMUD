@@ -195,9 +195,80 @@ public enum ItemType {
             // default sell value (gold)
             3000,
             // Some items have time of days where they are "valid" and times when they are not.  If they are not valid for MORNING (for example) they will turn to dust as soon as the world switches to morning.
+            Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
+    RED_CLAW_BEANIE(
+            // itemTypeCode
+            15,
+            // triggers
+            Arrays.asList("beanie", "red-claw beanie", "b"),
+            // name
+            Color.RED + "red-claw " + Color.RESET + "beanie" + Color.RESET,
+            // resting name
+            "a " + Color.RED + "red-claw " + Color.RESET + "beanie is on the ground.",
+            // description
+            "a red-claw beanie",
+            // disposable?
+            false,
+            // max uses
+            0,
+            // half life ticks
+            60,
+            // equipment?
+            true,
+            Rarity.LEGENDARY,
+            // default sell value (gold)
+            3500,
+            Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
+    RED_CLAW_HOODIE(
+            // itemTypeCode
+            16,
+            // triggers
+            Arrays.asList("hoodie", "red-claw hoodie", "h"),
+            // name
+            Color.RED + "red-claw " + Color.RESET + "hoodie" + Color.RESET,
+            // resting name
+            "a " + Color.RED + "red-claw " + Color.RESET + "hoodie is on the ground.",
+            // description
+            "a red-claw hoodie",
+            // disposable?
+            false,
+            // max uses
+            0,
+            // half life ticks
+            60,
+            // equipment?
+            true,
+            Rarity.LEGENDARY,
+            // default sell value (gold)
+            3500,
+            Sets.<TimeTracker.TimeOfDay>newHashSet()),
+
+    RED_CLAW_PANTS(
+            // itemTypeCode
+            17,
+            // triggers
+            Arrays.asList("pants", "red-claw pants", "p"),
+            // name
+            Color.RED + "red-claw " + Color.RESET + "pants" + Color.RESET,
+            // resting name
+            "a " + Color.RED + "red-claw " + Color.RESET + "pants is on the ground.",
+            // description
+            "a red-claw pants",
+            // disposable?
+            false,
+            // max uses
+            0,
+            // half life ticks
+            60,
+            // equipment?
+            true,
+            Rarity.LEGENDARY,
+            // default sell value (gold)
+            3500,
             Sets.<TimeTracker.TimeOfDay>newHashSet()),;
 
-            
     private final Integer itemTypeCode;
     private final List<String> itemTriggers;
     private final String restingName;
