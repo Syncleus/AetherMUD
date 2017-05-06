@@ -9,12 +9,7 @@ import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.items.Item;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
-import com.comandante.creeper.player.CoolDownType;
-import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerClass;
-import com.comandante.creeper.player.PlayerManager;
-import com.comandante.creeper.player.PlayerMetadata;
-import com.comandante.creeper.player.PlayerRole;
+import com.comandante.creeper.player.*;
 import com.comandante.creeper.server.model.CreeperSession;
 import com.comandante.creeper.server.player_communication.ChannelCommunicationUtils;
 import com.comandante.creeper.stats.DefaultStats;
@@ -57,13 +52,12 @@ public class NpcTestHarness {
         CombatSimulationDetails combatSimulationDetailsLevel1 = new CombatSimulationDetails(1, 100, Sets.newHashSet(), npcFromFile);
         CombatSimulationResult combatSimulationResultLevel1 = executeCombat(combatSimulationDetailsLevel1);
         printCombatResults(combatSimulationDetailsLevel1, combatSimulationResultLevel1);
-    //    Assert.assertTrue(combatSimulationResultLevel1.getPlayerWinPercent() > 80.0f);
-      //  Assert.assertTrue(combatSimulationResultLevel1.getPlayerWinPercent() < 95.0f);
+        Assert.assertTrue(combatSimulationResultLevel1.getPlayerWinPercent() > 90.0f);
 
         CombatSimulationDetails combatSimulationDetailsLevel2 = new CombatSimulationDetails(2, 100, Sets.newHashSet(), npcFromFile);
         CombatSimulationResult combatSimulationResultLevel2 = executeCombat(combatSimulationDetailsLevel2);
         printCombatResults(combatSimulationDetailsLevel2, combatSimulationResultLevel2);
-       // Assert.assertTrue(combatSimulationResultLevel2.getPlayerWinPercent() > 97.0f);
+        Assert.assertTrue(combatSimulationResultLevel2.getPlayerWinPercent() > 97.0f);
     }
 
     public CombatSimulationResult executeCombat(CombatSimulationDetails combatSimulationDetails) throws Exception {
@@ -83,7 +77,7 @@ public class NpcTestHarness {
             player.getCurrentRoom().addPresentNpc(npc.getEntityId());
             player.addActiveFight(npc);
             FightSimulationResult fightSimulationResult = conductFight(player, npc);
-            totalFightRounds = totalFightRounds + fightSimulationResult.getTotalFightRounds();
+            totalFightRounds = totalFightRounds + (fightSimulationResult.getTotalFightRounds() / Player.FIGHT_TICK_BUCKET_SIZE);
             if (fightSimulationResult.isResult()) {
                 playerWins++;
                 int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npc.getLoot());
@@ -131,17 +125,16 @@ public class NpcTestHarness {
         for (i = 0; i < 1000; i++) {
             player.run();
             npc.run();
+            totalFightRounds = totalFightRounds + 1;
             if (!npc.getIsAlive().get()) {
-                totalFightRounds += i;
                 return new FightSimulationResult(true, totalFightRounds);
             }
 
             if (player.isActive(CoolDownType.DEATH)) {
-                totalFightRounds += i;
                 return new FightSimulationResult(false, totalFightRounds);
             }
+
         }
-        totalFightRounds += i;
         return new FightSimulationResult(false, totalFightRounds);
     }
 
@@ -215,12 +208,12 @@ public class NpcTestHarness {
         ChannelCommunicationUtils channelUtils = new ChannelCommunicationUtils() {
             @Override
             public void write(String playerId, String message) {
-                //System.out.println(message);
+               //System.out.println(message);
             }
 
             @Override
             public void write(String playerId, String message, boolean leadingBlankLine) {
-                // System.out.println(message);
+               //System.out.println(message);
             }
         };
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(new MapConfiguration(Maps.newHashMap()));

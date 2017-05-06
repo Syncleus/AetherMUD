@@ -51,6 +51,8 @@ public class Player extends CreeperEntity {
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
     private AtomicBoolean isChatMode = new AtomicBoolean(false);
 
+    public static final int FIGHT_TICK_BUCKET_SIZE = 4;
+
 
     public Player(String playerName, GameManager gameManager) {
         this.playerName = playerName;
@@ -71,7 +73,7 @@ public class Player extends CreeperEntity {
                 }
                 tickAllActiveCoolDowns();
                 activateNextPrimaryActiveFight();
-                if (processFightTickBucket(4)) {
+                if (processFightTickBucket(FIGHT_TICK_BUCKET_SIZE)) {
                     processFightRounds();
                 }
             } catch (Exception e) {
