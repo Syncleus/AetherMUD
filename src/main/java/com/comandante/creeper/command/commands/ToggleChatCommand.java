@@ -10,10 +10,10 @@ import java.util.List;
 
 public class ToggleChatCommand extends Command {
 
-    public final static String TOGGLE_CHAT_COMMAND_TRIGGER = "/c";
+    public final static String TOGGLE_CHAT_COMMAND_TRIGGER = "cm";
     final static List<String> validTriggers = Arrays.asList(TOGGLE_CHAT_COMMAND_TRIGGER);
     final static String description = "Configure chat mode.";
-    final static String correctUsage = "/c on || /c off";
+    final static String correctUsage = "cm on || /cm off";
 
     public ToggleChatCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description, correctUsage);

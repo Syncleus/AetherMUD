@@ -4,8 +4,8 @@
   "dieMessage": "a demon \u001B[1m\u001B[35mcat\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
   "temperament": "passive",
   "loot": {
-    "lootGoldMin": 1,
-    "lootGoldMax": 4,
+    "lootGoldMin": 0,
+    "lootGoldMax": 0,
     "lootItems": [2]
   },
   "roamAreas": [
@@ -32,7 +32,7 @@
       "randomChance": 100,
       "maxPerRoom": 6,
       "spawnIntervalTicks": 600,
-      "maxInstances": 24
+      "maxInstances": 48
     }
   },
   "validTriggers": [

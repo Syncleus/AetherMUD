@@ -50,9 +50,9 @@ public class NpcTestHarness {
     public void testDemonCat() throws Exception {
         List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("demon cat")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 95f, 90f, 10, 5);
-        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3);
+        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 98f, 90f, 10, 5, 0, 0);
+        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4, 0, 0);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3, 0, 0);
     }
 
     // Levels 2-4
@@ -60,10 +60,10 @@ public class NpcTestHarness {
     public void testSwampBerserker() throws Exception {
         List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0);
-        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0);
-        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0);
+        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 10, 5);
+        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 10, 5);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0,10, 5);
+        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 10, 5);
     }
 
     // Levels 4-6
@@ -71,10 +71,10 @@ public class NpcTestHarness {
     public void testTreeBerserker() throws Exception {
         List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0);
-        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0);
-        processRunAndVerify(npcFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0);
-        processRunAndVerify(npcFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0, 14, 8);
+        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0, 14, 8);
+        processRunAndVerify(npcFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0, 14, 8);
+        processRunAndVerify(npcFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0,14,8);
     }
 
     // Levels 6-8
@@ -82,17 +82,33 @@ public class NpcTestHarness {
     public void testSwampBear() throws Exception {
         List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0);
-        processRunAndVerify(npcFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0);
-        processRunAndVerify(npcFromFile, 8, getEarlyLevelArmorSet(), 95f, 86f, 10, 0);
-        processRunAndVerify(npcFromFile, 9, getEarlyLevelArmorSet(), 100f, 0f, 10, 0);
+        processRunAndVerify(npcFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0, 18, 12);
+        processRunAndVerify(npcFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0, 18, 12);
+        processRunAndVerify(npcFromFile, 8, getEarlyLevelArmorSet(), 95f, 86f, 10, 0, 18, 12);
+        processRunAndVerify(npcFromFile, 9, getEarlyLevelArmorSet(), 100f, 0f, 10, 0, 18, 12);
+    }
+
+    // Levels 8-10
+    @Test
+    public void testRedEyeBear() throws Exception {
+        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcFromFile, 8, getMidLevelArmorSet(), 55, 40f, 10, 0, 24, 18);
+        processRunAndVerify(npcFromFile, 9, getMidLevelArmorSet(), 85, 70f, 10, 0, 24, 18);
+        processRunAndVerify(npcFromFile, 10, getMidLevelArmorSet(), 100f, 0f, 10, 0, 24, 18);
     }
 
     private Set<Item> getEarlyLevelArmorSet() {
         return Sets.newHashSet(ItemType.BERSERKER_BATON.create(), ItemType.BERSEKER_BOOTS.create(), ItemType.BERSEKER_SHORTS.create());
     }
 
-    private void processRunAndVerify(Npc testNpc, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds) throws Exception {
+    private Set<Item> getMidLevelArmorSet() {
+        Set<Item> armorSet = getEarlyLevelArmorSet();
+        armorSet.addAll(Sets.newHashSet(ItemType.BERSERKER_BRACERS.create(), ItemType.BERSERKER_CHEST.create()));
+        return armorSet;
+    }
+
+    private void processRunAndVerify(Npc testNpc, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
         CombatSimulationDetails combatSimulationDetailsLevel = new CombatSimulationDetails(desiredLevel, equipment, testNpc);
         CombatSimulationResult combatSimulationResultLevel = executeCombat(combatSimulationDetailsLevel);
         printCombatResults(combatSimulationDetailsLevel, combatSimulationResultLevel);
@@ -100,6 +116,8 @@ public class NpcTestHarness {
         Assert.assertTrue("player at level: " + desiredLevel + " wins too often.", combatSimulationResultLevel.getPlayerWinPercent() <= winPctMax);
         Assert.assertTrue("player at level: " + desiredLevel + " wins too quickly", combatSimulationResultLevel.getAverageRounds() >= minRounds);
         Assert.assertTrue("player at level: " + desiredLevel + " wins too slowly.", combatSimulationResultLevel.getAverageRounds() <= maxRounds);
+        Assert.assertTrue("Too much gold.", combatSimulationResultLevel.getAverageGoldPerWin() >= minAvgGold);
+        Assert.assertTrue("Not enough gold.",combatSimulationResultLevel.getAverageGoldPerWin() <= maxAvgGold);
     }
 
     public CombatSimulationResult executeCombat(CombatSimulationDetails combatSimulationDetails) throws Exception {

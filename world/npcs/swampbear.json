@@ -4,9 +4,9 @@
   "dieMessage": "a swamp \u001B[1m\u001B[35mbear\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
   "temperament": "passive",
   "loot": {
-    "lootGoldMin": 19,
-    "lootGoldMax": 30,
-    "lootItems": []
+    "lootGoldMin": 12,
+    "lootGoldMax": 18,
+    "lootItems": [7, 5]
   },
   "roamAreas": [
     "toft1_zone",

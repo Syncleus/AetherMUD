@@ -46,7 +46,7 @@ public class EquipmentBuilder {
     }
 
     public static Item getBerserkerChest(Item item) {
-        Stats stats = new StatsBuilder().setArmorRating(2).createStats();
+        Stats stats = new StatsBuilder().setArmorRating(6).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.CHEST, stats);
         item.setEquipment(equipment);
         return item;
@@ -60,7 +60,7 @@ public class EquipmentBuilder {
     }
 
     public static Item getBerserkerBracers(Item item) {
-        Stats stats = new StatsBuilder().setArmorRating(1).createStats();
+        Stats stats = new StatsBuilder().setArmorRating(4).createStats();
         final Equipment equipment = new Equipment(EquipmentSlotType.WRISTS, stats);
         item.setEquipment(equipment);
         return item;
