@@ -111,7 +111,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            80, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            10, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     PURPLE_DRANK(10, Arrays.asList("drank", "purple drank", "p", "purple", "lean", "sizzurp"),
             "a double cup of " + MAGENTA + "purple" + RESET + " drank",
@@ -122,7 +122,7 @@ public enum ItemType {
             60,
             false,
             Rarity.BASIC,
-            8, Sets.<TimeTracker.TimeOfDay>newHashSet()),
+            30, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 
     LEATHER_SATCHEL(11, Arrays.asList("leather satchel", "satchel"),
             "a " + Color.GREEN + "leather satchel" + Color.RESET,

@@ -13,7 +13,7 @@ public class IrcBotService extends AbstractIdleService {
     private final GameManager gameManager;
     private PircBotX bot;
     private org.pircbotx.Configuration configuration;
-    MultiBotManager<PircBotX> manager;
+    MultiBotManager manager;
 
     public IrcBotService(CreeperConfiguration creeperConfiguration, GameManager gameManager) {
         this.creeperConfiguration = creeperConfiguration;
@@ -57,11 +57,11 @@ public class IrcBotService extends AbstractIdleService {
         return bot;
     }
 
-    public MultiBotManager<PircBotX> getManager() {
+    public MultiBotManager getManager() {
         return manager;
     }
 
-    public void setManager(MultiBotManager<PircBotX> manager) {
+    public void setManager(MultiBotManager manager) {
         this.manager = manager;
     }
 }

@@ -7,7 +7,6 @@ import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.pircbotx.MultiBotManager;
-import org.pircbotx.PircBotX;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ public class BounceIrcBotCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommandThreadSafe(ctx, e, BounceIrcBotCommand.class, () -> {
             try {
-                MultiBotManager<PircBotX> manager = gameManager.getIrcBotService().getManager();
+                MultiBotManager manager = gameManager.getIrcBotService().getManager();
                 write("IRC Bot Service shutting down.\r\n");
                 manager.stopAndWait();
                 write("IRC Bot Service stopped.\r\n");
