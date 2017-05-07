@@ -559,19 +559,17 @@ public class Player extends CreeperEntity {
     private void tickAllActiveCoolDowns() {
         synchronized (interner.intern(playerId)) {
             PlayerMetadata playerMetadata = getPlayerMetadata();
-            Set<CoolDown> coolDowns = playerMetadata.getCoolDowns();
-            Iterator<CoolDown> iterator = coolDowns.iterator();
-            while (iterator.hasNext()) {
-                CoolDown coolDown = iterator.next();
-                if (coolDown.isActive()) {
-                    coolDown.decrementTick();
+            playerMetadata.getCoolDownMap().entrySet().removeIf(coolDownTypeCoolDownEntry -> {
+                if (coolDownTypeCoolDownEntry.getValue().isActive()) {
+                    coolDownTypeCoolDownEntry.getValue().decrementTick();
                 } else {
-                    if (coolDown.equals(CoolDownType.DEATH)) {
+                    if (coolDownTypeCoolDownEntry.getValue().equals(CoolDownType.DEATH)) {
                         gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
                     }
-                    iterator.remove();
+                    return true;
                 }
-            }
+                return false;
+            });
             savePlayerMetadata(playerMetadata);
         }
     }

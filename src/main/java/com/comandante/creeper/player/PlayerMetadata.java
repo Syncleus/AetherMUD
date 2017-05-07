@@ -381,6 +381,10 @@ public class PlayerMetadata implements Serializable {
         return Sets.newHashSet(coolDowns.values());
     }
 
+    public Map<CoolDownType, CoolDown> getCoolDownMap() {
+        return coolDowns;
+    }
+
 
 }
 
