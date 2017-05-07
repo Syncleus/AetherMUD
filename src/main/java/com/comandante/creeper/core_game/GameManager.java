@@ -645,11 +645,11 @@ public class GameManager {
         int i = 1;
         for (CoolDown coolDown : coolDowns) {
             int percent = 100 - (int) (((coolDown.getOriginalNumberOfTicks() - coolDown.getNumberOfTicks()) * 100.0f) / coolDown.getOriginalNumberOfTicks());
+            // 1 tick == .5 seconds.
             int approxSecondsRemaining = coolDown.getNumberOfTicks() / 2;
             FriendlyTime friendlyTime = new FriendlyTime(approxSecondsRemaining);
             String friendlyFormattedShort = friendlyTime.getFriendlyFormattedShort();
             t.addCell(drawProgressBar(percent) + friendlyFormattedShort);
-            // 1 tick == .5 seconds.
             t.addCell(coolDown.getName());
             i++;
         }
