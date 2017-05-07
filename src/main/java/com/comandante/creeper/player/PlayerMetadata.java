@@ -2,12 +2,13 @@ package com.comandante.creeper.player;
 
 
 import com.comandante.creeper.stats.Stats;
-import com.google.api.client.util.Lists;
-import com.google.api.client.util.Maps;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerMetadata implements Serializable {
 
@@ -27,7 +28,7 @@ public class PlayerMetadata implements Serializable {
     private String[] learnedSpells;
     private Map<String, Long> npcKillLog;
     private PlayerClass playerClass;
-    private Set<CoolDown> coolDowns;
+    private Map<CoolDownType, CoolDown> coolDowns;
     private Integer currentRoomId;
 
     public PlayerMetadata(String playerName,
@@ -41,7 +42,7 @@ public class PlayerMetadata implements Serializable {
                           String[] learnedSpells,
                           Map<String, Long> npcKillLog,
                           PlayerClass playerClass,
-                          Set<CoolDown> coolDowns,
+                          Map<CoolDownType, CoolDown> coolDowns,
                           Integer currentRoomId) {
         this.playerName = playerName;
         this.password = password;
@@ -94,7 +95,7 @@ public class PlayerMetadata implements Serializable {
             this.playerClass = playerMetadata.playerClass;
         }
         if (playerMetadata.coolDowns != null) {
-            this.coolDowns = Sets.newConcurrentHashSet(playerMetadata.coolDowns);
+            this.coolDowns = new ConcurrentHashMap<>(playerMetadata.coolDowns);
         }
         if (playerMetadata.currentRoomId != null) {
             this.currentRoomId = new Integer(playerMetadata.currentRoomId);
@@ -144,12 +145,9 @@ public class PlayerMetadata implements Serializable {
 
     protected void addCoolDown(CoolDown coolDown) {
         if (this.coolDowns == null) {
-            coolDowns = Sets.newConcurrentHashSet();
+            coolDowns = Maps.newConcurrentMap();
         }
-        if (coolDowns.stream().anyMatch(c -> c.getCoolDownType().equals(coolDown.getCoolDownType()))) {
-            return;
-        }
-        coolDowns.add(coolDown);
+        coolDowns.put(coolDown.getCoolDownType(), coolDown);
     }
 
 
@@ -299,7 +297,7 @@ public class PlayerMetadata implements Serializable {
     }
 
     public void resetCoolDowns() {
-        this.coolDowns = Sets.newConcurrentHashSet();
+        Maps.newConcurrentMap();
     }
 
     public String[] getPlayerEquipment() {
@@ -378,13 +376,11 @@ public class PlayerMetadata implements Serializable {
 
     public Set<CoolDown> getCoolDowns() {
         if (coolDowns == null) {
-            coolDowns = Sets.newConcurrentHashSet();
+            coolDowns = Maps.newConcurrentMap();
         }
-        return coolDowns;
+        return Sets.newHashSet(coolDowns.values());
     }
 
-    public void setCoolDowns(Set<CoolDown> coolDowns) {
-        this.coolDowns = coolDowns;
-    }
+
 }
 

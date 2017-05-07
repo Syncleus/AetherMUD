@@ -32,7 +32,20 @@ public class CreeperUtilsTest {
         String[] strings = new String[2];
         strings[0] = "feet";
         strings[1] = "hand";
-        PlayerMetadata playerMetadata = new PlayerMetadata("usertest", "Testtest", Main.createPlayerId("usertest"), DefaultStats.DEFAULT_PLAYER.createStats(), 0, Sets.newHashSet(PlayerRole.MORTAL), strings, 0, new String[0], Maps.newHashMap(), PlayerClass.BASIC, Sets.newHashSet(), null);
+        PlayerMetadata playerMetadata = new PlayerMetadata(
+                "usertest",
+                "Testtest",
+                Main.createPlayerId("usertest"),
+                DefaultStats.DEFAULT_PLAYER.createStats(),
+                0,
+                Sets.newHashSet(PlayerRole.MORTAL),
+                strings,
+                0,
+                new String[0],
+                Maps.newHashMap(),
+                PlayerClass.BASIC,
+                Maps.newConcurrentMap(),
+                null);
         GameManager gameManager = mock(GameManager.class);
         StatsModifierFactory statsModifierFactory = mock(StatsModifierFactory.class);
         when(statsModifierFactory.getStatsModifier(Matchers.any())).thenReturn(DefaultStats.DEFAULT_PLAYER.createStats());

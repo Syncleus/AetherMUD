@@ -107,6 +107,7 @@ public class Player extends CreeperEntity {
         DamageProcessor playerDamageProcesor = getPlayerClass().getDamageProcessor();
         Set<Map.Entry<Long, ActiveFight>> entries = activeFights.entrySet();
         for (Map.Entry<Long, ActiveFight> next : entries) {
+            addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
             Npc npc = gameManager.getEntityManager().getNpcEntity(next.getValue().npcId);
             if (npc == null) {
                 continue;

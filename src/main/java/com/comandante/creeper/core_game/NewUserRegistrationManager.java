@@ -13,6 +13,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.concurrent.ConcurrentMap;
 
 public class NewUserRegistrationManager {
 
@@ -77,6 +78,9 @@ public class NewUserRegistrationManager {
             return;
         }
         session.setPassword(Optional.of(password));
+        ConcurrentMap<CoolDownType, CoolDown> cooldowns = Maps.newConcurrentMap();
+        CoolDown newbieCoolDown = new CoolDown(CoolDownType.NEWBIE);
+        cooldowns.put(newbieCoolDown.getCoolDownType(), newbieCoolDown);
         PlayerMetadata playerMetadata = new PlayerMetadata(
                 session.getUsername().get(),
                 session.getPassword().get(),
@@ -88,7 +92,7 @@ public class NewUserRegistrationManager {
                 new String[0],
                 Maps.newHashMap(),
                 PlayerClass.BASIC,
-                Sets.newConcurrentHashSet(Sets.newHashSet(new CoolDown(CoolDownType.NEWBIE))),
+                cooldowns,
                 null);
         gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
         messageEvent.getChannel().write("User created.\r\n");
