@@ -1276,20 +1276,6 @@ public class Player extends CreeperEntity {
 
     }
 
-    public class DelayNpcAggro implements Runnable {
-
-        private final Room originalRoom;
-
-        public DelayNpcAggro(Room originalRoom) {
-            this.originalRoom = originalRoom;
-        }
-
-        @Override
-        public void run() {
-
-        }
-    }
-
     public boolean toggleChat() {
         synchronized (interner.intern(playerId)) {
             if (isChatModeOn()) {
