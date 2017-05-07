@@ -9,7 +9,7 @@ public class FriendlyTimeTest {
     @Test
     public void testFriendlyParsing() throws Exception {
 
-        FriendlyTime friendlyTime = new FriendlyTime(30949);
+        FriendlyTime friendlyTime = new FriendlyTime(400);
 
         System.out.println("Friendly Long: " + friendlyTime.getFriendlyFormatted());
 

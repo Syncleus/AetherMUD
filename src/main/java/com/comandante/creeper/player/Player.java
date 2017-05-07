@@ -603,7 +603,7 @@ public class Player extends CreeperEntity {
         if (currentRoom == null) {
             Integer currentRoomId = getPlayerMetadata().getCurrentRoomId();
             if (currentRoomId != null) {
-                return gameManager.getRoomManager().getRoom(currentRoomId);
+                this.currentRoom = gameManager.getRoomManager().getRoom(currentRoomId);
             }
         }
         return currentRoom;
@@ -611,6 +611,7 @@ public class Player extends CreeperEntity {
 
     public void setCurrentRoomAndPersist(Room currentRoom) {
         // Persisting lazily so that performance doesn't suffer.
+        setCurrentRoom(currentRoom);
         gameManager.getEventProcessor().addEvent(() -> {
             synchronized (interner.intern(playerId)) {
                 PlayerMetadata playerMetadata = getPlayerMetadata();
@@ -618,7 +619,6 @@ public class Player extends CreeperEntity {
                 savePlayerMetadata(playerMetadata);
             }
         });
-        setCurrentRoom(currentRoom);
     }
 
     public void setCurrentRoom(Room room) {

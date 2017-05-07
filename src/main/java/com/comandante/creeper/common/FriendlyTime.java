@@ -84,8 +84,13 @@ public class FriendlyTime {
             if (minutes > 1) {
                 sb.append(minutes).append("m");
             }
-        } else {
+        } else if (minutes > 0) {
+            sb.append(minutes).append("m");
+            if (seconds > 1) {
                 sb.append(seconds).append("s");
+            }
+        } else {
+            sb.append(seconds).append("s");
         }
         return sb.toString();
     }

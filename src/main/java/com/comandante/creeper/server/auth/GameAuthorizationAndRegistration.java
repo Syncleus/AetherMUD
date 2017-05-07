@@ -9,11 +9,11 @@ import org.jboss.netty.channel.Channel;
 
 import java.util.Optional;
 
-public class GameAuth implements CreeperAuthenticator {
+public class GameAuthorizationAndRegistration implements CreeperAuthenticator {
 
     private final GameManager gameManager;
 
-    public GameAuth(GameManager gameManager) {
+    public GameAuthorizationAndRegistration(GameManager gameManager) {
         this.gameManager = gameManager;
     }
 
