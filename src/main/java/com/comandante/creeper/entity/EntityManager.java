@@ -11,6 +11,7 @@ import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.model.Room;
+import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;

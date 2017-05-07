@@ -6,6 +6,7 @@ import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.SessionManager;
 import com.comandante.creeper.storage.MapDbAutoCommitService;
 import com.comandante.creeper.world.model.Room;
+import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -30,7 +31,10 @@ public class PlayerManager {
         if (db.exists("playerMetadata")) {
             this.playerMetadataStore = db.get("playerMetadata");
         } else {
-            this.playerMetadataStore = db.createHashMap("playerMetadata").valueSerializer(new PlayerMetadataSerializer()).make();
+            this.playerMetadataStore = db
+                    .createHashMap("playerMetadata")
+                    .valueSerializer(new PlayerMetadataSerializer())
+                    .make();
         }
         MapDbAutoCommitService mapDbAutoCommitService = new MapDbAutoCommitService(db);
         mapDbAutoCommitService.startAsync();

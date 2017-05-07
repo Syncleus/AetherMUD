@@ -3,6 +3,8 @@ package com.comandante.creeper.player;
 import com.comandante.creeper.core_game.SessionManager;
 import com.comandante.creeper.world.model.Room;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

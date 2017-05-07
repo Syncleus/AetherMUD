@@ -1,5 +1,6 @@
 package com.comandante.creeper.player;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.mapdb.Serializer;
 
@@ -10,14 +11,16 @@ import java.io.Serializable;
 
 public class PlayerMetadataSerializer implements Serializer<PlayerMetadata>, Serializable {
 
+    private final static Gson GSON = new GsonBuilder().create();
+
     @Override
     public void serialize(DataOutput out, PlayerMetadata value) throws IOException {
-        out.writeUTF(new GsonBuilder().create().toJson(value, PlayerMetadata.class));
+        out.writeUTF(GSON.toJson(value, PlayerMetadata.class));
     }
 
     @Override
     public PlayerMetadata deserialize(DataInput in, int available) throws IOException {
-        return new GsonBuilder().create().fromJson(in.readUTF(), PlayerMetadata.class);
+        return GSON.fromJson(in.readUTF(), PlayerMetadata.class);
     }
 
     @Override

@@ -19,6 +19,8 @@ import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.*;
 import org.apache.log4j.Logger;
@@ -79,7 +81,11 @@ public class Main {
 
         Files.isDirectory().apply(new File("world/"));
 
-        DB db = DBMaker.newFileDB(new File("world/" + creeperConfiguration.databaseFileName)).closeOnJvmShutdown().make();
+        DB db = DBMaker.newFileDB(new File("world/" + creeperConfiguration.databaseFileName))
+                .closeOnJvmShutdown()
+                .make();
+
+        Gson gson = new GsonBuilder().create();
 
         PlayerManager playerManager = new PlayerManager(db, new SessionManager());
         playerManager.createAllGauges();

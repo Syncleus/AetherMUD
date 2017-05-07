@@ -22,6 +22,8 @@ import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.configuration.MapConfiguration;
 import org.jboss.netty.channel.Channel;
 import org.junit.Assert;
@@ -301,6 +303,7 @@ public class NpcTestHarness {
         };
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(new MapConfiguration(Maps.newHashMap()));
         DB db = DBMaker.newMemoryDB().closeOnJvmShutdown().make();
+        Gson gson = new GsonBuilder().create();
         PlayerManager playerManager = new PlayerManager(db, new SessionManager());
         RoomManager roomManager = new RoomManager(playerManager);
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
