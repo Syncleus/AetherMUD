@@ -1,8 +1,8 @@
 package com.comandante.creeper.command.commands;
 
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.Item;
 import com.comandante.creeper.items.Loot;
-import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -41,7 +41,7 @@ public class LootCommand extends Command {
                                 gameManager.acquireItem(player, i.getItemId(), true);
                                 write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
                             }
-                            if (gold < 0 && items.size() == 0) {
+                            if (gold <= 0 && items.size() == 0) {
                                 write("You looted nothing from " + item.getItemName() + "\r\n");
                             }
                         }

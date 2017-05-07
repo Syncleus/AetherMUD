@@ -1,11 +1,11 @@
 package com.comandante.creeper.items;
 
 
+import com.comandante.creeper.command.commands.UseCommand;
+import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.use.DefaultApplyStatsAction;
 import com.comandante.creeper.items.use.LightningSpellBookUseAction;
 import com.comandante.creeper.items.use.StickOfJusticeUseAction;
-import com.comandante.creeper.command.commands.UseCommand;
-import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.stats.StatsBuilder;
@@ -34,7 +34,7 @@ public class ItemUseHandler {
                 itemUseAction = new DefaultApplyStatsAction(ItemType.MARIJUANA, buildStats(175, 175), Sets.newHashSet());
                 break;
             case SMALL_HEALTH_POTION:
-                itemUseAction = new DefaultApplyStatsAction(ItemType.SMALL_HEALTH_POTION, buildStats(100, 0), Sets.newHashSet());
+                itemUseAction = new DefaultApplyStatsAction(ItemType.SMALL_HEALTH_POTION, buildStats(25, 0), Sets.newHashSet());
                 break;
             case STICK_OF_JUSTICE:
                 itemUseAction = new StickOfJusticeUseAction(ItemType.STICK_OF_JUSTICE);
