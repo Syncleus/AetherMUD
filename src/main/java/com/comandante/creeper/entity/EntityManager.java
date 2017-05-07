@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -35,18 +36,21 @@ public class EntityManager {
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
 
+    private final static String ITEM_MAP = "itemMap";
+    private final static String EFFECTS_MAP = "effectsMap";
+
     public EntityManager(RoomManager roomManager, PlayerManager playerManager, DB db) {
         this.roomManager = roomManager;
-        if (db.exists("itemMap")) {
-            this.items = db.get("itemMap");
-        } else {
-            this.items = db.createHashMap("itemMap").valueSerializer(new ItemSerializer()).make();
-        }
-        if (db.exists("effectsMap")) {
-            this.effects = db.get("effectsMap");
-        } else {
-            this.effects = db.createHashMap("effectsMap").valueSerializer(new EffectSerializer()).make();
-        }
+        this.items = db.hashMap(ITEM_MAP)
+                .keySerializer(Serializer.STRING)
+                .valueSerializer(new ItemSerializer())
+                .createOrOpen();
+
+        this.effects = db.hashMap(EFFECTS_MAP)
+                .keySerializer(Serializer.STRING)
+                .valueSerializer(new EffectSerializer())
+                .createOrOpen();
+
         this.playerManager = playerManager;
         ExecutorService tickOrchestratorService = Executors.newFixedThreadPool(5);
         tickOrchestratorService.submit(new PlayerTicker());
@@ -123,6 +127,7 @@ public class EntityManager {
 
     class PlayerTicker implements Runnable {
         private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "player_tick_time"));
+
         @Override
         public void run() {
             while (true) {
@@ -145,6 +150,7 @@ public class EntityManager {
 
     class RoomTicker implements Runnable {
         private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "room_tick_time"));
+
         @Override
         public void run() {
             while (true) {
@@ -167,6 +173,7 @@ public class EntityManager {
 
     class NpcTicker implements Runnable {
         private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "npc_tick_time"));
+
         @Override
         public void run() {
             while (true) {
@@ -187,6 +194,7 @@ public class EntityManager {
 
     class EntityTicker implements Runnable {
         private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "entity_tick_time"));
+
         @Override
         public void run() {
             while (true) {

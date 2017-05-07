@@ -2,6 +2,9 @@ package com.comandante.creeper.items;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
 import java.io.DataInput;
@@ -14,13 +17,14 @@ public class EffectSerializer implements Serializer<Effect>, Serializable {
     private final static Gson GSON = new GsonBuilder().create();
 
     @Override
-    public void serialize(DataOutput out, Effect value) throws IOException {
+    public void serialize(@NotNull DataOutput2 out, @NotNull Effect value) throws IOException {
         out.writeUTF(GSON.toJson(value, Effect.class));
+
     }
 
     @Override
-    public Effect deserialize(DataInput in, int available) throws IOException {
-        return GSON.fromJson(in.readUTF(), Effect.class);
+    public Effect deserialize(@NotNull DataInput2 input, int available) throws IOException {
+        return GSON.fromJson(input.readUTF(), Effect.class);
     }
 
     @Override

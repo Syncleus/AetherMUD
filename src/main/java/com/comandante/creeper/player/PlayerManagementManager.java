@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import javax.management.*;
 import java.lang.management.ManagementFactory;
 import java.util.Map;
+import java.util.Set;
 
 public class PlayerManagementManager {
 
@@ -18,13 +19,15 @@ public class PlayerManagementManager {
     }
 
     public void createAndRegisterAllPlayerManagementMBeans() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
-        for (Map.Entry<String, PlayerMetadata> entry : gameManager.getPlayerManager().getPlayerMetadataStore().entrySet()) {
+        Set<Map.Entry<String, PlayerMetadata>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
+        for (Map.Entry<String, PlayerMetadata> entry : entrySet) {
             registerPlayer(entry.getValue().getPlayerName(), entry.getValue().getPlayerId(), gameManager);
         }
     }
 
     public void processPlayersMarkedForDeletion(){
-        for (Map.Entry<String, PlayerMetadata> entry : gameManager.getPlayerManager().getPlayerMetadataStore().entrySet()) {
+        Set<Map.Entry<String, PlayerMetadata>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
+        for (Map.Entry<String, PlayerMetadata> entry : entrySet) {
             String playerId = entry.getKey();
             PlayerMetadata playerMetadata = entry.getValue();
             if (playerMetadata.isMarkedForDelete()) {

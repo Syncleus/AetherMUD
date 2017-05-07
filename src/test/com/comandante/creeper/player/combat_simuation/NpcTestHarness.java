@@ -302,8 +302,7 @@ public class NpcTestHarness {
             }
         };
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(new MapConfiguration(Maps.newHashMap()));
-        DB db = DBMaker.newMemoryDB().closeOnJvmShutdown().make();
-        Gson gson = new GsonBuilder().create();
+        DB db = DBMaker.memoryDB().transactionEnable().closeOnJvmShutdown().make();
         PlayerManager playerManager = new PlayerManager(db, new SessionManager());
         RoomManager roomManager = new RoomManager(playerManager);
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
