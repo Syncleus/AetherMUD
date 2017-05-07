@@ -81,7 +81,7 @@ public class ConfigureNpc {
         gameManager.getRoomManager().addMerchant(253, blacksmith);
 
         Map<Integer, MerchantItemForSale> wizarditems = Maps.newHashMap();
-        wizarditems.put(1, new MerchantItemForSale(ItemType.LIGHTNING_SPELLBOOKNG, 5000));
+        wizarditems.put(1, new MerchantItemForSale(ItemType.LIGHTNING_SPELLBOOKNG, 50000));
 
         Wizard wizard = new Wizard(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), wizarditems);
         gameManager.getRoomManager().addMerchant(98, wizard);

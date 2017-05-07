@@ -116,7 +116,7 @@ public enum ItemType {
     PURPLE_DRANK(10, Arrays.asList("drank", "purple drank", "p", "purple", "lean", "sizzurp"),
             "a double cup of " + MAGENTA + "purple" + RESET + " drank",
             "a double cup of " + MAGENTA + "purple" + RESET + " drank rests on the ground.",
-            "a tonic called " + MAGENTA + "purple" + RESET + " drank that restores 500 health" + RESET,
+            "a tonic called " + MAGENTA + "purple" + RESET + " drank that restores health" + RESET,
             true,
             0,
             60,
