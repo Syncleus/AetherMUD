@@ -5,6 +5,7 @@ import com.comandante.creeper.Main;
 import com.comandante.creeper.bot.IrcBotService;
 import com.comandante.creeper.bot.command.BotCommandFactory;
 import com.comandante.creeper.bot.command.BotCommandManager;
+import com.comandante.creeper.common.FriendlyTime;
 import com.comandante.creeper.configuration.CreeperConfiguration;
 import com.comandante.creeper.core_game.service.MultiThreadedEventProcessor;
 import com.comandante.creeper.core_game.service.TimeTracker;
@@ -638,13 +639,17 @@ public class GameManager {
         Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
-        t.setColumnWidth(0, 16, 20);
+        t.setColumnWidth(0, 19, 25);
         // t.setColumnWidth(1, 10, 13);
 
         int i = 1;
         for (CoolDown coolDown : coolDowns) {
             int percent = 100 - (int) (((coolDown.getOriginalNumberOfTicks() - coolDown.getNumberOfTicks()) * 100.0f) / coolDown.getOriginalNumberOfTicks());
-            t.addCell(drawProgressBar(percent));
+            int approxSecondsRemaining = coolDown.getNumberOfTicks() / 2;
+            FriendlyTime friendlyTime = new FriendlyTime(approxSecondsRemaining);
+            String friendlyFormattedShort = friendlyTime.getFriendlyFormattedShort();
+            t.addCell(drawProgressBar(percent) + friendlyFormattedShort);
+            // 1 tick == .5 seconds.
             t.addCell(coolDown.getName());
             i++;
         }

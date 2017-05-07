@@ -1,11 +1,11 @@
 package com.comandante.creeper.entity;
 
+import com.comandante.creeper.Main;
+import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.items.EffectSerializer;
 import com.comandante.creeper.items.Item;
 import com.comandante.creeper.items.ItemSerializer;
-import com.comandante.creeper.Main;
-import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
@@ -118,6 +118,7 @@ public class EntityManager {
         return new Effect(effect);
     }
 
+    public static final int SLEEP_MILLIS = 500;
 
     class PlayerTicker implements Runnable {
         private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "player_tick_time"));
@@ -132,7 +133,7 @@ public class EntityManager {
                         mainTickExecutorService.submit(next.getValue());
                     }
                     context.stop();
-                    Thread.sleep(500);
+                    Thread.sleep(SLEEP_MILLIS);
                 } catch (Exception e) {
                     log.error("Problem with player ticker!", e);
                     SentryManager.logSentry(this.getClass(), e, "Problem with player ticker!");
@@ -154,7 +155,7 @@ public class EntityManager {
                         mainTickExecutorService.submit(next.getValue());
                     }
                     context.stop();
-                    Thread.sleep(500);
+                    Thread.sleep(SLEEP_MILLIS);
                 } catch (Exception e) {
                     log.error("Problem with room ticker!", e);
                     SentryManager.logSentry(this.getClass(), e, "Problem with room ticker!");
@@ -174,7 +175,7 @@ public class EntityManager {
                         mainTickExecutorService.submit(next.getValue());
                     }
                     context.stop();
-                    Thread.sleep(500);
+                    Thread.sleep(SLEEP_MILLIS);
                 } catch (Exception e) {
                     log.error("Problem with npc ticker!", e);
                     SentryManager.logSentry(this.getClass(), e, "Problem with npc ticker!");
@@ -194,7 +195,7 @@ public class EntityManager {
                         mainTickExecutorService.submit(next.getValue());
                     }
                     context.stop();
-                    Thread.sleep(500);
+                    Thread.sleep(SLEEP_MILLIS);
                 } catch (Exception e) {
                     log.error("Problem with entity ticker!", e);
                     SentryManager.logSentry(this.getClass(), e, "Problem with entity ticker!");
