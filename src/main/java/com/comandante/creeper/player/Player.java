@@ -664,6 +664,7 @@ public class Player extends CreeperEntity {
                 if (next.getPlayerId().equals(playerMovement.getPlayer().getPlayerId())) {
                     continue;
                 }
+                gameManager.getChannelUtils().write(next.getPlayerId(), playerMovement.getPlayer().getPlayerName() + " arrived.", true);
             }
             setReturnDirection(java.util.Optional.ofNullable(playerMovement.getReturnDirection()));
             gameManager.currentRoomLogic(playerId, gameManager.getRoomManager().getRoom(playerMovement.getDestinationRoomId()));
