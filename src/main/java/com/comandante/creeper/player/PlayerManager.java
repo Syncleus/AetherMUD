@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -20,24 +21,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.codahale.metrics.MetricRegistry.name;
 
 public class PlayerManager {
-
-    private final DB db;
     private final SessionManager sessionManager;
     private ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<String, Player>();
     private HTreeMap<String, PlayerMetadata> playerMetadataStore;
 
+    private final static String PLAYER_METADATA_MAP = "playerMetadata";
+
     public PlayerManager(DB db, SessionManager sessionManager) {
-        this.db = db;
-        if (db.exists("playerMetadata")) {
-            this.playerMetadataStore = db.get("playerMetadata");
-        } else {
-            this.playerMetadataStore = db
-                    .createHashMap("playerMetadata")
+        this.playerMetadataStore = db.hashMap(PLAYER_METADATA_MAP)
+                    .keySerializer(Serializer.STRING)
                     .valueSerializer(new PlayerMetadataSerializer())
-                    .make();
-        }
-        MapDbAutoCommitService mapDbAutoCommitService = new MapDbAutoCommitService(db);
-        mapDbAutoCommitService.startAsync();
+                    .createOrOpen();
         this.sessionManager = sessionManager;
     }
 

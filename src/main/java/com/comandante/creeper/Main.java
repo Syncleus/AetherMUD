@@ -15,6 +15,7 @@ import com.comandante.creeper.player.PlayerManagementManager;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.server.player_communication.ChannelUtils;
 import com.comandante.creeper.server.telnet.CreeperServer;
+import com.comandante.creeper.storage.MapDbAutoCommitService;
 import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
@@ -81,11 +82,13 @@ public class Main {
 
         Files.isDirectory().apply(new File("world/"));
 
-        DB db = DBMaker.newFileDB(new File("world/" + creeperConfiguration.databaseFileName))
+        DB db = DBMaker.fileDB(new File("world/" + creeperConfiguration.databaseFileName))
+                .transactionEnable()
                 .closeOnJvmShutdown()
                 .make();
 
-        Gson gson = new GsonBuilder().create();
+        MapDbAutoCommitService mapDbAutoCommitService = new MapDbAutoCommitService(db);
+        mapDbAutoCommitService.startAsync();
 
         PlayerManager playerManager = new PlayerManager(db, new SessionManager());
         playerManager.createAllGauges();

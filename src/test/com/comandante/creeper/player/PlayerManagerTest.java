@@ -31,7 +31,7 @@ public class PlayerManagerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        DB db = DBMaker.newMemoryDB().make();
+        DB db = DBMaker.memoryDB().transactionEnable().make();
         playerManager = new PlayerManager(db, sessionManager);
     }
 
