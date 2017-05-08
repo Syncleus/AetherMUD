@@ -3,54 +3,48 @@ package com.comandante.creeper.entity;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.items.Effect;
-import com.comandante.creeper.items.EffectSerializer;
+import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.storage.CreeperStorage;
+import com.comandante.creeper.storage.EffectSerializer;
 import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemSerializer;
+import com.comandante.creeper.storage.ItemSerializer;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.model.Room;
-import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
+import javax.swing.text.html.Option;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
 public class EntityManager {
 
     private static final Logger log = Logger.getLogger(EntityManager.class);
-    private final ConcurrentHashMap<String, Npc> npcs = new ConcurrentHashMap<>();
-    private final HTreeMap<String, Item> items;
-    private final HTreeMap<String, Effect> effects;
-    private final ConcurrentHashMap<String, CreeperEntity> entities = new ConcurrentHashMap<>();
-    private final ExecutorService mainTickExecutorService = Executors.newFixedThreadPool(50);
+
+
+    private final CreeperStorage creeperStorage;
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
+    private final Map<String, Npc> npcs = new ConcurrentHashMap<>();
+    private final Map<String, CreeperEntity> entities = new ConcurrentHashMap<>();
+    private final ExecutorService mainTickExecutorService = Executors.newFixedThreadPool(50);
 
-    private final static String ITEM_MAP = "itemMap";
-    private final static String EFFECTS_MAP = "effectsMap";
-
-    public EntityManager(RoomManager roomManager, PlayerManager playerManager, DB db) {
+    public EntityManager(CreeperStorage creeperStorage, RoomManager roomManager, PlayerManager playerManager) {
+        this.creeperStorage = creeperStorage;
         this.roomManager = roomManager;
-        this.items = db.hashMap(ITEM_MAP)
-                .keySerializer(Serializer.STRING)
-                .valueSerializer(new ItemSerializer())
-                .createOrOpen();
-
-        this.effects = db.hashMap(EFFECTS_MAP)
-                .keySerializer(Serializer.STRING)
-                .valueSerializer(new EffectSerializer())
-                .createOrOpen();
-
         this.playerManager = playerManager;
         ExecutorService tickOrchestratorService = Executors.newFixedThreadPool(5);
         tickOrchestratorService.submit(new PlayerTicker());
@@ -59,12 +53,11 @@ public class EntityManager {
         tickOrchestratorService.submit(new EntityTicker());
     }
 
-    public ConcurrentHashMap<String, Npc> getNpcs() {
+    public Map<String, Npc> getNpcs() {
         return npcs;
     }
 
-    public ConcurrentHashMap<String, CreeperEntity> getEntities() {
-
+    public Map<String, CreeperEntity> getEntities() {
         return entities;
     }
 
@@ -80,23 +73,33 @@ public class EntityManager {
     }
 
     public void saveItem(Item item) {
-        items.put(item.getItemId(), item);
+        creeperStorage.saveItemEntity(item);
     }
 
     public void removeItem(Item item) {
-        items.remove(item.getItemId());
+        creeperStorage.removeItem(item.getItemId());
     }
 
     public void removeItem(String itemId) {
-        items.remove(itemId);
+        creeperStorage.removeItem(itemId);
     }
 
     public void saveEffect(Effect effect) {
-        effects.put(effect.getEntityId(), effect);
+        creeperStorage.saveEffect(effect);
     }
 
     public void removeEffect(Effect effect) {
-        effects.remove(effect.getEntityId());
+        creeperStorage.removeEffect(effect.getEntityId());
+    }
+
+    public Optional<Item> getItemEntity(String itemId) {
+        Optional<Item> item = creeperStorage.getItemEntity(itemId);
+        return item.map(Item::new);
+    }
+
+    public Optional<Effect> getEffectEntity(String effectId) {
+        Optional<Effect> effect = creeperStorage.getEffectEntity(effectId);
+        return effect.map(Effect::new);
     }
 
     public void deleteNpcEntity(String npcId) {
@@ -105,22 +108,6 @@ public class EntityManager {
 
     public Npc getNpcEntity(String npcId) {
         return npcs.get(npcId);
-    }
-
-    public Item getItemEntity(String itemId) {
-        Item item = items.get(itemId);
-        if (item == null) {
-            return null;
-        }
-        return new Item(item);
-    }
-
-    public Effect getEffectEntity(String effectId) {
-        Effect effect = effects.get(effectId);
-        if (effect == null) {
-            return null;
-        }
-        return new Effect(effect);
     }
 
     public static final int SLEEP_MILLIS = 500;

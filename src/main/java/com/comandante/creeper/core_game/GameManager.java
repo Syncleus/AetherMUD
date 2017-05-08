@@ -290,12 +290,13 @@ public class GameManager {
         }
 
         for (String itemId : playerCurrentRoom.getItemIds()) {
-            Item itemEntity = entityManager.getItemEntity(itemId);
-            if (itemEntity == null) {
+            Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+            if (!itemOptional.isPresent()) {
                 playerCurrentRoom.removePresentItem(itemId);
                 continue;
             }
-            sb.append("   ").append(entityManager.getItemEntity(itemId).getRestingName()).append("\r\n");
+            Item item = itemOptional.get();
+            sb.append("   ").append(item.getRestingName()).append("\r\n");
         }
 
         List<String> npcs = Lists.newArrayList();
@@ -411,7 +412,12 @@ public class GameManager {
     }
 
     public void placeItemInRoom(Integer roomId, String itemId) {
-        roomManager.getRoom(roomId).addPresentItem(entityManager.getItemEntity(itemId).getItemId());
+        Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+        if (!itemOptional.isPresent()) {
+            return;
+        }
+        Item item = itemOptional.get();
+        roomManager.getRoom(roomId).addPresentItem(item.getItemId());
     }
 
     public boolean acquireItemFromRoom(Player player, String itemId) {
@@ -435,13 +441,21 @@ public class GameManager {
         synchronized (interner.intern(itemId)) {
             Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
             if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
-                Item itemEntity = entityManager.getItemEntity(itemId);
+                Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+                if (!itemOptional.isPresent()) {
+                    return false;
+                }
+                Item itemEntity = itemOptional.get();
                 itemEntity.setWithPlayer(true);
                 player.addInventoryId(itemId);
                 entityManager.saveItem(itemEntity);
                 return true;
             } else {
-                Item itemEntity = entityManager.getItemEntity(itemId);
+                Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+                if (!itemOptional.isPresent()) {
+                    return false;
+                }
+                Item itemEntity = itemOptional.get();
                 channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
                 if (isFromLoot) {
                     player.getCurrentRoom().addPresentItem(itemId);
@@ -690,8 +704,8 @@ public class GameManager {
         while (iterator.hasNext()) {
             Map.Entry<String, Long> damageEntry = iterator.next();
             totalDamageDone += damageEntry.getValue();
-            PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(damageEntry.getKey());
-            Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerMetadata.getPlayerId());
+            String playerId = damageEntry.getKey();
+            Optional<Room> playerCurrentRoom = getRoomManager().getPlayerCurrentRoom(playerId);
             if (!playerCurrentRoom.isPresent()) {
                 iterator.remove();
             } else if (!Objects.equals(npcCurrentRoom.getRoomId(), playerCurrentRoom.get().getRoomId())) {
@@ -702,7 +716,6 @@ public class GameManager {
         Set<Map.Entry<String, Long>> entries = npc.getPlayerDamageMap().entrySet();
         for (Map.Entry<String, Long> damageEntry : entries) {
             String playerId = damageEntry.getKey();
-            PlayerMetadata playerMetadata = getPlayerManager().getPlayerMetadata(playerId);
             long amount = damageEntry.getValue();
             double pct = (double) amount / totalDamageDone;
             if (pct >= .90) {

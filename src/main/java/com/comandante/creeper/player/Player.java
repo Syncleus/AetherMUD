@@ -118,7 +118,11 @@ public class Player extends CreeperEntity {
 
     private void processRegens() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            if (!playerMetadataOptional.isPresent()) {
+                return;
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             Stats stats = getPlayerStatsWithEquipmentAndLevel();
             if (isActive(CoolDownType.NPC_FIGHT) || isActive(CoolDownType.DEATH)) {
                 return;
@@ -138,11 +142,12 @@ public class Player extends CreeperEntity {
             List<String> effectIdsToRemove = Lists.newArrayList();
             while (iterator.hasNext()) {
                 String effectId = iterator.next();
-                Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
-                if (effect == null) {
+                Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(playerId);
+                if (!effectOptional.isPresent()) {
                     effectIdsToRemove.add(effectId);
                     continue;
                 } else {
+                    Effect effect = effectOptional.get();
                     if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
                         gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
                         gameManager.getEntityManager().removeEffect(effect);
@@ -192,7 +197,11 @@ public class Player extends CreeperEntity {
 
     public boolean updatePlayerHealth(long amount, Npc npc) {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            if (!playerMetadataOptional.isPresent()) {
+                return false;
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             if (amount > 0) {
                 addHealth(amount, playerMetadata);
                 gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
@@ -205,7 +214,6 @@ public class Player extends CreeperEntity {
                     stats.setCurrentHealth(stats.getCurrentHealth() + amount);
                 }
                 gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
-                playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
                 if (playerMetadata.getStats().getCurrentHealth() == 0) {
                     killPlayer(npc);
                     return true;
@@ -289,10 +297,11 @@ public class Player extends CreeperEntity {
     }
 
     public long getLevel() {
-        return Levels.getLevel(getPlayerMetadata().getStats().getExperience());
+        Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
+        return playerMetadataOptional.map(playerMetadata -> Levels.getLevel(playerMetadata.getStats().getExperience())).orElse(0L);
     }
 
-    private PlayerMetadata getPlayerMetadata() {
+    private Optional<PlayerMetadata> getPlayerMetadata() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId);
     }
 
@@ -302,7 +311,8 @@ public class Player extends CreeperEntity {
 
     public long getCurrentHealth() {
         synchronized (interner.intern(playerId)) {
-            return gameManager.getPlayerManager().getPlayerMetadata(playerId).getStats().getCurrentHealth();
+            Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            return playerMetadataOptional.map(playerMetadata -> playerMetadata.getStats().getCurrentHealth()).orElse(0L);
         }
     }
 
@@ -708,20 +718,25 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public Item getInventoryItem(String itemKeyword) {
+    public Optional<Item> getInventoryItem(String itemKeyword) {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
+            Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
+            if (!playerMetadataOptional.isPresent()) {
+                return Optional.empty();
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             for (String itemId : playerMetadata.getInventory()) {
-                Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
-                if (itemEntity == null) {
+                Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                if (!itemOptional.isPresent()) {
                     log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
                     continue;
                 }
+                Item itemEntity = itemOptional.get();
                 if (itemEntity.getItemTriggers().contains(itemKeyword)) {
-                    return itemEntity;
+                    return Optional.of(itemEntity);
                 }
             }
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -772,25 +787,24 @@ public class Player extends CreeperEntity {
 
     public List<Item> getLockerInventory() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
+            Optional<PlayerMetadata> playerMetadataOptonal = getPlayerMetadata();
+            if (!playerMetadataOptonal.isPresent()) {
+                return Lists.newArrayList();
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptonal.get();
             List<Item> inventoryItems = Lists.newArrayList();
             List<String> inventory = playerMetadata.getLockerInventory();
             if (inventory != null) {
                 for (String itemId : inventory) {
-                    Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (itemEntity == null) {
+                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    if (!itemOptional.isPresent()) {
                         log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
                         continue;
                     }
-                    inventoryItems.add(itemEntity);
+                    inventoryItems.add(itemOptional.get());
                 }
             }
-            Collections.sort(inventoryItems, new Comparator<Item>() {
-                @Override
-                public int compare(final Item object1, final Item object2) {
-                    return object1.getItemName().compareTo(object2.getItemName());
-                }
-            });
+            inventoryItems.sort(Comparator.comparing(Item::getItemName));
             return inventoryItems;
         }
     }
@@ -838,37 +852,45 @@ public class Player extends CreeperEntity {
 
     public List<Item> getInventory() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
+            Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
+            if (!playerMetadataOptional.isPresent()) {
+                return Lists.newArrayList();
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             List<Item> inventoryItems = Lists.newArrayList();
             List<String> inventory = playerMetadata.getInventory();
             if (inventory != null) {
                 for (String itemId : inventory) {
-                    Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (itemEntity == null) {
+                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    if (!itemOptional.isPresent()) {
                         log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
                         continue;
                     }
-                    inventoryItems.add(itemEntity);
+                    inventoryItems.add(itemOptional.get());
                 }
             }
-            Collections.sort(inventoryItems, (a, b) -> a.getItemName().compareTo(b.getItemName()));
+            inventoryItems.sort(Comparator.comparing(Item::getItemName));
             return inventoryItems;
         }
     }
 
     public Set<Item> getEquipment() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
+            Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
+            if (!playerMetadataOptional.isPresent()) {
+                return Sets.newHashSet();
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             Set<Item> equipmentItems = Sets.newHashSet();
             String[] equipment = playerMetadata.getPlayerEquipment();
             if (equipment != null) {
                 for (String itemId : equipment) {
-                    Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (itemEntity == null) {
+                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    if (!itemOptional.isPresent()) {
                         log.info("Orphaned equipmentId:" + itemId + " player: " + getPlayerName());
                         continue;
                     }
-                    equipmentItems.add(itemEntity);
+                    equipmentItems.add(itemOptional.get());
                 }
             }
             return equipmentItems;
@@ -894,19 +916,27 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public Item getSlotItem(EquipmentSlotType slot) {
-        PlayerMetadata playerMetadata = getPlayerMetadata();
+    public Optional<Item> getSlotItem(EquipmentSlotType slot) {
+        Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
+        if (playerMetadataOptional.isPresent()) {
+            return Optional.empty();
+        }
+        PlayerMetadata playerMetadata = playerMetadataOptional.get();
         if (playerMetadata.getPlayerEquipment() == null) {
-            return null;
+            return Optional.empty();
         }
         for (String item : playerMetadata.getPlayerEquipment()) {
-            Item itemEntity = gameManager.getEntityManager().getItemEntity(item);
+            Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(item);
+            if (!itemOptional.isPresent()) {
+                continue;
+            }
+            Item itemEntity = itemOptional.get();
             EquipmentSlotType equipmentSlotType = itemEntity.getEquipment().getEquipmentSlotType();
             if (equipmentSlotType.equals(slot)) {
-                return itemEntity;
+                return Optional.of(itemEntity);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public boolean unEquip(Item item) {
@@ -964,9 +994,14 @@ public class Player extends CreeperEntity {
 
     public Stats getPlayerStatsWithEquipmentAndLevel() {
         synchronized (interner.intern(playerId)) {
-            PlayerMetadata playerMetadata = getPlayerMetadata();
             StatsBuilder statsBuilder = new StatsBuilder();
             Stats newStats = statsBuilder.createStats();
+
+            Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
+            if (!playerMetadataOptional.isPresent()) {
+                return newStats;
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             Stats playerStats = gameManager.getStatsModifierFactory().getStatsModifier(this);
             StatsHelper.combineStats(newStats, playerStats);
             String[] playerEquipment = playerMetadata.getPlayerEquipment();
@@ -974,17 +1009,19 @@ public class Player extends CreeperEntity {
                 return playerStats;
             }
             for (String equipId : playerEquipment) {
-                Item itemEntity = gameManager.getEntityManager().getItemEntity(equipId);
+                Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(equipId);
+                if (itemOptional.isPresent()) {
+                    continue;
+                }
+                Item itemEntity = itemOptional.get();
                 Equipment equipment = itemEntity.getEquipment();
                 Stats stats = equipment.getStats();
                 StatsHelper.combineStats(newStats, stats);
             }
             if (playerMetadata.getEffects() != null) {
                 for (String effectId : playerMetadata.getEffects()) {
-                    Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
-                    if (effect != null) {
-                        StatsHelper.combineStats(newStats, effect.getDurationStats());
-                    }
+                    Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(effectId);
+                    effectOptional.ifPresent(effect -> StatsHelper.combineStats(newStats, effect.getDurationStats()));
                 }
             }
             return newStats;
@@ -1030,14 +1067,16 @@ public class Player extends CreeperEntity {
     /* FIGHT FIGHT FIGHT FIGHT */
 
     public String buldEffectsString() {
-        PlayerMetadata playerMetadata = getPlayerMetadata();
-        List<Effect> effects = com.google.api.client.util.Lists.newArrayList();
+        Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
+        if (!playerMetadataOptional.isPresent()) {
+            return "";
+        }
+        PlayerMetadata playerMetadata = playerMetadataOptional.get();
+        List<Effect> effects = Lists.newArrayList();
         if (playerMetadata.getEffects() != null) {
             for (String effectId : playerMetadata.getEffects()) {
-                Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
-                if (effect != null) {
-                    effects.add(effect);
-                }
+                Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(effectId);
+                effectOptional.ifPresent(effects::add);
             }
         }
         return gameManager.renderEffectsString(effects);
@@ -1067,8 +1106,8 @@ public class Player extends CreeperEntity {
         return success;
     }
 
-    public String getPlayerSetting(String key) {
-        return getPlayerMetadata().getSetting(key);
+    public Optional<String> getPlayerSetting(String key) {
+        return getPlayerMetadata().flatMap(playerMetadata -> Optional.ofNullable(playerMetadata.getSetting(key)));
     }
 
     public void removePlayerSetting(String key) {
@@ -1080,7 +1119,7 @@ public class Player extends CreeperEntity {
     }
 
     public Map<String, String> getPlayerSettings() {
-        return getPlayerMetadata().getPlayerSettings();
+        return getPlayerMetadata().map(PlayerMetadata::getPlayerSettings).orElseGet(Maps::newHashMap);
     }
 
     public boolean addActiveFight(Npc npc) {

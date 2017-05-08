@@ -7,6 +7,7 @@ import com.comandante.creeper.entity.EntityManager;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemDecayManager extends CreeperEntity {
@@ -42,11 +43,12 @@ public class ItemDecayManager extends CreeperEntity {
                 ConcurrentHashMap<String, DecayProgress> itemDecayTracker1 = getItemDecayTracker();
                 for (Map.Entry<String, DecayProgress> next : itemDecayTracker1.entrySet()) {
                     DecayProgress decayProgress = next.getValue();
-                    Item item = entityManager.getItemEntity(next.getKey());
-                    if (item == null) {
+                    Optional<Item> itemOptional = entityManager.getItemEntity(next.getKey());
+                    if (!itemOptional.isPresent()) {
                         removeItemFromDecayManager(next.getKey());
                         continue;
                     }
+                    Item item = itemOptional.get();
                     if (item.isWithPlayer()) {
                         removeItemFromDecayManager(item.getItemId());
                         continue;

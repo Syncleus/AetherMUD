@@ -1,5 +1,6 @@
-package com.comandante.creeper.items;
+package com.comandante.creeper.storage;
 
+import com.comandante.creeper.items.Item;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -12,19 +13,18 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class EffectSerializer implements Serializer<Effect>, Serializable {
+public class ItemSerializer implements Serializer<Item>, Serializable {
 
     private final static Gson GSON = new GsonBuilder().create();
 
     @Override
-    public void serialize(@NotNull DataOutput2 out, @NotNull Effect value) throws IOException {
-        out.writeUTF(GSON.toJson(value, Effect.class));
-
+    public void serialize(@NotNull DataOutput2 out, @NotNull Item value) throws IOException {
+        out.writeUTF(GSON.toJson(value, Item.class));
     }
 
     @Override
-    public Effect deserialize(@NotNull DataInput2 input, int available) throws IOException {
-        return GSON.fromJson(input.readUTF(), Effect.class);
+    public Item deserialize(@NotNull DataInput2 input, int available) throws IOException {
+        return GSON.fromJson(input.readUTF(), Item.class);
     }
 
     @Override

@@ -4,6 +4,8 @@ package com.comandante.creeper.player;
 import com.codahale.metrics.Gauge;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.SessionManager;
+import com.comandante.creeper.stats.Stats;
+import com.comandante.creeper.storage.CreeperStorage;
 import com.comandante.creeper.storage.MapDbAutoCommitService;
 import com.comandante.creeper.world.model.Room;
 import com.google.gson.Gson;
@@ -21,17 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.codahale.metrics.MetricRegistry.name;
 
 public class PlayerManager {
+
+    private final CreeperStorage creeperStorage;
     private final SessionManager sessionManager;
-    private ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<String, Player>();
-    private HTreeMap<String, PlayerMetadata> playerMetadataStore;
+    private ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<>();
 
-    private final static String PLAYER_METADATA_MAP = "playerMetadata";
-
-    public PlayerManager(DB db, SessionManager sessionManager) {
-        this.playerMetadataStore = db.hashMap(PLAYER_METADATA_MAP)
-                    .keySerializer(Serializer.STRING)
-                    .valueSerializer(new PlayerMetadataSerializer())
-                    .createOrOpen();
+    public PlayerManager(CreeperStorage creeperStorage, SessionManager sessionManager) {
+        this.creeperStorage = creeperStorage;
         this.sessionManager = sessionManager;
     }
 
@@ -40,7 +38,7 @@ public class PlayerManager {
     }
 
     public void savePlayerMetadata(PlayerMetadata playerMetadata) {
-        playerMetadataStore.put(playerMetadata.getPlayerId(), playerMetadata);
+        creeperStorage.savePlayerMetadata(playerMetadata);
     }
 
     public Player addPlayer(Player player) {
@@ -86,26 +84,28 @@ public class PlayerManager {
     }
 
     public boolean hasRole(Player player, PlayerRole playerRole) {
-        PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
-        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
-        if (playerRoleSet != null) {
-            return playerMetadata.getPlayerRoleSet().contains(playerRole);
-        } else {
+        Optional<PlayerMetadata> playerMetadata = getPlayerMetadata(player.getPlayerId());
+        if (!playerMetadata.isPresent()) {
             return false;
         }
+        Set<PlayerRole> playerRoleSet = playerMetadata.get().getPlayerRoleSet();
+        return playerRoleSet != null && playerMetadata.get().getPlayerRoleSet().contains(playerRole);
     }
 
-    public PlayerMetadata getPlayerMetadata(String playerId) {
-        PlayerMetadata playerMetadata = playerMetadataStore.get(playerId);
-        if (playerMetadata == null) {
+    public Optional<PlayerMetadata> getPlayerMetadata(String playerId) {
+        Optional<PlayerMetadata> playerMetadata = creeperStorage.getPlayerMetadata(playerId);
+        if (playerMetadata.isPresent()) {
             return playerMetadata;
         }
-        return new PlayerMetadata(playerMetadata);
+        return Optional.of(new PlayerMetadata(playerMetadata.get()));
     }
 
     public boolean hasAnyOfRoles(Player player, Set<PlayerRole> checkRoles) {
-        PlayerMetadata playerMetadata = getPlayerMetadata(player.getPlayerId());
-        Set<PlayerRole> playerRoleSet = playerMetadata.getPlayerRoleSet();
+        Optional<PlayerMetadata> playerMetadata = getPlayerMetadata(player.getPlayerId());
+        if (!playerMetadata.isPresent()) {
+            return false;
+        }
+        Set<PlayerRole> playerRoleSet = playerMetadata.get().getPlayerRoleSet();
         if (playerRoleSet != null) {
             for (PlayerRole checkRole : checkRoles) {
                 if (playerRoleSet.contains(checkRole)) {
@@ -119,44 +119,37 @@ public class PlayerManager {
     }
 
     public void createAllGauges() {
-        Iterator<Map.Entry<String, PlayerMetadata>> iterator = playerMetadataStore.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, PlayerMetadata> next = iterator.next();
+        for (Map.Entry<String, PlayerMetadata> next : creeperStorage.getAllPlayerMetadata().entrySet()) {
             createGauges(next.getValue());
         }
     }
 
     public void createGauges(final PlayerMetadata playerMetadata) {
+        String playerId = playerMetadata.getPlayerId();
         String guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "gold");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(guageName,
-                    new Gauge<Long>() {
-                        @Override
-                        public Long getValue() {
-                            return getPlayerMetadata(playerMetadata.getPlayerId()).getGold();
-                        }
+                    (Gauge<Long>) () -> {
+                        Optional<PlayerMetadata> playerMetadataOpt = creeperStorage.getPlayerMetadata(playerId);
+                        return playerMetadataOpt.map(PlayerMetadata::getGold).orElse(0L);
                     });
         }
 
         guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health"),
-                    new Gauge<Long>() {
-                        @Override
-                        public Long getValue() {
-                            return getPlayerMetadata(playerMetadata.getPlayerId()).getStats().getCurrentHealth();
-                        }
+                    (Gauge<Long>) () -> {
+                        Optional<PlayerMetadata> playerMetadataOpt = creeperStorage.getPlayerMetadata(playerId);
+                        return playerMetadataOpt.map(PlayerMetadata::getStats).map(Stats::getCurrentHealth).orElse(0L);
                     });
         }
 
         guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "xp");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "xp"),
-                    new Gauge<Long>() {
-                        @Override
-                        public Long getValue() {
-                            return getPlayerMetadata(playerMetadata.getPlayerId()).getStats().getExperience();
-                        }
+                    (Gauge<Long>) () -> {
+                        Optional<PlayerMetadata> playerMetadataOpt = creeperStorage.getPlayerMetadata(playerId);
+                        return playerMetadataOpt.map(PlayerMetadata::getStats).map(Stats::getExperience).orElse(0L);
                     });
         }
     }
@@ -165,7 +158,7 @@ public class PlayerManager {
         return Main.metrics.getGauges().containsKey(name);
     }
 
-    public HTreeMap<String, PlayerMetadata> getPlayerMetadataStore() {
-        return playerMetadataStore;
+    public Map<String, PlayerMetadata> getPlayerMetadataStore() {
+        return creeperStorage.getAllPlayerMetadata();
     }
 }
