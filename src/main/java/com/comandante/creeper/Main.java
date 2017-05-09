@@ -15,6 +15,8 @@ import com.comandante.creeper.player.PlayerManagementManager;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.server.player_communication.ChannelUtils;
 import com.comandante.creeper.server.telnet.CreeperServer;
+import com.comandante.creeper.storage.CreeperStorage;
+import com.comandante.creeper.storage.MapDBCreeperStorage;
 import com.comandante.creeper.storage.MapDbAutoCommitService;
 import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.MapsManager;
@@ -87,10 +89,11 @@ public class Main {
                 .closeOnJvmShutdown()
                 .make();
 
-        MapDbAutoCommitService mapDbAutoCommitService = new MapDbAutoCommitService(db);
-        mapDbAutoCommitService.startAsync();
+        MapDBCreeperStorage mapDBCreeperStorage = new MapDBCreeperStorage(db);
+        mapDBCreeperStorage.startAsync();
+        mapDBCreeperStorage.awaitRunning();
 
-        PlayerManager playerManager = new PlayerManager(db, new SessionManager());
+        PlayerManager playerManager = new PlayerManager(mapDBCreeperStorage, new SessionManager());
         playerManager.createAllGauges();
 
         RoomManager roomManager = new RoomManager(playerManager);
@@ -98,7 +101,7 @@ public class Main {
         startUpMessage("Configuring core systems.");
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
-        EntityManager entityManager = new EntityManager(roomManager, playerManager, db);
+        EntityManager entityManager = new EntityManager(mapDBCreeperStorage, roomManager, playerManager);
         GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
 
         startUpMessage("Reading world from disk.");

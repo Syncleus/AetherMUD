@@ -281,15 +281,16 @@ public abstract class Room extends CreeperEntity {
     @Override
     public void run() {
         for (String itemId : itemIds) {
-            Item itemEntity = gameManager.getEntityManager().getItemEntity(itemId);
-            if (itemEntity == null) {
+            Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+            if (!itemOptional.isPresent()) {
                 removePresentItem(itemId);
                 continue;
             }
+            Item itemEntity = itemOptional.get();
             if (itemEntity.isHasBeenWithPlayer()) {
                 continue;
             }
-            Integer itemTypeId = gameManager.getEntityManager().getItemEntity(itemId).getItemTypeId();
+            Integer itemTypeId = itemEntity.getItemTypeId();
             ItemType itemType = ItemType.itemTypeFromCode(itemTypeId);
             Set<TimeTracker.TimeOfDay> itemValidTimeOfDays = itemType.getValidTimeOfDays();
             TimeTracker.TimeOfDay timeOfDay = gameManager.getTimeTracker().getTimeOfDay();

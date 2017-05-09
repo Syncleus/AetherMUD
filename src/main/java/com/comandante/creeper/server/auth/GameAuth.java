@@ -19,10 +19,11 @@ public class GameAuth implements CreeperAuthenticator {
 
     @Override
     public boolean authenticateAndRegisterPlayer(String username, String password, Channel channel) {
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
-        if (playerMetadata == null) {
+        Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
+        if (!playerMetadataOptional.isPresent()) {
             return false;
         }
+        PlayerMetadata playerMetadata = playerMetadataOptional.get();
         if (!playerMetadata.getPassword().equals(password)) {
             return false;
         }

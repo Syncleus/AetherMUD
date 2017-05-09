@@ -16,6 +16,8 @@ import com.comandante.creeper.server.player_communication.ChannelCommunicationUt
 import com.comandante.creeper.stats.DefaultStats;
 import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.stats.experience.Experience;
+import com.comandante.creeper.storage.CreeperStorage;
+import com.comandante.creeper.storage.MapDBCreeperStorage;
 import com.comandante.creeper.storage.NpcStorage;
 import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.MapsManager;
@@ -303,10 +305,11 @@ public class NpcTestHarness {
         };
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(new MapConfiguration(Maps.newHashMap()));
         DB db = DBMaker.memoryDB().transactionEnable().closeOnJvmShutdown().make();
-        PlayerManager playerManager = new PlayerManager(db, new SessionManager());
+        MapDBCreeperStorage mapDBCreeperStorage = new MapDBCreeperStorage(db);
+        PlayerManager playerManager = new PlayerManager(mapDBCreeperStorage, new SessionManager());
         RoomManager roomManager = new RoomManager(playerManager);
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
-        EntityManager entityManager = new EntityManager(roomManager, playerManager, db);
+        EntityManager entityManager = new EntityManager(mapDBCreeperStorage, roomManager, playerManager);
         GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
         WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.buildTestworld();

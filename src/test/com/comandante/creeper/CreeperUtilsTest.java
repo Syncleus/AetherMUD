@@ -51,11 +51,11 @@ public class CreeperUtilsTest {
         when(statsModifierFactory.getStatsModifier(Matchers.any())).thenReturn(DefaultStats.DEFAULT_PLAYER.createStats());
         when(gameManager.getStatsModifierFactory()).thenReturn(statsModifierFactory);
         PlayerManager playerManager = mock(PlayerManager.class);
-        when(playerManager.getPlayerMetadata(Matchers.any())).thenReturn(playerMetadata);
+        when(playerManager.getPlayerMetadata(Matchers.any())).thenReturn(java.util.Optional.ofNullable(playerMetadata));
         when(gameManager.getPlayerManager()).thenReturn(playerManager);
         EntityManager entityManager = mock(EntityManager.class);
-        when(entityManager.getItemEntity(Matchers.startsWith("feet"))).thenReturn(ItemType.BERSEKER_BOOTS.create());
-        when(entityManager.getItemEntity(Matchers.startsWith("hand"))).thenReturn(ItemType.BERSERKER_BATON.create());
+        when(entityManager.getItemEntity(Matchers.startsWith("feet"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSEKER_BOOTS.create()));
+        when(entityManager.getItemEntity(Matchers.startsWith("hand"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSERKER_BATON.create()));
         when(gameManager.getEntityManager()).thenReturn(entityManager);
         Player usertest = new Player("usertest", gameManager);
 

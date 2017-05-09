@@ -7,6 +7,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class QueryCommand extends LockerCommand {
 
@@ -21,7 +22,11 @@ public class QueryCommand extends LockerCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
             configure(e);
-            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            if (!playerMetadataOptional.isPresent()) {
+                return;
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             write("----LOCKER ITEMS\r\n");
             for (String rolledUpInvLine: player.getRolledUpLockerInventory()) {
                 write(rolledUpInvLine);;

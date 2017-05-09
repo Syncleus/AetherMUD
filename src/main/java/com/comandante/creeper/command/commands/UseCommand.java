@@ -34,13 +34,13 @@ public class UseCommand extends Command {
                 return;
             }
 
-            Item inventoryItem = player.getInventoryItem(useItemOn.getItem());
-            if (inventoryItem == null) {
+            Optional<Item> inventoryItemOptional = player.getInventoryItem(useItemOn.getItem());
+            if (!inventoryItemOptional.isPresent()) {
                 write("Useable item is not found in your inventory.\r\n");
                 return;
             }
 
-            gameManager.getItemUseHandler().handle(player, inventoryItem, useItemOn);
+            gameManager.getItemUseHandler().handle(player, inventoryItemOptional.get(), useItemOn);
         });
     }
 

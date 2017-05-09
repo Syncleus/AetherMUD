@@ -51,12 +51,12 @@ public class NewUserRegistrationManager {
     private boolean setDesiredUsername(CreeperSession session, MessageEvent e) {
         String name = (String) e.getMessage();
         String username = name.replaceAll("[^a-zA-Z0-9]", "");
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
+        java.util.Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
         if (!isValidUsername(username)) {
             e.getChannel().write("Username is in invalid.\r\n");
             return false;
         }
-        if (playerMetadata != null) {
+        if (playerMetadataOptional.isPresent()) {
             e.getChannel().write("Username is in use.\r\n");
             newUserRegistrationFlow(session, e);
             return false;

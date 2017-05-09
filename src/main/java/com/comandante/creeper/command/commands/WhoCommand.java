@@ -2,6 +2,7 @@ package com.comandante.creeper.command.commands;
 
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.stats.Levels;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -10,10 +11,7 @@ import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 public class WhoCommand extends Command {
 
@@ -42,8 +40,13 @@ public class WhoCommand extends Command {
             Set<Player> allPlayers = gameManager.getAllPlayers();
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
-                t.addCell(Long.toString(Levels.getLevel(playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
-                t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerManager.getPlayerMetadata(allPlayer.getPlayerId()).getStats().getExperience())));
+                Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(allPlayer.getPlayerId());
+                if (!playerMetadataOptional.isPresent()){
+                    continue;
+                }
+                PlayerMetadata playerMetadata = playerMetadataOptional.get();
+                t.addCell(Long.toString(Levels.getLevel(playerMetadata.getStats().getExperience())));
+                t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerMetadata.getStats().getExperience())));
                 t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
             }
             output.append(t.render());

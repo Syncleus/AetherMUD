@@ -2,6 +2,7 @@ package com.comandante.creeper.merchant.bank.commands;
 
 
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.server.player_communication.Color;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -11,6 +12,7 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class DepositCommand extends BankCommand {
 
@@ -40,7 +42,12 @@ public class DepositCommand extends BankCommand {
     }
 
     private boolean areFundsAvailable(long amt) {
-        long inventoryGold = playerManager.getPlayerMetadata(playerId).getGold();
+        Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
+        if (!playerMetadataOptional.isPresent()) {
+            return false;
+        }
+        PlayerMetadata playerMetadata = playerMetadataOptional.get();
+        long inventoryGold = playerMetadata.getGold();
         return (inventoryGold >= amt);
     }
 

@@ -3,9 +3,12 @@ package com.comandante.creeper.stats.modifier;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
+import com.comandante.creeper.stats.DefaultStats;
 import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.stats.StatsBuilder;
+
+import java.util.Optional;
 
 import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;
@@ -75,7 +78,11 @@ public class BasicPlayerLevelStatsModifier implements StatsModifier {
 
     @Override
     public Stats modify(Player player) {
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
+        Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
+        if (!playerMetadataOptional.isPresent()) {
+            return DefaultStats.DEFAULT_PLAYER.createStats();
+        }
+        PlayerMetadata playerMetadata = playerMetadataOptional.get();
         Stats baseStats = playerMetadata.getStats();
         long level = Levels.getLevel(baseStats.getExperience());
         long newMaxHealth = getHealthForLevel(baseStats.getMaxHealth(), level);
