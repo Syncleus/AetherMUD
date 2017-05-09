@@ -6,9 +6,11 @@ import com.comandante.creeper.items.Item;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
+import com.comandante.creeper.player.PlayerMetadata;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -35,7 +37,12 @@ public class MerchantManager {
                         return;
                     }
                     int price = next.getValue().getCost();
-                    long availableGold = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId()).getGold();
+                    Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
+                    if (!playerMetadataOptional.isPresent()) {
+                        continue;
+                    }
+                    PlayerMetadata playerMetadata = playerMetadataOptional.get();
+                    long availableGold = playerMetadata.getGold();
                     if (availableGold >= price) {
                         Item item = next.getValue().getItem().create();
                         gameManager.getEntityManager().saveItem(item);

@@ -4,10 +4,7 @@ package com.comandante.creeper.command.commands.admin;
 import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.command.commands.Command;
 import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.player.CoolDownType;
-import com.comandante.creeper.player.Player;
-import com.comandante.creeper.player.PlayerMovement;
-import com.comandante.creeper.player.PlayerRole;
+import com.comandante.creeper.player.*;
 import com.comandante.creeper.server.player_communication.Color;
 import com.comandante.creeper.world.model.Room;
 import com.google.common.collect.Sets;
@@ -43,8 +40,17 @@ public class TeleportCommand extends Command {
                 write("You are dead and can not move.");
                 return;
             }
-            for (String effectId : playerManager.getPlayerMetadata(playerId).getEffects()) {
-                Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
+            Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
+            if (!playerMetadataOptional.isPresent()) {
+                return;
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
+            for (String effectId : playerMetadata.getEffects()) {
+                Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(effectId);
+                if (!effectOptional.isPresent()) {
+                    continue;
+                }
+                Effect effect = effectOptional.get();
                 if (effect.isFrozenMovement()) {
                     write("You are frozen and can not move.");
                     return;

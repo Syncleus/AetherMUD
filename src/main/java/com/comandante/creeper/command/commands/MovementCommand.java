@@ -3,6 +3,7 @@ package com.comandante.creeper.command.commands;
 import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.CoolDownType;
+import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.player.PlayerMovement;
 import com.comandante.creeper.world.model.RemoteExit;
 import com.comandante.creeper.world.model.Room;
@@ -48,8 +49,16 @@ public class MovementCommand extends Command {
                 MovementCommand.this.write("You are unable to progress, but can return to where you came from by typing \"back\".");
                 return;
             }
-            for (String effectId : playerManager.getPlayerMetadata(playerId).getEffects()) {
-                Effect effect = gameManager.getEntityManager().getEffectEntity(effectId);
+            java.util.Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
+            if (!playerMetadataOptional.isPresent()) {
+                return;
+            }
+            for (String effectId : playerMetadataOptional.get().getEffects()) {
+                java.util.Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(effectId);
+                if (!effectOptional.isPresent()) {
+                    continue;
+                }
+                Effect effect = effectOptional.get();
                 if (effect.isFrozenMovement()) {
                     MovementCommand.this.write("You are frozen and can not move.");
                     return;

@@ -271,9 +271,9 @@ public class GameManager {
         sb.append(RESET);
         sb.append("\r\n\r\n");
         sb.append(WordUtils.wrap(playerCurrentRoom.getRoomDescription(), 80, "\r\n", true)).append("\r\n").append("\r\n");
-        String auto_map = player.getPlayerSetting("auto_map");
-        if (playerCurrentRoom.getMapData().isPresent() && auto_map != null) {
-            int i = Integer.parseInt(auto_map);
+        Optional<String> autoMapOptional = player.getPlayerSetting("auto_map");
+        if (playerCurrentRoom.getMapData().isPresent() && autoMapOptional.isPresent()) {
+            int i = Integer.parseInt(autoMapOptional.get());
             sb.append(mapsManager.drawMap(playerCurrentRoom.getRoomId(), new Coords(i, i))).append("\r\n");
         }
         sb.append(getExits(playerCurrentRoom, player)).append("\r\n");

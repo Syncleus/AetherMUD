@@ -1,6 +1,7 @@
 package com.comandante.creeper.player;
 
 import com.comandante.creeper.core_game.SessionManager;
+import com.comandante.creeper.storage.MapDBCreeperStorage;
 import com.comandante.creeper.world.model.Room;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -32,7 +33,8 @@ public class PlayerManagerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         DB db = DBMaker.memoryDB().transactionEnable().make();
-        playerManager = new PlayerManager(db, sessionManager);
+        MapDBCreeperStorage mapDBCreeperStorage = new MapDBCreeperStorage(db);
+        playerManager = new PlayerManager(mapDBCreeperStorage, sessionManager);
     }
 
     @Test

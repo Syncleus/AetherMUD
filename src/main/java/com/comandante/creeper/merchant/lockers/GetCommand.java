@@ -9,6 +9,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 public class GetCommand extends LockerCommand {
@@ -26,9 +27,17 @@ public class GetCommand extends LockerCommand {
             configure(e);
             originalMessageParts.remove(0);
             String desiredRetrieveOption = Joiner.on(" ").join(originalMessageParts);
-            PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            if (!playerMetadataOptional.isPresent()) {
+                return;
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             for (String entityId: playerMetadata.getLockerInventory()) {
-                Item itemEntity = gameManager.getEntityManager().getItemEntity(entityId);
+                Optional<Item> itemEntityOptional = gameManager.getEntityManager().getItemEntity(entityId);
+                if (!itemEntityOptional.isPresent()) {
+                    continue;
+                }
+                Item itemEntity = itemEntityOptional.get();
                 if (itemEntity.getItemTriggers().contains(desiredRetrieveOption)) {
                     player.transferItemFromLocker(entityId);
                     write(itemEntity.getItemName() + " retrieved from locker.\r\n");

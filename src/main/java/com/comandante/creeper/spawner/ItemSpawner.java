@@ -13,6 +13,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
@@ -75,7 +76,11 @@ public class ItemSpawner extends CreeperEntity {
         for (Room room : roomsByArea) {
             if (room.getAreas().contains(spawnArea)) {
                 for (String i : room.getItemIds()) {
-                    Item currentItem = gameManager.getEntityManager().getItemEntity(i);
+                    Optional<Item> currentItemOptional = gameManager.getEntityManager().getItemEntity(i);
+                    if (!currentItemOptional.isPresent()) {
+                        continue;
+                    }
+                    Item currentItem = currentItemOptional.get();
                     if (currentItem.getItemTypeId().equals(spawnItemType.getItemTypeCode())) {
                         numberCurrentlyInArea++;
                     }
@@ -92,7 +97,11 @@ public class ItemSpawner extends CreeperEntity {
                 int count = 0;
                 Set<String> itemIds = room.getItemIds();
                 for (String itemId : itemIds) {
-                    Item item = gameManager.getEntityManager().getItemEntity(itemId);
+                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    if (!itemOptional.isPresent()) {
+                        continue;
+                    }
+                    Item item = itemOptional.get();
                     if (item.getItemTypeId().equals(spawnItemType.getItemTypeCode())) {
                         count++;
                     }

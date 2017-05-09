@@ -90,6 +90,8 @@ public class Main {
                 .make();
 
         MapDBCreeperStorage mapDBCreeperStorage = new MapDBCreeperStorage(db);
+        mapDBCreeperStorage.startAsync();
+        mapDBCreeperStorage.awaitRunning();
 
         PlayerManager playerManager = new PlayerManager(mapDBCreeperStorage, new SessionManager());
         playerManager.createAllGauges();

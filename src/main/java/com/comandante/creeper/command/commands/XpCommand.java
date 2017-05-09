@@ -17,6 +17,7 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 
 public class XpCommand extends Command {
@@ -32,7 +33,11 @@ public class XpCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            PlayerMetadata playerMetadata = playerManager.getPlayerMetadata(player.getPlayerId());
+            Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(player.getPlayerId());
+            if (!playerMetadataOptional.isPresent()) {
+                return;
+            }
+            PlayerMetadata playerMetadata = playerMetadataOptional.get();
             long nextLevel = Levels.getLevel(playerMetadata.getStats().getExperience()) + 1;
             long expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
             Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());

@@ -5,6 +5,7 @@ import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.world.model.Room;
+import com.google.common.collect.Maps;
 import org.jboss.netty.channel.Channel;
 
 import java.util.Optional;
@@ -19,10 +20,11 @@ public class GameAuthorizationAndRegistration implements CreeperAuthenticator {
 
     @Override
     public boolean authenticateAndRegisterPlayer(String username, String password, Channel channel) {
-        PlayerMetadata playerMetadata = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
-        if (playerMetadata == null) {
+        Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
+        if (!playerMetadataOptional.isPresent()) {
             return false;
         }
+        PlayerMetadata playerMetadata = playerMetadataOptional.get();
         if (!playerMetadata.getPassword().equals(password)) {
             return false;
         }

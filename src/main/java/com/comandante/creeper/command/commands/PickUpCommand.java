@@ -8,6 +8,7 @@ import org.jboss.netty.channel.MessageEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PickUpCommand extends Command {
@@ -27,16 +28,17 @@ public class PickUpCommand extends Command {
             originalMessageParts.remove(0);
             String desiredPickUpItem = Joiner.on(" ").join(originalMessageParts);
             for (String next : itemIds) {
-                Item itemEntity = entityManager.getItemEntity(next);
-                if (itemEntity != null) {
-                    if (itemEntity.getItemTriggers().contains(desiredPickUpItem)) {
-                        if (gameManager.acquireItemFromRoom(player, next)) {
-                            String playerName = player.getPlayerName();
-                            gameManager.roomSay(currentRoom.getRoomId(), playerName + " picked up " + itemEntity.getItemName(), playerId);
-                            return;
-                        } else {
-                            return;
-                        }
+                Optional<Item> itemEntityOptional = entityManager.getItemEntity(next);
+                if (!itemEntityOptional.isPresent()) {
+                    continue;
+                }
+                if (itemEntityOptional.get().getItemTriggers().contains(desiredPickUpItem)) {
+                    if (gameManager.acquireItemFromRoom(player, next)) {
+                        String playerName = player.getPlayerName();
+                        gameManager.roomSay(currentRoom.getRoomId(), playerName + " picked up " + itemEntityOptional.get().getItemName(), playerId);
+                        return;
+                    } else {
+                        return;
                     }
                 }
             }
