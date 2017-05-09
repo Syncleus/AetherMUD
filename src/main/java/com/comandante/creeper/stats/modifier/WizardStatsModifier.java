@@ -80,7 +80,7 @@ public class WizardStatsModifier implements StatsModifier {
     @Override
     public Stats modify(Player player) {
         Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
-        if (playerMetadataOptional.isPresent()) {
+        if (!playerMetadataOptional.isPresent()) {
             return DefaultStats.DEFAULT_PLAYER.createStats();
         }
         PlayerMetadata playerMetadata = playerMetadataOptional.get();

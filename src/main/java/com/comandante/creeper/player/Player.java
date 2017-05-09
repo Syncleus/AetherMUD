@@ -1031,7 +1031,7 @@ public class Player extends CreeperEntity {
 
     public Optional<Item> getSlotItem(EquipmentSlotType slot) {
         Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
-        if (playerMetadataOptional.isPresent()) {
+        if (!playerMetadataOptional.isPresent()) {
             return Optional.empty();
         }
         PlayerMetadata playerMetadata = playerMetadataOptional.get();
