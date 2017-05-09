@@ -1134,7 +1134,7 @@ public class Player extends CreeperEntity {
             }
             for (String equipId : playerEquipment) {
                 Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(equipId);
-                if (itemOptional.isPresent()) {
+                if (!itemOptional.isPresent()) {
                     continue;
                 }
                 Item itemEntity = itemOptional.get();
