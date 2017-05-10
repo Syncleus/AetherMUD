@@ -1,14 +1,13 @@
 package com.comandante.creeper.command.commands.admin;
 
-import com.comandante.creeper.items.ItemType;
-import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.command.commands.Command;
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.player.PlayerRole;
 import com.comandante.creeper.server.player_communication.Color;
-import com.comandante.creeper.storage.NpcStorage;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -32,7 +31,7 @@ public class SpawnCommand  extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+            List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
             if (originalMessageParts.size() == 1) {
                 write(getHeader());
                 for (Npc npc: npcsFromFile) {

@@ -13,7 +13,6 @@ import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.spawner.SpawnRuleBuilder;
-import com.comandante.creeper.storage.NpcStorage;
 import com.comandante.creeper.world.model.Area;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -27,7 +26,7 @@ public class ConfigureNpc {
 
     public static void configureAllNpcs(GameManager gameManager) throws IOException {
         EntityManager entityManager = gameManager.getEntityManager();
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         for (Npc npc : npcsFromFile) {
             Main.startUpMessage("Added " + npc.getName());
             entityManager.addEntity(npc);

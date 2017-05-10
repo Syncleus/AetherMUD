@@ -26,6 +26,7 @@ import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.stats.StatsBuilder;
 import com.comandante.creeper.stats.modifier.StatsModifierFactory;
+import com.comandante.creeper.storage.NpcStorage;
 import com.comandante.creeper.world.FloorManager;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
@@ -38,6 +39,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.google.common.collect.Maps;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.log4j.Logger;
 import org.nocrala.tools.texttablefmt.BorderStyle;
@@ -80,6 +82,7 @@ public class GameManager {
     private final Spells spells;
     private final MultiThreadedEventProcessor eventProcessor = new MultiThreadedEventProcessor(new ArrayBlockingQueue<>(10000));
     private final Room detainmentRoom;
+    private final NpcStorage npcStorage;
 
     public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils) {
         this.roomManager = roomManager;
@@ -108,6 +111,7 @@ public class GameManager {
         this.spells = new Spells(this);
         this.eventProcessor.startAsync();
         this.detainmentRoom = buildDetainmentRoom();
+        this.npcStorage = new NpcStorage(this, new GsonBuilder().create());
     }
 
     private Room buildDetainmentRoom() {
@@ -200,6 +204,10 @@ public class GameManager {
 
     public MultiThreadedEventProcessor getEventProcessor() {
         return eventProcessor;
+    }
+
+    public NpcStorage getNpcStorage() {
+        return npcStorage;
     }
 
     public void placePlayerInLobby(Player player) {

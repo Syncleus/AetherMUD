@@ -8,15 +8,18 @@ import java.util.Set;
 
 public class Loot implements Serializable {
 
-    private final Set<ItemType> items;
-    private final long lootGoldMax;
-    private final long lootGoldMin;
+    private Set<ItemType> items;
+    private long lootGoldMax;
+    private long lootGoldMin;
 
     @JsonCreator
     public Loot(@JsonProperty("lootGoldMin") long lootGoldMin, @JsonProperty("lootGoldMax") long lootGoldMax, @JsonProperty("items") Set<ItemType> items) {
         this.items = items;
         this.lootGoldMax = lootGoldMax;
         this.lootGoldMin = lootGoldMin;
+    }
+
+    public Loot() {
     }
 
     public Set<ItemType> getItems() {
@@ -31,4 +34,15 @@ public class Loot implements Serializable {
         return lootGoldMin;
     }
 
+    public void setItems(Set<ItemType> items) {
+        this.items = items;
+    }
+
+    public void setLootGoldMax(long lootGoldMax) {
+        this.lootGoldMax = lootGoldMax;
+    }
+
+    public void setLootGoldMin(long lootGoldMin) {
+        this.lootGoldMin = lootGoldMin;
+    }
 }

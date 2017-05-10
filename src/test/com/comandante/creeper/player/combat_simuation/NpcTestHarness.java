@@ -16,16 +16,12 @@ import com.comandante.creeper.server.player_communication.ChannelCommunicationUt
 import com.comandante.creeper.stats.DefaultStats;
 import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.stats.experience.Experience;
-import com.comandante.creeper.storage.CreeperStorage;
 import com.comandante.creeper.storage.MapDBCreeperStorage;
-import com.comandante.creeper.storage.NpcStorage;
 import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.configuration.MapConfiguration;
 import org.jboss.netty.channel.Channel;
 import org.junit.Assert;
@@ -52,17 +48,17 @@ public class NpcTestHarness {
     // Levels 1-3
     @Test
     public void testDemonCat() throws Exception {
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("demon cat")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 98f, 90f, 10, 5, 0, 0);
-        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4, 0, 0);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3, 0, 0);
+        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 98f, 90f, 10, 5, 3, 0);
+        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4, 3, 0);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3, 3, 0);
     }
 
     // Levels 2-4
     @Test
     public void testSwampBerserker() throws Exception {
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
         processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 10, 5);
         processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 10, 5);
@@ -73,7 +69,7 @@ public class NpcTestHarness {
     // Levels 2-4
     @Test
     public void testBloodWolf() throws Exception {
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("blood wolf")).collect(Collectors.toList()).get(0);
         processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 14, 5);
         processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 14, 5);
@@ -84,7 +80,7 @@ public class NpcTestHarness {
     // Levels 4-6
     @Test
     public void testTreeBerserker() throws Exception {
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
         processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0, 14, 8);
         processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0, 14, 8);
@@ -95,7 +91,7 @@ public class NpcTestHarness {
     // Levels 6-8
     @Test
     public void testSwampBear() throws Exception {
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
         processRunAndVerify(npcFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0, 18, 12);
         processRunAndVerify(npcFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0, 18, 12);
@@ -106,7 +102,7 @@ public class NpcTestHarness {
     // Levels 8-10
     @Test
     public void testRedEyeBear() throws Exception {
-        List<Npc> npcsFromFile = NpcStorage.getNpcsFromFile(gameManager);
+        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
         processRunAndVerify(npcFromFile, 8, getMidLevelArmorSet(), 55, 36f, 10, 0, 24, 18);
         processRunAndVerify(npcFromFile, 9, getMidLevelArmorSet(), 85, 70f, 10, 0, 24, 18);

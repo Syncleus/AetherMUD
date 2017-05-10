@@ -2,15 +2,15 @@
   "name": "blood wolf",
   "colorName": "blood \u001B[1m\u001B[35mwolf\u001B[0m",
   "dieMessage": "a blood \u001B[1m\u001B[35mwolf\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
-  "temperament": "passive",
+  "temperament": "PASSIVE",
   "loot": {
-    "lootGoldMin": 8,
-    "lootGoldMax": 16,
-    "lootItems": []
+    "items": [],
+    "lootGoldMax": 18,
+    "lootGoldMin": 16
   },
   "roamAreas": [
-    "bloodridge1_zone",
-    "bloodridge2_zone"
+    "BLOODRIDGE1_ZONE",
+    "BLOODRIDGE2_ZONE"
   ],
   "stats": {
     "agile": 4,
@@ -28,20 +28,22 @@
     "weaponRatingMin": 9,
     "willPower": 1
   },
-  "spawnAreas": {
-    "bloodridge1_zone": {
+  "spawnRules": [
+    {
+      "area": "BLOODRIDGE1_ZONE",
       "randomChance": 100,
-      "maxPerRoom": 6,
       "spawnIntervalTicks": 600,
-      "maxInstances": 48
+      "maxInstances": 48,
+      "maxPerRoom": 6
     },
-    "bloodridge2_zone": {
+    {
+      "area": "BLOODRIDGE2_ZONE",
       "randomChance": 100,
-      "maxPerRoom": 6,
       "spawnIntervalTicks": 600,
-      "maxInstances": 48
+      "maxInstances": 48,
+      "maxPerRoom": 6
     }
-  },
+  ],
   "validTriggers": [
     "b",
     "blood wolf",

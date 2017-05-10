@@ -2,15 +2,18 @@
   "name": "swamp bear",
   "colorName": "swamp \u001B[1m\u001B[35mbear\u001B[0m",
   "dieMessage": "a swamp \u001B[1m\u001B[35mbear\u001B[0m breathes his last breath in a pool of \u001B[1m\u001B[31mblood\u001B[0m",
-  "temperament": "passive",
+  "temperament": "PASSIVE",
   "loot": {
-    "lootGoldMin": 12,
+    "items": [
+      "BERSERKER_BRACERS",
+      "BERSERKER_CHEST"
+    ],
     "lootGoldMax": 18,
-    "lootItems": [7, 5]
+    "lootGoldMin": 12
   },
   "roamAreas": [
-    "toft1_zone",
-    "toft2_zone"
+    "TOFT1_ZONE",
+    "TOFT2_ZONE"
   ],
   "stats": {
     "agile": 6,
@@ -28,20 +31,22 @@
     "weaponRatingMin": 14,
     "willPower": 4
   },
-  "spawnAreas": {
-    "toft1_zone": {
+  "spawnRules": [
+    {
+      "area": "TOFT1_ZONE",
       "randomChance": 100,
-      "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
-      "maxInstances": 12
+      "maxInstances": 12,
+      "maxPerRoom": 1
     },
-    "toft2_zone": {
+    {
+      "area": "TOFT2_ZONE",
       "randomChance": 100,
-      "maxPerRoom": 1,
       "spawnIntervalTicks": 600,
-      "maxInstances": 12
+      "maxInstances": 12,
+      "maxPerRoom": 1
     }
-  },
+  ],
   "validTriggers": [
     "s",
     "swamp bear",

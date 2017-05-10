@@ -4,30 +4,80 @@ package com.comandante.creeper.storage;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.npc.Npc;
-import com.comandante.creeper.npc.NpcAdapter;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
-import com.google.gson.GsonBuilder;
+import com.comandante.creeper.npc.NpcBuilder;
+import com.google.gson.Gson;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class NpcStorage {
 
-    public static List<Npc> getNpcsFromFile(GameManager gameManager) throws FileNotFoundException {
-        final GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Npc.class, new NpcAdapter(gameManager));
-        List<Npc> npcs = Lists.newArrayList();
-        for (File f : Files.fileTreeTraverser().preOrderTraversal(new File("world/npcs/"))) {
-            Main.startUpMessage("Loading json file: " + f);
-            Path relativePath = new File("world/npcs/").toPath().getParent().relativize(f.toPath());
-            if (f.getName().contains(".json")) {
-                npcs.add(gsonBuilder.create().fromJson(Files.newReader(f, Charset.defaultCharset()), Npc.class));
-            }
-        }
-        return npcs;
+    private final GameManager gameManager;
+    private final Gson gson;
+    private final static String LOCAL_NPC_DIRECTORY = "world/npcs/";
+    private static final Logger log = Logger.getLogger(NpcStorage.class);
+
+    public NpcStorage(GameManager gameManager, Gson gson) {
+        this.gson = gson;
+        this.gameManager = gameManager;
     }
+
+    public List<Npc> getAllNpcs()  {
+        List<NpcMetadata> npcMetadata = readAlLNpcs();
+        return npcMetadata.stream()
+                .map(metadata -> new NpcBuilder(metadata).setGameManager(gameManager).createNpc())
+                .collect(Collectors.toList());
+    }
+
+    public void saveNpcMetadata(NpcMetadata npcMetadata) throws IOException {
+        File npcFile = new File(LOCAL_NPC_DIRECTORY + npcMetadata.getName().replaceAll("\\s", "_"));
+        org.apache.commons.io.FileUtils.writeStringToFile(npcFile, gson.toJson(npcMetadata));
+    }
+
+    protected List<NpcMetadata> readAlLNpcs() {
+        return readAlLNpcs(getAllJsonStrings());
+    }
+
+    protected List<NpcMetadata> readAlLNpcs(List<String> jsonStrings) {
+        List<NpcMetadata> npcMetadatas = jsonStrings.stream()
+                .map(s -> {
+                    try {
+                        return gson.fromJson(s, NpcMetadata.class);
+                    } catch (Exception e) {
+                        log.error("Unable to read NpcMetaData from Json!", e);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return npcMetadatas;
+    }
+
+    protected List<String> getAllJsonStrings() {
+        Iterator<File> iterator = FileUtils.iterateFiles(new File(LOCAL_NPC_DIRECTORY), new String[]{"json"}, false);
+        return toListOfJsonStrings(iterator);
+    }
+
+    protected List<String> toListOfJsonStrings(final Iterator<File> iterator) {
+        return StreamSupport
+                .stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
+                .map(f -> {
+                    try {
+                        Main.startUpMessage("Reading npc: " + f.getAbsolutePath());
+                        return new String(Files.readAllBytes(f.toPath()));
+                    } catch (IOException e) {
+                        log.error("Unable to read: " + f.getAbsolutePath(), e);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
 }

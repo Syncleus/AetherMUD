@@ -4,11 +4,11 @@ import com.comandante.creeper.world.model.Area;
 
 public class SpawnRule {
 
-    private final Area area;
+    private Area area;
     private int randomChance;
-    private final int spawnIntervalTicks;
-    private final int maxInstances;
-    private final int maxPerRoom;
+    private int spawnIntervalTicks;
+    private int maxInstances;
+    private int maxPerRoom;
 
     public SpawnRule(Area area, int spawnIntervalTicks, int maxInstances, int maxPerRoom, int randomPercent) {
         this.area = area;
@@ -16,6 +16,9 @@ public class SpawnRule {
         this.maxInstances = maxInstances;
         this.maxPerRoom = maxPerRoom;
         this.randomChance = randomPercent;
+    }
+
+    public SpawnRule() {
     }
 
     public int getRandomChance() {
@@ -36,6 +39,26 @@ public class SpawnRule {
 
     public Area getArea() {
         return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public void setRandomChance(int randomChance) {
+        this.randomChance = randomChance;
+    }
+
+    public void setSpawnIntervalTicks(int spawnIntervalTicks) {
+        this.spawnIntervalTicks = spawnIntervalTicks;
+    }
+
+    public void setMaxInstances(int maxInstances) {
+        this.maxInstances = maxInstances;
+    }
+
+    public void setMaxPerRoom(int maxPerRoom) {
+        this.maxPerRoom = maxPerRoom;
     }
 }
 
