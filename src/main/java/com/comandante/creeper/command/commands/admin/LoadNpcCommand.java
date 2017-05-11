@@ -2,13 +2,20 @@ package com.comandante.creeper.command.commands.admin;
 
 import com.comandante.creeper.command.commands.Command;
 import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerRole;
+import com.comandante.creeper.storage.NpcMetadata;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +24,7 @@ public class LoadNpcCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("loadnpc");
     final static String description = "Load an NPC using JSON.";
-    final static String correctUsage = "loadjpc <json with out newlines.>";
+    final static String correctUsage = "loadjpc <http url with json for npc>";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
     public LoadNpcCommand(GameManager gameManager) {
@@ -27,29 +34,65 @@ public class LoadNpcCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            if (!player.getPlayerName().equals("fibs")) {
-                write("This attempt to cheat has been logged.");
+
+            if (originalMessageParts.size() <= 1) {
+                write("Please specify a http url." + "\r\n");
                 return;
             }
-            if (originalMessageParts.size() > 2) {
-                String destinationPlayerName = originalMessageParts.get(1);
-                String amt = originalMessageParts.get(2);
-                if (!NumberUtils.isNumber(amt)) {
-                    write("Third option to givehealth needs to be an integer amount.");
-                    return;
-                }
-                Player playerByUsername = gameManager.getPlayerManager().getPlayerByUsername(destinationPlayerName);
-                if (playerByUsername == null) {
-                    write("Player does not exist.");
-                    return;
-                }
-                playerByUsername.incrementGold(Integer.parseInt(amt));
-                write("The amount of " + amt + " gold has been placed into " + destinationPlayerName + "'s inventory.");
+
+            originalMessageParts.remove(0);
+
+
+            String npcJsonHttpUrl = originalMessageParts.get(0);
+            if (!isValidURL(npcJsonHttpUrl)) {
+                write("Inavlid HTTP address." + "\r\n");
+                return;
             }
+
+            HttpGet httpGet = new HttpGet(npcJsonHttpUrl);
+
+            HttpClient httpclient = gameManager.getHttpclient();
+
+            HttpResponse httpResponse = httpclient.execute(httpGet);
+
+            HttpEntity entity = httpResponse.getEntity();
+
+            if (entity == null) {
+                write("Error retrieving JSON url." + "\r\n");
+                return;
+            }
+
+            String npcJson = EntityUtils.toString(entity);
+
+            NpcMetadata npcMetadata = null;
+            try {
+                npcMetadata = gameManager.getGson().fromJson(npcJson, NpcMetadata.class);
+            } catch (Exception ex) {
+                write("Retrieved JSON file is malformed. " + ex.getLocalizedMessage() + "\r\n");
+                return;
+            }
+            httpGet.reset();
+
+            gameManager.getNpcStorage().saveNpcMetadata(npcMetadata);
+            write("NPC Saved. - " + npcMetadata.getName() + "\r\n");
+
         });
     }
 
-
+    public boolean isValidURL(String url) {
+        URL u = null;
+        try {
+            u = new URL(url);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        try {
+            u.toURI();
+        } catch (URISyntaxException e) {
+            return false;
+        }
+        return true;
+    }
 
 }
 

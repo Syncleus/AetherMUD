@@ -101,5 +101,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new BackCommand(gameManager));
         creeperCommandRegistry.addCommand(new RecallCommand(gameManager));
         creeperCommandRegistry.addCommand(new ToggleChatCommand(gameManager));
+        creeperCommandRegistry.addCommand(new LoadNpcCommand(gameManager));
     }
 }

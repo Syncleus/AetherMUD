@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-
-
 public class ReloadNpcsCommand extends Command {
     final static List<String> validTriggers = Arrays.asList("reloadnpcs");
     final static String description = "Reload npcs from disk.";

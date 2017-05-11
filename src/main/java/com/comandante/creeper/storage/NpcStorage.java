@@ -36,7 +36,7 @@ public class NpcStorage {
     }
 
     public void saveNpcMetadata(NpcMetadata npcMetadata) throws IOException {
-        File npcFile = new File(LOCAL_NPC_DIRECTORY + npcMetadata.getName().replaceAll("\\s", "_"));
+        File npcFile = new File(LOCAL_NPC_DIRECTORY + npcMetadata.getName().replaceAll("\\s", "_") + ".json");
         org.apache.commons.io.FileUtils.writeStringToFile(npcFile, gson.toJson(npcMetadata));
     }
 

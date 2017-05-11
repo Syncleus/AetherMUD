@@ -39,8 +39,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
@@ -83,8 +85,10 @@ public class GameManager {
     private final MultiThreadedEventProcessor eventProcessor = new MultiThreadedEventProcessor(new ArrayBlockingQueue<>(10000));
     private final Room detainmentRoom;
     private final NpcStorage npcStorage;
+    private final HttpClient httpclient;
+    private final Gson gson;
 
-    public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils) {
+    public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
@@ -111,11 +115,18 @@ public class GameManager {
         this.spells = new Spells(this);
         this.eventProcessor.startAsync();
         this.detainmentRoom = buildDetainmentRoom();
-        this.npcStorage = new NpcStorage(this, new GsonBuilder().create());
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.npcStorage = new NpcStorage(this, gson);
+        this.httpclient = httpClient;
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 
     private Room buildDetainmentRoom() {
         BasicRoomBuilder basicRoomBuilder = new BasicRoomBuilder(this);
+
         basicRoomBuilder.setRoomDescription("The room is covered in a white soft padded material.");
         basicRoomBuilder.setRoomTitle("Detainment");
         Room detainmentRoom = basicRoomBuilder
@@ -737,6 +748,10 @@ public class GameManager {
             }
         }
         return damagePcts;
+    }
+
+    public HttpClient getHttpclient() {
+        return httpclient;
     }
 
     public PlayerManager getPlayerManager() {

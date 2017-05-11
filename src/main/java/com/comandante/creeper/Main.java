@@ -15,17 +15,14 @@ import com.comandante.creeper.player.PlayerManagementManager;
 import com.comandante.creeper.player.PlayerManager;
 import com.comandante.creeper.server.player_communication.ChannelUtils;
 import com.comandante.creeper.server.telnet.CreeperServer;
-import com.comandante.creeper.storage.CreeperStorage;
 import com.comandante.creeper.storage.MapDBCreeperStorage;
-import com.comandante.creeper.storage.MapDbAutoCommitService;
 import com.comandante.creeper.storage.WorldStorage;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
 import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.*;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -102,7 +99,7 @@ public class Main {
         MapsManager mapsManager = new MapsManager(creeperConfiguration, roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
         EntityManager entityManager = new EntityManager(mapDBCreeperStorage, roomManager, playerManager);
-        GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils);
+        GameManager gameManager = new GameManager(creeperConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
 
         startUpMessage("Reading world from disk.");
         WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
