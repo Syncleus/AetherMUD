@@ -345,6 +345,10 @@ public enum ItemType {
         return validTimeOfDays;
     }
 
+    public int getItemHalfLifeTicks() {
+        return itemHalfLifeTicks;
+    }
+
     public static ItemType itemTypeFromCode(Integer code) {
         ItemType[] values = values();
         for (ItemType type : values) {
