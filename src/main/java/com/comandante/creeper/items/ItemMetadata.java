@@ -4,6 +4,7 @@ package com.comandante.creeper.items;
 import com.comandante.creeper.core_game.service.TimeTracker;
 import com.comandante.creeper.spawner.SpawnRule;
 import com.comandante.creeper.stats.Stats;
+import com.google.common.collect.Sets;
 
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,18 @@ public class ItemMetadata {
     private int maxUses;
     private Set<SpawnRule> spawnRules;
     private Stats itemApplyStats;
+    private Set<Forage> forages;
+
+    public Set<Forage> getForages() {
+        if (forages == null) {
+            return Sets.newHashSet();
+        }
+        return forages;
+    }
+
+    public void setForages(Set<Forage> forages) {
+        this.forages = forages;
+    }
 
     public Stats getItemApplyStats() {
         return itemApplyStats;
@@ -140,6 +153,9 @@ public class ItemMetadata {
     }
 
     public Set<SpawnRule> getSpawnRules() {
+        if (spawnRules == null) {
+            return Sets.newHashSet();
+        }
         return spawnRules;
     }
 

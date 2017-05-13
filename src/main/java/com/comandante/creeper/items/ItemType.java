@@ -1,7 +1,17 @@
-package com.comandante.creeper.items;
-
-public enum ItemType {
-
+//package com.comandante.creeper.items;
+//
+//import com.comandante.creeper.core_game.service.TimeTracker;
+//import com.comandante.creeper.server.player_communication.Color;
+//import com.google.common.collect.Sets;
+//
+//import java.util.Arrays;
+//import java.util.List;
+//import java.util.Set;
+//
+//import static com.comandante.creeper.server.player_communication.Color.*;
+//
+//public enum ItemType {
+//
 //    UNKNOWN(0, Arrays.asList(""), "", "", "", false, 0, 0, false, com.comandante.creeper.items.Rarity.RARE, 0, Sets.<TimeTracker.TimeOfDay>newHashSet()),
 //    KEY(1, Arrays.asList("key", "gold key", "shiny gold key"),
 //            "a shiny " + YELLOW + "gold key" + RESET,
@@ -339,4 +349,4 @@ public enum ItemType {
 //        }
 //        return ItemType.UNKNOWN;
 //    }
-}
+//}

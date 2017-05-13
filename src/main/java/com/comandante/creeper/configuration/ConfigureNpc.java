@@ -4,16 +4,12 @@ package com.comandante.creeper.configuration;
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.items.ForageBuilder;
+import com.comandante.creeper.items.Forage;
 import com.comandante.creeper.items.ItemMetadata;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
-import com.comandante.creeper.storage.ItemStorage;
-import com.comandante.creeper.world.model.Area;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,25 +34,27 @@ public class ConfigureNpc {
 
         configureAllNpcs(gameManager);
 
-
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        ItemStorage itemStorage = new ItemStorage(gson);
-        List<ItemMetadata> allItemMetadata = itemStorage.getAllItemMetadata();
-
+        List<ItemMetadata> allItemMetadata = gameManager.getItemStorage().getAllItemMetadata();
 
         for (ItemMetadata itemMetadata: allItemMetadata) {
             for (SpawnRule spawnRule: itemMetadata.getSpawnRules()) {
+                Main.startUpMessage("Adding spawn: " + itemMetadata.getInternalItemName());
                 ItemSpawner itemSpawner = new ItemSpawner(itemMetadata, spawnRule, gameManager);
                 entityManager.addEntity(itemSpawner);
             }
         }
 
-        Main.startUpMessage("Adding beer");
+        for (ItemMetadata itemMetadata: allItemMetadata) {
+            for (Forage forage: itemMetadata.getForages()) {
+                Main.startUpMessage("Processing forages for " + itemMetadata.getInternalItemName());
+                gameManager.getForageManager().addForage(itemMetadata.getInternalItemName(), forage);
+            }
+        }
+
 //        ItemSpawner itemSpawner = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.NEWBIE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(100).setMaxPerRoom(5).setRandomPercent(40).createSpawnRule(), gameManager);
 //        ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
 //        ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
+
 //        ItemSpawner itemSpawner5 = new ItemSpawner(ItemType.KEY, new SpawnRuleBuilder().setArea(Area.LOBBY).setSpawnIntervalTicks(600).setMaxInstances(1).setMaxPerRoom(1).setRandomPercent(5).createSpawnRule(), gameManager);
 
 //        entityManager.addEntity(itemSpawner);
@@ -108,16 +106,16 @@ public class ConfigureNpc {
 //        LockerRoomGuy lockerRoomGuy = new LockerRoomGuy(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), null);
 //        gameManager.getRoomManager().addMerchant(63, lockerRoomGuy);
 
-        ForageBuilder marijuanaForageBuilder = new ForageBuilder();
-        marijuanaForageBuilder.setInternalItemName("Marijuana");
-        marijuanaForageBuilder.setMinAmt(1);
-        marijuanaForageBuilder.setMaxAmt(3);
-        marijuanaForageBuilder.setPctOfSuccess(40);
-        marijuanaForageBuilder.setForageExperience(4);
-        marijuanaForageBuilder.setCoolDownTicks(600);
-        gameManager.getForageManager().addForageToArea(Area.WESTERN9_ZONE, marijuanaForageBuilder);
-        gameManager.getForageManager().addForageToArea(Area.NORTH3_ZONE, marijuanaForageBuilder);
-        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, marijuanaForageBuilder);
-        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE1_ZONE, marijuanaForageBuilder);
+//        ForageBuilder marijuanaForageBuilder = new ForageBuilder();
+//        marijuanaForageBuilder.setInternalItemName("Marijuana");
+//        marijuanaForageBuilder.setMinAmt(1);
+//        marijuanaForageBuilder.setMaxAmt(3);
+//        marijuanaForageBuilder.setPctOfSuccess(40);
+//        marijuanaForageBuilder.setForageExperience(4);
+//        marijuanaForageBuilder.setCoolDownTicks(600);
+//        gameManager.getForageManager().addForageToArea(Area.WESTERN9_ZONE, marijuanaForageBuilder);
+//        gameManager.getForageManager().addForageToArea(Area.NORTH3_ZONE, marijuanaForageBuilder);
+//        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE2_ZONE, marijuanaForageBuilder);
+//        gameManager.getForageManager().addForageToArea(Area.BLOODRIDGE1_ZONE, marijuanaForageBuilder);
     }
 }

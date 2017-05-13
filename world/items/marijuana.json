@@ -1,0 +1,38 @@
+{
+  "internalItemName": "marijuana",
+  "itemName": "\u001b[32mmarijuana\u001b[m flowers\u001b[m",
+  "itemDescription": "some \u001b[32mmarijuana\u001b[m flowers\u001b[m",
+  "restingName": "some \u001b[32mmarijuana\u001b[m flowers\u001b[m are here on the ground.",
+  "valueInGold": 10,
+  "itemHalfLifeTicks": 60,
+  "rarity": "BASIC",
+  "itemTriggers": [
+    "marijuana",
+    "weed",
+    "m",
+    "w",
+    "f",
+    "flowers"
+  ],
+  "validTimeOfDays": [],
+  "isDisposable": true,
+  "maxUses": 0,
+  "forages": [
+    {
+      "minLevel": 0,
+      "pctOfSuccess": 40.0,
+      "minAmt": 1,
+      "maxAmt": 3,
+      "forageExperience": 4,
+      "coolDownTicks": 600,
+      "coolDownTicksLeft": 0,
+      "forageAreas": [
+        "BLOODRIDGE2_ZONE",
+        "BLOODRIDGE1_ZONE",
+        "WESTERN9_ZONE",
+        "NORTH3_ZONE"
+      ],
+      "entityId": "8fe8b5a9-55e3-4706-9aee-474d52684d05"
+    }
+  ]
+}

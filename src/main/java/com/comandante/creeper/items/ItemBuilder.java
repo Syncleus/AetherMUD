@@ -49,6 +49,7 @@ public class ItemBuilder {
         this.equipment = itemMetadata.getEquipment();
         this.validTimeOfDays = itemMetadata.getValidTimeOfDays();
         this.effects = itemMetadata.getEffects();
+        this.itemApplyStats = itemMetadata.getItemApplyStats();
         return this;
     }
 
@@ -73,6 +74,7 @@ public class ItemBuilder {
         this.maxUses = origItem.getMaxUses();
         this.isDisposable = origItem.isDisposable();
         this.validTimeOfDays = origItem.getValidTimeOfDays();
+        this.itemApplyStats = origItem.getItemApplyStats();
         return this;
     }
 

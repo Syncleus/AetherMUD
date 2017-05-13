@@ -28,7 +28,7 @@ public class ItemStorage {
     }
 
     public List<ItemMetadata> getAllItemMetadata()  {
-        return readAllItemMetadatas();
+        return itemMetadatas;
     }
 
     public void saveItemMetaData(ItemMetadata itemMetadata) throws IOException {

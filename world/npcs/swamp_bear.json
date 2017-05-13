@@ -52,8 +52,8 @@
   ],
   "loot": {
     "items": [
-      "BERSERKER_BRACERS",
-      "BERSERKER_CHEST"
+      "berserker bracers",
+      "berserker chest"
     ],
     "lootGoldMax": 18,
     "lootGoldMin": 12

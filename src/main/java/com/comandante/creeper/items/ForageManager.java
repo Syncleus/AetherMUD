@@ -27,12 +27,16 @@ public class ForageManager {
         this.gameManager = gameManager;
     }
 
-    public void addForageToArea(Area area, ForageBuilder forageBuilder) {
-        Set<Room> roomsByArea = gameManager.getRoomManager().getRoomsByArea(area);
-        for (Room room : roomsByArea) {
-            Forage newForage = forageBuilder.createForage();
-            room.addForage(newForage);
-            gameManager.getEntityManager().addEntity(newForage);
+    public void addForage(String internalItemName, Forage forage) {
+        for (Area area: forage.getForageAreas()) {
+            Set<Room> roomsByArea = gameManager.getRoomManager().getRoomsByArea(area);
+            for (Room room : roomsByArea) {
+                ForageBuilder forageBuiler = new ForageBuilder().from(forage);
+                forageBuiler.setInternalItemName(internalItemName);
+                Forage newForage = forageBuiler.createForage();
+                room.addForage(newForage);
+                gameManager.getEntityManager().addEntity(newForage);
+            }
         }
     }
 

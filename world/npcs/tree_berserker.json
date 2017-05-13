@@ -44,9 +44,9 @@
   ],
   "loot": {
     "items": [
-      "BERSEKER_BOOTS",
-      "BERSEKER_SHORTS",
-      "SMALL_HEALTH_POTION"
+      "beserker boots",
+      "beserker shorts",
+      "small health potion"
     ],
     "lootGoldMax": 14,
     "lootGoldMin": 8
