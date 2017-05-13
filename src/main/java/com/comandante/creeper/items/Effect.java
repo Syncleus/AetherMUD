@@ -1,12 +1,11 @@
 package com.comandante.creeper.items;
 
 
-import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.stats.Stats;
 
 import java.util.List;
 
-public class Effect extends CreeperEntity {
+public class Effect {
 
     private final String effectName;
     private final String effectDescription;
@@ -30,7 +29,6 @@ public class Effect extends CreeperEntity {
     }
 
     public Effect(Effect effect) {
-        this.setEntityId(effect.getEntityId());
         this.effectName = effect.effectName;
         this.effectDescription = effect.effectDescription;
         this.effectApplyMessages = effect.effectApplyMessages;
@@ -41,10 +39,6 @@ public class Effect extends CreeperEntity {
         this.effectApplications = effect.effectApplications;
     }
 
-    @Override
-    public void run() {
-
-    }
 
     public String getEffectName() {
         return effectName;

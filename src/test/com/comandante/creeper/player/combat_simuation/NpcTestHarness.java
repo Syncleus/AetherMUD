@@ -7,7 +7,6 @@ import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SessionManager;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcBuilder;
 import com.comandante.creeper.player.*;
@@ -63,7 +62,7 @@ public class NpcTestHarness {
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
         processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 10, 5);
         processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 10, 5);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0,10, 5);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 10, 5);
         processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 10, 5);
     }
 
@@ -74,7 +73,7 @@ public class NpcTestHarness {
         Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("blood wolf")).collect(Collectors.toList()).get(0);
         processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 14, 5);
         processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 14, 5);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0,14, 5);
+        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 14, 5);
         processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 14, 5);
     }
 
@@ -86,7 +85,7 @@ public class NpcTestHarness {
         processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0, 14, 8);
         processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0, 14, 8);
         processRunAndVerify(npcFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0, 14, 8);
-        processRunAndVerify(npcFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0,14,8);
+        processRunAndVerify(npcFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0, 14, 8);
     }
 
     // Levels 6-8
@@ -111,12 +110,13 @@ public class NpcTestHarness {
     }
 
     private Set<Item> getEarlyLevelArmorSet() {
-        return Sets.newHashSet(ItemType.BERSERKER_BATON.create(), ItemType.BERSEKER_BOOTS.create(), ItemType.BERSEKER_SHORTS.create());
+        //  return Sets.newHashSet(ItemType.BERSERKER_BATON.create(), ItemType.BERSEKER_BOOTS.create(), ItemType.BERSEKER_SHORTS.create());
+        return Sets.newConcurrentHashSet();
     }
 
     private Set<Item> getMidLevelArmorSet() {
         Set<Item> armorSet = getEarlyLevelArmorSet();
-        armorSet.addAll(Sets.newHashSet(ItemType.BERSERKER_BRACERS.create(), ItemType.BERSERKER_CHEST.create()));
+        //  armorSet.addAll(Sets.newHashSet(ItemType.BERSERKER_BRACERS.create(), ItemType.BERSERKER_CHEST.create()));
         return armorSet;
     }
 
@@ -129,7 +129,7 @@ public class NpcTestHarness {
         Assert.assertTrue("player at level: " + desiredLevel + " wins too quickly", combatSimulationResultLevel.getAverageRounds() >= minRounds);
         Assert.assertTrue("player at level: " + desiredLevel + " wins too slowly.", combatSimulationResultLevel.getAverageRounds() <= maxRounds);
         Assert.assertTrue("Not enough gold.", combatSimulationResultLevel.getAverageGoldPerWin() >= minAvgGold);
-        Assert.assertTrue("Too much gold.",combatSimulationResultLevel.getAverageGoldPerWin() <= maxAvgGold);
+        Assert.assertTrue("Too much gold.", combatSimulationResultLevel.getAverageGoldPerWin() <= maxAvgGold);
     }
 
     public CombatSimulationResult executeCombat(CombatSimulationDetails combatSimulationDetails) throws Exception {
@@ -292,12 +292,12 @@ public class NpcTestHarness {
         ChannelCommunicationUtils channelUtils = new ChannelCommunicationUtils() {
             @Override
             public void write(String playerId, String message) {
-               //System.out.println(message);
+                //System.out.println(message);
             }
 
             @Override
             public void write(String playerId, String message, boolean leadingBlankLine) {
-               //System.out.println(message);
+                //System.out.println(message);
             }
         };
         CreeperConfiguration creeperConfiguration = new CreeperConfiguration(new MapConfiguration(Maps.newHashMap()));

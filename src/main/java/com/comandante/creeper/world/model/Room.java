@@ -5,7 +5,6 @@ import com.comandante.creeper.core_game.service.TimeTracker;
 import com.comandante.creeper.entity.CreeperEntity;
 import com.comandante.creeper.items.Forage;
 import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
@@ -51,7 +50,7 @@ public abstract class Room extends CreeperEntity {
     private Optional<String> mapData = Optional.empty();
     private final Set<String> roomTags;
     private final Set<Merchant> merchants = Sets.newConcurrentHashSet();
-    private Map<ItemType, Forage> forages = Maps.newHashMap();
+    private Map<String, Forage> forages = Maps.newHashMap();
     private final Map<String, String> notables;
     private final GameManager gameManager;
 
@@ -254,12 +253,12 @@ public abstract class Room extends CreeperEntity {
         itemSpawners.add(itemSpawner);
     }
 
-    public Map<ItemType, Forage> getForages() {
+    public Map<String, Forage> getForages() {
         return forages;
     }
 
     public void addForage(Forage forage) {
-        this.forages.put(forage.getItemType(), forage);
+        this.forages.put(forage.getInternalItemName(), forage);
     }
 
     public Map<String, String> getNotables() {
@@ -290,9 +289,7 @@ public abstract class Room extends CreeperEntity {
             if (itemEntity.isHasBeenWithPlayer()) {
                 continue;
             }
-            Integer itemTypeId = itemEntity.getItemTypeId();
-            ItemType itemType = ItemType.itemTypeFromCode(itemTypeId);
-            Set<TimeTracker.TimeOfDay> itemValidTimeOfDays = itemType.getValidTimeOfDays();
+            Set<TimeTracker.TimeOfDay> itemValidTimeOfDays = itemEntity.getValidTimeOfDays();
             TimeTracker.TimeOfDay timeOfDay = gameManager.getTimeTracker().getTimeOfDay();
             if (itemValidTimeOfDays.size() > 0 && !itemValidTimeOfDays.contains(timeOfDay)) {
                 gameManager.getEntityManager().removeItem(itemId);

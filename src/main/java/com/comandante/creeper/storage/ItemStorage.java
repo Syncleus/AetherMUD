@@ -1,8 +1,6 @@
 package com.comandante.creeper.storage;
 
 import com.comandante.creeper.Main;
-import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.items.Item;
 import com.comandante.creeper.items.ItemMetadata;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
@@ -17,23 +15,25 @@ import java.util.stream.StreamSupport;
 
 public class ItemStorage {
 
-    private final static String LOCAL_ITEM_DIRECTORY = "world/items/";
+    public final static String LOCAL_ITEM_DIRECTORY = "world/items/";
 
     private final Gson gson;
-    private final String storageDirectory;
     private static final Logger log = Logger.getLogger(NpcStorage.class);
 
-    public ItemStorage(String storageDirectorty, ItemFactory itemFactory, Gson gson) {
-        this.storageDirectory = storageDirectorty;
+    private final List<ItemMetadata> itemMetadatas;
+
+    public ItemStorage(Gson gson) {
         this.gson = gson;
+        this.itemMetadatas = readAllItemMetadatas();
     }
 
-    public List<ItemMetadata > getAllItemMetadata()  {
+    public List<ItemMetadata> getAllItemMetadata()  {
         return readAllItemMetadatas();
     }
 
     public void saveItemMetaData(ItemMetadata itemMetadata) throws IOException {
-        File npcFile = new File(storageDirectory + itemMetadata.getBasicItemName().replaceAll("\\s", "_") + ".json");
+        new File(LOCAL_ITEM_DIRECTORY).mkdirs();
+        File npcFile = new File(LOCAL_ITEM_DIRECTORY + itemMetadata.getInternalItemName().replaceAll("\\s", "_") + ".json");
         org.apache.commons.io.FileUtils.writeStringToFile(npcFile, gson.toJson(itemMetadata));
     }
 
@@ -57,7 +57,7 @@ public class ItemStorage {
     }
 
     protected List<String> getAllJsonStrings() {
-        Iterator<File> iterator = FileUtils.iterateFiles(new File(storageDirectory), new String[]{"json"}, false);
+        Iterator<File> iterator = FileUtils.iterateFiles(new File(LOCAL_ITEM_DIRECTORY), new String[]{"json"}, false);
         return toListOfJsonStrings(iterator);
     }
 
@@ -75,5 +75,15 @@ public class ItemStorage {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public List<ItemMetadata> getItemMetadatas() {
+        return itemMetadatas;
+    }
+
+    public Optional<ItemMetadata> get(String internalItemName) {
+        return itemMetadatas.stream()
+                .filter(itemMetadata -> itemMetadata.getInternalItemName().equals(internalItemName))
+                .findFirst();
     }
 }

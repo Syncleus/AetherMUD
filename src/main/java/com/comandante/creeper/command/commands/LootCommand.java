@@ -28,7 +28,7 @@ public class LootCommand extends Command {
         execCommand(ctx, e, () -> {
             if (originalMessageParts.size() > 1) {
                 for (Item item : player.getInventory()) {
-                    if (item.getItemTypeId() == Item.CORPSE_ID_RESERVED) {
+                    if (item.getInternalItemName().equals(Item.CORPSE_INTENAL_NAME)) {
                         Loot loot = item.getLoot();
                         if (loot != null) {
                             long gold = lootManager.lootGoldAmountReturn(loot);

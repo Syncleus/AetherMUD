@@ -2,15 +2,13 @@ package com.comandante.creeper.merchant;
 
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.items.ItemMetadata;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Merchant extends CreeperEntity {
 
@@ -50,9 +48,14 @@ public abstract class Merchant extends CreeperEntity {
         Iterator<Map.Entry<Integer, MerchantItemForSale>> entries = merchantItemForSales.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry<Integer, MerchantItemForSale> next = entries.next();
+            Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(next.getValue().getInternalItemName());
+            if (!itemMetadataOptional.isPresent()) {
+                continue;
+            }
+            ItemMetadata itemMetadata = itemMetadataOptional.get();
             t.addCell(String.valueOf(next.getKey()));
             t.addCell(NumberFormat.getNumberInstance(Locale.US).format(next.getValue().getCost()));
-            t.addCell(next.getValue().getItem().getItemDescription());
+            t.addCell(itemMetadata.getItemDescription());
             i++;
         }
         return t.render();

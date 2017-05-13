@@ -5,7 +5,7 @@ import com.comandante.creeper.entity.CreeperEntity;
 
 public class Forage extends CreeperEntity {
 
-    private final ItemType itemType;
+    private final String internalItemName;
     private final int minLevel;
     private final double pctOfSuccess;
     private final int minAmt;
@@ -14,8 +14,8 @@ public class Forage extends CreeperEntity {
     private final int coolDownTicks;
     private int coolDownTicksLeft;
 
-    public Forage(ItemType itemType, int minLevel, double pctOfSuccess, int minAmt, int maxAmt, int forageExperience, int coolDownTicks) {
-        this.itemType = itemType;
+    public Forage(String internalItemName, int minLevel, double pctOfSuccess, int minAmt, int maxAmt, int forageExperience, int coolDownTicks) {
+        this.internalItemName = internalItemName;
         this.minLevel = minLevel;
         this.pctOfSuccess = pctOfSuccess;
         this.minAmt = minAmt;
@@ -26,7 +26,7 @@ public class Forage extends CreeperEntity {
     }
 
     public Forage(Forage forage) {
-        this.itemType = forage.itemType;
+        this.internalItemName = forage.internalItemName;
         this.minLevel = new Integer(forage.getMinLevel());
         this.pctOfSuccess = new Double(forage.getPctOfSuccess());
         this.minAmt = new Integer(forage.getMinAmt());
@@ -36,8 +36,8 @@ public class Forage extends CreeperEntity {
         this.forageExperience = new Integer(forage.getForageExperience());
     }
 
-    public ItemType getItemType() {
-        return itemType;
+    public String getInternalItemName() {
+        return internalItemName;
     }
 
     public int getMinLevel() {

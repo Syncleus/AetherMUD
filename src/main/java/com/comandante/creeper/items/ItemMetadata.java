@@ -1,28 +1,43 @@
 package com.comandante.creeper.items;
 
 
-import com.comandante.creeper.npc.Npc;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.comandante.creeper.core_game.service.TimeTracker;
+import com.comandante.creeper.spawner.SpawnRule;
+import com.comandante.creeper.stats.Stats;
 
 import java.util.List;
 import java.util.Set;
 
 public class ItemMetadata {
 
-    private String basicItemName;
-
+    // Used for persisting to disk (file-name)
+    // Spaces become underscores.
+    // Needs to be unique across all itemmetadata's.
+    // is essentially serving as the item "type".
+    private String internalItemName;
+    // This is the unique identifier to represent this itemmetadata (which drives itemtype)
     private String itemName;
     private String itemDescription;
     private String restingName;
-    private int numberOfUses;
     private int valueInGold;
     private int itemHalfLifeTicks;
     private Rarity rarity;
     private Equipment equipment;
     private Set<Effect> effects;
     private List<String> itemTriggers;
-    private boolean hasBeenWithPlayer;
+    private Set<TimeTracker.TimeOfDay> validTimeOfDays;
+    private boolean isDisposable;
+    private int maxUses;
+    private Set<SpawnRule> spawnRules;
+    private Stats itemApplyStats;
+
+    public Stats getItemApplyStats() {
+        return itemApplyStats;
+    }
+
+    public void setItemApplyStats(Stats itemApplyStats) {
+        this.itemApplyStats = itemApplyStats;
+    }
 
     public String getItemName() {
         return itemName;
@@ -46,14 +61,6 @@ public class ItemMetadata {
 
     public void setRestingName(String restingName) {
         this.restingName = restingName;
-    }
-
-    public int getNumberOfUses() {
-        return numberOfUses;
-    }
-
-    public void setNumberOfUses(int numberOfUses) {
-        this.numberOfUses = numberOfUses;
     }
 
     public int getValueInGold() {
@@ -96,8 +103,8 @@ public class ItemMetadata {
         this.effects = effects;
     }
 
-    public String getBasicItemName() {
-        return basicItemName;
+    public String getInternalItemName() {
+        return internalItemName;
     }
 
     public List<String> getItemTriggers() {
@@ -108,7 +115,39 @@ public class ItemMetadata {
         this.itemTriggers = itemTriggers;
     }
 
-    public void setBasicItemName(String basicItemName) {
-        this.basicItemName = basicItemName;
+    public void setInternalItemName(String internalItemName) {
+        this.internalItemName = internalItemName;
+    }
+
+    public Set<TimeTracker.TimeOfDay> getValidTimeOfDays() {
+        return validTimeOfDays;
+    }
+
+    public void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays) {
+        this.validTimeOfDays = validTimeOfDays;
+    }
+
+    public int getMaxUses() {
+        return maxUses;
+    }
+
+    public boolean isDisposable() {
+        return isDisposable;
+    }
+
+    public void setDisposable(boolean disposable) {
+        isDisposable = disposable;
+    }
+
+    public Set<SpawnRule> getSpawnRules() {
+        return spawnRules;
+    }
+
+    public void setSpawnRules(Set<SpawnRule> spawnRules) {
+        this.spawnRules = spawnRules;
+    }
+
+    public void setMaxUses(int maxUses) {
+        this.maxUses = maxUses;
     }
 }

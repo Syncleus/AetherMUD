@@ -10,6 +10,7 @@ import com.comandante.creeper.world.model.Area;
 import com.comandante.creeper.world.model.Room;
 import org.apache.log4j.Logger;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
@@ -62,19 +63,24 @@ public class ForageManager {
                 //System.out.prlongln("you get a boost of " + pctSuccessBoostForLevel);
                 foragePctOfSuccess = (foragePctOfSuccess * pctSuccessBoostForLevel) + foragePctOfSuccess;
                 //System.out.prlongln("final pct of success for forage: " + foragePctOfSuccess);
+                Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(forage.getInternalItemName());
+                if (!itemMetadataOptional.isPresent()) {
+                    continue;
+                }
+                ItemMetadata itemMetadata = itemMetadataOptional.get();
                 if (getRandPercent(foragePctOfSuccess)) {
                     player.updatePlayerForageExperience(forage.getForageExperience());
                     long numberToHarvest = randInt(forage.getMinAmt(), forage.getMaxAmt());
                     totalForageXp += forage.getForageExperience();
                     for (long i = 0; i < numberToHarvest; i++) {
                         countOfForagesFound++;
-                        Item item = forage.getItemType().create();
+                        Item item = new ItemBuilder().from(itemMetadata).create();
                         gameManager.getEntityManager().saveItem(item);
                         gameManager.acquireItem(player, item.getItemId());
                     }
-                    gameManager.writeToRoom(room.getRoomId(), player.getPlayerName() + " foraged (" + numberToHarvest + ") " + forage.getItemType().getItemName() + "\r\n");
+                    gameManager.writeToRoom(room.getRoomId(), player.getPlayerName() + " foraged (" + numberToHarvest + ") " + itemMetadata.getItemName() + "\r\n");
                 } else {
-                    gameManager.getChannelUtils().write(player.getPlayerId(), "Attempt to forage " + forage.getItemType().getItemName() + " failed.\r\n");
+                    gameManager.getChannelUtils().write(player.getPlayerId(), "Attempt to forage " + itemMetadata.getItemName() + " failed.\r\n");
                     //System.out.prlongln("failed to obtain forage, random pctsuccess failed.");
                 }
             }

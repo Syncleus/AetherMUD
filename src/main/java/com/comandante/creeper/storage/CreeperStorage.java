@@ -1,7 +1,6 @@
 package com.comandante.creeper.storage;
 
 
-import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.items.Item;
 import com.comandante.creeper.player.PlayerMetadata;
 
@@ -23,10 +22,4 @@ public interface CreeperStorage {
     Optional<Item> getItemEntity(String itemId);
 
     void removeItem(String itemId);
-
-    Optional<Effect> getEffectEntity(String effectId);
-
-    void saveEffect(Effect effect);
-
-    void removeEffect(String effectId);
 }

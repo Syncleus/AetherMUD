@@ -1,7 +1,7 @@
 package com.comandante.creeper.items;
 
 public class ForageBuilder {
-    private ItemType itemType;
+    private String internalItemName;
     private int minLevel;
     private double pctOfSuccess;
     private int minAmt;
@@ -9,8 +9,8 @@ public class ForageBuilder {
     private int forageExperience;
     private int coolDownTicks;
 
-    public ForageBuilder setItemType(ItemType itemType) {
-        this.itemType = itemType;
+    public ForageBuilder setInternalItemName(String internalItemName) {
+        this.internalItemName = internalItemName;
         return this;
     }
 
@@ -45,6 +45,6 @@ public class ForageBuilder {
     }
 
     public Forage createForage() {
-        return new Forage(itemType, minLevel, pctOfSuccess, minAmt, maxAmt, forageExperience, coolDownTicks);
+        return new Forage(internalItemName, minLevel, pctOfSuccess, minAmt, maxAmt, forageExperience, coolDownTicks);
     }
 }

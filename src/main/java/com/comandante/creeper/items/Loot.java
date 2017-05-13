@@ -2,19 +2,20 @@ package com.comandante.creeper.items;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Sets;
 
 import java.io.Serializable;
 import java.util.Set;
 
 public class Loot implements Serializable {
 
-    private Set<ItemType> items;
+    private Set<String> internalItemNames;
     private long lootGoldMax;
     private long lootGoldMin;
 
     @JsonCreator
-    public Loot(@JsonProperty("lootGoldMin") long lootGoldMin, @JsonProperty("lootGoldMax") long lootGoldMax, @JsonProperty("items") Set<ItemType> items) {
-        this.items = items;
+    public Loot(@JsonProperty("lootGoldMin") long lootGoldMin, @JsonProperty("lootGoldMax") long lootGoldMax, @JsonProperty("items") Set<String> internalItemNames) {
+        this.internalItemNames = internalItemNames;
         this.lootGoldMax = lootGoldMax;
         this.lootGoldMin = lootGoldMin;
     }
@@ -22,8 +23,11 @@ public class Loot implements Serializable {
     public Loot() {
     }
 
-    public Set<ItemType> getItems() {
-        return items;
+    public Set<String> getInternalItemNames() {
+        if (internalItemNames == null) {
+            internalItemNames = Sets.newHashSet();
+        }
+        return internalItemNames;
     }
 
     public long getLootGoldMax() {
@@ -34,8 +38,8 @@ public class Loot implements Serializable {
         return lootGoldMin;
     }
 
-    public void setItems(Set<ItemType> items) {
-        this.items = items;
+    public void setItems(Set<String> items) {
+        this.internalItemNames = items;
     }
 
     public void setLootGoldMax(long lootGoldMax) {

@@ -1,6 +1,7 @@
 package com.comandante.creeper.player;
 
 
+import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.stats.Stats;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -22,7 +23,7 @@ public class PlayerMetadata implements Serializable {
     private long goldInBank;
     private Set<PlayerRole> playerRoleSet;
     private String[] playerEquipment;
-    private List<String> effects;
+    private List<Effect> effects;
     private boolean isMarkedForDelete;
     private Map<String, String> playerSettings;
     private String[] learnedSpells;
@@ -201,11 +202,11 @@ public class PlayerMetadata implements Serializable {
         this.playerEquipment = newItems;
     }
 
-    protected void addEffectId(String effectId) {
+    protected void addEffect(Effect effect) {
         if (effects == null) {
             effects = Lists.newArrayList();
         }
-        effects.add(effectId);
+        effects.add(effect);
     }
 
     public Integer getCurrentRoomId() {
@@ -216,8 +217,8 @@ public class PlayerMetadata implements Serializable {
         this.currentRoomId = currentRoomId;
     }
 
-    protected void removeEffectID(String effectId) {
-        effects.remove(effectId);
+    protected void removeEffect(Effect effect) {
+        effects.remove(effect);
     }
 
     public String getPlayerName() {
@@ -304,7 +305,7 @@ public class PlayerMetadata implements Serializable {
         return playerEquipment;
     }
 
-    public List<String> getEffects() {
+    public List<Effect> getEffects() {
         if (effects==null) {
             effects = Lists.newArrayList();
         }

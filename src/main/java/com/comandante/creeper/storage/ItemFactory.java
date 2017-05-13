@@ -1,8 +1,6 @@
 package com.comandante.creeper.storage;
 
 import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemMetadata;
 
 public class ItemFactory  {
 
@@ -13,7 +11,7 @@ public class ItemFactory  {
         this.gameManager = gameManager;
     }
 
-    public Item create(ItemMetadata itemMetadata) {
-
-    }
+//    public Item create(ItemMetadata itemMetadata) {
+//
+//    }
 }

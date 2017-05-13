@@ -42,7 +42,7 @@ public interface PlayerManagementMBean {
 
     Map<String, String> getLockerInventory();
 
-    String createItemInInventory(int itemTypeId);
+    String createItemInInventory(String internalItemName);
 
     void setPlayerClass(String playerClassName);
 

@@ -3,14 +3,15 @@ package com.comandante.creeper.items;
 
 import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.items.use.DefaultApplyStatsAction;
+import com.comandante.creeper.items.use.DefaultApplyEffectAction;
 import com.comandante.creeper.items.use.LightningSpellBookUseAction;
 import com.comandante.creeper.items.use.StickOfJusticeUseAction;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.stats.StatsBuilder;
-import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
+
+import java.util.Optional;
 
 public class ItemUseHandler {
 
@@ -23,21 +24,29 @@ public class ItemUseHandler {
 
     public void handle(Player player, Item item, UseCommand.UseItemOn useItemOn) {
         ItemUseAction itemUseAction = null;
-        switch (ItemType.itemTypeFromCode(item.getItemTypeId())) {
-            case LIGHTNING_SPELLBOOKNG:
-                itemUseAction = new LightningSpellBookUseAction(ItemType.LIGHTNING_SPELLBOOKNG);
+        Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(item.getInternalItemName());
+        if (!itemMetadataOptional.isPresent()) {
+            return;
+        }
+        ItemMetadata itemMetadata = itemMetadataOptional.get();
+        switch (itemMetadata.getInternalItemName()) {
+            case "Lighting Spell":
+                itemUseAction = new LightningSpellBookUseAction(itemMetadata);
                 break;
-            case PURPLE_DRANK:
-                itemUseAction = new DefaultApplyStatsAction(ItemType.PURPLE_DRANK, buildStats(120, 0), Sets.newHashSet());
+            case "Purple Drank":
+                itemUseAction = new DefaultApplyEffectAction(itemMetadata);
                 break;
-            case MARIJUANA:
-                itemUseAction = new DefaultApplyStatsAction(ItemType.MARIJUANA, buildStats(50, 50), Sets.newHashSet());
+            case "Marijuana":
+                itemUseAction = new DefaultApplyEffectAction(itemMetadata);
                 break;
-            case SMALL_HEALTH_POTION:
-                itemUseAction = new DefaultApplyStatsAction(ItemType.SMALL_HEALTH_POTION, buildStats(25, 0), Sets.newHashSet());
+            case "Small Health Potion":
+                itemUseAction = new DefaultApplyEffectAction(itemMetadata);
                 break;
-            case STICK_OF_JUSTICE:
-                itemUseAction = new StickOfJusticeUseAction(ItemType.STICK_OF_JUSTICE);
+            case "Stick Of Justice":
+                itemUseAction = new StickOfJusticeUseAction(itemMetadata);
+        }
+        if (itemUseAction == null && item.getEffects() != null && item.getEffects().size() > 0) {
+            itemUseAction = new DefaultApplyEffectAction(itemMetadata);
         }
         if (itemUseAction != null) {
             itemUseAction.executeAction(gameManager, player, item, useItemOn);

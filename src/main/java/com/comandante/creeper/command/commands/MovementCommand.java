@@ -1,7 +1,7 @@
 package com.comandante.creeper.command.commands;
 
-import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.PlayerMetadata;
 import com.comandante.creeper.player.PlayerMovement;
@@ -53,12 +53,7 @@ public class MovementCommand extends Command {
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
-            for (String effectId : playerMetadataOptional.get().getEffects()) {
-                java.util.Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(effectId);
-                if (!effectOptional.isPresent()) {
-                    continue;
-                }
-                Effect effect = effectOptional.get();
+            for (Effect effect : playerMetadataOptional.get().getEffects()) {
                 if (effect.isFrozenMovement()) {
                     MovementCommand.this.write("You are frozen and can not move.");
                     return;
