@@ -1,12 +1,11 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.server.player_communication.Color;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import static com.comandante.creeper.server.player_communication.Color.BOLD_ON;
@@ -21,7 +20,7 @@ public class LockerRoomGuy extends Merchant {
 
     private final static String colorName = BOLD_ON + Color.RED + NAME + Color.RESET;
 
-    public LockerRoomGuy(GameManager gameManager, Loot loot, Map<Integer, MerchantItemForSale> merchantItemForSales) {
+    public LockerRoomGuy(GameManager gameManager, List<MerchantItemForSale> merchantItemForSales) {
         super(gameManager, NAME, colorName, validTriggers, merchantItemForSales, welcomeMessage, MerchantType.LOCKER);
     }
 

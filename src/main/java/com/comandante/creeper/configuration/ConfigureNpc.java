@@ -6,10 +6,13 @@ import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.items.Forage;
 import com.comandante.creeper.items.ItemMetadata;
+import com.comandante.creeper.merchant.LloydBartender;
+import com.comandante.creeper.merchant.MerchantItemForSale;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
+import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.util.List;
@@ -63,13 +66,13 @@ public class ConfigureNpc {
 //        entityManager.addEntity(itemSpawner2);
 //        entityManager.addEntity(itemSpawner5);
 
-//        Map<Integer, MerchantItemForSale> itemsForSale = Maps.newLinkedHashMap();
-//        itemsForSale.put(1, new MerchantItemForSale(ItemType.SMALL_HEALTH_POTION, 8));
-//        itemsForSale.put(2, new MerchantItemForSale(ItemType.PURPLE_DRANK, 80));
-//        itemsForSale.put(3, new MerchantItemForSale(ItemType.BIGGERS_SKIN_SATCHEL, 25000));
+        List<MerchantItemForSale> itemsForSale = Lists.newArrayList();
+        itemsForSale.add(new MerchantItemForSale("small health potion", 8));
+        itemsForSale.add(new MerchantItemForSale("purple drank", 80));
+        itemsForSale.add(new MerchantItemForSale("biggers skin satchel", 25000));
 //
-//        LloydBartender lloydBartender = new LloydBartender(gameManager, new Loot(18, 26, Sets.<ItemType>newHashSet()), itemsForSale);
-//        gameManager.getRoomManager().addMerchant(64, lloydBartender);
+        LloydBartender lloydBartender = new LloydBartender(gameManager, itemsForSale);
+        gameManager.getRoomManager().addMerchant(64, lloydBartender);
 //
 //        Map<Integer, MerchantItemForSale> nigelForSale = Maps.newLinkedHashMap();
 //        nigelForSale.put(1, new MerchantItemForSale(ItemType.SMALL_HEALTH_POTION, 6));

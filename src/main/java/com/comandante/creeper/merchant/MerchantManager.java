@@ -10,8 +10,6 @@ import com.comandante.creeper.items.ItemMetadata;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerMetadata;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.codahale.metrics.MetricRegistry.name;
@@ -29,11 +27,11 @@ public class MerchantManager {
     public void purchaseItem(Merchant merchant, int itemNo, Player player) {
         final Timer.Context context = responses.time();
         try {
-            Iterator<Map.Entry<Integer, MerchantItemForSale>> merchantItemForSales = merchant.getMerchantItemForSales().entrySet().iterator();
-            while (merchantItemForSales.hasNext()) {
-                Map.Entry<Integer, MerchantItemForSale> next = merchantItemForSales.next();
-                if (next.getKey().equals(itemNo)) {
-                    String internalItemName = next.getValue().getInternalItemName();
+            int i = 0;
+            for (MerchantItemForSale merchantItemForSale : merchant.getMerchantItemForSales()) {
+                i++;
+                if (i == itemNo) {
+                    String internalItemName = merchantItemForSale.getInternalItemName();
                     Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(internalItemName);
                     if (!itemMetadataOptional.isPresent()) {
                         continue;
@@ -44,7 +42,7 @@ public class MerchantManager {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "Your inventory is full, drop some items and come back.\r\n");
                         return;
                     }
-                    int price = next.getValue().getCost();
+                    int price = merchantItemForSale.getCost();
                     Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
                     if (!playerMetadataOptional.isPresent()) {
                         continue;

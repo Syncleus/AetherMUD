@@ -73,7 +73,7 @@ public class LoadItemCommand extends Command {
             }
             httpGet.reset();
 
-            gameManager.getItemStorage().saveItemMetaData(itemMetadata);
+            gameManager.getItemStorage().saveItemMetadata(itemMetadata);
             write("Item Saved. - " + itemMetadata.getInternalItemName() + "\r\n");
 
         });

@@ -298,7 +298,7 @@ public class PlayerMetadata implements Serializable {
     }
 
     public void resetCoolDowns() {
-        Maps.newConcurrentMap();
+        this.coolDowns = Maps.newConcurrentMap();
     }
 
     public String[] getPlayerEquipment() {
