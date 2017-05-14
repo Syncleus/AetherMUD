@@ -25,7 +25,7 @@ needsUpdate () {
 }
 
 if needsUpdate; then
-    git pull ; mvn clean install 
+    git pull ; mvn clean install
 else
     echo "No rebuild is needed."
 fi
