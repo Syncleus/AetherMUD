@@ -17,7 +17,7 @@ public class CreeperAuthenticationHandler extends SimpleChannelUpstreamHandler {
     private final CreeperAuthenticator creeperAuthenticator;
     private static final Logger log = Logger.getLogger(CreeperAuthenticationHandler.class);
     private static final String LOGO =
-            "          .,;;##########::,.\n" +
+            "       KEARNS   .,;;##########::,.\n" +
             "       .;##''       ,/|  ``##;.\n" +
             "     .;#'         ,/##|__    `#;.\n" +
             "   .;#'          /######/'     `#;.\n" +
