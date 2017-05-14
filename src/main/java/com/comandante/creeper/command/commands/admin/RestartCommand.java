@@ -27,6 +27,17 @@ public class RestartCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommandThreadSafe(ctx, e, BounceIrcBotCommand.class, () -> {
+            playerManager.getAllPlayersMap().values().stream()
+                    .forEach(player -> gameManager.getChannelUtils().write(player.getPlayerId(),
+                            "                      88                                          \n" +
+                    "                      88                                   ,d     \n" +
+                    "                      88                                   88     \n" +
+                    "8b,dPPYba,  ,adPPYba, 88,dPPYba,   ,adPPYba,   ,adPPYba, MM88MMM  \n" +
+                    "88P'   \"Y8 a8P_____88 88P'    \"8a a8\"     \"8a a8\"     \"8a  88     \n" +
+                    "88         8PP\"\"\"\"\"\"\" 88       d8 8b       d8 8b       d8  88     \n" +
+                    "88         \"8b,   ,aa 88b,   ,a8\" \"8a,   ,a8\" \"8a,   ,a8\"  88,    \n" +
+                    "88          `\"Ybbd8\"' 8Y\"Ybbd8\"'   `\"YbbdP\"'   `\"YbbdP\"'   \"Y888  \n" +
+                    "                                                                  "));
             gameManager.getMapDBCreeperStorage().stopAsync();
             gameManager.getMapDBCreeperStorage().awaitTerminated();
             System.exit(0);
