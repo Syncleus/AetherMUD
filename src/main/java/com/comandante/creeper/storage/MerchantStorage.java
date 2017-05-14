@@ -32,6 +32,19 @@ public class MerchantStorage {
     }
 
     public Merchant create(MerchantMetadata merchantMetadata) {
+
+        if (merchantMetadata.getMerchantType() != null) {
+            return new Merchant(gameManager,
+                    merchantMetadata.getInternalName(),
+                    merchantMetadata.getName(),
+                    merchantMetadata.getColorName(),
+                    merchantMetadata.getValidTriggers(),
+                    merchantMetadata.getMerchantItemForSales(),
+                    merchantMetadata.getWelcomeMessage(),
+                    merchantMetadata.getRoomId(),
+                    merchantMetadata.getMerchantType());
+        }
+
         return new Merchant(gameManager,
                 merchantMetadata.getInternalName(),
                 merchantMetadata.getName(),
@@ -40,11 +53,6 @@ public class MerchantStorage {
                 merchantMetadata.getMerchantItemForSales(),
                 merchantMetadata.getWelcomeMessage(),
                 merchantMetadata.getRoomId());
-    }
-
-
-    public List<MerchantMetadata> getAllMerchantMetadatas() {
-        return merchantMetadatas;
     }
 
     public void saveMerchantMetadata(MerchantMetadata merchantMetadata) throws IOException {

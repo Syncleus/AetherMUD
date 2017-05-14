@@ -1,6 +1,8 @@
 {
   "internalName": "lloyd the bartender",
-  "roomId": 64,
+  "roomIds": [
+    64
+  ],
   "name": "lloyd the bartender",
   "colorName": "\u001b[1m\u001b[36mlloyd the bartender\u001b[m",
   "validTriggers": [

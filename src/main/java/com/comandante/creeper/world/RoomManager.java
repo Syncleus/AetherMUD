@@ -44,7 +44,9 @@ public class RoomManager {
     }
 
     public void addMerchant(Merchant merchant) {
-        getRoom(merchant.getRoomId()).addMerchant(merchant);
+        for (Integer roomId: merchant.getRoomIds()) {
+            getRoom(roomId).addMerchant(merchant);
+        };
     }
 
     public Room getRoom(Integer roomId) {

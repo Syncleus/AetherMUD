@@ -6,13 +6,26 @@ import java.util.Set;
 public class MerchantMetadata {
 
     private String internalName;
-    private Integer roomId;
+    private Set<Integer> roomIds;
     private String name;
     private String colorName;
     private Set<String> validTriggers;
     private List<MerchantItemForSale> merchantItemForSales;
     private String welcomeMessage;
+    private Merchant.MerchantType merchantType;
 
+    public void setMerchantType(Merchant.MerchantType merchantType) {
+        this.merchantType = merchantType;
+    }
+
+    public Set<Integer> getRoomIds() {
+
+        return roomIds;
+    }
+
+    public Merchant.MerchantType getMerchantType() {
+        return merchantType;
+    }
 
     public String getInternalName() {
         return internalName;
@@ -50,12 +63,12 @@ public class MerchantMetadata {
         this.internalName = internalName;
     }
 
-    public Integer getRoomId() {
-        return roomId;
+    public Set<Integer> getRoomId() {
+        return roomIds;
     }
 
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
+    public void setRoomIds(Set<Integer> roomIds) {
+        this.roomIds = roomIds;
     }
 
     public void setMerchantItemForSales(List<MerchantItemForSale> merchantItemForSales) {

@@ -19,13 +19,13 @@ public class Merchant {
     private final List<MerchantItemForSale> merchantItemForSales;
     private final String welcomeMessage;
     private final MerchantType merchantType;
-    private final Integer roomId;
+    private final Set<Integer> roomIds;
 
-    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Integer roomId) {
-        this(gameManager, internalName, name, colorName, validTriggers, merchantItemForSales, welcomeMessage, roomId, MerchantType.BASIC);
+    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Set<Integer> roomIds) {
+        this(gameManager, internalName, name, colorName, validTriggers, merchantItemForSales, welcomeMessage, roomIds, MerchantType.BASIC);
     }
 
-    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Integer roomId, MerchantType merchantType) {
+    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Set<Integer> roomIds, MerchantType merchantType) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
@@ -33,7 +33,7 @@ public class Merchant {
         this.merchantItemForSales = merchantItemForSales;
         this.welcomeMessage = welcomeMessage;
         this.merchantType = merchantType;
-        this.roomId = roomId;
+        this.roomIds = roomIds;
         this.internalName = internalName;
 
     }
@@ -72,8 +72,8 @@ public class Merchant {
         return gameManager;
     }
 
-    public Integer getRoomId() {
-        return roomId;
+    public Set<Integer> getRoomIds() {
+        return roomIds;
     }
 
     public String getName() {
