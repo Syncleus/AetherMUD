@@ -2,7 +2,7 @@ package com.comandante.creeper.command.commands.admin;
 
 import com.comandante.creeper.command.commands.Command;
 import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.items.ItemMetadata;
+import com.comandante.creeper.merchant.MerchantMetadata;
 import com.comandante.creeper.player.PlayerRole;
 import com.google.common.collect.Sets;
 import org.apache.http.HttpEntity;
@@ -20,14 +20,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class LoadItemCommand extends Command {
+public class LoadMerchantCommand extends Command {
 
-    final static List<String> validTriggers = Arrays.asList("loaditem");
-    final static String description = "Load an Item using JSON over http.";
-    final static String correctUsage = "loaditem <http url with json for item>";
+    final static List<String> validTriggers = Arrays.asList("loadmerchant");
+    final static String description = "Load a Merchant using JSON over http";
+    final static String correctUsage = "loadmerchant <http url with json for npc>";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
-    public LoadItemCommand(GameManager gameManager) {
+    public LoadMerchantCommand(GameManager gameManager) {
         super(gameManager, validTriggers, description, correctUsage, roles);
     }
 
@@ -43,13 +43,13 @@ public class LoadItemCommand extends Command {
             originalMessageParts.remove(0);
 
 
-            String itemJsonUrl = originalMessageParts.get(0);
-            if (!isValidURL(itemJsonUrl)) {
+            String npcJsonHttpUrl = originalMessageParts.get(0);
+            if (!isValidURL(npcJsonHttpUrl)) {
                 write("Invalid HTTP address." + "\r\n");
                 return;
             }
 
-            HttpGet httpGet = new HttpGet(itemJsonUrl);
+            HttpGet httpGet = new HttpGet(npcJsonHttpUrl);
 
             HttpClient httpclient = gameManager.getHttpclient();
 
@@ -64,17 +64,17 @@ public class LoadItemCommand extends Command {
 
             String npcJson = EntityUtils.toString(entity);
 
-            ItemMetadata itemMetadata = null;
+            MerchantMetadata merchantMetadata = null;
             try {
-                itemMetadata = gameManager.getGson().fromJson(npcJson, ItemMetadata.class);
+                merchantMetadata = gameManager.getGson().fromJson(npcJson, MerchantMetadata.class);
             } catch (Exception ex) {
                 write("Retrieved JSON file is malformed. " + ex.getLocalizedMessage() + "\r\n");
                 return;
             }
             httpGet.reset();
 
-            gameManager.getItemStorage().saveItemMetadata(itemMetadata);
-            write("Item Saved. - " + itemMetadata.getInternalItemName() + "\r\n");
+            gameManager.getMerchantStorage().saveMerchantMetadata(merchantMetadata);
+            write("Merchant Saved. - " + merchantMetadata.getInternalName() + "\r\n");
 
         });
     }
@@ -95,5 +95,4 @@ public class LoadItemCommand extends Command {
     }
 
 }
-
 

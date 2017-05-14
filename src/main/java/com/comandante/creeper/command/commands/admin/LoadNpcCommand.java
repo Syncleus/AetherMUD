@@ -45,7 +45,7 @@ public class LoadNpcCommand extends Command {
 
             String npcJsonHttpUrl = originalMessageParts.get(0);
             if (!isValidURL(npcJsonHttpUrl)) {
-                write("Inavlid HTTP address." + "\r\n");
+                write("Invalid HTTP address." + "\r\n");
                 return;
             }
 
