@@ -22,7 +22,7 @@ public class ConfigureNpc {
         EntityManager entityManager = gameManager.getEntityManager();
         List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
         for (Npc npc : npcsFromFile) {
-            Main.startUpMessage("Adding spawn: " + npc.getName());
+            Main.startUpMessage("Adding npc spawn: " + npc.getName());
             entityManager.addEntity(npc);
             Set<SpawnRule> spawnRules = npc.getSpawnRules();
             for (SpawnRule spawnRule : spawnRules) {
@@ -39,7 +39,7 @@ public class ConfigureNpc {
 
         for (ItemMetadata itemMetadata : allItemMetadata) {
             for (SpawnRule spawnRule : itemMetadata.getSpawnRules()) {
-                Main.startUpMessage("Adding spawn: " + itemMetadata.getInternalItemName());
+                Main.startUpMessage("Adding item spawn: " + itemMetadata.getInternalItemName());
                 ItemSpawner itemSpawner = new ItemSpawner(itemMetadata, spawnRule, gameManager);
                 entityManager.addEntity(itemSpawner);
             }
