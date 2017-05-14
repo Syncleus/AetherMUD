@@ -1,3 +1,4 @@
+/*
 package com.comandante.creeper.items;
 
 import com.comandante.creeper.merchant.Merchant;
@@ -500,3 +501,4 @@ public class ItemMetadataTest {
     }
 
 }
+*/
