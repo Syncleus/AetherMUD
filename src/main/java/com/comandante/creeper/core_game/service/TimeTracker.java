@@ -23,11 +23,11 @@ public class TimeTracker extends CreeperEntity {
 
     @Override
     public void run() {
-        TimeOfDay timeOfDay = determineTimeOfDay();
-        if (timeOfDay != currentTimeOfDay) {
-            announceChange(timeOfDay);
-        }
-        currentTimeOfDay = timeOfDay;
+             TimeOfDay timeOfDay = determineTimeOfDay();
+             if (timeOfDay != currentTimeOfDay) {
+                 announceChange(timeOfDay);
+             }
+             currentTimeOfDay = timeOfDay;
     }
 
     private void announceChange(TimeOfDay timeOfDay) {

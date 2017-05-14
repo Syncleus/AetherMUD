@@ -26,10 +26,7 @@ import com.comandante.creeper.stats.Levels;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.stats.StatsBuilder;
 import com.comandante.creeper.stats.modifier.StatsModifierFactory;
-import com.comandante.creeper.storage.FilebasedJsonStorage;
-import com.comandante.creeper.storage.ItemStorage;
-import com.comandante.creeper.storage.MerchantStorage;
-import com.comandante.creeper.storage.NpcStorage;
+import com.comandante.creeper.storage.*;
 import com.comandante.creeper.world.FloorManager;
 import com.comandante.creeper.world.MapsManager;
 import com.comandante.creeper.world.RoomManager;
@@ -92,6 +89,7 @@ public class GameManager {
     private final HttpClient httpclient;
     private final Gson gson;
     private final FilebasedJsonStorage filebasedJsonStorage;
+    private final MapDBCreeperStorage mapDBCreeperStorage;
 
     public MerchantStorage getMerchantStorage() {
         return merchantStorage;
@@ -100,7 +98,8 @@ public class GameManager {
     private final MerchantStorage merchantStorage;
 
 
-    public GameManager(CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
+    public GameManager(MapDBCreeperStorage mapDBCreeperStorage, CreeperConfiguration creeperConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
+        this.mapDBCreeperStorage = mapDBCreeperStorage;
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
@@ -133,6 +132,10 @@ public class GameManager {
         this.itemStorage = new ItemStorage(filebasedJsonStorage);
         this.merchantStorage = new MerchantStorage(this, filebasedJsonStorage);
         this.httpclient = httpClient;
+    }
+
+    public MapDBCreeperStorage getMapDBCreeperStorage() {
+        return mapDBCreeperStorage;
     }
 
     public Gson getGson() {
