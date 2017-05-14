@@ -1,3 +1,4 @@
+/*
 package com.comandante.creeper.merchant;
 
 
@@ -35,3 +36,4 @@ public class Blacksmith extends Merchant {
         super(gameManager, NAME, colorName, validTriggers, merchantItemForSales, welcomeMessage);
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.comandante.creeper.merchant;
 
 import com.comandante.creeper.core_game.GameManager;
@@ -30,3 +31,4 @@ public class LockerRoomGuy extends Merchant {
     }
 }
 
+*/

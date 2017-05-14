@@ -1,3 +1,4 @@
+/*
 package com.comandante.creeper.merchant;
 
 import com.comandante.creeper.core_game.GameManager;
@@ -24,3 +25,4 @@ public class NigelBartender extends Merchant {
         super(gameManager, NAME, colorName, validTriggers, merchantItemForSales, welcomeMessage);
     }
 }
+*/

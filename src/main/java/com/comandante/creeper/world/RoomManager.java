@@ -43,8 +43,8 @@ public class RoomManager {
         return rooms.entrySet().iterator();
     }
 
-    public void addMerchant(Integer roomId, Merchant merchant) {
-        getRoom(roomId).addMerchant(merchant);
+    public void addMerchant(Merchant merchant) {
+        getRoom(merchant.getRoomId()).addMerchant(merchant);
     }
 
     public Room getRoom(Integer roomId) {

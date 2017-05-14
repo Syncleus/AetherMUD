@@ -9,22 +9,23 @@ import org.nocrala.tools.texttablefmt.Table;
 import java.text.NumberFormat;
 import java.util.*;
 
-public abstract class Merchant {
+public class Merchant {
 
-    private long lastPhraseTimestamp;
     private final GameManager gameManager;
+    private final String internalName;
     private final String name;
     private final String colorName;
     private final Set<String> validTriggers;
     private final List<MerchantItemForSale> merchantItemForSales;
     private final String welcomeMessage;
     private final MerchantType merchantType;
+    private final Integer roomId;
 
-    public Merchant(GameManager gameManager, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage) {
-        this(gameManager, name, colorName, validTriggers, merchantItemForSales, welcomeMessage, MerchantType.BASIC);
+    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Integer roomId) {
+        this(gameManager, internalName, name, colorName, validTriggers, merchantItemForSales, welcomeMessage, roomId, MerchantType.BASIC);
     }
 
-    public Merchant(GameManager gameManager, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, MerchantType merchantType) {
+    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Integer roomId, MerchantType merchantType) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
@@ -32,6 +33,13 @@ public abstract class Merchant {
         this.merchantItemForSales = merchantItemForSales;
         this.welcomeMessage = welcomeMessage;
         this.merchantType = merchantType;
+        this.roomId = roomId;
+        this.internalName = internalName;
+
+    }
+
+    public String getInternalName() {
+        return internalName;
     }
 
     public String getMenu() {
@@ -60,12 +68,12 @@ public abstract class Merchant {
         return t.render();
     }
 
-    public long getLastPhraseTimestamp() {
-        return lastPhraseTimestamp;
-    }
-
     public GameManager getGameManager() {
         return gameManager;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
     }
 
     public String getName() {

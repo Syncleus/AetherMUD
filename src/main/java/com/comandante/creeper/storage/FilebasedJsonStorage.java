@@ -46,6 +46,7 @@ public class FilebasedJsonStorage {
     }
 
     private List<String> getAllJsonStrings(String storageDirectory, boolean recursive) {
+        new File(storageDirectory).mkdirs();
         Iterator<File> iterator = FileUtils.iterateFiles(new File(storageDirectory), new String[]{"json"}, recursive);
         return toListOfJsonStrings(iterator);
     }

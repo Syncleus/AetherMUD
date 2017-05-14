@@ -1,3 +1,4 @@
+/*
 package com.comandante.creeper.merchant;
 
 
@@ -25,3 +26,4 @@ public class GrimulfWizard extends Merchant {
         super(gameManager, NAME, colorName, validTriggers, merchantItemForSales, welcomeMessage);
     }
 }
+*/

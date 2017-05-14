@@ -6,13 +6,11 @@ import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
 import com.comandante.creeper.items.Forage;
 import com.comandante.creeper.items.ItemMetadata;
-import com.comandante.creeper.merchant.LloydBartender;
-import com.comandante.creeper.merchant.MerchantItemForSale;
+import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.spawner.ItemSpawner;
 import com.comandante.creeper.spawner.NpcSpawner;
 import com.comandante.creeper.spawner.SpawnRule;
-import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,6 +52,11 @@ public class ConfigureNpc {
             }
         }
 
+        List<Merchant> allMerchantMetadatas = gameManager.getMerchantStorage().getAllMerchants();
+        for (Merchant merchant: allMerchantMetadatas) {
+            gameManager.getRoomManager().addMerchant(merchant);
+        }
+
 //        ItemSpawner itemSpawner = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.NEWBIE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(100).setMaxPerRoom(5).setRandomPercent(40).createSpawnRule(), gameManager);
 //        ItemSpawner itemSpawner1 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.FANCYHOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
 //        ItemSpawner itemSpawner2 = new ItemSpawner(ItemType.SMALL_HEALTH_POTION, new SpawnRuleBuilder().setArea(Area.HOUSE_ZONE).setSpawnIntervalTicks(600).setMaxInstances(12).setMaxPerRoom(2).setRandomPercent(50).createSpawnRule(), gameManager);
@@ -66,14 +69,14 @@ public class ConfigureNpc {
 //        entityManager.addEntity(itemSpawner2);
 //        entityManager.addEntity(itemSpawner5);
 
-        List<MerchantItemForSale> itemsForSale = Lists.newArrayList();
-        itemsForSale.add(new MerchantItemForSale("small health potion", 8));
-        itemsForSale.add(new MerchantItemForSale("purple drank", 80));
-        itemsForSale.add(new MerchantItemForSale("biggers skin satchel", 25000));
-//
-        LloydBartender lloydBartender = new LloydBartender(gameManager, itemsForSale);
-        gameManager.getRoomManager().addMerchant(64, lloydBartender);
-//
+//        List<MerchantItemForSale> itemsForSale = Lists.newArrayList();
+//        itemsForSale.add(new MerchantItemForSale("small health potion", 8));
+//        itemsForSale.add(new MerchantItemForSale("purple drank", 80));
+//        itemsForSale.add(new MerchantItemForSale("biggers skin satchel", 25000));
+////
+//        LloydBartender lloydBartender = new LloydBartender(gameManager, itemsForSale);
+//        gameManager.getRoomManager().addMerchant(64, lloydBartender);
+////
 //        Map<Integer, MerchantItemForSale> nigelForSale = Maps.newLinkedHashMap();
 //        nigelForSale.put(1, new MerchantItemForSale(ItemType.SMALL_HEALTH_POTION, 6));
 //

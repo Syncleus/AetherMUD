@@ -1,16 +1,22 @@
 package com.comandante.creeper.items;
 
 import com.comandante.creeper.merchant.MerchantItemForSale;
-import com.comandante.creeper.stats.Stats;
-import com.comandante.creeper.stats.StatsBuilder;
+import com.comandante.creeper.merchant.MerchantMetadata;
+import com.comandante.creeper.server.player_communication.Color;
 import com.comandante.creeper.storage.FilebasedJsonStorage;
 import com.comandante.creeper.storage.ItemStorage;
+import com.comandante.creeper.storage.MerchantStorage;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static com.comandante.creeper.server.player_communication.Color.BOLD_ON;
 
 
 public class ItemMetadataTest {
@@ -214,12 +220,12 @@ public class ItemMetadataTest {
 //
 //
        //  RED CLAW PANTS
-        ItemMetadata itemMetadataPants = metadataFrom(ItemType.RED_CLAW_PANTS);
-        Stats statsPants = new StatsBuilder().setArmorRating(15).setStrength(7).createStats();
-        final Equipment equipmentPants = new Equipment(EquipmentSlotType.LEGS, statsPants);
-        itemMetadataPants.setEquipment(equipmentPants);
-        itemMetadataPants.setInternalItemName("rad claw pants1");
-        itemStorage.saveItemMetadata(itemMetadataPants);
+//        ItemMetadata itemMetadataPants = metadataFrom(ItemType.RED_CLAW_PANTS);
+//        Stats statsPants = new StatsBuilder().setArmorRating(15).setStrength(7).createStats();
+//        final Equipment equipmentPants = new Equipment(EquipmentSlotType.LEGS, statsPants);
+//        itemMetadataPants.setEquipment(equipmentPants);
+//        itemMetadataPants.setInternalItemName("rad claw pants1");
+//        itemStorage.saveItemMetadata(itemMetadataPants);
     }
 
 
@@ -247,12 +253,43 @@ public class ItemMetadataTest {
     @Test
     public void generateMerchants() throws Exception {
 
-        List<MerchantItemForSale> itemsForSale = Lists.newArrayList();
-        itemsForSale.add(new MerchantItemForSale("small health potion", 8));
-        itemsForSale.add(new MerchantItemForSale("purple drank", 80));
-        itemsForSale.add(new MerchantItemForSale("biggers skin satchel", 25000));
-//
-      //  LloydBartender lloydBartender = new LloydBartender(gameManager, itemsForSale);
+        // LLOYD BARTENDER
+        {
+            final String welcomeMessage = " _        _        _______           ______   _  _______ \r\n" +
+                    "( \\      ( \\      (  ___  )|\\     /|(  __  \\ ( )(  ____ \\\r\n" +
+                    "| (      | (      | (   ) |( \\   / )| (  \\  )|/ | (    \\/\r\n" +
+                    "| |      | |      | |   | | \\ (_) / | |   ) |   | (_____ \r\n" +
+                    "| |      | |      | |   | |  \\   /  | |   | |   (_____  )\r\n" +
+                    "| |      | |      | |   | |   ) (   | |   ) |         ) |\r\n" +
+                    "| (____/\\| (____/\\| (___) |   | |   | (__/  )   /\\____) |\r\n" +
+                    "(_______/(_______/(_______)   \\_/   (______/    \\_______)\r\n" +
+                    "                                                         ";
+
+
+            String name = "lloyd the bartender";
+            String colorName = BOLD_ON + Color.CYAN + name  + Color.RESET;
+            Set<String> validTriggers = new HashSet<String>(Arrays.asList(new String[]
+                            {"lloyd", "bartender", "barkeep", "Lloyd", "LLOYD", name}));
+
+            List<MerchantItemForSale> itemsForSale = Lists.newArrayList();
+            itemsForSale.add(new MerchantItemForSale("small health potion", 8));
+            itemsForSale.add(new MerchantItemForSale("purple drank", 80));
+            itemsForSale.add(new MerchantItemForSale("biggers skin satchel", 25000));
+            MerchantMetadata merchantMetadata = new MerchantMetadata();
+            merchantMetadata.setName(name);
+            merchantMetadata.setInternalName(name);
+            merchantMetadata.setColorName(colorName);
+            merchantMetadata.setMerchantItemForSales(itemsForSale);
+            merchantMetadata.setRoomId(64);
+            merchantMetadata.setValidTriggers(validTriggers);
+            merchantMetadata.setWelcomeMessage(welcomeMessage);
+
+            FilebasedJsonStorage filebasedJsonStorage = new FilebasedJsonStorage(new GsonBuilder().setPrettyPrinting().create());
+            MerchantStorage merchantStorage = new MerchantStorage(null, filebasedJsonStorage);
+            merchantStorage.saveMerchantMetadata(merchantMetadata);
+
+        }
+
     }
 
 }
