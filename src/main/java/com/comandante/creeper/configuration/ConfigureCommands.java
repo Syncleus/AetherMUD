@@ -102,5 +102,7 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new RecallCommand(gameManager));
         creeperCommandRegistry.addCommand(new ToggleChatCommand(gameManager));
         creeperCommandRegistry.addCommand(new LoadNpcCommand(gameManager));
+        creeperCommandRegistry.addCommand(new LoadItemCommand(gameManager));
+        creeperCommandRegistry.addCommand(new LoadMerchantCommand(gameManager));
     }
 }

@@ -1,8 +1,8 @@
 package com.comandante.creeper.items.use;
 
-import com.comandante.creeper.items.*;
 import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.npc.NpcStatsChangeBuilder;
 import com.comandante.creeper.player.Player;
@@ -17,15 +17,15 @@ import java.util.Set;
 
 public class DirtyBombUseAction implements ItemUseAction {
 
-    private final ItemType itemType;
+    private final ItemMetadata itemMetadata;
 
-    public DirtyBombUseAction(ItemType itemType) {
-        this.itemType = itemType;
+    public DirtyBombUseAction(ItemMetadata itemMetadata) {
+        this.itemMetadata = itemMetadata;
     }
 
     @Override
-    public Integer getItemTypeId() {
-        return itemType.getItemTypeCode();
+    public String getInternalItemName() {
+        return itemMetadata.getInternalItemName();
     }
 
     @Override
@@ -61,8 +61,8 @@ public class DirtyBombUseAction implements ItemUseAction {
     @Override
     public void postExecuteAction(GameManager gameManager, Player player, Item item) {
         ItemUseHandler.incrementUses(item);
-        if (ItemType.itemTypeFromCode(item.getItemTypeId()).isDisposable()) {
-            if (item.getNumberOfUses() < ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses()) {
+        if (item.isDisposable()) {
+            if (item.getNumberOfUses() < item.getMaxUses()) {
                 gameManager.getEntityManager().saveItem(item);
             } else {
                 player.removeInventoryId(item.getItemId());

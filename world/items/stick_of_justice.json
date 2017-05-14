@@ -1,0 +1,17 @@
+{
+  "internalItemName": "stick of justice",
+  "itemName": "a \u001b[1m\u001b[35mstick\u001b[22m\u001b[32m of \u001b[1m\u001b[34mjustice\u001b[m",
+  "itemDescription": "a \u001b[1m\u001b[35mstick\u001b[22m\u001b[32m of \u001b[1m\u001b[34mjustice\u001b[m",
+  "restingName": "a \u001b[1m\u001b[35mstick\u001b[22m\u001b[32m of \u001b[1m\u001b[34mjustice\u001b[m",
+  "valueInGold": 3000,
+  "itemHalfLifeTicks": 60,
+  "rarity": "RARE",
+  "itemTriggers": [
+    "stick of justice",
+    "justice",
+    "stick"
+  ],
+  "validTimeOfDays": [],
+  "isDisposable": true,
+  "maxUses": 0
+}

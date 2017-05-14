@@ -2,31 +2,22 @@ package com.comandante.creeper.entity;
 
 import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.SentryManager;
-import com.comandante.creeper.items.Effect;
-import com.comandante.creeper.player.PlayerMetadata;
-import com.comandante.creeper.stats.Stats;
-import com.comandante.creeper.storage.CreeperStorage;
-import com.comandante.creeper.storage.EffectSerializer;
 import com.comandante.creeper.items.Item;
-import com.comandante.creeper.storage.ItemSerializer;
+import com.comandante.creeper.items.ItemBuilder;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.player.PlayerManager;
+import com.comandante.creeper.storage.CreeperStorage;
 import com.comandante.creeper.world.RoomManager;
 import com.comandante.creeper.world.model.Room;
 import org.apache.log4j.Logger;
-import org.mapdb.DB;
-import org.mapdb.HTreeMap;
-import org.mapdb.Serializer;
 
-import javax.swing.text.html.Option;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -84,22 +75,9 @@ public class EntityManager {
         creeperStorage.removeItem(itemId);
     }
 
-    public void saveEffect(Effect effect) {
-        creeperStorage.saveEffect(effect);
-    }
-
-    public void removeEffect(Effect effect) {
-        creeperStorage.removeEffect(effect.getEntityId());
-    }
-
     public Optional<Item> getItemEntity(String itemId) {
         Optional<Item> item = creeperStorage.getItemEntity(itemId);
-        return item.map(Item::new);
-    }
-
-    public Optional<Effect> getEffectEntity(String effectId) {
-        Optional<Effect> effect = creeperStorage.getEffectEntity(effectId);
-        return effect.map(Effect::new);
+        return item.map(itemName -> new ItemBuilder().from(itemName).create());
     }
 
     public void deleteNpcEntity(String npcId) {

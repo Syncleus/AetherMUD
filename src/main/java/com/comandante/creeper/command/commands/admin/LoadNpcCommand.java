@@ -23,8 +23,8 @@ import java.util.Set;
 public class LoadNpcCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("loadnpc");
-    final static String description = "Load an NPC using JSON.";
-    final static String correctUsage = "loadjpc <http url with json for npc>";
+    final static String description = "Load a NPC using JSON over http";
+    final static String correctUsage = "loadnpc <http url with json for npc>";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
     public LoadNpcCommand(GameManager gameManager) {
@@ -45,7 +45,7 @@ public class LoadNpcCommand extends Command {
 
             String npcJsonHttpUrl = originalMessageParts.get(0);
             if (!isValidURL(npcJsonHttpUrl)) {
-                write("Inavlid HTTP address." + "\r\n");
+                write("Invalid HTTP address." + "\r\n");
                 return;
             }
 

@@ -53,10 +53,10 @@
   ],
   "loot": {
     "items": [
-      "BERSEKER_HELM",
-      "RED_CLAW_BEANIE",
-      "RED_CLAW_HOODIE",
-      "RED_CLAW_PANTS"
+      "berserker helm",
+      "red claw beanie",
+      "red claw pants",
+      "red claw hoodie"
     ],
     "lootGoldMax": 24,
     "lootGoldMin": 18

@@ -1,33 +1,31 @@
 package com.comandante.creeper.merchant;
 
 import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.items.ItemMetadata;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public abstract class Merchant extends CreeperEntity {
+public class Merchant {
 
-    private long lastPhraseTimestamp;
     private final GameManager gameManager;
+    private final String internalName;
     private final String name;
     private final String colorName;
     private final Set<String> validTriggers;
-    private final Map<Integer, MerchantItemForSale> merchantItemForSales;
+    private final List<MerchantItemForSale> merchantItemForSales;
     private final String welcomeMessage;
     private final MerchantType merchantType;
+    private final Set<Integer> roomIds;
 
-    public Merchant(GameManager gameManager, String name, String colorName, Set<String> validTriggers, Map<Integer, MerchantItemForSale> merchantItemForSales, String welcomeMessage) {
-        this(gameManager, name, colorName, validTriggers, merchantItemForSales, welcomeMessage, MerchantType.BASIC);
+    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Set<Integer> roomIds) {
+        this(gameManager, internalName, name, colorName, validTriggers, merchantItemForSales, welcomeMessage, roomIds, MerchantType.BASIC);
     }
 
-    public Merchant(GameManager gameManager, String name, String colorName, Set<String> validTriggers, Map<Integer, MerchantItemForSale> merchantItemForSales, String welcomeMessage, MerchantType merchantType) {
+    public Merchant(GameManager gameManager, String internalName, String name, String colorName, Set<String> validTriggers, List<MerchantItemForSale> merchantItemForSales, String welcomeMessage, Set<Integer> roomIds, MerchantType merchantType) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
@@ -35,6 +33,13 @@ public abstract class Merchant extends CreeperEntity {
         this.merchantItemForSales = merchantItemForSales;
         this.welcomeMessage = welcomeMessage;
         this.merchantType = merchantType;
+        this.roomIds = roomIds;
+        this.internalName = internalName;
+
+    }
+
+    public String getInternalName() {
+        return internalName;
     }
 
     public String getMenu() {
@@ -46,29 +51,29 @@ public abstract class Merchant extends CreeperEntity {
         t.addCell("#");
         t.addCell("price");
         t.addCell("description");
-        int i = 1;
-        Iterator<Map.Entry<Integer, MerchantItemForSale>> entries = merchantItemForSales.entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<Integer, MerchantItemForSale> next = entries.next();
-            t.addCell(String.valueOf(next.getKey()));
-            t.addCell(NumberFormat.getNumberInstance(Locale.US).format(next.getValue().getCost()));
-            t.addCell(next.getValue().getItem().getItemDescription());
+        int i = 0;
+        Iterator<MerchantItemForSale> iterator = merchantItemForSales.iterator();
+        while (iterator.hasNext()) {
             i++;
+            MerchantItemForSale merchantItemForSale = iterator.next();
+            Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(merchantItemForSale.getInternalItemName());
+            if (!itemMetadataOptional.isPresent()) {
+                continue;
+            }
+            ItemMetadata itemMetadata = itemMetadataOptional.get();
+            t.addCell(String.valueOf(i));
+            t.addCell(NumberFormat.getNumberInstance(Locale.US).format(merchantItemForSale.getCost()));
+            t.addCell(itemMetadata.getItemDescription());
         }
         return t.render();
     }
 
-    @Override
-    public void run() {
-
-    }
-
-    public long getLastPhraseTimestamp() {
-        return lastPhraseTimestamp;
-    }
-
     public GameManager getGameManager() {
         return gameManager;
+    }
+
+    public Set<Integer> getRoomIds() {
+        return roomIds;
     }
 
     public String getName() {
@@ -83,7 +88,7 @@ public abstract class Merchant extends CreeperEntity {
         return validTriggers;
     }
 
-    public Map<Integer, MerchantItemForSale> getMerchantItemForSales() {
+    public List<MerchantItemForSale> merchantItemForSales() {
         return merchantItemForSales;
     }
 
@@ -93,6 +98,10 @@ public abstract class Merchant extends CreeperEntity {
 
     public MerchantType getMerchantType() {
         return merchantType;
+    }
+
+    public List<MerchantItemForSale> getMerchantItemForSales() {
+        return merchantItemForSales;
     }
 
     public enum MerchantType {

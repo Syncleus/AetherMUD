@@ -143,30 +143,20 @@ public class Player extends CreeperEntity {
                 return;
             }
             PlayerMetadata playerMetadata = playerMetadataOptional.get();
-            Iterator<String> iterator = playerMetadata.getEffects().iterator();
-            List<String> effectIdsToRemove = Lists.newArrayList();
-            while (iterator.hasNext()) {
-                String effectId = iterator.next();
-                Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(playerId);
-                if (!effectOptional.isPresent()) {
-                    effectIdsToRemove.add(effectId);
+            List<Effect> effectsToRemove = Lists.newArrayList();
+            for (Effect effect : playerMetadata.getEffects()) {
+                if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
+                    gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
+                    effectsToRemove.add(effect);
                     continue;
                 } else {
-                    Effect effect = effectOptional.get();
-                    if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
-                        gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
-                        gameManager.getEntityManager().removeEffect(effect);
-                        effectIdsToRemove.add(effectId);
-                        continue;
-                    } else {
-                        effect.setEffectApplications(effect.getEffectApplications() + 1);
-                        gameManager.getEffectsManager().application(effect, this);
-                        gameManager.getEntityManager().saveEffect(effect);
-                    }
+                    effect.setEffectApplications(effect.getEffectApplications() + 1);
+                    gameManager.getEffectsManager().application(effect, this);
                 }
+
             }
-            for (String effectId : effectIdsToRemove) {
-                playerMetadata.removeEffectID(effectId);
+            for (Effect effect : effectsToRemove) {
+                playerMetadata.removeEffect(effect);
             }
             savePlayerMetadata(playerMetadata);
         }
@@ -365,7 +355,7 @@ public class Player extends CreeperEntity {
         }
     }
 
-    public boolean addEffect(String effectId) {
+    public boolean addEffect(Effect effect) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
@@ -375,7 +365,7 @@ public class Player extends CreeperEntity {
             if (playerMetadata.getEffects() != null && (playerMetadata.getEffects().size() >= playerMetadata.getStats().getMaxEffects())) {
                 return false;
             }
-            playerMetadata.addEffectId(effectId);
+            playerMetadata.addEffect(effect);
             savePlayerMetadata(playerMetadata);
             return true;
         }
@@ -866,8 +856,8 @@ public class Player extends CreeperEntity {
                 for (Item item : inventory) {
                     StringBuilder invItem = new StringBuilder();
                     invItem.append(item.getItemName());
-                    int maxUses = ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses();
-                    if (maxUses > 0) {
+                    int maxUses = item.getMaxUses();
+                    if (item.getMaxUses() > 0) {
                         int remainingUses = maxUses - item.getNumberOfUses();
                         invItem.append(" - ").append(remainingUses);
                         if (remainingUses == 1) {
@@ -931,7 +921,7 @@ public class Player extends CreeperEntity {
                 for (Item item : inventory) {
                     StringBuilder invItem = new StringBuilder();
                     invItem.append(item.getItemName());
-                    int maxUses = ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses();
+                    int maxUses = item.getMaxUses();
                     if (maxUses > 0) {
                         int remainingUses = maxUses - item.getNumberOfUses();
                         invItem.append(" - ").append(remainingUses);
@@ -1143,9 +1133,8 @@ public class Player extends CreeperEntity {
                 StatsHelper.combineStats(newStats, stats);
             }
             if (playerMetadata.getEffects() != null) {
-                for (String effectId : playerMetadata.getEffects()) {
-                    Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(effectId);
-                    effectOptional.ifPresent(effect -> StatsHelper.combineStats(newStats, effect.getDurationStats()));
+                for (Effect effect : playerMetadata.getEffects()) {
+                    StatsHelper.combineStats(newStats, effect.getDurationStats());
                 }
             }
             return newStats;
@@ -1205,13 +1194,7 @@ public class Player extends CreeperEntity {
             return "";
         }
         PlayerMetadata playerMetadata = playerMetadataOptional.get();
-        List<Effect> effects = Lists.newArrayList();
-        if (playerMetadata.getEffects() != null) {
-            for (String effectId : playerMetadata.getEffects()) {
-                Optional<Effect> effectOptional = gameManager.getEntityManager().getEffectEntity(effectId);
-                effectOptional.ifPresent(effects::add);
-            }
-        }
+        List<Effect> effects = playerMetadata.getEffects();
         return gameManager.renderEffectsString(effects);
     }
 

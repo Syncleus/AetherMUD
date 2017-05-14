@@ -6,13 +6,8 @@ import com.comandante.creeper.Main;
 import com.comandante.creeper.core_game.SessionManager;
 import com.comandante.creeper.stats.Stats;
 import com.comandante.creeper.storage.CreeperStorage;
-import com.comandante.creeper.storage.MapDbAutoCommitService;
 import com.comandante.creeper.world.model.Room;
-import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
-import org.mapdb.DB;
-import org.mapdb.HTreeMap;
-import org.mapdb.Serializer;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -93,11 +88,8 @@ public class PlayerManager {
     }
 
     public Optional<PlayerMetadata> getPlayerMetadata(String playerId) {
-        Optional<PlayerMetadata> playerMetadata = creeperStorage.getPlayerMetadata(playerId);
-        if (playerMetadata.isPresent()) {
-            return playerMetadata;
-        }
-        return Optional.of(new PlayerMetadata(playerMetadata.get()));
+        Optional<PlayerMetadata> playerMetadataOptional = creeperStorage.getPlayerMetadata(playerId);
+        return playerMetadataOptional.map(PlayerMetadata::new);
     }
 
     public boolean hasAnyOfRoles(Player player, Set<PlayerRole> checkRoles) {

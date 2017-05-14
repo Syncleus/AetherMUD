@@ -2,7 +2,8 @@ package com.comandante.creeper.player;
 
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.ItemBuilder;
+import com.comandante.creeper.items.ItemMetadata;
 import com.comandante.creeper.server.player_communication.Color;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;
@@ -278,12 +279,12 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public String createItemInInventory(int itemTypeId){
-        ItemType itemType = ItemType.itemTypeFromCode(itemTypeId);
-        if (itemType.equals(ItemType.UNKNOWN)) {
-            return "No such item exists with id: " + itemTypeId;
+    public String createItemInInventory(String internalItemName){
+        Optional<ItemMetadata> itemMetadata = gameManager.getItemStorage().get(internalItemName);
+        if (!itemMetadata.isPresent()) {
+            return "No such item exists with internal name: " + internalItemName;
         }
-        Item item = itemType.create();
+        Item item = new ItemBuilder().from(itemMetadata.get()).create();
         gameManager.getEntityManager().saveItem(item);
         synchronized (findInterner().intern(playerId)) {
             Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);

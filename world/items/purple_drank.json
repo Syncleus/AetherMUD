@@ -1,0 +1,40 @@
+{
+  "internalItemName": "purple drank",
+  "itemName": "a double cup of \u001b[35mpurple\u001b[m drank",
+  "itemDescription": "a tonic called \u001b[35mpurple\u001b[m drank that restores health\u001b[m",
+  "restingName": "a double cup of \u001b[35mpurple\u001b[m drank rests on the ground.",
+  "valueInGold": 30,
+  "itemHalfLifeTicks": 60,
+  "rarity": "BASIC",
+  "itemTriggers": [
+    "drank",
+    "purple drank",
+    "p",
+    "purple",
+    "lean",
+    "sizzurp"
+  ],
+  "validTimeOfDays": [],
+  "isDisposable": true,
+  "maxUses": 0,
+  "itemApplyStats": {
+    "strength": 0,
+    "intelligence": 0,
+    "willpower": 0,
+    "aim": 0,
+    "agile": 0,
+    "armorRating": 0,
+    "meleSkill": 0,
+    "currentHealth": 50,
+    "maxHealth": 0,
+    "weaponRatingMax": 0,
+    "weaponRatingMin": 0,
+    "numberOfWeaponRolls": 0,
+    "experience": 0,
+    "currentMana": 0,
+    "maxMana": 0,
+    "foraging": 0,
+    "inventorySize": 0,
+    "maxEffects": 0
+  }
+}

@@ -1,19 +1,16 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.items.ItemType;
-
-
 public class MerchantItemForSale {
-    private final ItemType itemType;
+    private final String internalItemName;
     private final int cost;
 
-    public MerchantItemForSale(ItemType itemType, int cost) {
-        this.itemType = itemType;
+    public MerchantItemForSale(String internalItemName, int cost) {
+        this.internalItemName = internalItemName;
         this.cost = cost;
     }
 
-    public ItemType getItem() {
-        return itemType;
+    public String getInternalItemName() {
+        return internalItemName;
     }
 
     public int getCost() {

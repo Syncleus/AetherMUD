@@ -1,53 +1,54 @@
 package com.comandante.creeper.items.use;
 
-import com.comandante.creeper.items.*;
 import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.items.*;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.stats.Stats;
 import org.apache.log4j.Logger;
 
 import java.util.Set;
 
-public class DefaultApplyStatsAction implements ItemUseAction {
+public class DefaultApplyEffectsStats implements ItemUseAction {
 
-    private final Integer itemTypeId;
-    private final Stats stats;
+    private final String internalItemName;
     private final Set<Effect> effectSet;
-    private static final Logger log = Logger.getLogger(DefaultApplyStatsAction.class);
+    private final Stats itemApplyStats;
+    private static final Logger log = Logger.getLogger(DefaultApplyEffectsStats.class);
 
-    public DefaultApplyStatsAction(ItemType itemType, Stats stats, Set<Effect> effects) {
-        this.itemTypeId = itemType.getItemTypeCode();
-        this.stats = stats;
-        this.effectSet = effects;
+    public DefaultApplyEffectsStats(ItemMetadata itemMetadata) {
+        this.internalItemName = itemMetadata.getInternalItemName();
+        this.effectSet = itemMetadata.getEffects();
+        this.itemApplyStats = itemMetadata.getItemApplyStats();
     }
 
     @Override
-    public Integer getItemTypeId() {
-        return itemTypeId;
+    public String getInternalItemName() {
+        return internalItemName;
     }
 
     @Override
     public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
         String playerName = player.getPlayerName();
-        ItemType itemType = ItemType.itemTypeFromCode(item.getItemTypeId());
-        gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), playerName + " uses " + itemType.getItemName() + ".\r\n");
-        if (stats.getCurrentMana() > 0) {
-            gameManager.getChannelUtils().write(player.getPlayerId(), stats.getCurrentMana() + " mana is restored." + "\r\n");
+
+        gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), playerName + " uses " + item.getItemName() + ".\r\n");
+        if (itemApplyStats.getCurrentMana() > 0) {
+            gameManager.getChannelUtils().write(player.getPlayerId(), itemApplyStats.getCurrentMana() + " mana is restored." + "\r\n");
         }
-        if (stats.getCurrentHealth() > 0) {
-            gameManager.getChannelUtils().write(player.getPlayerId(), stats.getCurrentHealth() + " health is restored." + "\r\n");
+        if (itemApplyStats.getCurrentHealth() > 0) {
+            gameManager.getChannelUtils().write(player.getPlayerId(), itemApplyStats.getCurrentHealth() + " health is restored." + "\r\n");
         }
-        player.addMana(stats.getCurrentMana());
-        player.updatePlayerHealth(stats.getCurrentHealth(), null);
+        player.addMana(itemApplyStats.getCurrentMana());
+        player.updatePlayerHealth(itemApplyStats.getCurrentHealth(), null);
+
         processEffects(gameManager, player, effectSet);
     }
 
     @Override
     public void postExecuteAction(GameManager gameManager, Player player, Item item) {
         ItemUseHandler.incrementUses(item);
-        if (ItemType.itemTypeFromCode(item.getItemTypeId()).isDisposable()) {
-            if (item.getNumberOfUses() < ItemType.itemTypeFromCode(item.getItemTypeId()).getMaxUses()) {
+        if (item.isDisposable()) {
+            if (item.getNumberOfUses() < item.getMaxUses()) {
                 gameManager.getEntityManager().saveItem(item);
             } else {
                 player.removeInventoryId(item.getItemId());
@@ -68,8 +69,7 @@ public class DefaultApplyStatsAction implements ItemUseAction {
         for (Effect effect : effects) {
             Effect nEffect = new Effect(effect);
             nEffect.setPlayerId(player.getPlayerId());
-            gameManager.getEntityManager().saveEffect(nEffect);
-            boolean effectResult = player.addEffect(nEffect.getEntityId());
+            boolean effectResult = player.addEffect(nEffect);
             if (effect.getDurationStats() != null) {
                 if (effect.getDurationStats().getCurrentHealth() < 0) {
                     log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");

@@ -1,9 +1,8 @@
 package com.comandante.creeper.merchant;
 
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.command.commands.CommandAuditLog;
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.items.Item;
 import com.comandante.creeper.player.Player;
 import com.comandante.creeper.server.model.CreeperSession;
 import com.comandante.creeper.server.player_communication.Color;
@@ -94,7 +93,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
         for (Item itemEntity : inventory) {
             int valueInGold = itemEntity.getValueInGold();
             if (valueInGold == 0) {
-                valueInGold = ItemType.itemTypeFromCode(itemEntity.getItemTypeId()).getValueInGold();
+                valueInGold = itemEntity.getValueInGold();
             }
             if (valueInGold > 0) {
                 inventoryItemsForSale.put(inv, new InventoryItemForSale(valueInGold, itemEntity));

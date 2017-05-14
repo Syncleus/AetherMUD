@@ -1,18 +1,23 @@
 package com.comandante.creeper.items;
 
 
+import com.comandante.creeper.core_game.service.TimeTracker;
+import com.comandante.creeper.stats.Stats;
+import com.google.common.collect.Lists;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class Item implements Serializable {
 
     private final String itemName;
     private final String itemDescription;
+    private final String internalItemName;
     private final List<String> itemTriggers;
     private final String restingName;
     private final String itemId;
-    private final Integer itemTypeId;
     private int numberOfUses;
     private boolean isWithPlayer;
     private final Loot loot;
@@ -22,58 +27,49 @@ public class Item implements Serializable {
     private final int valueInGold;
     private Set<Effect> effects;
     private boolean hasBeenWithPlayer;
+    private final int maxUses;
+    private final boolean isDisposable;
+    private Set<TimeTracker.TimeOfDay> validTimeOfDays;
+    private final Stats itemApplyStats;
 
-    public static final int CORPSE_ID_RESERVED = 100;
+    public static final String CORPSE_INTENAL_NAME = "corpse";
 
-    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks, Rarity rarity, int valueInGold) {
+    protected Item(String itemName, String itemDescription, String internalItemName, List<String> itemTriggers, String restingName, String itemId, int numberOfUses, boolean isWithPlayer, Loot loot, int itemHalfLifeTicks, Equipment equipment, Rarity rarity, int valueInGold, Set<Effect> effects, boolean hasBeenWithPlayer, int maxUses, boolean isDisposable, Set<TimeTracker.TimeOfDay> validTimeOfDays, Stats itemApplyStats) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
+        this.internalItemName = internalItemName;
         this.itemTriggers = itemTriggers;
         this.restingName = restingName;
         this.itemId = itemId;
-        this.itemTypeId = itemTypeId;
-        this.numberOfUses = numberOfUses;
-        this.loot = null;
-        this.itemHalfLifeTicks = itemHalfLifeTicks;
-        this.isWithPlayer = isWithPlayer;
-        this.rarity = rarity;
-        this.valueInGold = valueInGold;
-    }
-
-    public Item(String itemName, String itemDescription, List<String> itemTriggers, String restingName, String itemId, Integer itemTypeId, int numberOfUses, boolean isWithPlayer, int itemHalfLifeTicks, Rarity rarity, int valueInGold, Loot loot) {
-        this.itemName = itemName;
-        this.itemDescription = itemDescription;
-        this.itemTriggers = itemTriggers;
-        this.restingName = restingName;
-        this.itemId = itemId;
-        this.itemTypeId = itemTypeId;
         this.numberOfUses = numberOfUses;
         this.isWithPlayer = isWithPlayer;
         this.loot = loot;
         this.itemHalfLifeTicks = itemHalfLifeTicks;
+        this.equipment = equipment;
         this.rarity = rarity;
         this.valueInGold = valueInGold;
-
+        this.effects = effects;
+        this.hasBeenWithPlayer = hasBeenWithPlayer;
+        this.maxUses = maxUses;
+        this.isDisposable = isDisposable;
+        this.validTimeOfDays = validTimeOfDays;
+        this.itemApplyStats = itemApplyStats;
     }
 
-    public Item(Item origItem) {
-        this.itemName = origItem.getItemName();
-        this.itemDescription = origItem.itemDescription;
-        this.itemTriggers = origItem.itemTriggers;
-        this.restingName = origItem.restingName;
-        this.itemId = origItem.itemId;
-        this.itemTypeId = origItem.itemTypeId;
-        this.numberOfUses = new Integer(origItem.numberOfUses);
-        this.loot = origItem.loot;
-        this.itemHalfLifeTicks = origItem.itemHalfLifeTicks;
-        this.isWithPlayer = new Boolean(origItem.isWithPlayer);
-        if (origItem.equipment != null) {
-            this.equipment = new Equipment(origItem.equipment);
-        }
-        this.rarity = origItem.rarity;
-        this.valueInGold = origItem.valueInGold;
-        this.effects = origItem.effects;
-        this.hasBeenWithPlayer = new Boolean(origItem.hasBeenWithPlayer);
+    public Stats getItemApplyStats() {
+        return itemApplyStats;
+    }
+
+    public Set<TimeTracker.TimeOfDay> getValidTimeOfDays() {
+        return validTimeOfDays;
+    }
+
+    public boolean isDisposable() {
+        return isDisposable;
+    }
+
+    public int getMaxUses() {
+        return maxUses;
     }
 
     public boolean isWithPlayer() {
@@ -99,8 +95,9 @@ public class Item implements Serializable {
         return itemId;
     }
 
-    public Integer getItemTypeId() {
-        return itemTypeId;
+
+    public String getInternalItemName() {
+        return internalItemName;
     }
 
     public String getItemName() {
@@ -159,24 +156,23 @@ public class Item implements Serializable {
         return hasBeenWithPlayer;
     }
 
-    @Override
-    public String toString() {
-        return "Item{" +
-                "itemName='" + itemName + '\'' +
-                ", itemDescription='" + itemDescription + '\'' +
-                ", itemTriggers=" + itemTriggers +
-                ", restingName='" + restingName + '\'' +
-                ", itemId='" + itemId + '\'' +
-                ", itemTypeId=" + itemTypeId +
-                ", numberOfUses=" + numberOfUses +
-                ", isWithPlayer=" + isWithPlayer +
-                ", loot=" + loot +
-                ", itemHalfLifeTicks=" + itemHalfLifeTicks +
-                ", equipment=" + equipment +
-                ", rarity=" + rarity +
-                ", valueInGold=" + valueInGold +
-                ", effects=" + effects +
-                ", hasBeenWithPlayer=" + hasBeenWithPlayer +
-                '}';
+    public static Item createCorpseItem(String name, Loot loot) {
+
+        Item item = new ItemBuilder()
+                .internalItemName(Item.CORPSE_INTENAL_NAME)
+                .itemName(name + " corpse")
+                .itemDescription("a bloody corpse")
+                .itemTriggers(Lists.newArrayList("corpse", "c", name, name + " corpse"))
+                .itemId(UUID.randomUUID().toString())
+                .itemHalfLifeTicks(120)
+                .rarity(Rarity.BASIC)
+                .valueInGold(5)
+                .isDisposable(false)
+                .restingName("a corpse lies on the ground.")
+                .loot(loot)
+                .create();
+
+        return item;
+
     }
 }

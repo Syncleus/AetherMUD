@@ -45,13 +45,12 @@ public class EffectsManager {
         for (Effect effect : effects) {
             Effect nEffect = new Effect(effect);
             nEffect.setPlayerId(player.getPlayerId());
-            gameManager.getEntityManager().saveEffect(nEffect);
             if (effect.getDurationStats().getCurrentHealth() < 0) {
                 log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
                 continue;
             }
             String effectApplyMessage;
-            if (destinationPlayer.addEffect(effect.getEntityId())) {
+            if (destinationPlayer.addEffect(effect)) {
                 effectApplyMessage = Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + nEffect.getEffectName() + " applied!" + "\r\n";
                 gameManager.getChannelUtils().write(destinationPlayer.getPlayerId(), effectApplyMessage);
             } else {

@@ -6,7 +6,6 @@ import com.comandante.creeper.blackjack.Hand;
 import com.comandante.creeper.common.CreeperUtils;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.entity.EntityManager;
-import com.comandante.creeper.items.ItemType;
 import com.comandante.creeper.player.*;
 import com.comandante.creeper.stats.DefaultStats;
 import com.comandante.creeper.stats.modifier.StatsModifierFactory;
@@ -54,8 +53,8 @@ public class CreeperUtilsTest {
         when(playerManager.getPlayerMetadata(Matchers.any())).thenReturn(java.util.Optional.ofNullable(playerMetadata));
         when(gameManager.getPlayerManager()).thenReturn(playerManager);
         EntityManager entityManager = mock(EntityManager.class);
-        when(entityManager.getItemEntity(Matchers.startsWith("feet"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSEKER_BOOTS.create()));
-        when(entityManager.getItemEntity(Matchers.startsWith("hand"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSERKER_BATON.create()));
+//        when(entityManager.getItemEntity(Matchers.startsWith("feet"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSEKER_BOOTS.create()));
+//        when(entityManager.getItemEntity(Matchers.startsWith("hand"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSERKER_BATON.create()));
         when(gameManager.getEntityManager()).thenReturn(entityManager);
         Player usertest = new Player("usertest", gameManager);
 

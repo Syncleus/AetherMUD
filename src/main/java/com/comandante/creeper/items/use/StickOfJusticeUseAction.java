@@ -4,7 +4,7 @@ import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.Effect;
 import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.ItemType;
+import com.comandante.creeper.items.ItemMetadata;
 import com.comandante.creeper.items.ItemUseAction;
 import com.comandante.creeper.player.Player;
 
@@ -13,16 +13,17 @@ import java.util.Set;
 
 public class StickOfJusticeUseAction implements ItemUseAction {
 
-    private final ItemType itemType;
+    private final ItemMetadata itemMetadata;
 
-    public StickOfJusticeUseAction(ItemType itemType) {
-        this.itemType = itemType;
+    public StickOfJusticeUseAction(ItemMetadata itemMetadata) {
+        this.itemMetadata = itemMetadata;
     }
 
     @Override
-    public Integer getItemTypeId() {
-        return itemType.getItemTypeCode();
+    public String getInternalItemName() {
+        return itemMetadata.getInternalItemName();
     }
+
 
     @Override
     public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {

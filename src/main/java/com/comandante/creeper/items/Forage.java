@@ -2,10 +2,13 @@ package com.comandante.creeper.items;
 
 
 import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.world.model.Area;
+
+import java.util.Set;
 
 public class Forage extends CreeperEntity {
 
-    private final ItemType itemType;
+    private final String internalItemName;
     private final int minLevel;
     private final double pctOfSuccess;
     private final int minAmt;
@@ -13,9 +16,10 @@ public class Forage extends CreeperEntity {
     private final int forageExperience;
     private final int coolDownTicks;
     private int coolDownTicksLeft;
+    private final Set<Area> forageAreas;
 
-    public Forage(ItemType itemType, int minLevel, double pctOfSuccess, int minAmt, int maxAmt, int forageExperience, int coolDownTicks) {
-        this.itemType = itemType;
+    protected Forage(String internalItemName, int minLevel, double pctOfSuccess, int minAmt, int maxAmt, int forageExperience, int coolDownTicks, Set<Area> forageAreas) {
+        this.internalItemName = internalItemName;
         this.minLevel = minLevel;
         this.pctOfSuccess = pctOfSuccess;
         this.minAmt = minAmt;
@@ -23,21 +27,15 @@ public class Forage extends CreeperEntity {
         this.coolDownTicksLeft = 0;
         this.forageExperience = forageExperience;
         this.coolDownTicks = coolDownTicks;
+        this.forageAreas = forageAreas;
     }
 
-    public Forage(Forage forage) {
-        this.itemType = forage.itemType;
-        this.minLevel = new Integer(forage.getMinLevel());
-        this.pctOfSuccess = new Double(forage.getPctOfSuccess());
-        this.minAmt = new Integer(forage.getMinAmt());
-        this.maxAmt = new Integer(forage.getMaxAmt());
-        this.coolDownTicks = new Integer(forage.getCoolDownTicks());
-        this.coolDownTicksLeft = new Integer(0);
-        this.forageExperience = new Integer(forage.getForageExperience());
+    public Set<Area> getForageAreas() {
+        return forageAreas;
     }
 
-    public ItemType getItemType() {
-        return itemType;
+    public String getInternalItemName() {
+        return internalItemName;
     }
 
     public int getMinLevel() {

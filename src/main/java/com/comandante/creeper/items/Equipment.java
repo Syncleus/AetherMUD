@@ -6,16 +6,16 @@ import com.comandante.creeper.stats.Stats;
 public class Equipment {
 
     private final EquipmentSlotType equipmentSlotType;
-    private final Stats stats;
+    private final Stats statsIncreaseWhileEquipped;
 
-    public Equipment(EquipmentSlotType equipmentSlotType, Stats stats) {
+    public Equipment(EquipmentSlotType equipmentSlotType, Stats statsIncreaseWhileEquipped) {
         this.equipmentSlotType = equipmentSlotType;
-        this.stats = stats;
+        this.statsIncreaseWhileEquipped = statsIncreaseWhileEquipped;
     }
 
     public Equipment(Equipment equipment) {
         this.equipmentSlotType = equipment.equipmentSlotType;
-        this.stats = equipment.stats;
+        this.statsIncreaseWhileEquipped = equipment.statsIncreaseWhileEquipped;
     }
 
     public EquipmentSlotType getEquipmentSlotType() {
@@ -23,6 +23,6 @@ public class Equipment {
     }
 
     public Stats getStats() {
-        return stats;
+        return statsIncreaseWhileEquipped;
     }
 }

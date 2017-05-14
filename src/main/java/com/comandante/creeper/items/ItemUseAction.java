@@ -7,7 +7,7 @@ import com.comandante.creeper.player.Player;
 import java.util.Set;
 
 public interface ItemUseAction {
-    Integer getItemTypeId();
+    String getInternalItemName();
 
     void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn);
 

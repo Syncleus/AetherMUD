@@ -82,21 +82,6 @@ public class MapDBCreeperStorage extends AbstractIdleService implements CreeperS
     }
 
     @Override
-    public Optional<Effect> getEffectEntity(String effectId) {
-        return Optional.ofNullable(this.effects.get(effectId));
-    }
-
-    @Override
-    public void saveEffect(Effect effect) {
-        this.effects.put(effect.getEntityId(), effect);
-    }
-
-    @Override
-    public void removeEffect(String effectId) {
-        this.effects.remove(effectId);
-    }
-
-    @Override
     protected void startUp() throws Exception {
         mapDbAutoCommitService.startAsync();
     }

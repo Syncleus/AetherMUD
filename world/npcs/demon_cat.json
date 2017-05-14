@@ -43,7 +43,7 @@
   ],
   "loot": {
     "items": [
-      "SMALL_HEALTH_POTION"
+      "small health potion"
     ],
     "lootGoldMax": 3,
     "lootGoldMin": 1

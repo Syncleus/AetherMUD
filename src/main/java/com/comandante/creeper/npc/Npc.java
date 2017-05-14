@@ -1,13 +1,12 @@
 package com.comandante.creeper.npc;
 
 
-import com.comandante.creeper.items.Effect;
-import com.comandante.creeper.items.Item;
-import com.comandante.creeper.items.Loot;
-import com.comandante.creeper.items.Rarity;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
+import com.comandante.creeper.items.Effect;
+import com.comandante.creeper.items.Item;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
 import com.comandante.creeper.player.DamageProcessor;
@@ -87,7 +86,9 @@ public class Npc extends CreeperEntity {
                     if (effectsTickBucket == 5) {
 
                         // START Process NPC Effects
-                        for (Effect effect : effects) {
+                        Iterator<Effect> iterator = effects.iterator();
+                        while (iterator.hasNext()) {
+                            Effect effect = iterator.next();
                             if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
                                 Optional<Room> npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(this);
                                 if (npcCurrentRoom.isPresent()) {
@@ -95,13 +96,11 @@ public class Npc extends CreeperEntity {
                                     gameManager.writeToRoom(room.getRoomId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off of " + getName() + "\r\n");
                                 }
                                 gameManager.getEffectsManager().removeDurationStats(effect, this);
-                                gameManager.getEntityManager().removeEffect(effect);
-                                effects.remove(effect);
+                                iterator.remove();
                             } else {
                                 effect.setEffectApplications(effect.getEffectApplications() + 1);
                                 effectsTickBucket = effectsTickBucket + 1;
                                 gameManager.getEffectsManager().application(effect, this);
-                                gameManager.getEntityManager().saveEffect(effect);
                             }
                         }
                         // END Process Npc Effects
@@ -221,11 +220,14 @@ public class Npc extends CreeperEntity {
         playerDamageMap.put(playerId, amt);
     }
 
+
+
+
     private void killNpc(Player player) {
         isAlive.set(false);
         player.removeActiveAlertStatus(this);
         Map<String, Double> damagePercents;
-        Item corpse = new Item(getName() + " corpse", "a bloody corpse.", Arrays.asList("corpse", "c"), "a corpse lies on the ground.", UUID.randomUUID().toString(), Item.CORPSE_ID_RESERVED, 0, false, 120, Rarity.BASIC, 0, getLoot());
+        Item corpse = Item.createCorpseItem(getName(), getLoot());
         if (!player.isActive(CoolDownType.DEATH)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage() + "\r\n");
         }
@@ -306,7 +308,6 @@ public class Npc extends CreeperEntity {
         sb.append(t.render());
         return sb.toString();
     }
-
 
 
     public String getColorName() {
@@ -421,21 +422,21 @@ public class Npc extends CreeperEntity {
 
     public enum NpcLevelColor {
 
-    RED(Color.RED + "Red"),
-    ORANGE(Color.CYAN + "Cyan"),
-    YELLOW(Color.YELLOW + "Yellow"),
-    GREEN(Color.GREEN + "Green"),
-    WHITE(Color.WHITE + "White");
+        RED(Color.RED + "Red"),
+        ORANGE(Color.CYAN + "Cyan"),
+        YELLOW(Color.YELLOW + "Yellow"),
+        GREEN(Color.GREEN + "Green"),
+        WHITE(Color.WHITE + "White");
 
-    private final String color;
+        private final String color;
 
-    NpcLevelColor(String color) {
-        this.color = color;
+        NpcLevelColor(String color) {
+            this.color = color;
+        }
+
+        public String getColor() {
+            return "(" + Color.BOLD_ON + color + Color.RESET + ")";
+        }
     }
-
-    public String getColor() {
-        return "(" + Color.BOLD_ON + color + Color.RESET + ")";
-    }
-}
 
 }
