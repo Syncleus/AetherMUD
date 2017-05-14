@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd /home/creeper/creeper
+
 git remote update > /dev/null 2>&1
 
 needsUpdate () {
