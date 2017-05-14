@@ -104,5 +104,6 @@ public class ConfigureCommands {
         creeperCommandRegistry.addCommand(new LoadNpcCommand(gameManager));
         creeperCommandRegistry.addCommand(new LoadItemCommand(gameManager));
         creeperCommandRegistry.addCommand(new LoadMerchantCommand(gameManager));
+        creeperCommandRegistry.addCommand(new RestartCommand(gameManager));
     }
 }
