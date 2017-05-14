@@ -9,14 +9,14 @@ import org.apache.log4j.Logger;
 
 import java.util.Set;
 
-public class DefaultApplyEffectAction implements ItemUseAction {
+public class DefaultApplyEffectsStats implements ItemUseAction {
 
     private final String internalItemName;
     private final Set<Effect> effectSet;
     private final Stats itemApplyStats;
-    private static final Logger log = Logger.getLogger(DefaultApplyEffectAction.class);
+    private static final Logger log = Logger.getLogger(DefaultApplyEffectsStats.class);
 
-    public DefaultApplyEffectAction(ItemMetadata itemMetadata) {
+    public DefaultApplyEffectsStats(ItemMetadata itemMetadata) {
         this.internalItemName = itemMetadata.getInternalItemName();
         this.effectSet = itemMetadata.getEffects();
         this.itemApplyStats = itemMetadata.getItemApplyStats();

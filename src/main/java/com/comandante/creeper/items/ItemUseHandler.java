@@ -3,7 +3,7 @@ package com.comandante.creeper.items;
 
 import com.comandante.creeper.command.commands.UseCommand;
 import com.comandante.creeper.core_game.GameManager;
-import com.comandante.creeper.items.use.DefaultApplyEffectAction;
+import com.comandante.creeper.items.use.DefaultApplyEffectsStats;
 import com.comandante.creeper.items.use.LightningSpellBookUseAction;
 import com.comandante.creeper.items.use.StickOfJusticeUseAction;
 import com.comandante.creeper.player.Player;
@@ -36,7 +36,7 @@ public class ItemUseHandler {
                 break;
             default:
                 if ((item.getEffects() != null && item.getEffects().size() > 0) || (item.getItemApplyStats() != null)) {
-                    itemUseAction = new DefaultApplyEffectAction(itemMetadata);
+                    itemUseAction = new DefaultApplyEffectsStats(itemMetadata);
                 }
                 break;
         }
