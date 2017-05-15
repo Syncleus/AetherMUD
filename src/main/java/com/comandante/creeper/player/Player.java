@@ -1372,7 +1372,7 @@ public class Player extends CreeperEntity {
             int chanceToHitBack = npcDamageProcessor.getChanceToHit(this, npc);
             long damageBack = npcDamageProcessor.getAttackAmount(this, npc);
             if (randInt(0, 100) < chanceToHitBack) {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.RED + " DAMAGES" + Color.RESET + " you for " + Color.RED + "-" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.buildAttackMessage(this.getPlayerName()) + " -" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
                 npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());
                 npcStatsChangeBuilder.setPlayerDamageStrings(Collections.singletonList(fightMsg));
 

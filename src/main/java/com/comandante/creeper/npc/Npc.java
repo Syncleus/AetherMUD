@@ -2,6 +2,7 @@ package com.comandante.creeper.npc;
 
 
 import com.comandante.creeper.common.AttackMessage;
+import com.comandante.creeper.common.ColorizedTextTemplate;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -64,11 +65,6 @@ public class Npc extends CreeperEntity {
     private Set<CoolDown> coolDowns = Sets.newHashSet();
     private final Experience experience = new Experience();
     private final Set<AttackMessage> attackMessages;
-
-
-    public Set<AttackMessage> getAttackMessages() {
-        return attackMessages;
-    }
 
     protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules, Set<AttackMessage> attackMessages) {
         this.gameManager = gameManager;
@@ -458,5 +454,18 @@ public class Npc extends CreeperEntity {
             i++;
         }
         return null;
+    }
+
+    public Set<AttackMessage> getAttackMessages() {
+        return attackMessages;
+    }
+
+    public String buildAttackMessage(String playerName) {
+        AttackMessage randomAttackMessage = getRandomAttackMessage();
+        Map<String, String> valueMap = Maps.newHashMap();
+        valueMap.put("player-name", playerName);
+        valueMap.put("npc-name", this.getName());
+        valueMap.put("npc-color-name", this.getColorName());
+        return ColorizedTextTemplate.renderFromTemplateLanguage(valueMap, randomAttackMessage.getAttackMessage());
     }
 }
