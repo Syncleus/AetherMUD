@@ -70,7 +70,7 @@
     },
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ swipes its paw toward @player-name@\u0027s head!"
+      "attackMessage": "The @npc-color-name@ swipes its paw toward @player-name@'s head!"
     },
     {
       "type": "NORMAL",
