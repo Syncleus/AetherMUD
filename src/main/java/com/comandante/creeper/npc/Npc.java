@@ -444,6 +444,11 @@ public class Npc extends CreeperEntity {
     }
 
     public AttackMessage getRandomAttackMessage() {
+
+        if (attackMessages == null || attackMessages.size() == 0) {
+            return new AttackMessage(AttackMessage.Type.NORMAL, "Somebody for got to configure attack messages. - " + this.getName());
+        }
+
         int size = attackMessages.size();
         int item = random.nextInt(size); // In real life, the Random object should be rather more shared than this
         int i = 0;
