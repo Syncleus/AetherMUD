@@ -1,8 +1,8 @@
 {
   "internalItemName": "biggers skin satchel",
-  "itemName": "a \u001b[32mbiggers skin satchel\u001b[m",
-  "itemDescription": "a \u001b[32mbiggers skin satchel\u001b[m with room to store 100 items.",
-  "restingName": "a \u001b[32mbiggers skin satchel\u001b[m",
+  "itemName": "a @c-green@biggers skin satchel@c-reset@",
+  "itemDescription": "a @c-green@biggers skin satchel@c-reset@ with room to store 100 items.",
+  "restingName": "a @c-green@biggers skin satchel@c-reset@",
   "valueInGold": 3000,
   "itemHalfLifeTicks": 60,
   "rarity": "BASIC",

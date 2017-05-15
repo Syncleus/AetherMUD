@@ -1,8 +1,8 @@
 {
   "internalItemName": "rad claw hoodie",
-  "itemName": "\u001b[31mred-claw \u001b[mhoodie\u001b[m",
+  "itemName": "@c-red@red-claw @c-reset@hoodie@c-reset@",
   "itemDescription": "a red-claw hoodie",
-  "restingName": "a \u001b[31mred-claw \u001b[mhoodie is on the ground.",
+  "restingName": "a @c-red@red-claw @c-reset@hoodie is on the ground.",
   "valueInGold": 3500,
   "itemHalfLifeTicks": 60,
   "rarity": "LEGENDARY",

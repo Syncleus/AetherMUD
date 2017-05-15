@@ -4,7 +4,7 @@
     377
   ],
   "name": "nigel the bartender",
-  "colorName": "\u001b[1m\u001b[36mnigel the bartender\u001b[m",
+  "colorName": "@c-bold-on@@c-cyan@nigel the bartender@c-reset@",
   "validTriggers": [
     "nigel the bartender",
     "bartender",

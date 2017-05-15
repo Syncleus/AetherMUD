@@ -1,6 +1,6 @@
 {
   "internalItemName": "beserker boots",
-  "itemName": "\u001b[36mberserker boots\u001b[m",
+  "itemName": "@c-cyan@berserker boots@c-reset@",
   "itemDescription": "a pair of berserker boots",
   "restingName": "a pair of berserker boots are here on the ground.",
   "valueInGold": 50,

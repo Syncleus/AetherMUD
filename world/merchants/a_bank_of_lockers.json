@@ -4,7 +4,7 @@
     63
   ],
   "name": "a bank of lockers",
-  "colorName": "\u001b[1m\u001b[36ma bank of lockers\u001b[m",
+  "colorName": "@c-bold-on@@c-cyan@a bank of lockers@c-reset@",
   "validTriggers": [
     "a bank of lockers",
     "lockers",

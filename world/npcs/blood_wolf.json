@@ -1,6 +1,6 @@
 {
   "name": "blood wolf",
-  "colorName": "blood \u001b[1m\u001b[35mwolf\u001b[0m",
+  "colorName": "blood @c-bold-on@@c-magenta@wolf@c-reset@",
   "stats": {
     "strength": 10,
     "intelligence": 0,
@@ -21,7 +21,7 @@
     "inventorySize": 0,
     "maxEffects": 0
   },
-  "dieMessage": "a blood \u001b[1m\u001b[35mwolf\u001b[0m breathes his last breath in a pool of \u001b[1m\u001b[31mblood\u001b[0m",
+  "dieMessage": "a blood @c-bold-on@@c-magenta@wolf@c-reset@ breathes his last breath in a pool of @c-bold-on@@c-red@blood@c-reset@",
   "temperament": "PASSIVE",
   "roamAreas": [
     "BLOODRIDGE1_ZONE",
@@ -50,7 +50,6 @@
     }
   ],
   "loot": {
-    "items": [],
     "lootGoldMax": 18,
     "lootGoldMin": 16
   }

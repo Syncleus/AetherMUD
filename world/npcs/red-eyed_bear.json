@@ -1,6 +1,6 @@
 {
   "name": "red-eyed bear",
-  "colorName": "red-eyed \u001b[1m\u001b[35mbear\u001b[0m",
+  "colorName": "red-eyed @c-bold-on@@c-magenta@bear@c-reset@",
   "stats": {
     "strength": 14,
     "intelligence": 0,
@@ -21,7 +21,7 @@
     "inventorySize": 0,
     "maxEffects": 0
   },
-  "dieMessage": "a red-eyed \u001b[1m\u001b[35mbear\u001b[0m breathes his last breath in a pool of \u001b[1m\u001b[31mblood\u001b[0m",
+  "dieMessage": "a red-eyed @c-bold-on@@c-magenta@bear@c-reset@ breathes his last breath in a pool of @c-bold-on@@c-red@blood@c-reset@",
   "temperament": "AGGRESSIVE",
   "roamAreas": [
     "TOFT1_ZONE",
@@ -52,12 +52,6 @@
     }
   ],
   "loot": {
-    "items": [
-      "berserker helm",
-      "red claw beanie",
-      "red claw pants",
-      "red claw hoodie"
-    ],
     "lootGoldMax": 24,
     "lootGoldMin": 18
   }

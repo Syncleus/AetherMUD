@@ -1,8 +1,8 @@
 {
   "internalItemName": "stick of justice",
-  "itemName": "a \u001b[1m\u001b[35mstick\u001b[22m\u001b[32m of \u001b[1m\u001b[34mjustice\u001b[m",
-  "itemDescription": "a \u001b[1m\u001b[35mstick\u001b[22m\u001b[32m of \u001b[1m\u001b[34mjustice\u001b[m",
-  "restingName": "a \u001b[1m\u001b[35mstick\u001b[22m\u001b[32m of \u001b[1m\u001b[34mjustice\u001b[m",
+  "itemName": "a @c-bold-on@@c-magenta@stick@c-bold-off@@c-green@ of @c-bold-on@@c-blue@justice@c-reset@",
+  "itemDescription": "a @c-bold-on@@c-magenta@stick@c-bold-off@@c-green@ of @c-bold-on@@c-blue@justice@c-reset@",
+  "restingName": "a @c-bold-on@@c-magenta@stick@c-bold-off@@c-green@ of @c-bold-on@@c-blue@justice@c-reset@",
   "valueInGold": 3000,
   "itemHalfLifeTicks": 60,
   "rarity": "RARE",

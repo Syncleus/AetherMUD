@@ -1,6 +1,6 @@
 {
   "internalItemName": "beserker bracers",
-  "itemName": "\u001b[36mberserker bracers\u001b[m",
+  "itemName": "@c-cyan@berserker bracers@c-reset@",
   "itemDescription": "a pair of berserker bracers",
   "restingName": "a pair of berserker bracers are here on the ground.",
   "valueInGold": 40,

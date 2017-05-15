@@ -1,8 +1,8 @@
 {
   "internalItemName": "leather satchel",
-  "itemName": "a \u001b[32mleather satchel\u001b[m",
-  "itemDescription": "a \u001b[32mleather satchel\u001b[m (15 items)",
-  "restingName": "a \u001b[32mleather satchel\u001b[m",
+  "itemName": "a @c-green@leather satchel@c-reset@",
+  "itemDescription": "a @c-green@leather satchel@c-reset@ (15 items)",
+  "restingName": "a @c-green@leather satchel@c-reset@",
   "valueInGold": 800,
   "itemHalfLifeTicks": 60,
   "rarity": "BASIC",

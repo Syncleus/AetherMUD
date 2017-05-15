@@ -1,6 +1,6 @@
 {
   "internalItemName": "beserker helm",
-  "itemName": "\u001b[36mberserker helm\u001b[m",
+  "itemName": "@c-cyan@berserker helm@c-reset@",
   "itemDescription": "a berserker helm",
   "restingName": "a berserker helm is on the ground.",
   "valueInGold": 40,

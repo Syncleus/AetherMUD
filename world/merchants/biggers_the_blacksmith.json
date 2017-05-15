@@ -5,7 +5,7 @@
     66
   ],
   "name": "biggers the blacksmith",
-  "colorName": "\u001b[1m\u001b[36mbiggers the blacksmith\u001b[m",
+  "colorName": "@c-bold-on@@c-cyan@biggers the blacksmith@c-reset@",
   "validTriggers": [
     "blacksmith",
     "biggers",

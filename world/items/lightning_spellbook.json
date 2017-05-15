@@ -1,8 +1,8 @@
 {
   "internalItemName": "lightning spellbook",
-  "itemName": "a \u001b[33mlightning\u001b[m spell book.\u001b[m",
-  "itemDescription": "a \u001b[33mlightning\u001b[m spell book.\u001b[m",
-  "restingName": "a \u001b[33mlightning\u001b[m spell book.\u001b[m",
+  "itemName": "a @c-yellow@lightning@c-reset@ spell book.@c-reset@",
+  "itemDescription": "a @c-yellow@lightning@c-reset@ spell book.@c-reset@",
+  "restingName": "a @c-yellow@lightning@c-reset@ spell book.@c-reset@",
   "valueInGold": 3000,
   "itemHalfLifeTicks": 60,
   "rarity": "RARE",

@@ -4,7 +4,7 @@
     98
   ],
   "name": "willy the wizard",
-  "colorName": "\u001b[1m\u001b[36mwilly the wizard\u001b[m",
+  "colorName": "@c-bold-on@@c-cyan@willy the wizard@c-reset@",
   "validTriggers": [
     "willy the wizard",
     "willy",

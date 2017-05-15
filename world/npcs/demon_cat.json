@@ -1,6 +1,6 @@
 {
   "name": "demon cat",
-  "colorName": "demon \u001b[1m\u001b[35mcat\u001b[0m",
+  "colorName": "demon @c-bold-on@@c-magenta@cat@c-reset@",
   "stats": {
     "strength": 9,
     "intelligence": 0,
@@ -21,7 +21,7 @@
     "inventorySize": 0,
     "maxEffects": 0
   },
-  "dieMessage": "a demon \u001b[1m\u001b[35mcat\u001b[0m breathes his last breath in a pool of \u001b[1m\u001b[31mblood\u001b[0m",
+  "dieMessage": "a demon @c-bold-on@@c-magenta@cat@c-reset@ breathes his last breath in a pool of @c-bold-on@@c-red@blood@c-reset@",
   "temperament": "PASSIVE",
   "roamAreas": [
     "NEWBIE_ZONE"
@@ -42,9 +42,6 @@
     }
   ],
   "loot": {
-    "items": [
-      "small health potion"
-    ],
     "lootGoldMax": 3,
     "lootGoldMin": 1
   }

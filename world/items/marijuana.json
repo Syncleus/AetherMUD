@@ -1,8 +1,8 @@
 {
   "internalItemName": "marijuana",
-  "itemName": "\u001b[32mmarijuana\u001b[m flowers\u001b[m",
-  "itemDescription": "some \u001b[32mmarijuana\u001b[m flowers\u001b[m",
-  "restingName": "some \u001b[32mmarijuana\u001b[m flowers\u001b[m are here on the ground.",
+  "itemName": "@c-green@marijuana@c-reset@ flowers@c-reset@",
+  "itemDescription": "some @c-green@marijuana@c-reset@ flowers@c-reset@",
+  "restingName": "some @c-green@marijuana@c-reset@ flowers@c-reset@ are here on the ground.",
   "valueInGold": 10,
   "itemHalfLifeTicks": 60,
   "rarity": "BASIC",
@@ -17,23 +17,6 @@
   "validTimeOfDays": [],
   "isDisposable": true,
   "maxUses": 0,
-  "forages": [
-    {
-      "minLevel": 0,
-      "pctOfSuccess": 40.0,
-      "minAmt": 1,
-      "maxAmt": 3,
-      "forageExperience": 4,
-      "coolDownTicks": 600,
-      "coolDownTicksLeft": 0,
-      "forageAreas": [
-        "BLOODRIDGE2_ZONE",
-        "BLOODRIDGE1_ZONE",
-        "WESTERN9_ZONE",
-        "NORTH3_ZONE"
-      ]
-    }
-  ],
   "itemApplyStats": {
     "strength": 0,
     "intelligence": 0,
@@ -53,5 +36,22 @@
     "foraging": 0,
     "inventorySize": 0,
     "maxEffects": 0
-  }
+  },
+  "forages": [
+    {
+      "minLevel": 0,
+      "pctOfSuccess": 40.0,
+      "minAmt": 1,
+      "maxAmt": 3,
+      "forageExperience": 4,
+      "coolDownTicks": 600,
+      "coolDownTicksLeft": 0,
+      "forageAreas": [
+        "BLOODRIDGE2_ZONE",
+        "BLOODRIDGE1_ZONE",
+        "WESTERN9_ZONE",
+        "NORTH3_ZONE"
+      ]
+    }
+  ]
 }

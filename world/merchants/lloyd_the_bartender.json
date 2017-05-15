@@ -4,7 +4,7 @@
     64
   ],
   "name": "lloyd the bartender",
-  "colorName": "\u001b[1m\u001b[36mlloyd the bartender\u001b[m",
+  "colorName": "@c-bold-on@@c-cyan@lloyd the bartender@c-reset@",
   "validTriggers": [
     "lloyd the bartender",
     "bartender",

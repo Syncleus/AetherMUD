@@ -1,6 +1,6 @@
 {
   "internalItemName": "beserker baton",
-  "itemName": "\u001b[36ma berserker baton\u001b[m",
+  "itemName": "@c-cyan@a berserker baton@c-reset@",
   "itemDescription": "a berserker baton",
   "restingName": "a berserker baton rests upon the ground.",
   "valueInGold": 100,

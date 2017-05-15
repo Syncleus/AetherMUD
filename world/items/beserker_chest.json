@@ -1,6 +1,6 @@
 {
   "internalItemName": "beserker chest",
-  "itemName": "\u001b[36mberserker chest\u001b[m",
+  "itemName": "@c-cyan@berserker chest@c-reset@",
   "itemDescription": "a berserker chest",
   "restingName": "a berserker chest is on the ground.",
   "valueInGold": 70,

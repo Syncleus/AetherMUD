@@ -4,7 +4,7 @@
     2
   ],
   "name": "old wise man",
-  "colorName": "\u001b[1m\u001b[36mold wise man\u001b[m",
+  "colorName": "@c-bold-on@@c-cyan@old wise man@c-reset@",
   "validTriggers": [
     "old wise man",
     "wise",
@@ -13,6 +13,6 @@
     "man",
     "m"
   ],
-  "welcomeMessage": "The \u001b[1m\u001b[36mold wise man\u001b[m can assist you in choosing a character class.\r\n",
+  "welcomeMessage": "The @c-bold-on@@c-cyan@old wise man@c-reset@ can assist you in choosing a character class.\r\n",
   "merchantType": "PLAYERCLASS_SELECTOR"
 }

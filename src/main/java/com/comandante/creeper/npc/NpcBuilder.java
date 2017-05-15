@@ -1,5 +1,6 @@
 package com.comandante.creeper.npc;
 
+import com.comandante.creeper.common.AttackMessage;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -23,6 +24,7 @@ public class NpcBuilder {
     private Loot loot;
     private Set<SpawnRule> spawnRules;
     private Temperament temperament;
+    private Set<AttackMessage> attackMessages;
 
     public NpcBuilder() {
     }
@@ -39,6 +41,7 @@ public class NpcBuilder {
         this.spawnRules = npc.getSpawnRules();
         this.gameManager = npc.getGameManager();
         this.temperament = npc.getTemperament();
+        this.attackMessages = npc.getAttackMessages();
     }
 
     public NpcBuilder(NpcMetadata npcMetadata) {
@@ -51,6 +54,7 @@ public class NpcBuilder {
         this.loot = npcMetadata.getLoot();
         this.spawnRules = npcMetadata.getSpawnRules();
         this.temperament = npcMetadata.getTemperament();
+        this.attackMessages = npcMetadata.getAttackMessages();
     }
 
     public NpcBuilder setGameManager(GameManager gameManager) {
@@ -108,11 +112,16 @@ public class NpcBuilder {
         return this;
     }
 
+    public NpcBuilder setAttackMessages(Set<AttackMessage> attackMessages) {
+        this.attackMessages = attackMessages;
+        return this;
+    }
+
     public Npc createNpc() {
         checkNotNull(gameManager);
         if (loot.getLootGoldMin() > loot.getLootGoldMax()) {
             throw new RuntimeException("Invalid loot configuration.");
         }
-        return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules);
+        return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules, attackMessages);
     }
 }

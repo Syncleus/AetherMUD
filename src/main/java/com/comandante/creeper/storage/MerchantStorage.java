@@ -1,5 +1,6 @@
 package com.comandante.creeper.storage;
 
+import com.comandante.creeper.common.ColorizedTextTemplate;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.merchant.Merchant;
 import com.comandante.creeper.merchant.MerchantMetadata;
@@ -22,7 +23,20 @@ public class MerchantStorage {
     public MerchantStorage(GameManager gameManager, FilebasedJsonStorage filebasedJsonStorage) {
         this.gameManager = gameManager;
         this.filebasedJsonStorage = filebasedJsonStorage;
-        this.merchantMetadatas = filebasedJsonStorage.readAllMetadatas(LOCAL_MERCHANT_DIRECTORY, true, new MerchantMetadata());
+        this.merchantMetadatas = getAllMerchantMetadata();
+    }
+
+    private List<MerchantMetadata> getAllMerchantMetadata() {
+        return filebasedJsonStorage.readAllMetadatas(LOCAL_MERCHANT_DIRECTORY, true, new MerchantMetadata()).stream()
+                .map(merchantMetadata -> {
+                    merchantMetadata.setColorName(ColorizedTextTemplate.renderFromTemplateLanguage(merchantMetadata.getColorName()));
+                    merchantMetadata.setWelcomeMessage(ColorizedTextTemplate.renderFromTemplateLanguage(merchantMetadata.getWelcomeMessage()));
+                    return merchantMetadata;
+                }).collect(Collectors.toList());
+    }
+
+    public List<MerchantMetadata> getMerchantMetadatas() {
+        return merchantMetadatas;
     }
 
     public List<Merchant> getAllMerchants() {
@@ -56,6 +70,8 @@ public class MerchantStorage {
     }
 
     public void saveMerchantMetadata(MerchantMetadata merchantMetadata) throws IOException {
+        merchantMetadata.setColorName(ColorizedTextTemplate.renderToTemplateLanguage(merchantMetadata.getColorName()));
+        merchantMetadata.setWelcomeMessage(ColorizedTextTemplate.renderToTemplateLanguage(merchantMetadata.getWelcomeMessage()));
         filebasedJsonStorage.saveMetadata(merchantMetadata.getInternalName(), LOCAL_MERCHANT_DIRECTORY, merchantMetadata);
     }
 

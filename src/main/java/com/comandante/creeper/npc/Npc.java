@@ -1,6 +1,7 @@
 package com.comandante.creeper.npc;
 
 
+import com.comandante.creeper.common.AttackMessage;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -62,9 +63,14 @@ public class Npc extends CreeperEntity {
     private int effectsTickBucket = 0;
     private Set<CoolDown> coolDowns = Sets.newHashSet();
     private final Experience experience = new Experience();
+    private final Set<AttackMessage> attackMessages;
 
 
-    protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules) {
+    public Set<AttackMessage> getAttackMessages() {
+        return attackMessages;
+    }
+
+    protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules, Set<AttackMessage> attackMessages) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
@@ -76,6 +82,8 @@ public class Npc extends CreeperEntity {
         this.loot = loot;
         this.spawnRules = spawnRules;
         this.temperament = temperament;
+        this.attackMessages = attackMessages;
+
     }
 
     @Override
@@ -439,4 +447,16 @@ public class Npc extends CreeperEntity {
         }
     }
 
+    public AttackMessage getRandomAttackMessage() {
+        int size = attackMessages.size();
+        int item = random.nextInt(size); // In real life, the Random object should be rather more shared than this
+        int i = 0;
+        for(AttackMessage attackMessage : attackMessages) {
+            if (i == item) {
+                return attackMessage;
+            }
+            i++;
+        }
+        return null;
+    }
 }

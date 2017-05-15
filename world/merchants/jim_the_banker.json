@@ -5,7 +5,7 @@
     209
   ],
   "name": "jim the banker",
-  "colorName": "\u001b[1m\u001b[36mjim the banker\u001b[m",
+  "colorName": "@c-bold-on@@c-cyan@jim the banker@c-reset@",
   "validTriggers": [
     "bank",
     "j",

@@ -1,8 +1,8 @@
 {
   "internalItemName": "purple drank",
-  "itemName": "a double cup of \u001b[35mpurple\u001b[m drank",
-  "itemDescription": "a tonic called \u001b[35mpurple\u001b[m drank that restores health\u001b[m",
-  "restingName": "a double cup of \u001b[35mpurple\u001b[m drank rests on the ground.",
+  "itemName": "a double cup of @c-magenta@purple@c-reset@ drank",
+  "itemDescription": "a tonic called @c-magenta@purple@c-reset@ drank that restores health@c-reset@",
+  "restingName": "a double cup of @c-magenta@purple@c-reset@ drank rests on the ground.",
   "valueInGold": 30,
   "itemHalfLifeTicks": 60,
   "rarity": "BASIC",

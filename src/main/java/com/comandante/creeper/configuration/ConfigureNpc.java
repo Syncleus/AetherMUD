@@ -35,7 +35,7 @@ public class ConfigureNpc {
 
         configureAllNpcs(gameManager);
 
-        List<ItemMetadata> allItemMetadata = gameManager.getItemStorage().getAllItemMetadata();
+        List<ItemMetadata> allItemMetadata = gameManager.getItemStorage().getItemMetadatas();
 
         for (ItemMetadata itemMetadata : allItemMetadata) {
             for (SpawnRule spawnRule : itemMetadata.getSpawnRules()) {

@@ -1,8 +1,8 @@
 {
   "internalItemName": "rad claw pants",
-  "itemName": "\u001b[31mred-claw \u001b[mpants\u001b[m",
+  "itemName": "@c-red@red-claw @c-reset@pants@c-reset@",
   "itemDescription": "a red-claw pants",
-  "restingName": "a \u001b[31mred-claw \u001b[mpants is on the ground.",
+  "restingName": "a @c-red@red-claw @c-reset@pants is on the ground.",
   "valueInGold": 3500,
   "itemHalfLifeTicks": 60,
   "rarity": "LEGENDARY",

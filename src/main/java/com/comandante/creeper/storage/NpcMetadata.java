@@ -1,5 +1,6 @@
 package com.comandante.creeper.storage;
 
+import com.comandante.creeper.common.AttackMessage;
 import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.npc.Temperament;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -19,8 +20,17 @@ public class NpcMetadata {
     private Set<String> validTriggers;
     private Set<SpawnRule> spawnRules;
     private Loot loot;
+    private Set<AttackMessage> attackMessages;
 
     public NpcMetadata() {
+    }
+
+    public Set<AttackMessage> getAttackMessages() {
+        return attackMessages;
+    }
+
+    public void setAttackMessages(Set<AttackMessage> attackMessages) {
+        this.attackMessages = attackMessages;
     }
 
     public String getName() {
