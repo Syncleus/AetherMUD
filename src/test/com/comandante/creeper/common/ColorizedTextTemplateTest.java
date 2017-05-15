@@ -1,10 +1,12 @@
 package com.comandante.creeper.common;
 
 import com.comandante.creeper.items.ItemMetadata;
+import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.merchant.MerchantMetadata;
 import com.comandante.creeper.server.player_communication.Color;
 import com.comandante.creeper.storage.*;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Assert;
@@ -171,7 +173,10 @@ public class ColorizedTextTemplateTest {
 //        }
 
 
-
+        Loot loot = new Loot(16, 28, Sets.newHashSet("beserker baton", "bersker boots"));
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    String s = gson.toJson(loot);
+        System.out.println(s);
     }
 
 }

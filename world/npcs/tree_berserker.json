@@ -43,6 +43,10 @@
     }
   ],
   "loot": {
+    "internalItemNames": [
+      "beserker baton",
+      "bersker boots"
+    ],
     "lootGoldMax": 14,
     "lootGoldMin": 8
   },

@@ -52,6 +52,11 @@
     }
   ],
   "loot": {
+    "internalItemNames": [
+      "beserker shorts",
+      "beserker chest",
+      "beserker helm"
+    ],
     "lootGoldMax": 24,
     "lootGoldMin": 18
   },
