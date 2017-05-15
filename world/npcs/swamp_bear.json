@@ -53,5 +53,27 @@
   "loot": {
     "lootGoldMax": 18,
     "lootGoldMin": 12
-  }
+  },
+  "attackMessages": [
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ growls and charges at @player-name@!"
+    },
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ stomps around and charges at @player-name@!"
+    },
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ swipes its paw toward @player-name@\u0027s head!"
+    },
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ extends its claws and swings at @player-name@!"
+    },
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ opens its jaws and attempts to bite @player-name@!"
+    }
+  ]
 }

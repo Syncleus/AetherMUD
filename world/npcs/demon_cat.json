@@ -44,5 +44,23 @@
   "loot": {
     "lootGoldMax": 3,
     "lootGoldMin": 1
-  }
+  },
+  "attackMessages": [
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ hisses and growls at @player-name@!"
+    },
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ attempts to bite @player-name@!"
+    },
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ runs toward @player-name@ with exposed teeth!"
+    },
+    {
+      "type": "NORMAL",
+      "attackMessage": "The @npc-color-name@ attempts to scratch @player-name@!"
+    }
+  ]
 }
