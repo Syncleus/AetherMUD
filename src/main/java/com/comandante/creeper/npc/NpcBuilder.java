@@ -1,6 +1,6 @@
 package com.comandante.creeper.npc;
 
-import com.comandante.creeper.common.AttackMessage;
+import com.comandante.creeper.common.CreeperMessage;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -24,7 +24,14 @@ public class NpcBuilder {
     private Loot loot;
     private Set<SpawnRule> spawnRules;
     private Temperament temperament;
-    private Set<AttackMessage> attackMessages;
+    // The messages used when dealing damage
+    private Set<CreeperMessage> attackMessages;
+    // The messages used when landing critical attacks
+    private Set<CreeperMessage> criticalAttackMessages;
+    // Things the NPC randomly says during battle
+    private Set<CreeperMessage> battleMessages;
+    // Things that npcs say randomly when idle
+    private Set<CreeperMessage> idleMessages;
 
     public NpcBuilder() {
     }
@@ -42,6 +49,9 @@ public class NpcBuilder {
         this.gameManager = npc.getGameManager();
         this.temperament = npc.getTemperament();
         this.attackMessages = npc.getAttackMessages();
+        this.criticalAttackMessages = npc.getCriticalAttackMessages();
+        this.battleMessages = npc.getBattleMessages();
+        this.idleMessages = npc.getIdleMessages();
     }
 
     public NpcBuilder(NpcMetadata npcMetadata) {
@@ -55,6 +65,9 @@ public class NpcBuilder {
         this.spawnRules = npcMetadata.getSpawnRules();
         this.temperament = npcMetadata.getTemperament();
         this.attackMessages = npcMetadata.getAttackMessages();
+        this.criticalAttackMessages = npcMetadata.getCriticalAttackMessages();
+        this.battleMessages = npcMetadata.getBattleMessages();
+        this.idleMessages = npcMetadata.getIdleMessages();
     }
 
     public NpcBuilder setGameManager(GameManager gameManager) {
@@ -112,8 +125,23 @@ public class NpcBuilder {
         return this;
     }
 
-    public NpcBuilder setAttackMessages(Set<AttackMessage> attackMessages) {
+    public NpcBuilder setAttackMessages(Set<CreeperMessage> attackMessages) {
         this.attackMessages = attackMessages;
+        return this;
+    }
+
+    public NpcBuilder setCriticalAttackMessages(Set<CreeperMessage> criticalAttackMessages) {
+        this.criticalAttackMessages = criticalAttackMessages;
+        return this;
+    }
+
+    public NpcBuilder setBattleMessages(Set<CreeperMessage> battleMessages) {
+        this.battleMessages = battleMessages;
+        return this;
+    }
+
+    public NpcBuilder setIdleMessages(Set<CreeperMessage> idleMessages) {
+        this.idleMessages = idleMessages;
         return this;
     }
 
@@ -122,6 +150,6 @@ public class NpcBuilder {
         if (loot.getLootGoldMin() > loot.getLootGoldMax()) {
             throw new RuntimeException("Invalid loot configuration.");
         }
-        return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules, attackMessages);
+        return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules, attackMessages, criticalAttackMessages, battleMessages, idleMessages);
     }
 }

@@ -62,23 +62,33 @@
   "attackMessages": [
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ growls and charges at @player-name@!"
+      "message": "The @npc-color-name@ tries to bite @player-name@ in the leg!"
     },
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ stomps around and charges at @player-name@!"
+      "message": "The @npc-color-name@ growls and charges slightly at @player-name@!"
     },
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ swipes its paw toward @player-name@'s head!"
-    },
+      "message": "The @npc-color-name@ howls maniacally to call its pack!"
+    }
+  ],
+  "criticalAttackMessages": [
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ extends its claws and swings at @player-name@!"
-    },
+      "message": "The @npc-color-name@ jumps into the air toward and lands a critical attack! @player-name@!"
+    }
+  ],
+  "battleMessages": [
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ opens its jaws and attempts to bite @player-name@!"
+      "message": "The @npc-color-name@ jumps into the air toward @player-name@!"
+    }
+  ],
+  "idleMessages": [
+    {
+      "type": "NORMAL",
+      "message": "A @npc-color-name@ scratches it\u0027s nose."
     }
   ]
 }

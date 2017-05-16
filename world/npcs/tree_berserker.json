@@ -42,30 +42,36 @@
       "maxPerRoom": 6
     }
   ],
-  "loot": {
-    "internalItemNames": [
-      "beserker baton",
-      "beserker boots"
-    ],
-    "lootGoldMax": 14,
-    "lootGoldMin": 8
-  },
   "attackMessages": [
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ swings a berserker baton at @player-name@!"
+      "message": "The @npc-color-name@ tries to bite @player-name@ in the leg!"
     },
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ charges at @player-name@!"
+      "message": "The @npc-color-name@ growls and charges slightly at @player-name@!"
     },
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ wildly swings its fists at @player-name@!"
-    },
+      "message": "The @npc-color-name@ howls maniacally to call its pack!"
+    }
+  ],
+  "criticalAttackMessages": [
     {
       "type": "NORMAL",
-      "attackMessage": "The @npc-color-name@ foams at the mouth and lunges at @player-name@!"
+      "message": "The @npc-color-name@ jumps into the air toward and lands a critical attack! @player-name@!"
+    }
+  ],
+  "battleMessages": [
+    {
+      "type": "NORMAL",
+      "message": "The @npc-color-name@ jumps into the air toward @player-name@!"
+    }
+  ],
+  "idleMessages": [
+    {
+      "type": "NORMAL",
+      "message": "A @npc-color-name@ scratches it\u0027s nose."
     }
   ]
 }

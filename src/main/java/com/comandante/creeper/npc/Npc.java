@@ -1,8 +1,8 @@
 package com.comandante.creeper.npc;
 
 
-import com.comandante.creeper.common.AttackMessage;
 import com.comandante.creeper.common.ColorizedTextTemplate;
+import com.comandante.creeper.common.CreeperMessage;
 import com.comandante.creeper.core_game.GameManager;
 import com.comandante.creeper.core_game.SentryManager;
 import com.comandante.creeper.entity.CreeperEntity;
@@ -64,9 +64,31 @@ public class Npc extends CreeperEntity {
     private int effectsTickBucket = 0;
     private Set<CoolDown> coolDowns = Sets.newHashSet();
     private final Experience experience = new Experience();
-    private final Set<AttackMessage> attackMessages;
+    // The messages used when dealing damage
+    private final Set<CreeperMessage> attackMessages;
+    // The messages used when landing critical attacks
+    private final Set<CreeperMessage> criticalAttackMessages;
+    // Things the NPC randomly says during battle
+    private final Set<CreeperMessage> battleMessages;
+    // Things that npcs say randomly when idle
+    private final Set<CreeperMessage> idleMessages;
 
-    protected Npc(GameManager gameManager, String name, String colorName, long lastPhraseTimestamp, Stats stats, String dieMessage, Temperament temperament, Set<Area> roamAreas, Set<String> validTriggers, Loot loot, Set<SpawnRule> spawnRules, Set<AttackMessage> attackMessages) {
+
+    protected Npc(GameManager gameManager,
+                  String name,
+                  String colorName,
+                  long lastPhraseTimestamp,
+                  Stats stats,
+                  String dieMessage,
+                  Temperament temperament,
+                  Set<Area> roamAreas,
+                  Set<String> validTriggers,
+                  Loot loot,
+                  Set<SpawnRule> spawnRules,
+                  Set<CreeperMessage> attackMessages,
+                  Set<CreeperMessage> criticalAttackMessages,
+                  Set<CreeperMessage> battleMessages,
+                  Set<CreeperMessage> idleMessages) {
         this.gameManager = gameManager;
         this.name = name;
         this.colorName = colorName;
@@ -79,7 +101,9 @@ public class Npc extends CreeperEntity {
         this.spawnRules = spawnRules;
         this.temperament = temperament;
         this.attackMessages = attackMessages;
-
+        this.criticalAttackMessages = criticalAttackMessages;
+        this.battleMessages = battleMessages;
+        this.idleMessages = idleMessages;
     }
 
     @Override
@@ -443,16 +467,16 @@ public class Npc extends CreeperEntity {
         }
     }
 
-    public AttackMessage getRandomAttackMessage() {
+    public CreeperMessage getRandomAttackMessage() {
 
         if (attackMessages == null || attackMessages.size() == 0) {
-            return new AttackMessage(AttackMessage.Type.NORMAL, "Somebody for got to configure attack messages. - " + this.getName());
+            return new CreeperMessage(CreeperMessage.Type.NORMAL, "Somebody for got to configure attack messages. - " + this.getName());
         }
 
         int size = attackMessages.size();
         int item = random.nextInt(size); // In real life, the Random object should be rather more shared than this
         int i = 0;
-        for(AttackMessage attackMessage : attackMessages) {
+        for(CreeperMessage attackMessage : attackMessages) {
             if (i == item) {
                 return attackMessage;
             }
@@ -461,16 +485,28 @@ public class Npc extends CreeperEntity {
         return null;
     }
 
-    public Set<AttackMessage> getAttackMessages() {
+    public Set<CreeperMessage> getAttackMessages() {
         return attackMessages;
     }
 
     public String buildAttackMessage(String playerName) {
-        AttackMessage randomAttackMessage = getRandomAttackMessage();
+        CreeperMessage randomAttackMessage = getRandomAttackMessage();
         Map<String, String> valueMap = Maps.newHashMap();
         valueMap.put("player-name", playerName);
         valueMap.put("npc-name", this.getName());
         valueMap.put("npc-color-name", this.getColorName());
-        return ColorizedTextTemplate.renderFromTemplateLanguage(valueMap, randomAttackMessage.getAttackMessage());
+        return ColorizedTextTemplate.renderFromTemplateLanguage(valueMap, randomAttackMessage.getMessage());
+    }
+
+    public Set<CreeperMessage> getCriticalAttackMessages() {
+        return criticalAttackMessages;
+    }
+
+    public Set<CreeperMessage> getBattleMessages() {
+        return battleMessages;
+    }
+
+    public Set<CreeperMessage> getIdleMessages() {
+        return idleMessages;
     }
 }

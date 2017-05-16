@@ -1,6 +1,6 @@
 package com.comandante.creeper.storage;
 
-import com.comandante.creeper.common.AttackMessage;
+import com.comandante.creeper.common.CreeperMessage;
 import com.comandante.creeper.items.Loot;
 import com.comandante.creeper.npc.Temperament;
 import com.comandante.creeper.spawner.SpawnRule;
@@ -20,16 +20,47 @@ public class NpcMetadata {
     private Set<String> validTriggers;
     private Set<SpawnRule> spawnRules;
     private Loot loot;
-    private Set<AttackMessage> attackMessages;
+    // The messages used when dealing damage
+    private Set<CreeperMessage> attackMessages;
+    // The messages used when landing critical attacks
+    private Set<CreeperMessage> criticalAttackMessages;
+    // Things the NPC randomly says during battle
+    private Set<CreeperMessage> battleMessages;
+    // Things that npcs say randomly when idle
+    private Set<CreeperMessage> idleMessages;
 
     public NpcMetadata() {
     }
 
-    public Set<AttackMessage> getAttackMessages() {
+    public Set<CreeperMessage> getCriticalAttackMessages() {
+        return criticalAttackMessages;
+    }
+
+    public void setCriticalAttackMessages(Set<CreeperMessage> criticalAttackMessages) {
+        this.criticalAttackMessages = criticalAttackMessages;
+    }
+
+    public Set<CreeperMessage> getBattleMessages() {
+        return battleMessages;
+    }
+
+    public void setBattleMessages(Set<CreeperMessage> battleMessages) {
+        this.battleMessages = battleMessages;
+    }
+
+    public Set<CreeperMessage> getIdleMessages() {
+        return idleMessages;
+    }
+
+    public void setIdleMessages(Set<CreeperMessage> idleMessages) {
+        this.idleMessages = idleMessages;
+    }
+
+    public Set<CreeperMessage> getAttackMessages() {
         return attackMessages;
     }
 
-    public void setAttackMessages(Set<AttackMessage> attackMessages) {
+    public void setAttackMessages(Set<CreeperMessage> attackMessages) {
         this.attackMessages = attackMessages;
     }
 

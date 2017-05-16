@@ -1,10 +1,10 @@
 package com.comandante.creeper.common;
 
-import com.comandante.creeper.items.ItemMetadata;
 import com.comandante.creeper.items.Loot;
-import com.comandante.creeper.merchant.MerchantMetadata;
 import com.comandante.creeper.server.player_communication.Color;
-import com.comandante.creeper.storage.*;
+import com.comandante.creeper.storage.FilebasedJsonStorage;
+import com.comandante.creeper.storage.NpcMetadata;
+import com.comandante.creeper.storage.NpcStorage;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -72,38 +72,38 @@ public class ColorizedTextTemplateTest {
 
             }
         });
+//
+//        MerchantStorage merchantStorage = new MerchantStorage(null, new FilebasedJsonStorage(gson));
+//        List<MerchantMetadata> merchantMetadatas = merchantStorage.getMerchantMetadatas();
+//
+//        merchantMetadatas.forEach(new Consumer<MerchantMetadata>() {
+//            @Override
+//            public void accept(MerchantMetadata merchantMetadata) {
+//
+//                System.out.println(merchantMetadata.getColorName());
+//                try {
+//                    merchantStorage.saveMerchantMetadata(merchantMetadata);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
-        MerchantStorage merchantStorage = new MerchantStorage(null, new FilebasedJsonStorage(gson));
-        List<MerchantMetadata> merchantMetadatas = merchantStorage.getMerchantMetadatas();
-
-        merchantMetadatas.forEach(new Consumer<MerchantMetadata>() {
-            @Override
-            public void accept(MerchantMetadata merchantMetadata) {
-
-                System.out.println(merchantMetadata.getColorName());
-                try {
-                    merchantStorage.saveMerchantMetadata(merchantMetadata);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        ItemStorage itemStorage = new ItemStorage(new FilebasedJsonStorage(gson));
-
-        itemStorage.getItemMetadatas().forEach(new Consumer<ItemMetadata>() {
-            @Override
-            public void accept(ItemMetadata itemMetadata) {
-                System.out.println(itemMetadata.getItemName());
-                try {
-                    itemStorage.saveItemMetadata(itemMetadata);
-                } catch (IOException e) {
-
-
-                }
-
-            }
-        });
+//        ItemStorage itemStorage = new ItemStorage(new FilebasedJsonStorage(gson));
+//
+//        itemStorage.getItemMetadatas().forEach(new Consumer<ItemMetadata>() {
+//            @Override
+//            public void accept(ItemMetadata itemMetadata) {
+//                System.out.println(itemMetadata.getItemName());
+//                try {
+//                    itemStorage.saveItemMetadata(itemMetadata);
+//                } catch (IOException e) {
+//
+//
+//                }
+//
+//            }
+//        });
 
         String green = Color.GREEN;
         String test = "\u001b[32m";
