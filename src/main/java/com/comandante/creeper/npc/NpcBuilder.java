@@ -147,8 +147,10 @@ public class NpcBuilder {
 
     public Npc createNpc() {
         checkNotNull(gameManager);
-        if (loot.getLootGoldMin() > loot.getLootGoldMax()) {
-            throw new RuntimeException("Invalid loot configuration.");
+        if (loot != null ) {
+            if (loot.getLootGoldMin() > loot.getLootGoldMax()) {
+                throw new RuntimeException("Invalid loot configuration.");
+            }
         }
         return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules, attackMessages, criticalAttackMessages, battleMessages, idleMessages);
     }
