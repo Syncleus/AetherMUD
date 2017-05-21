@@ -2,6 +2,7 @@ package com.comandante.creeper.storage;
 
 import com.comandante.creeper.Main;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -23,20 +24,17 @@ public class FilebasedJsonStorage {
     }
 
     public <E> List<E> readAllMetadatas(String storageDirectory, boolean recursive, E a) {
-        List<String> jsonStrings = getAllJsonStrings(storageDirectory, recursive);
-        List<Object> list = jsonStrings.stream()
+        return getAllJsonStrings(storageDirectory, recursive).stream()
                 .map(s -> {
                     try {
-                        return gson.fromJson(s, a.getClass());
-                    } catch (Exception e) {
+                        return (E) gson.fromJson(s, a.getClass());
+                    } catch (JsonSyntaxException e) {
                         log.error("Unable to read NpcMetaData from Json!", e);
                     }
                     return null;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-
-        return (List<E>) list;
     }
 
     public void saveMetadata(String name, String storageDirectory, Object metadata) throws IOException {
@@ -46,8 +44,11 @@ public class FilebasedJsonStorage {
     }
 
     private List<String> getAllJsonStrings(String storageDirectory, boolean recursive) {
-        new File(storageDirectory).mkdirs();
-        Iterator<File> iterator = FileUtils.iterateFiles(new File(storageDirectory), new String[]{"json"}, recursive);
+        boolean mkdirs = new File(storageDirectory).mkdirs();
+        if (mkdirs) {
+            log.info("Created directory: " + storageDirectory);
+        }
+        Iterator iterator = FileUtils.iterateFiles(new File(storageDirectory), new String[]{"json"}, recursive);
         return toListOfJsonStrings(iterator);
     }
 
