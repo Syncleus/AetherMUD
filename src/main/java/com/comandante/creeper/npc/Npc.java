@@ -32,7 +32,13 @@ import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,12 +58,11 @@ public class Npc extends CreeperEntity {
     private final Set<String> validTriggers;
     private final Set<SpawnRule> spawnRules;
     private final ArrayBlockingQueue<NpcStatsChange> npcStatsChanges = new ArrayBlockingQueue<>(3000);
-    private final Interner<Npc> interner = Interners.newWeakInterner();
     private final AtomicBoolean isAlive = new AtomicBoolean(true);
     private final Random random = new Random();
     private long lastPhraseTimestamp;
     private Loot loot;
-    private List<Effect> effects = Lists.newCopyOnWriteArrayList();
+    private List<Effect> effects = Lists.newArrayList();
     private int maxEffects = 4;
     private Map<String, Long> playerDamageMap = Maps.newHashMap();
     private Room currentRoom;
@@ -72,6 +77,8 @@ public class Npc extends CreeperEntity {
     private final Set<CreeperMessage> battleMessages;
     // Things that npcs say randomly when idle
     private final Set<CreeperMessage> idleMessages;
+
+    private final Interner<String> interner = Interners.newWeakInterner();
 
 
     protected Npc(GameManager gameManager,
@@ -108,7 +115,7 @@ public class Npc extends CreeperEntity {
 
     @Override
     public void run() {
-        synchronized (interner.intern(this)) {
+        synchronized (interner.intern(getEntityId())) {
             try {
                 if (isAlive.get()) {
                     if (effectsTickBucket == 5) {
@@ -301,7 +308,6 @@ public class Npc extends CreeperEntity {
         this.currentRoom = currentRoom;
     }
 
-
     private String getBattleReport(long xpEarned) {
         StringBuilder sb = new StringBuilder();
         sb.append(Color.MAGENTA).append("Battle Report----------------------------").append(Color.RESET).append("\r\n");
@@ -336,7 +342,6 @@ public class Npc extends CreeperEntity {
         sb.append(t.render());
         return sb.toString();
     }
-
 
     public String getColorName() {
         return colorName;
@@ -392,7 +397,6 @@ public class Npc extends CreeperEntity {
     }
 
     public void addEffect(Effect effect) {
-        Interner<String> interner = Interners.newWeakInterner();
         synchronized (interner.intern(getEntityId())) {
             if (effects.size() >= maxEffects) {
             } else {

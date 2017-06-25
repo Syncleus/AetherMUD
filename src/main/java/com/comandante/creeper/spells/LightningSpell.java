@@ -1,7 +1,7 @@
 package com.comandante.creeper.spells;
 
-import com.comandante.creeper.items.EffectBuilder;
 import com.comandante.creeper.core_game.GameManager;
+import com.comandante.creeper.items.EffectBuilder;
 import com.comandante.creeper.npc.Npc;
 import com.comandante.creeper.player.CoolDown;
 import com.comandante.creeper.player.CoolDownType;
@@ -62,7 +62,7 @@ public class LightningSpell implements SpellRunnable {
         if (Math.random() < 0.1) {
             long electrofiedPower = (long) ((stats.getLevel() * .3) + (5 * stats.getIntelligence()));
             return getElectrofried(electrofiedPower, 4);
-        }
+          }
         long burnEffectPower = (long) ((stats.getLevel() * .05) + (1 * stats.getIntelligence()));
         return getBurnEffect(burnEffectPower, 2);
     }
