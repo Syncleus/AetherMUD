@@ -28,6 +28,7 @@ public class RestartCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommandThreadSafe(ctx, e, BounceIrcBotCommand.class, () -> {
             playerManager.getAllPlayersMap().values().stream()
+                    .filter(player -> player.getChannel().isConnected())
                     .forEach(player -> gameManager.getChannelUtils().write(player.getPlayerId(),
                             "                      88                                          \n" +
                     "                      88                                   ,d     \n" +
