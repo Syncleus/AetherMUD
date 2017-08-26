@@ -2,15 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.comandante</groupId>
-    <artifactId>creeper</artifactId>
-    <version>0.1.0</version>
+    <groupId>com.syncleus.aethermud</groupId>
+    <artifactId>aethermud</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
     <scm>
-        <url>https://github.com/chriskearney/github-maven-example</url>
-        <connection>scm:git:git://github.com/chriskearney/creeper.git</connection>
-        <developerConnection>scm:git:git@github.com:chriskearney/creeper.git</developerConnection>
-        <tag>creeper-0.1.0</tag>
+        <url>https://github.com/syncleus/AetherMUD</url>
+        <connection>scm:git:git://github.com/syncleus/AetherMUD.git</connection>
+        <developerConnection>scm:git:git@github.com:syncleus/AetherMUD.git</developerConnection>
     </scm>
 
     <dependencies>
