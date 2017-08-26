@@ -42,6 +42,13 @@
       "maxPerRoom": 6
     }
   ],
+  "loot": {
+    "internalItemNames": [
+      "beserker bracers"
+    ],
+    "lootGoldMax": 10,
+    "lootGoldMin": 5
+  },
   "attackMessages": [
     {
       "type": "NORMAL",
@@ -73,12 +80,5 @@
       "type": "NORMAL",
       "message": "A @npc-color-name@ scratches it\u0027s nose."
     }
-  ],
-  "loot": {
-    "internalItemNames": [
-      "beserker bracers"
-    ],
-    "lootGoldMax": 10,
-    "lootGoldMin": 5
-  }
+  ]
 }

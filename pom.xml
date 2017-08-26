@@ -241,7 +241,7 @@
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.comandante.creeper.Main</Main-Class>
+                                        <Main-Class>com.syncleus.aethermud.Main</Main-Class>
                                         <Build-Number>$\{buildNumber}</Build-Number>
                                         <Implementation-Build>$\{buildNumber}</Implementation-Build>
                                     </manifestEntries>
@@ -273,7 +273,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.comandante.creeper.Main</mainClass>
+                    <mainClass>com.syncleus.aethermud.Main</mainClass>
                 </configuration>
             </plugin>
             <plugin>
