@@ -15,15 +15,106 @@
  */
 package com.syncleus.aethermud.player;
 
+import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.stats.experience.Experience;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.syncleus.aethermud.npc.Npc.NpcLevelColor.*;
+
 
 public class ExperienceManagerTest {
 
     private Experience experienceManager;
+    private static final int[][] EARNED_EXPERIENCE = new int[][]{{50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+        160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330}, {44, 55, 66, 77,
+        88, 99, 110, 121, 132, 143, 154, 165, 176, 187, 198, 209, 220, 231, 242, 253, 264, 275, 286, 297, 308, 319,
+        330, 341, 352}, {36, 48, 60, 72, 84, 96, 108, 120, 132, 144, 156, 168, 180, 192, 204, 216, 228, 240, 252,
+        264, 276, 288, 300, 312, 324, 336, 348, 360, 372}, {26, 39, 52, 65, 78, 91, 104, 117, 130, 143, 156, 169,
+        182, 195, 208, 221, 234, 247, 260, 273, 286, 299, 312, 325, 338, 351, 364, 377, 390}, {14, 28, 42, 56, 70,
+        84, 98, 112, 126, 140, 154, 168, 182, 196, 210, 224, 238, 252, 266, 280, 294, 308, 322, 336, 350, 364, 378,
+        392, 406}, {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300,
+        315, 330, 345, 360, 375, 390, 405, 420}, {0, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208,
+        224, 240, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432}, {0, 0, 0, 28, 43, 57, 71, 85, 102,
+        119, 136, 153, 170, 187, 204, 221, 238, 255, 272, 289, 306, 323, 340, 357, 374, 391, 408, 425, 442}, {0, 0,
+        0, 0, 30, 45, 60, 75, 90, 108, 126, 144, 162, 180, 198, 216, 234, 252, 270, 288, 306, 324, 342, 360, 378,
+        396, 414, 432, 450}, {0, 0, 0, 0, 27, 41, 54, 68, 81, 95, 114, 133, 152, 171, 190, 209, 228, 247, 266, 285,
+        304, 323, 342, 361, 380, 399, 418, 437, 456}, {0, 0, 0, 0, 0, 29, 43, 57, 71, 86, 100, 120, 140, 160, 180,
+        200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460}, {0, 0, 0, 0, 0, 0, 39, 53, 66, 79, 92,
+        105, 126, 147, 168, 189, 210, 231, 252, 273, 294, 315, 336, 357, 378, 399, 420, 441, 462}, {0, 0, 0, 0, 0, 0,
+        0, 41, 55, 69, 83, 96, 110, 132, 154, 176, 198, 220, 242, 264, 286, 308, 330, 352, 374, 396, 418, 440, 462},
+        {0, 0, 0, 0, 0, 0, 0, 0, 43, 58, 72, 86, 101, 115, 138, 161, 184, 207, 230, 253, 276, 299, 322, 345, 368,
+        391, 414, 437, 460}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 60, 75, 90, 105, 120, 144, 168, 192, 216, 240, 264,
+        288, 312, 336, 360, 384, 408, 432, 456}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 69, 83, 97, 111, 125, 150, 175,
+        200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 72, 87, 101,
+        116, 130, 156, 182, 208, 234, 260, 286, 312, 338, 364, 390, 416, 442}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        60, 75, 90, 105, 120, 135, 162, 189, 216, 243, 270, 297, 324, 351, 378, 405, 432}, {0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 62, 78, 93, 109, 124, 140, 168, 196, 224, 252, 280, 308, 336, 364, 392, 420}, {0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 66, 79, 92, 105, 119, 132, 145, 174, 203, 232, 261, 290, 319, 348, 377, 406}, {0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 68, 82, 95, 109, 123, 136, 150, 180, 210, 240, 270, 300, 330, 360, 390},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 70, 85, 99, 113, 127, 141, 155, 186, 217, 248, 279, 310, 341,
+        372}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 73, 87, 102, 116, 131, 145, 160, 192, 224, 256,
+        288, 320, 352}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 75, 90, 105, 120, 135, 150, 165, 198,
+        231, 264, 297, 330}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 93, 108, 124, 139, 155, 170,
+        204, 238, 272, 306}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 95, 111, 127, 143, 159,
+        175, 210, 245, 280}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 82, 98, 115, 131, 147, 164,
+        180, 216, 252}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 84, 101, 118, 135, 151, 168,
+        185, 222}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 86, 104, 121, 138, 155, 173,
+        190}};
+    private static final Npc.NpcLevelColor[][] LEVEL_COLOR = new Npc.NpcLevelColor[][]{{YELLOW, YELLOW, YELLOW,
+        ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED,
+        RED, RED, RED, RED, RED, RED}, {YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {YELLOW, YELLOW,
+        YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED}, {GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {GREEN,
+        GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW,
+        YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED,
+        RED, RED}, {WHITE, WHITE, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE, GREEN,
+        GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, YELLOW, YELLOW, YELLOW,
+        YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED,
+        RED}, {WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE,
+        ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE,
+        WHITE, WHITE, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN,
+        GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED,
+        RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN, YELLOW,
+        YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED},
+        {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW,
+        YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW,
+        ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED,
+        RED, RED, RED, RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED,
+        RED, RED, RED, RED, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED,
+        RED, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN,
+        GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED}, {WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN,
+        GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED}, {WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN,
+        GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED}, {WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN,
+        GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED}, {WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN,
+        GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN, GREEN,
+        GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED}, {WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN, GREEN,
+        GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE}, {WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, GREEN,
+        GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, ORANGE}, {WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
+        GREEN, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW}, {WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, GREEN, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW, YELLOW}, {WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
+        WHITE, WHITE, GREEN, GREEN, GREEN, GREEN, YELLOW, YELLOW, YELLOW}};
 
     @Before
     public void setUp() throws Exception {
@@ -32,29 +123,20 @@ public class ExperienceManagerTest {
 
     @Test
     public void testXp() throws Exception {
-        int playerLevel = 20;
-        Assert.assertEquals(0, experienceManager.calculateNpcXp(playerLevel, 13));
-        Assert.assertEquals(0, experienceManager.calculateNpcXp(playerLevel, 12));
-        Assert.assertEquals(232, experienceManager.calculateNpcXp(playerLevel, 23));
-        Assert.assertEquals(203, experienceManager.calculateNpcXp(playerLevel, 22));
-        Assert.assertEquals(174, experienceManager.calculateNpcXp(playerLevel, 21));
-        Assert.assertEquals(145, experienceManager.calculateNpcXp(playerLevel, 20));
-        Assert.assertEquals(132, experienceManager.calculateNpcXp(playerLevel, 19));
-        Assert.assertEquals(119, experienceManager.calculateNpcXp(playerLevel, 18));
-        int npcLevel = 3;
-        for (int i = 0; i < 10; i++) {
-            System.out.println("Player Level: " + i + " xp gained: " + experienceManager.calculateNpcXp(i, npcLevel));
+        for (int i = 1; i < 30; i++) {
+            for (int j = 1; j < 30; j++) {
+                Assert.assertEquals(experienceManager.calculateNpcXp(i, j), EARNED_EXPERIENCE[i - 1][j - 1]);
+            }
         }
     }
 
 
     @Test
     public void testSpread() throws Exception {
-        //System.out.println("Player Level: " + 28 + " " + experienceManager.getLevelColor(28, 25) + " " + experienceManager.calculateNpcXp(28, 25));
-//        System.out.println("Player Level: " + 29 + " " + experienceManager.getLevelColor(29, 25) + " " + experienceManager.calculateNpcXp(29, 25));
-
-        for (int i = 15; i < 30; i++) {
-            System.out.println("Player Level: " + i + " " + experienceManager.getLevelColor(i, 25) + " " + experienceManager.calculateNpcXp(i, 25));
-      }
+        for (int i = 1; i < 30; i++) {
+            for (int j = 1; j < 30; j++) {
+                Assert.assertEquals(experienceManager.getLevelColor(i, j), LEVEL_COLOR[i - 1][j - 1]);
+            }
+        }
     }
 }

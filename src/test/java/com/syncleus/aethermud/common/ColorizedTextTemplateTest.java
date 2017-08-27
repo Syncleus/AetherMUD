@@ -37,31 +37,26 @@ import java.util.function.Consumer;
 
 public class ColorizedTextTemplateTest {
 
+    private static final String EXPECTED_FIGHT_MESSAGE = "\u001B[1m\u001B[31m[attack] \u001B[0m\u001B[33mThe worm wobbler was caught off guard by the attack! +12\u001B[0m\u001B[1m\u001B[31m DAMAGE\u001B[0m done to worm wobbler";
+    private static final String EXPECTED_LOOT = "{\n  \"internalItemNames\": [\n    \"beserker baton\",\n    \"bersker boots\"\n  ],\n  \"lootGoldMax\": 28,\n  \"lootGoldMin\": 16\n}";
 
     @Test
     public void testConversion() throws Exception {
-
-        final String fightMsg =
-                Color.BOLD_ON + Color.RED + "[attack] "
-                        + Color.RESET + Color.YELLOW + "The " + "worm wobbler" + " was caught off guard by the attack! " + "+" +
-                        NumberFormat.getNumberInstance(Locale.US).format(12) +
-                        Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + "worm wobbler";
-
-        String test = "@c-bold-on@" + "@c-red@" + "[attack] " + "@c-reset@" + "@c-yellow@" + "The " + "@npc-name@" + " was caught off guard by the attack! " + "+" + "@damage-done@" + "@c-reset@" + "@c-bold-on@" + "@c-red@" + " DAMAGE" + "@c-reset@" + " done to " + "@npc-name@";
+        String templateLanguageText = "@c-bold-on@" + "@c-red@" + "[attack] " + "@c-reset@" + "@c-yellow@" + "The " + "@npc-name@" + " was caught off guard by the attack! " + "+" + "@damage-done@" + "@c-reset@" + "@c-bold-on@" + "@c-red@" + " DAMAGE" + "@c-reset@" + " done to " + "@npc-name@";
 
         HashMap<String, String> variableMap = Maps.newHashMap();
 
         variableMap.put("npc-name", "worm wobbler");
         variableMap.put("damage-done", String.valueOf(12));
 
-        String render = ColorizedTextTemplate.renderFromTemplateLanguage(variableMap, test);
+        String render = ColorizedTextTemplate.renderFromTemplateLanguage(variableMap, templateLanguageText);
 
-        Assert.assertTrue(render.equals(fightMsg));
+        //System.out.println(org.apache.commons.lang.StringEscapeUtils.escapeJava(render));
+        Assert.assertEquals(EXPECTED_FIGHT_MESSAGE, render);
 
         String s = ColorizedTextTemplate.renderToTemplateLanguage(variableMap, render);
 
-        Assert.assertTrue(s.equals(test));
-
+        Assert.assertEquals(templateLanguageText, s);
     }
 
     @Test
@@ -75,10 +70,11 @@ public class ColorizedTextTemplateTest {
 
         List<NpcMetadata> npcMetadata = npcStorage.getNpcMetadatas();
 
+        Assert.assertFalse(npcMetadata.isEmpty());
+
         npcMetadata.forEach(new Consumer<NpcMetadata>() {
             @Override
             public void accept(NpcMetadata npcMetadata) {
-                System.out.println(npcMetadata.getColorName());
                 try {
                     npcStorage.saveNpcMetadata(npcMetadata);
                 } catch (IOException e) {
@@ -120,11 +116,11 @@ public class ColorizedTextTemplateTest {
 //            }
 //        });
 
-        String green = Color.GREEN;
-        String test = "\u001b[32m";
+//        String green = Color.GREEN;
+//        String test = "\u001b[32m";
 
 
-        System.out.printf("u");
+//        System.out.printf("u");
     }
 
     @Test
@@ -190,8 +186,8 @@ public class ColorizedTextTemplateTest {
 
         Loot loot = new Loot(16, 28, Sets.newHashSet("beserker baton", "bersker boots"));
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    String s = gson.toJson(loot);
-        System.out.println(s);
+        String s = gson.toJson(loot);
+        Assert.assertEquals(EXPECTED_LOOT, s);
     }
 
 }

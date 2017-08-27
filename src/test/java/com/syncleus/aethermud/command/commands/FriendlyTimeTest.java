@@ -16,19 +16,23 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.common.FriendlyTime;
+import org.junit.Assert;
 import org.junit.Test;
 
 
 public class FriendlyTimeTest {
+    private static final long RAW_TIME = 400;
+    private static final String EXPECTED_FRIENDLY_TIME = "6 minutes and 40 seconds";
+    private static final String EXPECTED_FRIENDLY_TIME_SHORT = "6m40s";
 
     @Test
     public void testFriendlyParsing() throws Exception {
 
-        FriendlyTime friendlyTime = new FriendlyTime(400);
+        FriendlyTime friendlyTime = new FriendlyTime(RAW_TIME);
 
-        System.out.println("Friendly Long: " + friendlyTime.getFriendlyFormatted());
+        Assert.assertEquals(EXPECTED_FRIENDLY_TIME, friendlyTime.getFriendlyFormatted());
 
-        System.out.println("Friendly Short: " + friendlyTime.getFriendlyFormattedShort());
+        Assert.assertEquals(EXPECTED_FRIENDLY_TIME_SHORT, friendlyTime.getFriendlyFormattedShort());
     }
 
 }

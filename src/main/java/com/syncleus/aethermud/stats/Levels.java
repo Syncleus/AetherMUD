@@ -32,4 +32,8 @@ public class Levels {
         return (long) Math.ceil(v);
     }
 
+    public static long getXp(long fromLevel, long toLevel) {
+        return getXp(toLevel) - getXp(fromLevel);
+    }
+
 }

@@ -27,11 +27,13 @@ import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AetherMudUtilsTest {
+
+    private static final String EXPECTED_COMBINED_STRING = "\u001B[35m-+=[ \u001B[musertest\u001B[35m ]=+- \u001B[m                   | \u001B[35m-+=[ \u001B[musertest\u001B[35m ]=+- \u001B[m                  \r\nLevel 0 \u001B[33m[\u001B[mBasic\u001B[33m]\u001B[m                       | Level 0 \u001B[33m[\u001B[mBasic\u001B[33m]\u001B[m                      \r\nForaging Level 0                      | Foraging Level 0                     \r\n\u001B[35mEquip--------------------------------\u001B[m | \u001B[35mEquip--------------------------------\u001B[m\r\nHand                                  | Hand                                 \r\nHead                                  | Head                                 \r\nFeet                                  | Feet                                 \r\nLegs                                  | Legs                                 \r\nWrists                                | Wrists                               \r\nChest                                 | Chest                                \r\nBag                                   | Bag                                  \r\n\u001B[35mStats--------------------------------\u001B[m | \u001B[35mStats--------------------------------\u001B[m\r\nnull                                  | null                                 \r\n";
 
     @Test
     public void testCombineStrings() throws Exception {
@@ -68,19 +72,17 @@ public class AetherMudUtilsTest {
         when(playerManager.getPlayerMetadata(Matchers.any())).thenReturn(java.util.Optional.ofNullable(playerMetadata));
         when(gameManager.getPlayerManager()).thenReturn(playerManager);
         EntityManager entityManager = mock(EntityManager.class);
-//        when(entityManager.getItemEntity(Matchers.startsWith("feet"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSEKER_BOOTS.create()));
-//        when(entityManager.getItemEntity(Matchers.startsWith("hand"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSERKER_BATON.create()));
         when(gameManager.getEntityManager()).thenReturn(entityManager);
         Player usertest = new Player("usertest", gameManager);
 
+//        when(entityManager.getItemEntity(Matchers.startsWith("feet"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSEKER_BOOTS.create()));
+//        when(entityManager.getItemEntity(Matchers.startsWith("hand"))).thenReturn(java.util.Optional.ofNullable(ItemType.BERSERKER_BATON.create()));
+        when(gameManager.getEntityManager().getItemEntity("feet")).thenReturn(Optional.empty());
+        when(gameManager.getEntityManager().getItemEntity("hand")).thenReturn(Optional.empty());
         String s = AetherMudUtils.printStringsNextToEachOther(Lists.newArrayList(usertest.getLookString(), usertest.getLookString()), " | ");
 
-        System.out.println(s);
-
-
-        // System.out.println(usertest.getLookString().replaceAll("\u001B\\[[;\\d]*m", " | "));
-
-
+        //System.out.println(org.apache.commons.lang.StringEscapeUtils.escapeJava(s));
+        Assert.assertEquals(s, EXPECTED_COMBINED_STRING);
     }
 
     @Test
@@ -96,9 +98,6 @@ public class AetherMudUtilsTest {
                     .map(convertCardFormats())
                     .collect(Collectors.toSet());
             Hand hand = new Hand(collect);
-            if (i % 10000 == 0) {
-                System.out.println("Attempt: " + i);
-            }
             HashSet<Hand.Card> compareHand = Sets.newHashSet();
             compareHand.add(Hand.Card.FOUR_SPADES);
             compareHand.add(Hand.Card.FIVE_SPADES);
@@ -108,7 +107,6 @@ public class AetherMudUtilsTest {
             Hand benchmark = new Hand(compareHand);
             int i1 = benchmark.compareTo(hand);
             if (benchmark.compareTo(hand) == 0) {
-                System.out.println("It took " + i + " attempts to beat svens hand.");
                 break;
             }
         }
