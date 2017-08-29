@@ -43,7 +43,7 @@ public class DepositCommand extends BankCommand {
         configure(e);
         try {
             if (originalMessageParts.size() > 1 && NumberUtils.isNumber(originalMessageParts.get(1))) {
-                long depositAmt = Long.parseLong(originalMessageParts.get(1));
+                int depositAmt = Integer.parseInt(originalMessageParts.get(1));
                 if (areFundsAvailable(depositAmt)) {
                     player.transferGoldToBank(depositAmt);
                     write("Your funds of " + NumberFormat.getNumberInstance(Locale.US).format(depositAmt) + Color.YELLOW + " gold " + Color.RESET + "have been transferred to your bank account."+ "\r\n");

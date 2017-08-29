@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.player;
 
 import com.syncleus.aethermud.core.SessionManager;
-import com.syncleus.aethermud.storage.MapDBAetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.collect.Sets;
 import org.junit.Assert;
@@ -46,8 +46,8 @@ public class PlayerManagerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         DB db = DBMaker.memoryDB().transactionEnable().make();
-        MapDBAetherMudStorage mapDBCreeperStorage = new MapDBAetherMudStorage(db);
-        playerManager = new PlayerManager(mapDBCreeperStorage, sessionManager);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, false);
+        playerManager = new PlayerManager(graphStorage, sessionManager);
     }
 
     @Test

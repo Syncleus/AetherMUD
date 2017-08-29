@@ -195,7 +195,7 @@ public class Player extends AetherMudEntity {
                     return;
                 }
                 PlayerMetadata playerMetadata = playerMetadataOptional.get();
-                long newGold = playerMetadata.getGold() / 2;
+                int newGold = playerMetadata.getGold() / 2;
                 playerMetadata.setGold(newGold);
                 gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
                 if (newGold > 0) {
@@ -340,7 +340,7 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public void transferGoldToBank(long amt) {
+    public void transferGoldToBank(int amt) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
@@ -352,7 +352,7 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public void transferBankGoldToPlayer(long amt) {
+    public void transferBankGoldToPlayer(int amt) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
@@ -364,7 +364,7 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public void incrementGold(long amt) {
+    public void incrementGold(int amt) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerMetadata> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {

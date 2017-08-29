@@ -30,8 +30,8 @@ import com.syncleus.aethermud.player.PlayerManagementManager;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.server.communication.ChannelUtils;
 import com.syncleus.aethermud.server.telnet.AetherMudServer;
-import com.syncleus.aethermud.storage.MapDBAetherMudStorage;
 import com.syncleus.aethermud.storage.WorldStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.io.Files;
@@ -90,11 +90,11 @@ public class Main {
                 .closeOnJvmShutdown()
                 .make();
 
-        MapDBAetherMudStorage mapDBCreeperStorage = new MapDBAetherMudStorage(db);
-        mapDBCreeperStorage.startAsync();
-        mapDBCreeperStorage.awaitRunning();
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db);
+        graphStorage.startAsync();
+        graphStorage.awaitRunning();
 
-        PlayerManager playerManager = new PlayerManager(mapDBCreeperStorage, new SessionManager());
+        PlayerManager playerManager = new PlayerManager(graphStorage, new SessionManager());
         playerManager.createAllGauges();
 
         RoomManager roomManager = new RoomManager(playerManager);
@@ -102,8 +102,8 @@ public class Main {
         startUpMessage("Configuring core systems.");
         MapsManager mapsManager = new MapsManager(aetherMudConfiguration, roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
-        EntityManager entityManager = new EntityManager(mapDBCreeperStorage, roomManager, playerManager);
-        GameManager gameManager = new GameManager(mapDBCreeperStorage, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
+        EntityManager entityManager = new EntityManager(graphStorage, roomManager, playerManager);
+        GameManager gameManager = new GameManager(graphStorage, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
 
         startUpMessage("Reading world from disk.");
         WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);

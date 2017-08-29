@@ -64,27 +64,27 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public long getGold() {
+    public int getGold() {
         Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
         if (!playerMetadataOptional.isPresent()){
-            return 0L;
+            return 0;
         }
         PlayerMetadata playerMetadata = playerMetadataOptional.get();
         return playerMetadata.getGold();
     }
 
     @Override
-    public long getGoldInBankAmount() {
+    public int getGoldInBankAmount() {
         Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
         if (!playerMetadataOptional.isPresent()){
-            return 0L;
+            return 0;
         }
         PlayerMetadata playerMetadata = playerMetadataOptional.get();
         return playerMetadata.getGoldInBank();
     }
 
     @Override
-    public void setGoldInBankAmount(long amt) {
+    public void setGoldInBankAmount(int amt) {
         synchronized (findInterner().intern(playerId)) {
             Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()){
@@ -97,7 +97,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public void setGold(long amt) {
+    public void setGold(int amt) {
         synchronized (findInterner().intern(playerId)) {
             Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()){

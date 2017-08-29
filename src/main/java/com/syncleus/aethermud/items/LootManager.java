@@ -33,8 +33,8 @@ public class LootManager {
 
     private final Random  random = new Random();
 
-    private long randInt(long min, long max) {
-        return JVMRandom.nextLong((max - min) + 1) + min;
+    private int randInt(int min, int max) {
+        return (int) JVMRandom.nextLong((max - min) + 1) + min;
     }
 
     public boolean lootDropSuccess(double percent) {
@@ -44,7 +44,7 @@ public class LootManager {
         return randomValue <= percent;
     }
 
-    public long lootGoldAmountReturn(Loot loot) {
+    public int lootGoldAmountReturn(Loot loot) {
         return randInt(loot.getLootGoldMin(), loot.getLootGoldMax());
     }
 

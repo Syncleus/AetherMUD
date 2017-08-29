@@ -34,8 +34,8 @@ public class PlayerMetadata implements Serializable {
     private Stats stats;
     private List<String> inventory;
     private List<String> lockerInventory;
-    private long gold;
-    private long goldInBank;
+    private int gold;
+    private int goldInBank;
     private Set<PlayerRole> playerRoleSet;
     private String[] playerEquipment;
     private List<Effect> effects;
@@ -86,8 +86,8 @@ public class PlayerMetadata implements Serializable {
         if (playerMetadata.lockerInventory != null) {
             this.lockerInventory = Lists.newArrayList(playerMetadata.getLockerInventory());
         }
-        this.gold = new Long(playerMetadata.gold);
-        this.goldInBank = new Long(playerMetadata.goldInBank);
+        this.gold = new Integer(playerMetadata.gold);
+        this.goldInBank = new Integer(playerMetadata.goldInBank);
         if (playerMetadata.playerRoleSet != null) {
             this.playerRoleSet = Sets.newConcurrentHashSet(playerMetadata.playerRoleSet);
         }
@@ -256,11 +256,11 @@ public class PlayerMetadata implements Serializable {
         return stats;
     }
 
-    public long getGold() {
+    public int getGold() {
         return gold;
     }
 
-    public long getGoldInBank() {
+    public int getGoldInBank() {
         return goldInBank;
     }
 
@@ -275,24 +275,24 @@ public class PlayerMetadata implements Serializable {
         return npcKillLog;
     }
 
-    protected void setGold(long amt) {
+    protected void setGold(int amt) {
         this.gold = amt;
     }
 
-    protected void setGoldInBank(long amt) {
+    protected void setGoldInBank(int amt) {
         this.goldInBank = amt;
     }
 
-    protected void incrementGold(long amt) {
+    protected void incrementGold(int amt) {
         this.gold = gold + amt;
     }
 
-    protected void transferGoldToBank(long amt) {
+    protected void transferGoldToBank(int amt) {
         this.gold = gold - amt;
         this.goldInBank = goldInBank + amt;
     }
 
-    protected void transferBankGoldToPlayer(long amt) {
+    protected void transferBankGoldToPlayer(int amt) {
         this.goldInBank = goldInBank - amt;
         this.gold = gold + amt;
     }

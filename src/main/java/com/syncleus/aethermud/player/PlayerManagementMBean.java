@@ -23,13 +23,13 @@ public interface PlayerManagementMBean {
 
     boolean getMarkForDelete();
 
-    long getGold();
+    int getGold();
 
-    long getGoldInBankAmount();
+    int getGoldInBankAmount();
 
-    void setGoldInBankAmount(long amt);
+    void setGoldInBankAmount(int amt);
 
-    void setGold(long amt);
+    void setGold(int amt);
 
     long getHealth();
 

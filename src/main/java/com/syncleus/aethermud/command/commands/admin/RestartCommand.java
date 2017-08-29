@@ -54,8 +54,8 @@ public class RestartCommand extends Command {
                     "88         \"8b,   ,aa 88b,   ,a8\" \"8a,   ,a8\" \"8a,   ,a8\"  88,    \n" +
                     "88          `\"Ybbd8\"' 8Y\"Ybbd8\"'   `\"YbbdP\"'   `\"YbbdP\"'   \"Y888  \n" +
                     "                                                                  "));
-            gameManager.getMapDBCreeperStorage().stopAsync();
-            gameManager.getMapDBCreeperStorage().awaitTerminated();
+            gameManager.getGraphStorage().stopAsync();
+            gameManager.getGraphStorage().awaitTerminated();
             System.exit(0);
         });
     }

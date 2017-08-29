@@ -19,6 +19,7 @@ package com.syncleus.aethermud.storage;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.player.PlayerMetadata;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 

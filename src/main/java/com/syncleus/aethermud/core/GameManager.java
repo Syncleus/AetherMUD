@@ -42,6 +42,7 @@ import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.syncleus.aethermud.storage.*;
+import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.world.FloorManager;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
@@ -106,7 +107,7 @@ public class GameManager {
     private final HttpClient httpclient;
     private final Gson gson;
     private final FilebasedJsonStorage filebasedJsonStorage;
-    private final MapDBAetherMudStorage mapDBCreeperStorage;
+    private final GraphDbAetherMudStorage graphStorage;
 
     public MerchantStorage getMerchantStorage() {
         return merchantStorage;
@@ -115,8 +116,8 @@ public class GameManager {
     private final MerchantStorage merchantStorage;
 
 
-    public GameManager(MapDBAetherMudStorage mapDBCreeperStorage, AetherMudConfiguration aetherMudConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
-        this.mapDBCreeperStorage = mapDBCreeperStorage;
+    public GameManager(GraphDbAetherMudStorage graphStorage, AetherMudConfiguration aetherMudConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
+        this.graphStorage = graphStorage;
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
@@ -151,8 +152,8 @@ public class GameManager {
         this.httpclient = httpClient;
     }
 
-    public MapDBAetherMudStorage getMapDBCreeperStorage() {
-        return mapDBCreeperStorage;
+    public GraphDbAetherMudStorage getGraphStorage() {
+        return graphStorage;
     }
 
     public Gson getGson() {

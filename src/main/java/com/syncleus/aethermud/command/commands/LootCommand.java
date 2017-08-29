@@ -46,7 +46,7 @@ public class LootCommand extends Command {
                     if (item.getInternalItemName().equals(Item.CORPSE_INTENAL_NAME)) {
                         Loot loot = item.getLoot();
                         if (loot != null) {
-                            long gold = lootManager.lootGoldAmountReturn(loot);
+                            int gold = lootManager.lootGoldAmountReturn(loot);
                             if (gold > 0) {
                                 write("You looted " + NumberFormat.getNumberInstance(Locale.US).format(gold) + Color.YELLOW + " gold" + Color.RESET + " from a " + item.getItemName() + ".\r\n");
                                 player.incrementGold(gold);

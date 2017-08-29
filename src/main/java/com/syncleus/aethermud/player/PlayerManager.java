@@ -136,9 +136,9 @@ public class PlayerManager {
         String guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "gold");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(guageName,
-                    (Gauge<Long>) () -> {
+                    (Gauge<Integer>) () -> {
                         Optional<PlayerMetadata> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerMetadata::getGold).orElse(0L);
+                        return playerMetadataOpt.map(PlayerMetadata::getGold).orElse(0);
                     });
         }
 
