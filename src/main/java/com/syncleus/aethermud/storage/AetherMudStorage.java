@@ -17,19 +17,18 @@ package com.syncleus.aethermud.storage;
 
 
 import com.syncleus.aethermud.items.Item;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
 public interface AetherMudStorage {
 
-    void savePlayerMetadata(PlayerMetadata playerMetadata);
+    PlayerData newPlayerData();
 
-    Optional<PlayerMetadata> getPlayerMetadata(String playerId);
+    Optional<PlayerData> getPlayerMetadata(String playerId);
 
-    Map<String, PlayerMetadata> getAllPlayerMetadata();
+    Map<String, PlayerData> getAllPlayerMetadata();
 
     void removePlayerMetadata(String playerId);
 
@@ -38,4 +37,6 @@ public interface AetherMudStorage {
     Optional<Item> getItemEntity(String itemId);
 
     void removeItem(String itemId);
+
+    void persist();
 }

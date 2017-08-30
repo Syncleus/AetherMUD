@@ -18,7 +18,7 @@ package com.syncleus.aethermud.command.commands;
 import com.codahale.metrics.Meter;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.stats.Levels;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -48,13 +48,13 @@ public class XpCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(player.getPlayerId());
+            Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(player.getPlayerId());
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
-            PlayerMetadata playerMetadata = playerMetadataOptional.get();
-            long nextLevel = Levels.getLevel(playerMetadata.getStats().getExperience()) + 1;
-            long expToNextLevel = Levels.getXp(nextLevel) - playerMetadata.getStats().getExperience();
+            PlayerData playerData = playerMetadataOptional.get();
+            long nextLevel = Levels.getLevel(playerData.getStats().getExperience()) + 1;
+            long expToNextLevel = Levels.getXp(nextLevel) - playerData.getStats().getExperience();
             Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
 
             Table table = new Table(2, BorderStyle.CLASSIC_COMPATIBLE, ShownBorders.NONE);

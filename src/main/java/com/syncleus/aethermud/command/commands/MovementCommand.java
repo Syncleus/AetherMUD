@@ -18,7 +18,7 @@ package com.syncleus.aethermud.command.commands;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.player.CoolDownType;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.player.PlayerMovement;
 import com.syncleus.aethermud.world.model.RemoteExit;
 import com.syncleus.aethermud.world.model.Room;
@@ -64,7 +64,7 @@ public class MovementCommand extends Command {
                 MovementCommand.this.write("You are unable to progress, but can return to where you came from by typing \"back\".");
                 return;
             }
-            java.util.Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
+            java.util.Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }

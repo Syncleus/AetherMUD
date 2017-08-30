@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.merchant.lockers;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -37,11 +37,11 @@ public class QueryCommand extends LockerCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
             configure(e);
-            Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
-            PlayerMetadata playerMetadata = playerMetadataOptional.get();
+            PlayerData playerData = playerMetadataOptional.get();
             write("----LOCKER ITEMS\r\n");
             for (String rolledUpInvLine: player.getRolledUpLockerInventory()) {
                 write(rolledUpInvLine);;

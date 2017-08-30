@@ -18,7 +18,7 @@ package com.syncleus.aethermud.server.auth;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import org.jboss.netty.channel.Channel;
 
@@ -34,12 +34,12 @@ public class GameAuth implements AetherMudAuthenticator {
 
     @Override
     public boolean authenticateAndRegisterPlayer(String username, String password, Channel channel) {
-        Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
+        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
         if (!playerMetadataOptional.isPresent()) {
             return false;
         }
-        PlayerMetadata playerMetadata = playerMetadataOptional.get();
-        if (!playerMetadata.getPassword().equals(password)) {
+        PlayerData playerData = playerMetadataOptional.get();
+        if (!playerData.getPassword().equals(password)) {
             return false;
         }
         Room currentRoom = null;

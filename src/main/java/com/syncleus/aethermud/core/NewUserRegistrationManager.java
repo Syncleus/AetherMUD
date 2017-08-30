@@ -23,11 +23,14 @@ import com.syncleus.aethermud.stats.DefaultStats;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.MessageEvent;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class NewUserRegistrationManager {
@@ -66,7 +69,7 @@ public class NewUserRegistrationManager {
     private boolean setDesiredUsername(CreeperSession session, MessageEvent e) {
         String name = (String) e.getMessage();
         String username = name.replaceAll("[^a-zA-Z0-9]", "");
-        java.util.Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
+        java.util.Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
         if (!isValidUsername(username)) {
             e.getChannel().write("Username is in invalid.\r\n");
             return false;
@@ -96,24 +99,31 @@ public class NewUserRegistrationManager {
         ConcurrentMap<CoolDownType, CoolDown> cooldowns = Maps.newConcurrentMap();
         CoolDown newbieCoolDown = new CoolDown(CoolDownType.NEWBIE);
         cooldowns.put(newbieCoolDown.getCoolDownType(), newbieCoolDown);
-        PlayerMetadata playerMetadata = new PlayerMetadata(
-                session.getUsername().get(),
-                session.getPassword().get(),
-                Main.createPlayerId(session.getUsername().get()),
-                DefaultStats.DEFAULT_PLAYER.createStats(),
-                0, Sets.newHashSet(PlayerRole.MORTAL),
-                new String[0],
-                0,
-                new String[0],
-                Maps.newHashMap(),
-                PlayerClass.BASIC,
-                cooldowns,
-                null);
-        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+
+        PlayerData playerData = gameManager.getPlayerManager().newPlayerData();
+        playerData.setNpcKillLog(new HashMap<>());
+        playerData.setCoolDowns(cooldowns);
+        playerData.setEffects(new ArrayList<>());
+        playerData.setGold(0);
+        playerData.setGoldInBank(0);
+        playerData.setInventory(new ArrayList<>());
+        playerData.setLearnedSpells(new ArrayList<>());
+        playerData.setLockerInventory(new ArrayList<>());
+        playerData.setIsMarkedForDelete(false);
+        playerData.setPlayerName(session.getUsername().get());
+        playerData.setPassword(session.getPassword().get());
+        playerData.setPlayerClass(PlayerClass.BASIC);
+        playerData.setPlayerEquipment(new ArrayList<>());
+        playerData.setPlayerId(Main.createPlayerId(session.getUsername().get()));
+        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
+        playerData.setPlayerSettings(new HashMap<>());
+        playerData.setStats(DefaultStats.DEFAULT_PLAYER.createStats());
+        gameManager.getPlayerManager().persist();
+
         messageEvent.getChannel().write("User created.\r\n");
         session.setState(CreeperSession.State.newUserRegCompleted);
         try {
-            PlayerManagementManager.registerPlayer(playerMetadata.getPlayerName(), playerMetadata.getPlayerId(), gameManager);
+            PlayerManagementManager.registerPlayer(playerData.getPlayerName(), playerData.getPlayerId(), gameManager);
         } catch (Exception e) {
             log.error("Problem registering new player in the MBean server!");
         }

@@ -18,7 +18,6 @@ package com.syncleus.aethermud.storage.graphdb;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.items.Item;
-import com.syncleus.aethermud.player.PlayerMetadata;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.EffectSerializer;
@@ -28,7 +27,6 @@ import com.syncleus.ferma.DelegatingFramedGraph;
 import com.syncleus.ferma.FramedGraph;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerFactory;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -85,42 +83,32 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
     }
 
     @Override
-    public void savePlayerMetadata(PlayerMetadata playerMetadata){
+    public PlayerData newPlayerData(){
+        PlayerData playerData = framedGraph.addFramedVertex(PlayerData.class);
+
         // TODO : remove this, not all players should be admins
-        playerMetadata.getPlayerRoleSet().add(PlayerRole.ADMIN);
-        playerMetadata.getPlayerRoleSet().add(PlayerRole.GOD);
-        playerMetadata.getPlayerRoleSet().add(PlayerRole.TELEPORTER);
+        Set<PlayerRole> roles = new HashSet<>(3);
+        roles.add(PlayerRole.ADMIN);
+        roles.add(PlayerRole.GOD);
+        roles.add(PlayerRole.TELEPORTER);
+        playerData.setPlayerRoleSet(roles);
 
-        PlayerData data = this.framedGraph.addFramedVertex(PlayerData.class);
-        copyFromPojo(data, playerMetadata);
-
-        if (this.autoPersist) {
-            try {
-                graph.io(IoCore.graphson()).writeGraph(DEFAULT_FLAT_FILE);
-            } catch (IOException e) {
-                throw new IllegalStateException("Could not write to graph file.", e);
-            }
-        }
+        return playerData;
     }
 
     @Override
-    public Optional<PlayerMetadata> getPlayerMetadata(String playerId) {
+    public Optional<PlayerData> getPlayerMetadata(String playerId) {
         final PlayerData data = framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V().has("playerId", playerId), PlayerData.class)).nextOrDefault(PlayerData.class, null);
-        if( data != null ) {
-            final PlayerMetadata playerMetadata = new PlayerMetadata(data.getName(), data.getPassword(), data.getPlayerId(), data.getStats(), data.getGold(), data.getPlayerRoleSet(), data.getPlayerEquipment(), data.getGoldInBank(), (String[]) data.getLearnedSpells().toArray(), data.getNpcKillLog(), data.getPlayerClass(), data.getCoolDowns(), data.getCurrentRoomId());
-            return Optional.ofNullable(playerMetadata);
-        }
-        else
-            return Optional.empty();
+        return Optional.ofNullable(data);
     }
 
     @Override
-    public Map<String, PlayerMetadata> getAllPlayerMetadata() {
+    public Map<String, PlayerData> getAllPlayerMetadata() {
         final List<? extends PlayerData> datas = framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), PlayerData.class)).toList(PlayerData.class);
         System.out.println("Count: " + datas.size());
-        final Map<String, PlayerMetadata> retVal = new HashMap<>(datas.size());
+        final Map<String, PlayerData> retVal = new HashMap<>(datas.size());
         for( PlayerData data : datas ) {
-            retVal.put(data.getPlayerId(), convertToPojo(data));
+            retVal.put(data.getPlayerId(), data);
         }
         return retVal;
     }
@@ -131,11 +119,7 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
         data.remove();
 
         if (this.autoPersist) {
-            try {
-                graph.io(IoCore.graphson()).writeGraph(DEFAULT_FLAT_FILE);
-            } catch (IOException e) {
-                throw new IllegalStateException("Could not write to graph file.", e);
-            }
+            this.persist();
         }
     }
 
@@ -155,6 +139,15 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
     }
 
     @Override
+    public void persist() {
+        try {
+            graph.io(IoCore.graphson()).writeGraph(DEFAULT_FLAT_FILE);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not write to graph file.", e);
+        }
+    }
+
+    @Override
     protected void startUp() throws Exception {
         mapDbAutoCommitService.startAsync();
     }
@@ -164,31 +157,5 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
         mapDbAutoCommitService.stopAsync();
         mapDbAutoCommitService.awaitTerminated();
         db.commit();
-    }
-
-    private static PlayerMetadata convertToPojo(PlayerData data) {
-        return new PlayerMetadata(data.getName(), data.getPassword(), data.getPlayerId(), data.getStats(), data.getGold(), data.getPlayerRoleSet(), data.getPlayerEquipment(), data.getGoldInBank(), (String[]) data.getLearnedSpells().toArray(), data.getNpcKillLog(), data.getPlayerClass(), data.getCoolDowns(), data.getCurrentRoomId());
-    }
-
-    private static void copyFromPojo(PlayerData data, PlayerMetadata playerMetadata) {
-        data.setNpcKillLog(playerMetadata.getNpcKillLog());
-        data.setCoolDowns(playerMetadata.getCoolDownMap());
-        if( playerMetadata.getCurrentRoomId() != null )
-            data.setCurrentRoomId(playerMetadata.getCurrentRoomId());
-        data.setEffects(playerMetadata.getEffects());
-        data.setGold(playerMetadata.getGold());
-        data.setGoldInBank(playerMetadata.getGoldInBank());
-        data.setInventory(playerMetadata.getInventory());
-        data.setLearnedSpells(Arrays.asList(playerMetadata.getLearnedSpells()));
-        data.setLockerInventory(playerMetadata.getLockerInventory());
-        data.setMarkedForDelete(playerMetadata.isMarkedForDelete());
-        data.setName(playerMetadata.getPlayerName());
-        data.setPassword(playerMetadata.getPassword());
-        data.setPlayerClass(playerMetadata.getPlayerClass());
-        data.setPlayerEquipment(playerMetadata.getPlayerEquipment());
-        data.setPlayerId(playerMetadata.getPlayerId());
-        data.setPlayerRoleSet(playerMetadata.getPlayerRoleSet());
-        data.setPlayerSettings(playerMetadata.getPlayerSettings());
-        data.setStats(playerMetadata.getStats());
     }
 }

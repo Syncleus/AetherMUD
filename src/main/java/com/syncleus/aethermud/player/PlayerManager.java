@@ -21,6 +21,7 @@ import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.AetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.commons.codec.binary.Base64;
 
@@ -47,8 +48,12 @@ public class PlayerManager {
         return sessionManager;
     }
 
-    public void savePlayerMetadata(PlayerMetadata playerMetadata) {
-        aetherMudStorage.savePlayerMetadata(playerMetadata);
+    public PlayerData newPlayerData() {
+        return aetherMudStorage.newPlayerData();
+    }
+
+    public void persist() {
+        this.aetherMudStorage.persist();
     }
 
     public Player addPlayer(Player player) {
@@ -94,7 +99,7 @@ public class PlayerManager {
     }
 
     public boolean hasRole(Player player, PlayerRole playerRole) {
-        Optional<PlayerMetadata> playerMetadata = getPlayerMetadata(player.getPlayerId());
+        Optional<PlayerData> playerMetadata = getPlayerMetadata(player.getPlayerId());
         if (!playerMetadata.isPresent()) {
             return false;
         }
@@ -102,13 +107,12 @@ public class PlayerManager {
         return playerRoleSet != null && playerMetadata.get().getPlayerRoleSet().contains(playerRole);
     }
 
-    public Optional<PlayerMetadata> getPlayerMetadata(String playerId) {
-        Optional<PlayerMetadata> playerMetadataOptional = aetherMudStorage.getPlayerMetadata(playerId);
-        return playerMetadataOptional.map(PlayerMetadata::new);
+    public Optional<PlayerData> getPlayerMetadata(String playerId) {
+        return aetherMudStorage.getPlayerMetadata(playerId);
     }
 
     public boolean hasAnyOfRoles(Player player, Set<PlayerRole> checkRoles) {
-        Optional<PlayerMetadata> playerMetadata = getPlayerMetadata(player.getPlayerId());
+        Optional<PlayerData> playerMetadata = getPlayerMetadata(player.getPlayerId());
         if (!playerMetadata.isPresent()) {
             return false;
         }
@@ -126,37 +130,37 @@ public class PlayerManager {
     }
 
     public void createAllGauges() {
-        for (Map.Entry<String, PlayerMetadata> next : aetherMudStorage.getAllPlayerMetadata().entrySet()) {
+        for (Map.Entry<String, PlayerData> next : aetherMudStorage.getAllPlayerMetadata().entrySet()) {
             createGauges(next.getValue());
         }
     }
 
-    public void createGauges(final PlayerMetadata playerMetadata) {
-        String playerId = playerMetadata.getPlayerId();
-        String guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "gold");
+    public void createGauges(final PlayerData playerData) {
+        String playerId = playerData.getPlayerId();
+        String guageName = name(PlayerManager.class, playerData.getPlayerName(), "gold");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(guageName,
                     (Gauge<Integer>) () -> {
-                        Optional<PlayerMetadata> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerMetadata::getGold).orElse(0);
+                        Optional<PlayerData> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
+                        return playerMetadataOpt.map(PlayerData::getGold).orElse(0);
                     });
         }
 
-        guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health");
+        guageName = name(PlayerManager.class, playerData.getPlayerName(), "current-health");
         if (!doesGaugeExist(guageName)) {
-            Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "current-health"),
+            Main.metrics.register(name(PlayerManager.class, playerData.getPlayerName(), "current-health"),
                     (Gauge<Long>) () -> {
-                        Optional<PlayerMetadata> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerMetadata::getStats).map(Stats::getCurrentHealth).orElse(0L);
+                        Optional<PlayerData> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
+                        return playerMetadataOpt.map(PlayerData::getStats).map(Stats::getCurrentHealth).orElse(0L);
                     });
         }
 
-        guageName = name(PlayerManager.class, playerMetadata.getPlayerName(), "xp");
+        guageName = name(PlayerManager.class, playerData.getPlayerName(), "xp");
         if (!doesGaugeExist(guageName)) {
-            Main.metrics.register(name(PlayerManager.class, playerMetadata.getPlayerName(), "xp"),
+            Main.metrics.register(name(PlayerManager.class, playerData.getPlayerName(), "xp"),
                     (Gauge<Long>) () -> {
-                        Optional<PlayerMetadata> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerMetadata::getStats).map(Stats::getExperience).orElse(0L);
+                        Optional<PlayerData> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
+                        return playerMetadataOpt.map(PlayerData::getStats).map(Stats::getExperience).orElse(0L);
                     });
         }
     }
@@ -165,7 +169,7 @@ public class PlayerManager {
         return Main.metrics.getGauges().containsKey(name);
     }
 
-    public Map<String, PlayerMetadata> getPlayerMetadataStore() {
+    public Map<String, PlayerData> getPlayerMetadataStore() {
         return aetherMudStorage.getAllPlayerMetadata();
     }
 }

@@ -16,6 +16,7 @@
 package com.syncleus.aethermud.player;
 
 import com.syncleus.aethermud.core.GameManager;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import org.apache.log4j.Logger;
 
 import javax.management.*;
@@ -34,30 +35,30 @@ public class PlayerManagementManager {
     }
 
     public void createAndRegisterAllPlayerManagementMBeans() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
-        Set<Map.Entry<String, PlayerMetadata>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
-        for (Map.Entry<String, PlayerMetadata> entry : entrySet) {
+        Set<Map.Entry<String, PlayerData>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
+        for (Map.Entry<String, PlayerData> entry : entrySet) {
             registerPlayer(entry.getValue().getPlayerName(), entry.getValue().getPlayerId(), gameManager);
         }
     }
 
     public void processPlayersMarkedForDeletion(){
-        Set<Map.Entry<String, PlayerMetadata>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
-        for (Map.Entry<String, PlayerMetadata> entry : entrySet) {
+        Set<Map.Entry<String, PlayerData>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
+        for (Map.Entry<String, PlayerData> entry : entrySet) {
             String playerId = entry.getKey();
-            PlayerMetadata playerMetadata = entry.getValue();
-            if (playerMetadata.isMarkedForDelete()) {
-                if (playerMetadata.getInventory() != null) {
-                    for (String itemId : playerMetadata.getInventory()) {
+            PlayerData playerData = entry.getValue();
+            if (playerData.isMarkedForDelete()) {
+                if (playerData.getInventory() != null) {
+                    for (String itemId : playerData.getInventory()) {
                         gameManager.getEntityManager().removeItem(itemId);
-                        log.info("Removed itemId from " + playerMetadata.getPlayerName() + "'s inventory: " + itemId);
+                        log.info("Removed itemId from " + playerData.getPlayerName() + "'s inventory: " + itemId);
                     }
-                    for (String itemId : playerMetadata.getLockerInventory()) {
+                    for (String itemId : playerData.getLockerInventory()) {
                         gameManager.getEntityManager().removeItem(itemId);
-                        log.info("Removed itemId from " + playerMetadata.getPlayerName() + "'s locker inventory: " + itemId);
+                        log.info("Removed itemId from " + playerData.getPlayerName() + "'s locker inventory: " + itemId);
                     }
                 }
                     gameManager.getPlayerManager().getPlayerMetadataStore().remove(playerId);
-                    log.info(playerMetadata.getPlayerName() + " has been removed from the game.");
+                    log.info(playerData.getPlayerName() + " has been removed from the game.");
             }
         }
     }

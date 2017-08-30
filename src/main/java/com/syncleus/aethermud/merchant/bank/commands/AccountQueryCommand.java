@@ -17,7 +17,7 @@ package com.syncleus.aethermud.merchant.bank.commands;
 
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.server.communication.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -41,13 +41,13 @@ public class AccountQueryCommand extends BankCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         try {
-            Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
+            Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
-            PlayerMetadata playerMetadata = playerMetadataOptional.get();
-            long goldInBank = playerMetadata.getGoldInBank();
-            long gold = playerMetadata.getGold();
+            PlayerData playerData = playerMetadataOptional.get();
+            long goldInBank = playerData.getGoldInBank();
+            long gold = playerData.getGold();
             write("You have " + NumberFormat.getNumberInstance(Locale.US).format(goldInBank) + Color.YELLOW + " gold" + Color.RESET + " in your bank account."+ "\r\n");
             write("You have " + NumberFormat.getNumberInstance(Locale.US).format(gold) + Color.YELLOW + " gold" + Color.RESET + " in your inventory."+ "\r\n");
         } finally {

@@ -21,6 +21,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.server.communication.Color;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -55,12 +56,12 @@ public class TeleportCommand extends Command {
                 write("You are dead and can not move.");
                 return;
             }
-            Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
+            Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
-            PlayerMetadata playerMetadata = playerMetadataOptional.get();
-            for (Effect effect : playerMetadata.getEffects()) {
+            PlayerData playerData = playerMetadataOptional.get();
+            for (Effect effect : playerData.getEffects()) {
                 if (effect.isFrozenMovement()) {
                     write("You are frozen and can not move.");
                     return;

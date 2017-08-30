@@ -23,7 +23,7 @@ import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 
 import java.util.Optional;
 
@@ -58,12 +58,12 @@ public class MerchantManager {
                         return;
                     }
                     int price = merchantItemForSale.getCost();
-                    Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
+                    Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
                     if (!playerMetadataOptional.isPresent()) {
                         continue;
                     }
-                    PlayerMetadata playerMetadata = playerMetadataOptional.get();
-                    long availableGold = playerMetadata.getGold();
+                    PlayerData playerData = playerMetadataOptional.get();
+                    long availableGold = playerData.getGold();
                     if (availableGold >= price) {
                         Item item = new ItemBuilder().from(itemMetadata).create();
                         gameManager.getEntityManager().saveItem(item);

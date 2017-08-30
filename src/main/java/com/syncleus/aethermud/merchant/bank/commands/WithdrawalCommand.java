@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.merchant.bank.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.server.communication.Color;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -56,12 +56,12 @@ public class WithdrawalCommand extends BankCommand {
     }
 
     private boolean areBankFundsAvailable(int amt) {
-        Optional<PlayerMetadata> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
+        Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
         if (!playerMetadataOptional.isPresent()) {
             return false;
         }
-        PlayerMetadata playerMetadata = playerMetadataOptional.get();
-        long bankGold = playerMetadata.getGoldInBank();
+        PlayerData playerData = playerMetadataOptional.get();
+        long bankGold = playerData.getGoldInBank();
         return (bankGold >= amt);
     }
 

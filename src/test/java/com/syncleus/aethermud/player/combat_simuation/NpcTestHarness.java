@@ -32,6 +32,7 @@ import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.experience.Experience;
 import com.syncleus.aethermud.storage.WorldStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.collect.Maps;
@@ -286,20 +287,24 @@ public class NpcTestHarness {
     }
 
     private void createUser(String username, String password) {
-        PlayerMetadata playerMetadata = new PlayerMetadata(username,
-                password,
-                Main.createPlayerId(username),
-                DefaultStats.DEFAULT_PLAYER.createStats(),
-                0,
-                Sets.newHashSet(PlayerRole.MORTAL),
-                new String[0],
-                0,
-                new String[0],
-                Maps.newHashMap(),
-                PlayerClass.BASIC,
-                Maps.newConcurrentMap(),
-                null);
-        gameManager.getPlayerManager().savePlayerMetadata(playerMetadata);
+        PlayerData playerData = gameManager.getPlayerManager().newPlayerData();
+        playerData.setNpcKillLog(new HashMap<>());
+        playerData.setCoolDowns(new HashMap<>());
+        playerData.setEffects(new ArrayList<>());
+        playerData.setGold(0);
+        playerData.setGoldInBank(0);
+        playerData.setInventory(new ArrayList<>());
+        playerData.setLearnedSpells(new ArrayList<>());
+        playerData.setLockerInventory(new ArrayList<>());
+        playerData.setIsMarkedForDelete(false);
+        playerData.setPlayerName(username);
+        playerData.setPassword(password);
+        playerData.setPlayerClass(PlayerClass.BASIC);
+        playerData.setPlayerEquipment(new ArrayList<>());
+        playerData.setPlayerId(Main.createPlayerId(username));
+        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
+        playerData.setPlayerSettings(new HashMap<>());
+        playerData.setStats(DefaultStats.DEFAULT_PLAYER.createStats());
     }
 
     @Before

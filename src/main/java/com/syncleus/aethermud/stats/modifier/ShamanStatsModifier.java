@@ -17,7 +17,7 @@ package com.syncleus.aethermud.stats.modifier;
 
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.Stats;
@@ -93,12 +93,12 @@ public class ShamanStatsModifier implements StatsModifier {
 
     @Override
     public Stats modify(Player player) {
-        Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
+        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
         if (!playerMetadataOptional.isPresent()) {
             return DefaultStats.DEFAULT_PLAYER.createStats();
         }
-        PlayerMetadata playerMetadata = playerMetadataOptional.get();
-        Stats baseStats = playerMetadata.getStats();
+        PlayerData playerData = playerMetadataOptional.get();
+        Stats baseStats = playerData.getStats();
         long level = Levels.getLevel(baseStats.getExperience());
         long newMaxHealth = getHealthForLevel(baseStats.getMaxHealth(), level);
         long newArmorRating = getArmorForLevel(baseStats.getArmorRating(), level);

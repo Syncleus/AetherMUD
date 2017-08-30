@@ -20,7 +20,7 @@ import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.npc.NpcStatsChange;
 import com.syncleus.aethermud.npc.NpcStatsChangeBuilder;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.stats.StatsBuilder;
@@ -118,9 +118,9 @@ public class EffectsManager {
         StatsHelper.combineStats(npc.getStats(), newStats);
     }
 
-    public void removeDurationStats(Effect effect, PlayerMetadata playerMetadata) {
+    public void removeDurationStats(Effect effect, PlayerData playerData) {
         Stats newStats = new Stats(effect.getDurationStats());
         StatsHelper.inverseStats(newStats);
-        StatsHelper.combineStats(playerMetadata.getStats(), newStats);
+        StatsHelper.combineStats(playerData.getStats(), newStats);
     }
 }

@@ -17,7 +17,7 @@ package com.syncleus.aethermud.merchant.lockers;
 
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.PlayerMetadata;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -42,12 +42,12 @@ public class GetCommand extends LockerCommand {
             configure(e);
             originalMessageParts.remove(0);
             String desiredRetrieveOption = Joiner.on(" ").join(originalMessageParts);
-            Optional<PlayerMetadata> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
-            PlayerMetadata playerMetadata = playerMetadataOptional.get();
-            for (String entityId: playerMetadata.getLockerInventory()) {
+            PlayerData playerData = playerMetadataOptional.get();
+            for (String entityId: playerData.getLockerInventory()) {
                 Optional<Item> itemEntityOptional = gameManager.getEntityManager().getItemEntity(entityId);
                 if (!itemEntityOptional.isPresent()) {
                     continue;

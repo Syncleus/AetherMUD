@@ -27,14 +27,12 @@ import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.syncleus.aethermud.bot.command.commands.CardsCommand.convertCardFormats;
@@ -47,29 +45,35 @@ public class AetherMudUtilsTest {
 
     @Test
     public void testCombineStrings() throws Exception {
-        String[] strings = new String[2];
-        strings[0] = "feet";
-        strings[1] = "hand";
-        PlayerMetadata playerMetadata = new PlayerMetadata(
-                "usertest",
-                "Testtest",
-                Main.createPlayerId("usertest"),
-                DefaultStats.DEFAULT_PLAYER.createStats(),
-                0,
-                Sets.newHashSet(PlayerRole.MORTAL),
-                strings,
-                0,
-                new String[0],
-                Maps.newHashMap(),
-                PlayerClass.BASIC,
-                Maps.newConcurrentMap(),
-                null);
+        List<String> strings = new ArrayList<>(2);
+        strings.add("feet");
+        strings.add("hand");
+
+        PlayerData playerData = mock(PlayerData.class);
+        playerData.setNpcKillLog(new HashMap<>());
+        playerData.setCoolDowns(new HashMap<>());
+        playerData.setEffects(new ArrayList<>());
+        playerData.setGold(0);
+        playerData.setGoldInBank(0);
+        playerData.setInventory(new ArrayList<>());
+        playerData.setLearnedSpells(new ArrayList<>());
+        playerData.setLockerInventory(new ArrayList<>());
+        playerData.setIsMarkedForDelete(false);
+        playerData.setPlayerName("usertest");
+        playerData.setPassword("Testtest");
+        playerData.setPlayerClass(PlayerClass.BASIC);
+        playerData.setPlayerEquipment(strings);
+        playerData.setPlayerId(Main.createPlayerId("usertest"));
+        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
+        playerData.setPlayerSettings(new HashMap<>());
+        playerData.setStats(DefaultStats.DEFAULT_PLAYER.createStats());
+
         GameManager gameManager = mock(GameManager.class);
         StatsModifierFactory statsModifierFactory = mock(StatsModifierFactory.class);
         when(statsModifierFactory.getStatsModifier(Matchers.any())).thenReturn(DefaultStats.DEFAULT_PLAYER.createStats());
         when(gameManager.getStatsModifierFactory()).thenReturn(statsModifierFactory);
         PlayerManager playerManager = mock(PlayerManager.class);
-        when(playerManager.getPlayerMetadata(Matchers.any())).thenReturn(java.util.Optional.ofNullable(playerMetadata));
+        when(playerManager.getPlayerMetadata(Matchers.any())).thenReturn(java.util.Optional.ofNullable(playerData));
         when(gameManager.getPlayerManager()).thenReturn(playerManager);
         EntityManager entityManager = mock(EntityManager.class);
         when(gameManager.getEntityManager()).thenReturn(entityManager);

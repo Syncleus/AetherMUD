@@ -39,7 +39,7 @@ public class PlayerDataTest {
         testMap.put("bar", 23L);
 
         PlayerData p1 = fg.addFramedVertex(PlayerData.class);
-        p1.setName("Jeff");
+        p1.setPlayerName("Jeff");
         p1.setNpcKillLog(testMap);
 
         PlayerData jeff = fg.traverse((g) -> g.V().has("name", "Jeff")).next(PlayerData.class);
