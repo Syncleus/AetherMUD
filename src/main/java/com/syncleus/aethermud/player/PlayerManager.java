@@ -19,7 +19,7 @@ package com.syncleus.aethermud.player;
 import com.codahale.metrics.Gauge;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SessionManager;
-import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
@@ -151,7 +151,7 @@ public class PlayerManager {
             Main.metrics.register(name(PlayerManager.class, playerData.getPlayerName(), "current-health"),
                     (Gauge<Long>) () -> {
                         Optional<PlayerData> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerData::getStats).map(Stats::getCurrentHealth).orElse(0L);
+                        return playerMetadataOpt.map(PlayerData::getStats).map(StatsData::getCurrentHealth).orElse(0L);
                     });
         }
 
@@ -160,7 +160,7 @@ public class PlayerManager {
             Main.metrics.register(name(PlayerManager.class, playerData.getPlayerName(), "xp"),
                     (Gauge<Long>) () -> {
                         Optional<PlayerData> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerData::getStats).map(Stats::getExperience).orElse(0L);
+                        return playerMetadataOpt.map(PlayerData::getStats).map(StatsData::getExperience).orElse(0L);
                     });
         }
     }

@@ -17,12 +17,12 @@ package com.syncleus.aethermud.spells;
 
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 
 import java.util.Optional;
 
 public interface SpellRunnable {
-    void run(Player sourcePlayer, Optional<Npc> destinationNpc, Optional<Player> destinationPlayer, GameManager gameManager);
+    void run(Player sourcePlayer, Optional<NpcSpawn> destinationNpc, Optional<Player> destinationPlayer, GameManager gameManager);
     String getName();
 }

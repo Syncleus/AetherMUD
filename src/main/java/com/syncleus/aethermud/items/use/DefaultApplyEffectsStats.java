@@ -20,6 +20,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import org.apache.log4j.Logger;
 
 import java.util.Set;

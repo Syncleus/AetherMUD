@@ -15,13 +15,13 @@
  */
 package com.syncleus.aethermud.player;
 
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.stats.experience.Experience;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.syncleus.aethermud.npc.Npc.NpcLevelColor.*;
+import static com.syncleus.aethermud.npc.NpcSpawn.NpcLevelColor.*;
 
 
 public class ExperienceManagerTest {
@@ -62,7 +62,7 @@ public class ExperienceManagerTest {
         180, 216, 252}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 84, 101, 118, 135, 151, 168,
         185, 222}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 86, 104, 121, 138, 155, 173,
         190}};
-    private static final Npc.NpcLevelColor[][] LEVEL_COLOR = new Npc.NpcLevelColor[][]{{YELLOW, YELLOW, YELLOW,
+    private static final NpcSpawn.NpcLevelColor[][] LEVEL_COLOR = new NpcSpawn.NpcLevelColor[][]{{YELLOW, YELLOW, YELLOW,
         ORANGE, ORANGE, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED,
         RED, RED, RED, RED, RED, RED}, {YELLOW, YELLOW, YELLOW, YELLOW, ORANGE, ORANGE, RED, RED, RED, RED, RED, RED,
         RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED, RED}, {YELLOW, YELLOW,

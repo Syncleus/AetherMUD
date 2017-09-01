@@ -15,6 +15,8 @@
  */
 package com.syncleus.aethermud.stats;
 
+import com.syncleus.aethermud.storage.graphdb.StatsData;
+
 public class StatsBuilder {
     private long strength;
     private long intelligence;
@@ -151,6 +153,6 @@ public class StatsBuilder {
     }
 
     public Stats createStats() {
-        return new Stats(strength, intelligence, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize, maxEffects);
+        return new StatsPojo(strength, intelligence, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize, maxEffects);
     }
 }

@@ -15,10 +15,15 @@
  */
 package com.syncleus.aethermud.player;
 
+import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.collect.Sets;
+import com.syncleus.ferma.DelegatingFramedGraph;
+import com.syncleus.ferma.WrappedFramedGraph;
+import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +51,8 @@ public class PlayerManagerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         DB db = DBMaker.memoryDB().transactionEnable().make();
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, false);
+        WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, framedGraph, false);
         playerManager = new PlayerManager(graphStorage, sessionManager);
     }
 

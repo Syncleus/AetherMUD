@@ -17,10 +17,11 @@ package com.syncleus.aethermud.stats.modifier;
 
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
+import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.stats.Levels;
-import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.stats.StatsBuilder;
 
 import java.util.Optional;
@@ -99,7 +100,7 @@ public class WizardStatsModifier implements StatsModifier {
             return DefaultStats.DEFAULT_PLAYER.createStats();
         }
         PlayerData playerData = playerMetadataOptional.get();
-        Stats baseStats = playerData.getStats();
+        StatsData baseStats = playerData.getStats();
         long level = Levels.getLevel(baseStats.getExperience());
         long newMaxHealth = getHealthForLevel(baseStats.getMaxHealth(), level);
         long newArmorRating = getArmorForLevel(baseStats.getArmorRating(), level);

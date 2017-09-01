@@ -16,13 +16,14 @@
 package com.syncleus.aethermud.items;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcStatsChange;
 import com.syncleus.aethermud.npc.NpcStatsChangeBuilder;
 import com.syncleus.aethermud.player.Player;
+import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.stats.StatsPojo;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.server.communication.Color;
-import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.StatsHelper;
 import org.apache.log4j.Logger;
@@ -42,9 +43,9 @@ public class EffectsManager {
         this.gameManager = gameManager;
     }
 
-    public void applyEffectsToNpcs(Player player, Set<Npc> npcs, Set<Effect> effects) {
+    public void applyEffectsToNpcs(Player player, Set<NpcSpawn> npcSpawns, Set<Effect> effects) {
         effects.forEach(effect ->
-                npcs.forEach(npc -> {
+                npcSpawns.forEach(npc -> {
                     Effect nEffect = new Effect(effect);
                     nEffect.setPlayerId(player.getPlayerId());
                     if (effect.getDurationStats().getCurrentHealth() < 0) {
@@ -94,32 +95,32 @@ public class EffectsManager {
         }
     }
 
-    public void application(Effect effect, Npc npc) {
+    public void application(Effect effect, NpcSpawn npcSpawn) {
         Player player = gameManager.getPlayerManager().getPlayer(effect.getPlayerId());
-        Stats applyStats = new Stats(effect.getApplyStatsOnTick());
+        Stats applyStats = new StatsPojo(effect.getApplyStatsOnTick());
         // if there are effecst that modify npc health, deal with it here, you can't rely on combine stats.
         if (effect.getApplyStatsOnTick().getCurrentHealth() < 0) {
-            String s = Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + npc.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET;
+            String s = Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + npcSpawn.getColorName() + " is affected by " + effect.getEffectDescription() + " " + Color.RED + applyStats.getCurrentHealth() + Color.RESET + Color.CYAN + Color.RESET;
             NpcStatsChange npcStatsChange = new NpcStatsChangeBuilder()
                     .setStats(applyStats)
                     .setDamageStrings(Arrays.asList(s))
                     .setPlayer(player)
                     .createNpcStatsChange();
-            npc.addNpcDamage(npcStatsChange);
+            npcSpawn.addNpcDamage(npcStatsChange);
         }
         // Remove any health mods, as it will screw things up.
         Stats finalCombineWorthyStats = new StatsBuilder(applyStats).setCurrentHealth(0).createStats();
-        StatsHelper.combineStats(npc.getStats(), finalCombineWorthyStats);
+        StatsHelper.combineStats(npcSpawn.getStats(), finalCombineWorthyStats);
     }
 
-    public void removeDurationStats(Effect effect, Npc npc) {
-        Stats newStats = new Stats(effect.getDurationStats());
+    public void removeDurationStats(Effect effect, NpcSpawn npcSpawn) {
+        Stats newStats = new StatsPojo(effect.getDurationStats());
         StatsHelper.inverseStats(newStats);
-        StatsHelper.combineStats(npc.getStats(), newStats);
+        StatsHelper.combineStats(npcSpawn.getStats(), newStats);
     }
 
     public void removeDurationStats(Effect effect, PlayerData playerData) {
-        Stats newStats = new Stats(effect.getDurationStats());
+        Stats newStats = new StatsPojo(effect.getDurationStats());
         StatsHelper.inverseStats(newStats);
         StatsHelper.combineStats(playerData.getStats(), newStats);
     }

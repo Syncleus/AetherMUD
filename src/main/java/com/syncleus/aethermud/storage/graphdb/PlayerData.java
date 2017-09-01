@@ -18,12 +18,13 @@ package com.syncleus.aethermud.storage.graphdb;
 
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.player.*;
-import com.syncleus.aethermud.stats.Stats;
 import com.google.common.collect.Sets;
 import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.ClassInitializer;
 import com.syncleus.ferma.DefaultClassInitializer;
+import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.Property;
+import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.util.*;
 
@@ -48,12 +49,6 @@ public abstract class PlayerData extends AbstractVertexFrame {
 
     @Property("playerId")
     public abstract void setPlayerId(String playerId);
-
-    @Property("stats")
-    public abstract Stats getStats();
-
-    @Property("stats")
-    public abstract void setStats(Stats stats);
 
     @Property("inventory")
     public abstract List<String> getInventory();
@@ -138,6 +133,45 @@ public abstract class PlayerData extends AbstractVertexFrame {
 
     @Property("currentRoomId")
     public abstract void setCurrentRoomId(Integer currentRoomId);
+
+    @Adjacency(label = "stats", direction = Direction.OUT)
+    public abstract <N extends StatsData> Iterator<? extends N> getAllStats(Class<? extends N> type);
+
+    public StatsData getStats() {
+        Iterator<? extends StatsData> allStats = this.getAllStats(StatsData.class);
+        if( allStats.hasNext() )
+            return allStats.next();
+        else
+            return null;
+    }
+
+    @Adjacency(label = "stats", direction = Direction.OUT)
+    public abstract StatsData addStats(StatsData stats);
+
+    @Adjacency(label = "stats", direction = Direction.OUT)
+    public abstract void removeStats(StatsData stats);
+
+    public void setStats(StatsData stats) {
+        Iterator<? extends StatsData> existingAll = this.getAllStats(StatsData.class);
+        if( existingAll != null ) {
+            while( existingAll.hasNext() ) {
+                StatsData existing = existingAll.next();
+                this.removeStats(existing);
+                existing.remove();
+            }
+
+        }
+        if( stats != null )
+            this.addStats(stats);
+    }
+
+    public StatsData createStats() {
+        if( this.getStats() != null )
+            throw new IllegalStateException("Already has stats, can't create another");
+        final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        this.setStats(stats);
+        return stats;
+    }
 
     public void addInventoryEntityId(String newEntityId) {
         List<String> inventory = this.getInventory();

@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.stats.Levels;
 import com.google.common.base.Joiner;
@@ -68,9 +68,9 @@ public class LookCommand extends Command {
             }
             Set<String> npcIds = currentRoom.getNpcIds();
             for (String npcId : npcIds) {
-                Npc currentNpc = gameManager.getEntityManager().getNpcEntity(npcId);
-                if (currentNpc.getValidTriggers().contains(target)) {
-                    write(gameManager.getLookString(currentNpc, Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience())) + "\r\n");
+                NpcSpawn currentNpcSpawn = gameManager.getEntityManager().getNpcEntity(npcId);
+                if (currentNpcSpawn.getValidTriggers().contains(target)) {
+                    write(gameManager.getLookString(currentNpcSpawn, Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(player).getExperience())) + "\r\n");
                 }
             }
         });

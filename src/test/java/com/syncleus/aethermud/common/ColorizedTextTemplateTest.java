@@ -15,23 +15,27 @@
  */
 package com.syncleus.aethermud.common;
 
+import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.server.communication.Color;
+import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.storage.FilebasedJsonStorage;
-import com.syncleus.aethermud.storage.NpcMetadata;
+import com.syncleus.aethermud.storage.graphdb.GraphDbNpcStorage;
+import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.syncleus.aethermud.storage.NpcStorage;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.syncleus.ferma.DelegatingFramedGraph;
+import com.syncleus.ferma.WrappedFramedGraph;
+import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 
@@ -65,24 +69,29 @@ public class ColorizedTextTemplateTest {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        NpcStorage npcStorage = new NpcStorage(null, new FilebasedJsonStorage(gson));
+        WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
+        NpcStorage npcStorage = new GraphDbNpcStorage(null, framedGraph);
 
+        List<? extends NpcData> npcData = npcStorage.getNpcDatas();
+        Assert.assertTrue(npcData.isEmpty());
 
-        List<NpcMetadata> npcMetadata = npcStorage.getNpcMetadatas();
+        Npc newNpc = npcStorage.newNpcData();
+        newNpc.setColorName("blue");
 
-        Assert.assertFalse(npcMetadata.isEmpty());
+        npcData = npcStorage.getNpcDatas();
+        Assert.assertFalse(npcData.isEmpty());
 
-        npcMetadata.forEach(new Consumer<NpcMetadata>() {
-            @Override
-            public void accept(NpcMetadata npcMetadata) {
-                try {
-                    npcStorage.saveNpcMetadata(npcMetadata);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
+//        npcData.forEach(new Consumer<NpcData>() {
+//            @Override
+//            public void accept(NpcData npcData) {
+//                try {
+//                    npcStorage.saveNpcMetadata(npcData);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
 //
 //        MerchantStorage merchantStorage = new MerchantStorage(null, new FilebasedJsonStorage(gson));
 //        List<MerchantMetadata> merchantMetadatas = merchantStorage.getMerchantMetadatas();

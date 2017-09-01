@@ -20,7 +20,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.world.model.Area;
@@ -34,15 +34,15 @@ import java.util.stream.Collectors;
 
 public class NpcSpawner extends AetherMudEntity {
 
-    private final Npc npc;
+    private final NpcSpawn npcSpawn;
     private final GameManager gameManager;
     private final SpawnRule spawnRule;
     private int noTicks;
     private final Random random = new Random();
 
 
-    public NpcSpawner(Npc npc, GameManager gameManager, SpawnRule spawnRule) {
-        this.npc = npc;
+    public NpcSpawner(NpcSpawn npcSpawn, GameManager gameManager, SpawnRule spawnRule) {
+        this.npcSpawn = npcSpawn;
         this.gameManager = gameManager;
         this.spawnRule = spawnRule;
         this.noTicks = spawnRule.getSpawnIntervalTicks();
@@ -73,8 +73,8 @@ public class NpcSpawner extends AetherMudEntity {
         for (Room room : roomsByArea) {
             if (room.getAreas().contains(spawnArea)) {
                 for (String i : room.getNpcIds()) {
-                    Npc currentNpc = gameManager.getEntityManager().getNpcEntity(i);
-                    if (currentNpc.getName().equals(npc.getName())) {
+                    NpcSpawn currentNpcSpawn = gameManager.getEntityManager().getNpcEntity(i);
+                    if (currentNpcSpawn.getName().equals(npcSpawn.getName())) {
                         numberCurrentlyInArea++;
                     }
                 }
@@ -85,24 +85,24 @@ public class NpcSpawner extends AetherMudEntity {
 
     private void createAndAddItem(Area spawnArea) {
         List<Room> rooms = gameManager.getRoomManager().getRoomsByArea(spawnArea).stream()
-                .filter(findRoomsWithOccupancy(npc))
+                .filter(findRoomsWithOccupancy(npcSpawn))
                 .collect(Collectors.toList());
         Room room = rooms.get(random.nextInt(rooms.size()));
-        NpcBuilder npcBuilder = new NpcBuilder(npc);
-        Npc newNpc = npcBuilder.createNpc();
-        newNpc.setCurrentRoom(room);
-        gameManager.getEntityManager().addEntity(newNpc);
-        room.addPresentNpc(newNpc.getEntityId());
-        gameManager.writeToRoom(room.getRoomId(), newNpc.getColorName() + " appears." + "\r\n");
+        NpcBuilder npcBuilder = new NpcBuilder(npcSpawn);
+        NpcSpawn newNpcSpawn = npcBuilder.createNpc();
+        newNpcSpawn.setCurrentRoom(room);
+        gameManager.getEntityManager().addEntity(newNpcSpawn);
+        room.addPresentNpc(newNpcSpawn.getEntityId());
+        gameManager.writeToRoom(room.getRoomId(), newNpcSpawn.getColorName() + " appears." + "\r\n");
         room.getPresentPlayers().forEach(Player::processNpcAggro);
-        Main.metrics.counter(MetricRegistry.name(NpcSpawner.class, npc.getName() + "-spawn")).inc();
+        Main.metrics.counter(MetricRegistry.name(NpcSpawner.class, npcSpawn.getName() + "-spawn")).inc();
     }
 
-    private Predicate<Room> findRoomsWithOccupancy(Npc npc) {
+    private Predicate<Room> findRoomsWithOccupancy(NpcSpawn npcSpawn) {
         return room -> {
             long count = room.getNpcIds().stream()
                     .map(npcId -> gameManager.getEntityManager().getNpcEntity(npcId))
-                    .filter(n -> n.getName().equals(npc.getName()))
+                    .filter(n -> n.getName().equals(npcSpawn.getName()))
                     .count();
 
             return count < spawnRule.getMaxPerRoom();

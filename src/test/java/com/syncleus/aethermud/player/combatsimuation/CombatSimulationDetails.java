@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.player.combat_simuation;
+package com.syncleus.aethermud.player.combatsimuation;
 
 import com.syncleus.aethermud.items.Item;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 
 import java.util.Set;
 
@@ -25,13 +25,13 @@ public class CombatSimulationDetails {
     private final int level;
     private final int totalIterations;
     private final Set<Item> equipmentSet;
-    private final Npc npc;
+    private final NpcSpawn npcSpawn;
 
-    public CombatSimulationDetails(int level, Set<Item> equipmentSet, Npc npc) {
+    public CombatSimulationDetails(int level, Set<Item> equipmentSet, NpcSpawn npcSpawn) {
         this.level = level;
         this.totalIterations = 1000;
         this.equipmentSet = equipmentSet;
-        this.npc = npc;
+        this.npcSpawn = npcSpawn;
     }
 
     public int getLevel() {
@@ -42,8 +42,8 @@ public class CombatSimulationDetails {
         return totalIterations;
     }
 
-    public Npc getNpc() {
-        return npc;
+    public NpcSpawn getNpcSpawn() {
+        return npcSpawn;
     }
 
     public Set<Item> getEquipmentSet() {

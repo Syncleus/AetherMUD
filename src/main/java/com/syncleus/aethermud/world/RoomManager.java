@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.world;
 
 import com.syncleus.aethermud.merchant.Merchant;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.world.model.Area;
@@ -113,8 +113,8 @@ public class RoomManager {
         return Optional.empty();
     }
 
-    public Optional<Room> getNpcCurrentRoom(Npc npc) {
-        return Optional.of(npc.getCurrentRoom());
+    public Optional<Room> getNpcCurrentRoom(NpcSpawn npcSpawn) {
+        return Optional.of(npcSpawn.getCurrentRoom());
     }
 
 

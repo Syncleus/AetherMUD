@@ -15,13 +15,13 @@
  */
 package com.syncleus.aethermud.player;
 
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 
 public interface DamageProcessor {
 
-    long getAttackAmount(Player player, Npc npc);
+    long getAttackAmount(Player player, NpcSpawn npcSpawn);
 
-    int getChanceToHit(Player player, Npc npc);
+    int getChanceToHit(Player player, NpcSpawn npcSpawn);
 
-    int getCriticalChance(Player player, Npc npc);
+    int getCriticalChance(Player player, NpcSpawn npcSpawn);
 }

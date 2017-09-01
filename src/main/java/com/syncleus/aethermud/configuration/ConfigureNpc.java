@@ -22,7 +22,7 @@ import com.syncleus.aethermud.entity.EntityManager;
 import com.syncleus.aethermud.items.Forage;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.merchant.Merchant;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.spawner.ItemSpawner;
 import com.syncleus.aethermud.spawner.NpcSpawner;
 import com.syncleus.aethermud.spawner.SpawnRule;
@@ -35,13 +35,13 @@ public class ConfigureNpc {
 
     public static void configureAllNpcs(GameManager gameManager) throws IOException {
         EntityManager entityManager = gameManager.getEntityManager();
-        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
-        for (Npc npc : npcsFromFile) {
-            Main.startUpMessage("Adding npc spawn: " + npc.getName());
-            entityManager.addEntity(npc);
-            Set<SpawnRule> spawnRules = npc.getSpawnRules();
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        for (NpcSpawn npcSpawn : npcsFromFile) {
+            Main.startUpMessage("Adding npc spawn: " + npcSpawn.getName());
+            entityManager.addEntity(npcSpawn);
+            Set<SpawnRule> spawnRules = npcSpawn.getSpawnRules();
             for (SpawnRule spawnRule : spawnRules) {
-                entityManager.addEntity(new NpcSpawner(npc, gameManager, spawnRule));
+                entityManager.addEntity(new NpcSpawner(npcSpawn, gameManager, spawnRule));
             }
         }
     }

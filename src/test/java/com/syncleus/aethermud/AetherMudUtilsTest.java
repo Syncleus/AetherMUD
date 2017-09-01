@@ -28,10 +28,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,7 +69,13 @@ public class AetherMudUtilsTest {
         playerData.setPlayerId(Main.createPlayerId("usertest"));
         playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
         playerData.setPlayerSettings(new HashMap<>());
-        playerData.setStats(DefaultStats.DEFAULT_PLAYER.createStats());
+        StatsData statsData = mock(StatsData.class);
+        try {
+            BeanUtils.copyProperties(statsData, DefaultStats.DEFAULT_PLAYER.createStats());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not create a stats object", e);
+        }
+        when(playerData.getStats()).thenReturn(statsData);
 
         GameManager gameManager = mock(GameManager.class);
         StatsModifierFactory statsModifierFactory = mock(StatsModifierFactory.class);

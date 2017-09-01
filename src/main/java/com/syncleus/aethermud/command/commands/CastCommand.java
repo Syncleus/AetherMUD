@@ -17,7 +17,7 @@ package com.syncleus.aethermud.command.commands;
 
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.spells.SpellRunnable;
@@ -83,9 +83,9 @@ public class CastCommand extends Command {
                 }
             }
             for (String npcId : currentRoom.getNpcIds()) {
-                Npc npcEntity = entityManager.getNpcEntity(npcId);
-                if (npcEntity.getValidTriggers().contains(target)) {
-                    gameManager.getSpells().executeSpell(player, Optional.of(npcEntity), Optional.empty(), spellRunnable.get());
+                NpcSpawn npcSpawnEntity = entityManager.getNpcEntity(npcId);
+                if (npcSpawnEntity.getValidTriggers().contains(target)) {
+                    gameManager.getSpells().executeSpell(player, Optional.of(npcSpawnEntity), Optional.empty(), spellRunnable.get());
                     return;
                 }
             }

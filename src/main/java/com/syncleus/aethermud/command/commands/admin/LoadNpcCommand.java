@@ -17,9 +17,13 @@ package com.syncleus.aethermud.command.commands.admin;
 
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
+import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcPojo;
 import com.syncleus.aethermud.player.PlayerRole;
-import com.syncleus.aethermud.storage.NpcMetadata;
+import com.syncleus.aethermud.storage.NpcStorage;
+import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.google.common.collect.Sets;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -79,17 +83,20 @@ public class LoadNpcCommand extends Command {
 
             String npcJson = EntityUtils.toString(entity);
 
-            NpcMetadata npcMetadata = null;
+            Npc npc = null;
             try {
-                npcMetadata = gameManager.getGson().fromJson(npcJson, NpcMetadata.class);
+                npc = gameManager.getGson().fromJson(npcJson, NpcPojo.class);
             } catch (Exception ex) {
                 write("Retrieved JSON file is malformed. " + ex.getLocalizedMessage() + "\r\n");
                 return;
             }
             httpGet.reset();
 
-            gameManager.getNpcStorage().saveNpcMetadata(npcMetadata);
-            write("NPC Saved. - " + npcMetadata.getName() + "\r\n");
+            NpcStorage storage = gameManager.getNpcStorage();
+            Npc npcData = storage.newNpcData();
+            BeanUtils.copyProperties(npcData, npc);
+            storage.persist();
+            write("NPC Saved. - " + npc.getName() + "\r\n");
 
         });
     }

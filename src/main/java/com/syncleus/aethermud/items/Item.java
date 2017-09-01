@@ -18,6 +18,7 @@ package com.syncleus.aethermud.items;
 
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.google.common.collect.Lists;
 
 import java.io.Serializable;

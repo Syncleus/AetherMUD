@@ -16,6 +16,7 @@
 package com.syncleus.aethermud.items;
 
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 
 import java.util.List;
 

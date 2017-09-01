@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -59,10 +59,10 @@ public class FightKillCommand extends Command {
             String target = Joiner.on(" ").join(originalMessageParts);
             Set<String> npcIds = currentRoom.getNpcIds();
             for (String npcId : npcIds) {
-                Npc npcEntity = entityManager.getNpcEntity(npcId);
-                if (npcEntity.getValidTriggers().contains(target)) {
-                    if (player.addActiveFight(npcEntity)) {
-                        writeToRoom(player.getPlayerName() + " has attacked a " + npcEntity.getColorName());
+                NpcSpawn npcSpawnEntity = entityManager.getNpcEntity(npcId);
+                if (npcSpawnEntity.getValidTriggers().contains(target)) {
+                    if (player.addActiveFight(npcSpawnEntity)) {
+                        writeToRoom(player.getPlayerName() + " has attacked a " + npcSpawnEntity.getColorName());
                        // player.addActiveFight(npcEntity);
                         return;
                     } else {

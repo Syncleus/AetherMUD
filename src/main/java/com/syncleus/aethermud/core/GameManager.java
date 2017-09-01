@@ -28,7 +28,7 @@ import com.syncleus.aethermud.entity.AetherMudEntity;
 import com.syncleus.aethermud.entity.EntityManager;
 import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.merchant.Merchant;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcMover;
 import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.server.multiline.MultiLineInputManager;
@@ -39,10 +39,10 @@ import com.syncleus.aethermud.spawner.NpcSpawner;
 import com.syncleus.aethermud.spells.Spells;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.GraphDbNpcStorage;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.syncleus.aethermud.storage.*;
-import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.world.FloorManager;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
@@ -57,9 +57,11 @@ import com.google.common.collect.Interners;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
+import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
@@ -107,7 +109,7 @@ public class GameManager {
     private final HttpClient httpclient;
     private final Gson gson;
     private final FilebasedJsonStorage filebasedJsonStorage;
-    private final GraphDbAetherMudStorage graphStorage;
+    private final AetherMudStorage graphStorage;
 
     public MerchantStorage getMerchantStorage() {
         return merchantStorage;
@@ -116,7 +118,7 @@ public class GameManager {
     private final MerchantStorage merchantStorage;
 
 
-    public GameManager(GraphDbAetherMudStorage graphStorage, AetherMudConfiguration aetherMudConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
+    public GameManager(AetherMudStorage graphStorage, WrappedFramedGraph<Graph> framedGraph, AetherMudConfiguration aetherMudConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
         this.graphStorage = graphStorage;
         this.roomManager = roomManager;
         this.playerManager = playerManager;
@@ -146,13 +148,13 @@ public class GameManager {
         this.detainmentRoom = buildDetainmentRoom();
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.filebasedJsonStorage = new FilebasedJsonStorage(gson);
-        this.npcStorage = new NpcStorage(this, filebasedJsonStorage);
+        this.npcStorage = new GraphDbNpcStorage(this, framedGraph);;
         this.itemStorage = new ItemStorage(filebasedJsonStorage);
         this.merchantStorage = new MerchantStorage(this, filebasedJsonStorage);
         this.httpclient = httpClient;
     }
 
-    public GraphDbAetherMudStorage getGraphStorage() {
+    public AetherMudStorage getGraphStorage() {
         return graphStorage;
     }
 
@@ -361,13 +363,13 @@ public class GameManager {
         List<String> npcs = Lists.newArrayList();
         for (String npcId : playerCurrentRoom.getNpcIds()) {
             StringBuilder sbb = new StringBuilder();
-            Npc npcEntity = entityManager.getNpcEntity(npcId);
-            if (Main.vowels.contains(Character.toLowerCase(npcEntity.getName().charAt(0)))) {
+            NpcSpawn npcSpawnEntity = entityManager.getNpcEntity(npcId);
+            if (Main.vowels.contains(Character.toLowerCase(npcSpawnEntity.getName().charAt(0)))) {
                 sbb.append("an ");
             } else {
                 sbb.append("a ");
             }
-            sbb.append(npcEntity.getColorName()).append(" is here.\r\n");
+            sbb.append(npcSpawnEntity.getColorName()).append(" is here.\r\n");
             npcs.add(sbb.toString());
         }
         Collections.sort(npcs, String.CASE_INSENSITIVE_ORDER);
@@ -536,18 +538,18 @@ public class GameManager {
         }
     }
 
-    public String getLookString(Npc npc, long playerLevel) {
+    public String getLookString(NpcSpawn npcSpawn, long playerLevel) {
         StringBuilder sb = new StringBuilder();
         // passing an empty createState because of the "difference calculation"
-        sb.append(Color.MAGENTA + "-+=[ " + RESET).append(npc.getColorName()).append(Color.MAGENTA + " ]=+- " + RESET).append("\r\n");
-        sb.append("Level ").append(Levels.getLevel(npc.getStats().getExperience())).append(" ")
-                .append(npc.getLevelColor((int) playerLevel).getColor())
-                .append(" [").append(npc.getTemperament().getFriendlyFormat()).append("]").append("\r\n");
+        sb.append(Color.MAGENTA + "-+=[ " + RESET).append(npcSpawn.getColorName()).append(Color.MAGENTA + " ]=+- " + RESET).append("\r\n");
+        sb.append("Level ").append(Levels.getLevel(npcSpawn.getStats().getExperience())).append(" ")
+                .append(npcSpawn.getLevelColor((int) playerLevel).getColor())
+                .append(" [").append(npcSpawn.getTemperament().getFriendlyFormat()).append("]").append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + RESET).append("\r\n");
-        sb.append(buildLookString(npc.getColorName(), npc.getStats(), new StatsBuilder().createStats())).append("\r\n");
-        if (npc.getEffects() != null && npc.getEffects().size() > 0) {
+        sb.append(buildLookString(npcSpawn.getColorName(), npcSpawn.getStats(), new StatsBuilder().createStats())).append("\r\n");
+        if (npcSpawn.getEffects() != null && npcSpawn.getEffects().size() > 0) {
             sb.append(Color.MAGENTA + "Effects--------------------------------" + RESET).append("\r\n");
-            sb.append(buldEffectsString(npc)).append("\r\n");
+            sb.append(buldEffectsString(npcSpawn)).append("\r\n");
         }
         return sb.toString();
     }
@@ -659,8 +661,8 @@ public class GameManager {
         return returnString.toString();
     }
 
-    public String buldEffectsString(Npc npc) {
-        return renderEffectsString(npc.getEffects());
+    public String buldEffectsString(NpcSpawn npcSpawn) {
+        return renderEffectsString(npcSpawn.getEffects());
 
     }
 
@@ -757,8 +759,8 @@ public class GameManager {
         }
     }
 
-    public Map<String, Double> processExperience(Npc npc, Room npcCurrentRoom) {
-        Iterator<Map.Entry<String, Long>> iterator = npc.getPlayerDamageMap().entrySet().iterator();
+    public Map<String, Double> processExperience(NpcSpawn npcSpawn, Room npcCurrentRoom) {
+        Iterator<Map.Entry<String, Long>> iterator = npcSpawn.getPlayerDamageMap().entrySet().iterator();
         int totalDamageDone = 0;
         while (iterator.hasNext()) {
             Map.Entry<String, Long> damageEntry = iterator.next();
@@ -772,7 +774,7 @@ public class GameManager {
             }
         }
         Map<String, Double> damagePcts = Maps.newHashMap();
-        Set<Map.Entry<String, Long>> entries = npc.getPlayerDamageMap().entrySet();
+        Set<Map.Entry<String, Long>> entries = npcSpawn.getPlayerDamageMap().entrySet();
         for (Map.Entry<String, Long> damageEntry : entries) {
             String playerId = damageEntry.getKey();
             long amount = damageEntry.getValue();
@@ -803,14 +805,14 @@ public class GameManager {
     }
 
     public synchronized void removeAllNpcs() {
-        for (Npc npc : entityManager.getNpcs().values()) {
+        for (NpcSpawn npcSpawn : entityManager.getNpcs().values()) {
             Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
             while (rooms.hasNext()) {
                 Map.Entry<Integer, Room> next = rooms.next();
-                next.getValue().removePresentNpc(npc.getEntityId());
+                next.getValue().removePresentNpc(npcSpawn.getEntityId());
             }
-            entityManager.getNpcs().remove(npc.getEntityId());
-            entityManager.getEntities().remove(npc.getEntityId());
+            entityManager.getNpcs().remove(npcSpawn.getEntityId());
+            entityManager.getEntities().remove(npcSpawn.getEntityId());
         }
         for (AetherMudEntity aetherMudEntity : entityManager.getNpcs().values()) {
             if (aetherMudEntity instanceof NpcSpawner) {

@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.stats.experience;
 
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 
 public class Experience {
 
@@ -31,7 +31,7 @@ public class Experience {
             xp = i * modifier;
         }
         if (npcLevel < playerLevel) {
-            if (getLevelColor(playerLevel, npcLevel).equals(Npc.NpcLevelColor.WHITE)) {
+            if (getLevelColor(playerLevel, npcLevel).equals(NpcSpawn.NpcLevelColor.WHITE)) {
                 xp = 0;
             } else {
                 float levelDif = playerLevel - npcLevel;
@@ -45,36 +45,36 @@ public class Experience {
     }
 
 
-    public static Npc.NpcLevelColor getLevelColor(int playerLevel, int npcLevel) {
+    public static NpcSpawn.NpcLevelColor getLevelColor(int playerLevel, int npcLevel) {
         if (playerLevel + 5 <= npcLevel) {
-            return Npc.NpcLevelColor.RED;
+            return NpcSpawn.NpcLevelColor.RED;
         } else {
             switch (npcLevel - playerLevel) {
                 case 4:
                 case 3:
-                    return Npc.NpcLevelColor.ORANGE;
+                    return NpcSpawn.NpcLevelColor.ORANGE;
                 case 2:
                 case 1:
                 case 0:
                 case -1:
                 case -2:
-                    return Npc.NpcLevelColor.YELLOW;
+                    return NpcSpawn.NpcLevelColor.YELLOW;
                 default:
                     if (playerLevel <= 5) {
-                        return Npc.NpcLevelColor.GREEN;
+                        return NpcSpawn.NpcLevelColor.GREEN;
                     } else {
                         if (playerLevel <= 50) {
                             if (npcLevel <= (playerLevel - 5 - Math.floor(playerLevel / 10))) {
-                                return Npc.NpcLevelColor.WHITE;
+                                return NpcSpawn.NpcLevelColor.WHITE;
                             } else {
-                                return Npc.NpcLevelColor.GREEN;
+                                return NpcSpawn.NpcLevelColor.GREEN;
                             }
                         } else {
                             // Player is over level 50
                             if (npcLevel <= (playerLevel - 1 - Math.floor(playerLevel / 5))) {
-                                return Npc.NpcLevelColor.WHITE;
+                                return NpcSpawn.NpcLevelColor.WHITE;
                             } else {
-                                return Npc.NpcLevelColor.GREEN;
+                                return NpcSpawn.NpcLevelColor.GREEN;
                             }
                         }
                     }

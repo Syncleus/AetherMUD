@@ -18,7 +18,7 @@ package com.syncleus.aethermud.items.use;
 import com.syncleus.aethermud.command.commands.UseCommand;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.*;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcStatsChangeBuilder;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.communication.Color;
@@ -52,15 +52,15 @@ public class DirtyBombUseAction implements ItemUseAction {
         }
         Set<String> npcIds = currentRoom.getNpcIds();
         for (String npcId : npcIds) {
-            Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
-            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npc.getColorName() + " is heavily damaged by a " + item.getItemName() + "!" + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(900000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET);
+            NpcSpawn npcSpawn = gameManager.getEntityManager().getNpcEntity(npcId);
+            gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), npcSpawn.getColorName() + " is heavily damaged by a " + item.getItemName() + "!" + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(900000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET);
             NpcStatsChangeBuilder npcStatsChangeBuilder = new NpcStatsChangeBuilder();
-            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(900000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + " +" + NumberFormat.getNumberInstance(Locale.US).format(900000000) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npcSpawn.getColorName();
             npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-900000000).createStats());
             npcStatsChangeBuilder.setDamageStrings(Arrays.asList(fightMsg));
             npcStatsChangeBuilder.setPlayer(player);
             npcStatsChangeBuilder.setIsItemDamage(true);
-            npc.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
+            npcSpawn.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
         }
         Set<Player> presentPlayers = currentRoom.getPresentPlayers();
         for (Player presentPlayer : presentPlayers) {

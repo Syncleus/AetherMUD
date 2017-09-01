@@ -17,7 +17,7 @@ package com.syncleus.aethermud.spells;
 
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.EffectBuilder;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.CoolDown;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
@@ -46,7 +46,7 @@ public class LightningSpell implements SpellRunnable {
     }
 
     @Override
-    public void run(Player sourcePlayer, Optional<Npc> destinationNpc, Optional<Player> destinationPlayer, GameManager gameManager) {
+    public void run(Player sourcePlayer, Optional<NpcSpawn> destinationNpc, Optional<Player> destinationPlayer, GameManager gameManager) {
         long availableMana = sourcePlayer.getPlayerStatsWithEquipmentAndLevel().getCurrentMana();
         if (availableMana < manaCost) {
             sourcePlayer.writeMessage("Not enough mana!" + "\r\n");
@@ -64,13 +64,13 @@ public class LightningSpell implements SpellRunnable {
         return name;
     }
 
-    private void executeSpellAgainstNpc(Player player, Npc npc) {
-        announceSpellCastToCurrentRoom(player, npc.getColorName());
+    private void executeSpellAgainstNpc(Player player, NpcSpawn npcSpawn) {
+        announceSpellCastToCurrentRoom(player, npcSpawn.getColorName());
         Stats stats = player.getPlayerStatsWithEquipmentAndLevel();
         long power = (player.getLevel() * 1) + (3 * stats.getIntelligence());
-        player.addActiveFight(npc);
-        gameManager.getEffectsManager().applyEffectsToNpcs(player, Sets.newHashSet(npc), Sets.newHashSet(selectEffect(stats).createEffect()));
-        npc.doHealthDamage(player, Arrays.asList(getDamageMessage(power, npc.getColorName())), -power);
+        player.addActiveFight(npcSpawn);
+        gameManager.getEffectsManager().applyEffectsToNpcs(player, Sets.newHashSet(npcSpawn), Sets.newHashSet(selectEffect(stats).createEffect()));
+        npcSpawn.doHealthDamage(player, Arrays.asList(getDamageMessage(power, npcSpawn.getColorName())), -power);
     }
 
     private EffectBuilder selectEffect(Stats stats) {

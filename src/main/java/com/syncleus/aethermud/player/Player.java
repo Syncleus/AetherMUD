@@ -22,12 +22,13 @@ import com.syncleus.aethermud.common.AetherMudUtils;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcStatsChangeBuilder;
 import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.StatsHelper;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
@@ -62,7 +63,7 @@ public class Player extends AetherMudEntity {
     private SortedMap<Long, ActiveFight> activeFights = Collections.synchronizedSortedMap(new TreeMap<Long, ActiveFight>());
     private int tickBucket = 0;
     private int fightTickBucket = 0;
-    private final Set<Npc> alertedNpcs = Sets.newHashSet();
+    private final Set<NpcSpawn> alertedNpcSpawns = Sets.newHashSet();
     private Optional<Room> previousRoom = Optional.empty();
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1000);
     private AtomicBoolean isChatMode = new AtomicBoolean(false);
@@ -129,11 +130,11 @@ public class Player extends AetherMudEntity {
                 // If the NPC has died- bail out.
                 String npcId = npcIdOptional.get();
                 addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
-                Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
-                if (npc == null) {
+                NpcSpawn npcSpawn = gameManager.getEntityManager().getNpcEntity(npcId);
+                if (npcSpawn == null) {
                     continue;
                 }
-                doFightRound(playerDamageProcesor, npc.getDamageProcessor(), next.getValue());
+                doFightRound(playerDamageProcesor, npcSpawn.getDamageProcessor(), next.getValue());
             }
         }
     }
@@ -184,10 +185,10 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public void killPlayer(Npc npc) {
+    public void killPlayer(NpcSpawn npcSpawn) {
         resetEffects();
         synchronized (interner.intern(playerId)) {
-            if (npc != null && doesActiveFightExist(npc)) {
+            if (npcSpawn != null && doesActiveFightExist(npcSpawn)) {
                 removeAllActiveFights();
             }
             if (!isActive(CoolDownType.DEATH)) {
@@ -215,7 +216,7 @@ public class Player extends AetherMudEntity {
     }
 
 
-    public boolean updatePlayerHealth(long amount, Npc npc) {
+    public boolean updatePlayerHealth(long amount, NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()) {
@@ -227,7 +228,7 @@ public class Player extends AetherMudEntity {
                 gameManager.getPlayerManager().newPlayerData();
                 return false;
             } else {
-                Stats stats = playerData.getStats();
+                StatsData stats = playerData.getStats();
                 if ((stats.getCurrentHealth() + amount) < 0) {
                     stats.setCurrentHealth(0);
                 } else {
@@ -235,7 +236,7 @@ public class Player extends AetherMudEntity {
                 }
                 gameManager.getPlayerManager().newPlayerData();
                 if (playerData.getStats().getCurrentHealth() == 0) {
-                    killPlayer(npc);
+                    killPlayer(npcSpawn);
                     return true;
                 }
             }
@@ -451,15 +452,15 @@ public class Player extends AetherMudEntity {
         return Lists.newArrayList(playerData.getLearnedSpells());
     }
 
-    public boolean isActiveAlertNpcStatus(Npc npc) {
+    public boolean isActiveAlertNpcStatus(NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
-            return alertedNpcs.contains(npc);
+            return alertedNpcSpawns.contains(npcSpawn);
         }
     }
 
     public boolean isActiveAlertNpcStatus() {
         synchronized (interner.intern(playerId)) {
-            return alertedNpcs.size() > 0;
+            return alertedNpcSpawns.size() > 0;
         }
     }
 
@@ -467,30 +468,30 @@ public class Player extends AetherMudEntity {
         return currentRoom.getPresentNpcs().stream().filter(this::isActiveAlertNpcStatus).count() > 0;
     }
 
-    public boolean areInTheSameRoom(Npc npc) {
-        return currentRoom.getPresentNpcs().contains(npc);
+    public boolean areInTheSameRoom(NpcSpawn npcSpawn) {
+        return currentRoom.getPresentNpcs().contains(npcSpawn);
     }
 
-    public void setIsActiveAlertNpcStatus(Npc npc) {
+    public void setIsActiveAlertNpcStatus(NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
-            alertedNpcs.add(npc);
+            alertedNpcSpawns.add(npcSpawn);
         }
     }
 
     public void removeActiveAlertStatus() {
         synchronized (interner.intern(playerId)) {
-            alertedNpcs.clear();
+            alertedNpcSpawns.clear();
         }
     }
 
-    public void removeActiveAlertStatus(Npc npc) {
+    public void removeActiveAlertStatus(NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
-            alertedNpcs.clear();
+            alertedNpcSpawns.clear();
         }
     }
 
-    public Set<Npc> getAlertedNpcs() {
-        return alertedNpcs;
+    public Set<NpcSpawn> getAlertedNpcSpawns() {
+        return alertedNpcSpawns;
     }
 
     public void addInventoryId(String inventoryId) {
@@ -577,7 +578,7 @@ public class Player extends AetherMudEntity {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            Stats stats = playerData.getStats();
+            StatsData stats = playerData.getStats();
             stats.setCurrentMana(stats.getCurrentMana() + amount);
             savePlayerMetadata(playerData);
         }
@@ -590,7 +591,7 @@ public class Player extends AetherMudEntity {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            Stats stats = playerData.getStats();
+            StatsData stats = playerData.getStats();
             stats.setForaging(stats.getForaging() + amount);
             savePlayerMetadata(playerData);
         }
@@ -812,16 +813,16 @@ public class Player extends AetherMudEntity {
             if (isActive(CoolDownType.DEATH)) {
                 return;
             }
-            List<Npc> aggresiveRoomNpcs = currentRoom.getNpcIds().stream()
+            List<NpcSpawn> aggresiveRoomNpcSpawns = currentRoom.getNpcIds().stream()
                     .map(npcId -> gameManager.getEntityManager().getNpcEntity(npcId))
                     .filter(npc -> npc.getTemperament().equals(Temperament.AGGRESSIVE))
                     .filter(npc -> {
-                        Npc.NpcLevelColor levelColor = npc.getLevelColor((int) Levels.getLevel(getPlayerStatsWithEquipmentAndLevel().getExperience()));
-                        return !levelColor.equals(Npc.NpcLevelColor.WHITE);
+                        NpcSpawn.NpcLevelColor levelColor = npc.getLevelColor((int) Levels.getLevel(getPlayerStatsWithEquipmentAndLevel().getExperience()));
+                        return !levelColor.equals(NpcSpawn.NpcLevelColor.WHITE);
                     })
                     .collect(Collectors.toList());
 
-            aggresiveRoomNpcs.forEach(npc -> {
+            aggresiveRoomNpcSpawns.forEach(npc -> {
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " has alerted a " + npc.getColorName() + "\r\n");
                 gameManager.getChannelUtils().write(playerId, "You can return to your previous location by typing \"back\"" + "\r\n");
                 setIsActiveAlertNpcStatus(npc);
@@ -1268,13 +1269,13 @@ public class Player extends AetherMudEntity {
         return getPlayerMetadata().map(PlayerData::getPlayerSettings).orElseGet(Maps::newHashMap);
     }
 
-    public boolean addActiveFight(Npc npc) {
+    public boolean addActiveFight(NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
-            if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) != null) {
-                if (!doesActiveFightExist(npc)) {
+            if (gameManager.getEntityManager().getNpcEntity(npcSpawn.getEntityId()) != null) {
+                if (!doesActiveFightExist(npcSpawn)) {
                     addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
                     ActiveFight activeFight = ActiveFight.builder()
-                            .npcId(npc.getEntityId())
+                            .npcId(npcSpawn.getEntityId())
                             .isPrimary(false)
                             .create();
                     activeFights.put(System.nanoTime(), activeFight);
@@ -1285,15 +1286,15 @@ public class Player extends AetherMudEntity {
         return false;
     }
 
-    public boolean doesActiveFightExist(Npc npc) {
+    public boolean doesActiveFightExist(NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
-            if (gameManager.getEntityManager().getNpcEntity(npc.getEntityId()) == null) {
-                removeActiveFight(npc);
+            if (gameManager.getEntityManager().getNpcEntity(npcSpawn.getEntityId()) == null) {
+                removeActiveFight(npcSpawn);
             }
             for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
                 ActiveFight fight = entry.getValue();
                 Optional<String> npcIdOptional = fight.getNpcId();
-                if (npcIdOptional.isPresent() && npcIdOptional.get().equals(npc.getEntityId())) {
+                if (npcIdOptional.isPresent() && npcIdOptional.get().equals(npcSpawn.getEntityId())) {
                     return true;
                 }
             }
@@ -1301,12 +1302,12 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public void removeActiveFight(Npc npc) {
+    public void removeActiveFight(NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Long, ActiveFight> next = iterator.next();
-                if (next.getValue().getNpcId().equals(npc.getEntityId())) {
+                if (next.getValue().getNpcId().equals(npcSpawn.getEntityId())) {
                     if (next.getValue().isPrimary()) {
                     }
                     iterator.remove();
@@ -1325,12 +1326,12 @@ public class Player extends AetherMudEntity {
         return activeFights.size() > 0;
     }
 
-    public boolean isValidPrimaryActiveFight(Npc npc) {
+    public boolean isValidPrimaryActiveFight(NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
             for (Map.Entry<Long, ActiveFight> entry : activeFights.entrySet()) {
                 ActiveFight fight = entry.getValue();
                 Optional<String> npcIdOptional = fight.getNpcId();
-                if (npcIdOptional.isPresent() && fight.getNpcId().get().equals(npc.getEntityId()) && fight.isPrimary()) {
+                if (npcIdOptional.isPresent() && fight.getNpcId().get().equals(npcSpawn.getEntityId()) && fight.isPrimary()) {
                     return true;
                 }
             }
@@ -1367,62 +1368,62 @@ public class Player extends AetherMudEntity {
         Optional<String> npcIdOptional = activeFight.getNpcId();
         if (npcIdOptional.isPresent()) {
             String npcId = npcIdOptional.get();
-            Npc npc = gameManager.getEntityManager().getNpcEntity(npcId);
-            if (npc == null) {
+            NpcSpawn npcSpawn = gameManager.getEntityManager().getNpcEntity(npcId);
+            if (npcSpawn == null) {
                 return;
             }
 
             NpcStatsChangeBuilder npcStatsChangeBuilder = new NpcStatsChangeBuilder().setPlayer(this);
-            if (this.isValidPrimaryActiveFight(npc)) {
-                calculatePlayerDamageToNpc(playerDamageProcessor, npc, npcStatsChangeBuilder);
+            if (this.isValidPrimaryActiveFight(npcSpawn)) {
+                calculatePlayerDamageToNpc(playerDamageProcessor, npcSpawn, npcStatsChangeBuilder);
             }
 
-            if (this.doesActiveFightExist(npc)) {
-                calculateNpcDamageToPlayer(npcDamageProcessor, npc, npcStatsChangeBuilder);
+            if (this.doesActiveFightExist(npcSpawn)) {
+                calculateNpcDamageToPlayer(npcDamageProcessor, npcSpawn, npcStatsChangeBuilder);
             }
         }
 
         // IF FIGHTING PLAYER?
     }
 
-    private void calculatePlayerDamageToNpc(DamageProcessor playerDamageProcessor, Npc npc, NpcStatsChangeBuilder npcStatsChangeBuilder) {
+    private void calculatePlayerDamageToNpc(DamageProcessor playerDamageProcessor, NpcSpawn npcSpawn, NpcStatsChangeBuilder npcStatsChangeBuilder) {
         long damageToVictim = 0;
-        long chanceToHit = playerDamageProcessor.getChanceToHit(this, npc);
+        long chanceToHit = playerDamageProcessor.getChanceToHit(this, npcSpawn);
         if (randInt(0, 100) < chanceToHit) {
-            damageToVictim = playerDamageProcessor.getAttackAmount(this, npc);
+            damageToVictim = playerDamageProcessor.getAttackAmount(this, npcSpawn);
         }
         if (damageToVictim > 0) {
-            if (randInt(0, 100) > (100 - playerDamageProcessor.getCriticalChance(this, npc))) {
+            if (randInt(0, 100) > (100 - playerDamageProcessor.getCriticalChance(this, npcSpawn))) {
                 long criticalDamage = damageToVictim * 3;
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npc.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(criticalDamage) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npcSpawn.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(criticalDamage) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npcSpawn.getColorName();
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(criticalDamage)).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
             } else {
-                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npc.getColorName();
+                final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "+" + NumberFormat.getNumberInstance(Locale.US).format(damageToVictim) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npcSpawn.getColorName();
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
             }
         } else {
-            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + "You MISS " + npc.getName() + "!";
+            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + "You MISS " + npcSpawn.getName() + "!";
             npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-damageToVictim).createStats());
             npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
         }
     }
 
-    private void calculateNpcDamageToPlayer(DamageProcessor npcDamageProcessor, Npc npc, NpcStatsChangeBuilder npcStatsChangeBuilder) {
-        int chanceToHitBack = npcDamageProcessor.getChanceToHit(this, npc);
-        long damageBack = npcDamageProcessor.getAttackAmount(this, npc);
+    private void calculateNpcDamageToPlayer(DamageProcessor npcDamageProcessor, NpcSpawn npcSpawn, NpcStatsChangeBuilder npcStatsChangeBuilder) {
+        int chanceToHitBack = npcDamageProcessor.getChanceToHit(this, npcSpawn);
+        long damageBack = npcDamageProcessor.getAttackAmount(this, npcSpawn);
         if (randInt(0, 100) < chanceToHitBack) {
-            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.buildAttackMessage(this.getPlayerName()) + " -" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
+            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npcSpawn.buildAttackMessage(this.getPlayerName()) + " -" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
             npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());
             npcStatsChangeBuilder.setPlayerDamageStrings(Collections.singletonList(fightMsg));
 
         } else {
-            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npc.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
+            final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npcSpawn.getColorName() + Color.BOLD_ON + Color.CYAN + " MISSES" + Color.RESET + " you!";
             npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(0).createStats());
             npcStatsChangeBuilder.setPlayerDamageStrings(Collections.singletonList(fightMsg));
         }
-        npc.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
+        npcSpawn.addNpcDamage(npcStatsChangeBuilder.createNpcStatsChange());
     }
 
 

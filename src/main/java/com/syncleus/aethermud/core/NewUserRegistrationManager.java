@@ -24,9 +24,11 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
@@ -117,7 +119,11 @@ public class NewUserRegistrationManager {
         playerData.setPlayerId(Main.createPlayerId(session.getUsername().get()));
         playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
         playerData.setPlayerSettings(new HashMap<>());
-        playerData.setStats(DefaultStats.DEFAULT_PLAYER.createStats());
+        try {
+            BeanUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties for stats", e);
+        }
         gameManager.getPlayerManager().persist();
 
         messageEvent.getChannel().write("User created.\r\n");

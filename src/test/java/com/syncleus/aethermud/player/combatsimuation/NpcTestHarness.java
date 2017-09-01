@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.player.combat_simuation;
+package com.syncleus.aethermud.player.combatsimuation;
 
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.configuration.ConfigureCommands;
@@ -22,7 +22,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.entity.EntityManager;
 import com.syncleus.aethermud.items.Item;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.server.model.CreeperSession;
@@ -37,8 +37,13 @@ import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.syncleus.ferma.DelegatingFramedGraph;
+import com.syncleus.ferma.WrappedFramedGraph;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.configuration.MapConfiguration;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.jboss.netty.channel.Channel;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,6 +55,7 @@ import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -64,65 +70,65 @@ public class NpcTestHarness {
     // Levels 1-3
     @Test
     public void testDemonCat() throws Exception {
-        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
-        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("demon cat")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 98f, 90f, 10, 5, 3, 0);
-        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4, 3, 0);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3, 3, 0);
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("demon cat")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 98f, 90f, 10, 5, 3, 0);
+        processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4, 3, 0);
+        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3, 3, 0);
     }
 
     // Levels 2-4
     @Test
     public void testSwampBerserker() throws Exception {
-        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
-        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 10, 5);
-        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 10, 5);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 10, 5);
-        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 10, 5);
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 10, 5);
+        processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 10, 5);
+        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 10, 5);
+        processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 10, 5);
     }
 
     // Levels 2-4
     @Test
     public void testBloodWolf() throws Exception {
-        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
-        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("blood wolf")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 14, 5);
-        processRunAndVerify(npcFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 14, 5);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 14, 5);
-        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 14, 5);
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("blood wolf")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 14, 5);
+        processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 14, 5);
+        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 14, 5);
+        processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 14, 5);
     }
 
     // Levels 4-6
     @Test
     public void testTreeBerserker() throws Exception {
-        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
-        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0, 14, 8);
-        processRunAndVerify(npcFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0, 14, 8);
-        processRunAndVerify(npcFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0, 14, 8);
-        processRunAndVerify(npcFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0, 14, 8);
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0, 14, 8);
+        processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0, 14, 8);
+        processRunAndVerify(npcSpawnFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0, 14, 8);
+        processRunAndVerify(npcSpawnFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0, 14, 8);
     }
 
     // Levels 6-8
     @Test
     public void testSwampBear() throws Exception {
-        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
-        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0, 18, 12);
-        processRunAndVerify(npcFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0, 18, 12);
-        processRunAndVerify(npcFromFile, 8, getEarlyLevelArmorSet(), 95f, 86f, 10, 0, 18, 12);
-        processRunAndVerify(npcFromFile, 9, getEarlyLevelArmorSet(), 100f, 0f, 10, 0, 18, 12);
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcSpawnFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0, 18, 12);
+        processRunAndVerify(npcSpawnFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0, 18, 12);
+        processRunAndVerify(npcSpawnFromFile, 8, getEarlyLevelArmorSet(), 95f, 86f, 10, 0, 18, 12);
+        processRunAndVerify(npcSpawnFromFile, 9, getEarlyLevelArmorSet(), 100f, 0f, 10, 0, 18, 12);
     }
 
     // Levels 8-10
     @Test
     public void testRedEyeBear() throws Exception {
-        List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
-        Npc npcFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcFromFile, 8, getMidLevelArmorSet(), 55, 36f, 10, 0, 24, 18);
-        processRunAndVerify(npcFromFile, 9, getMidLevelArmorSet(), 85, 70f, 10, 0, 24, 18);
-        processRunAndVerify(npcFromFile, 10, getMidLevelArmorSet(), 100f, 0f, 10, 0, 24, 18);
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
+        processRunAndVerify(npcSpawnFromFile, 8, getMidLevelArmorSet(), 55, 36f, 10, 0, 24, 18);
+        processRunAndVerify(npcSpawnFromFile, 9, getMidLevelArmorSet(), 85, 70f, 10, 0, 24, 18);
+        processRunAndVerify(npcSpawnFromFile, 10, getMidLevelArmorSet(), 100f, 0f, 10, 0, 24, 18);
     }
 
     private Set<Item> getEarlyLevelArmorSet() {
@@ -136,8 +142,8 @@ public class NpcTestHarness {
         return armorSet;
     }
 
-    private void processRunAndVerify(Npc testNpc, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
-        CombatSimulationDetails combatSimulationDetailsLevel = new CombatSimulationDetails(desiredLevel, equipment, testNpc);
+    private void processRunAndVerify(NpcSpawn testNpcSpawn, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
+        CombatSimulationDetails combatSimulationDetailsLevel = new CombatSimulationDetails(desiredLevel, equipment, testNpcSpawn);
         CombatSimulationResult combatSimulationResultLevel = executeCombat(combatSimulationDetailsLevel);
         printCombatResults(combatSimulationDetailsLevel, combatSimulationResultLevel);
         Assert.assertTrue("player at level: " + desiredLevel + " does not win enough.", combatSimulationResultLevel.getPlayerWinPercent() >= winPctMin);
@@ -150,7 +156,7 @@ public class NpcTestHarness {
 
     public CombatSimulationResult executeCombat(CombatSimulationDetails combatSimulationDetails) throws Exception {
         Player player;
-        Npc npc = null;
+        NpcSpawn npcSpawn = null;
         int playerWins = 0;
         int npcWins = 0;
         int totalGold = 0;
@@ -159,18 +165,18 @@ public class NpcTestHarness {
         for (int i = 0; i < combatSimulationDetails.getTotalIterations(); i++) {
             player = createRandomPlayer(combatSimulationDetails.getLevel());
             equipArmor(player, combatSimulationDetails.getEquipmentSet());
-            npc = new NpcBuilder(combatSimulationDetails.getNpc()).createNpc();
-            npc.setCurrentRoom(player.getCurrentRoom());
-            gameManager.getEntityManager().addEntity(npc);
-            player.getCurrentRoom().addPresentNpc(npc.getEntityId());
-            player.addActiveFight(npc);
-            FightSimulationResult fightSimulationResult = conductFight(player, npc);
+            npcSpawn = new NpcBuilder(combatSimulationDetails.getNpcSpawn()).createNpc();
+            npcSpawn.setCurrentRoom(player.getCurrentRoom());
+            gameManager.getEntityManager().addEntity(npcSpawn);
+            player.getCurrentRoom().addPresentNpc(npcSpawn.getEntityId());
+            player.addActiveFight(npcSpawn);
+            FightSimulationResult fightSimulationResult = conductFight(player, npcSpawn);
             totalFightRounds = totalFightRounds + (fightSimulationResult.getTotalFightRounds() / Player.FIGHT_TICK_BUCKET_SIZE);
             if (fightSimulationResult.isResult()) {
                 playerWins++;
-                int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npc.getLoot());
+                int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npcSpawn.getLoot());
                 totalGold += gold;
-                Set<Item> items = gameManager.getLootManager().lootItemsReturn(npc.getLoot());
+                Set<Item> items = gameManager.getLootManager().lootItemsReturn(npcSpawn.getLoot());
                 items.forEach(item -> {
                     if (!drops.containsKey(item.getItemName())) {
                         drops.put(item.getItemName(), new AtomicInteger(1));
@@ -181,15 +187,15 @@ public class NpcTestHarness {
             } else {
                 npcWins++;
             }
-            player.getCurrentRoom().removePresentNpc(npc.getEntityId());
-            entityManager.deleteNpcEntity(npc.getEntityId());
+            player.getCurrentRoom().removePresentNpc(npcSpawn.getEntityId());
+            entityManager.deleteNpcEntity(npcSpawn.getEntityId());
             player.getCurrentRoom().removePresentPlayer(player.getPlayerId());
         }
 
         float playerWinPercent = (playerWins * 100.0f) / combatSimulationDetails.getTotalIterations();
         float npcWinPercent = (npcWins * 100.0f) / combatSimulationDetails.getTotalIterations();
         int averageRounds = totalFightRounds / combatSimulationDetails.getTotalIterations();
-        int npcExperience = Experience.calculateNpcXp(combatSimulationDetails.getLevel(), (int) Levels.getLevel(npc.getStats().getExperience()));
+        int npcExperience = Experience.calculateNpcXp(combatSimulationDetails.getLevel(), (int) Levels.getLevel(npcSpawn.getStats().getExperience()));
         int averageGoldPerWin;
         if (totalGold == 0 || playerWins == 0) {
             averageGoldPerWin = 0;
@@ -207,14 +213,14 @@ public class NpcTestHarness {
 
     }
 
-    private FightSimulationResult conductFight(Player player, Npc npc) {
+    private FightSimulationResult conductFight(Player player, NpcSpawn npcSpawn) {
         int i = 0;
         int totalFightRounds = 0;
         for (i = 0; i < 1000; i++) {
             player.run();
-            npc.run();
+            npcSpawn.run();
             totalFightRounds = totalFightRounds + 1;
-            if (!npc.getIsAlive().get()) {
+            if (!npcSpawn.getIsAlive().get()) {
                 return new FightSimulationResult(true, totalFightRounds);
             }
 
@@ -252,7 +258,7 @@ public class NpcTestHarness {
 
     public void printCombatResults(CombatSimulationDetails combatSimulationDetails, CombatSimulationResult combatSimulationResult) {
         Table t = configureTableOutput();
-        t.addCell(combatSimulationDetails.getNpc().getName());
+        t.addCell(combatSimulationDetails.getNpcSpawn().getName());
         t.addCell(String.valueOf(combatSimulationDetails.getLevel()));
         t.addCell(String.valueOf(combatSimulationResult.getPlayerWinPercent()) + "%");
         t.addCell(String.valueOf(combatSimulationResult.getNpcWinPercent()) + "%");
@@ -304,7 +310,11 @@ public class NpcTestHarness {
         playerData.setPlayerId(Main.createPlayerId(username));
         playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
         playerData.setPlayerSettings(new HashMap<>());
-        playerData.setStats(DefaultStats.DEFAULT_PLAYER.createStats());
+        try {
+            BeanUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not create a stats object", e);
+        }
     }
 
     @Before
@@ -322,12 +332,13 @@ public class NpcTestHarness {
         };
         AetherMudConfiguration aetherMudConfiguration = new AetherMudConfiguration(new MapConfiguration(Maps.newHashMap()));
         DB db = DBMaker.memoryDB().transactionEnable().closeOnJvmShutdown().make();
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db);
+        WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, framedGraph);
         PlayerManager playerManager = new PlayerManager(graphStorage, new SessionManager());
         RoomManager roomManager = new RoomManager(playerManager);
         MapsManager mapsManager = new MapsManager(aetherMudConfiguration, roomManager);
         EntityManager entityManager = new EntityManager(graphStorage, roomManager, playerManager);
-        GameManager gameManager = new GameManager(null, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
+        GameManager gameManager = new GameManager(null, framedGraph, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
         WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.buildTestworld();
         ConfigureCommands.configure(gameManager);

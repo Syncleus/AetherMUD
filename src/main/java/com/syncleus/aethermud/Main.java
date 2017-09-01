@@ -31,18 +31,24 @@ import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.server.communication.ChannelUtils;
 import com.syncleus.aethermud.server.telnet.AetherMudServer;
 import com.syncleus.aethermud.storage.WorldStorage;
-import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.*;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.io.Files;
+import com.syncleus.ferma.DelegatingFramedGraph;
+import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.*;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
+import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.structure.io.IoCore;
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +60,8 @@ public class Main {
     final public static MetricRegistry metrics = new MetricRegistry();
 
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
+    public static final String DEFAULT_GRAPH_DB_FILE = "aethermud-graph.json";
+    public static final Set<Class<?>> FRAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new Class<?>[]{PlayerData.class, NpcData.class, StatsData.class})));
 
     public static String getCreeperVersion() {
 
@@ -90,7 +98,18 @@ public class Main {
                 .closeOnJvmShutdown()
                 .make();
 
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db);
+        Graph graph = TinkerGraph.open();
+        File f = new File(DEFAULT_GRAPH_DB_FILE);
+        if(f.exists() && !f.isDirectory()) {
+            try {
+                graph.io(IoCore.graphson()).readGraph(DEFAULT_GRAPH_DB_FILE);
+            } catch (IOException e) {
+                throw new IllegalStateException("Could not read from graph file despite being present.", e);
+            }
+        }
+        WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(graph, FRAMED_TYPES);
+
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, framedGraph);
         graphStorage.startAsync();
         graphStorage.awaitRunning();
 
@@ -103,7 +122,7 @@ public class Main {
         MapsManager mapsManager = new MapsManager(aetherMudConfiguration, roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
         EntityManager entityManager = new EntityManager(graphStorage, roomManager, playerManager);
-        GameManager gameManager = new GameManager(graphStorage, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
+        GameManager gameManager = new GameManager(graphStorage, framedGraph, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
 
         startUpMessage("Reading world from disk.");
         WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);

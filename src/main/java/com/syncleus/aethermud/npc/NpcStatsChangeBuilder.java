@@ -17,6 +17,7 @@ package com.syncleus.aethermud.npc;
 
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 
 import java.util.List;
 

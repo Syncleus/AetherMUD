@@ -18,7 +18,7 @@ package com.syncleus.aethermud.command.commands.admin;
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.server.communication.Color;
@@ -45,24 +45,24 @@ public class SpawnCommand  extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            List<Npc> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+            List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
             if (originalMessageParts.size() == 1) {
                 write(getHeader());
-                for (Npc npc: npcsFromFile) {
-                    write(npc.getName() + "\r\n");
+                for (NpcSpawn npcSpawn : npcsFromFile) {
+                    write(npcSpawn.getName() + "\r\n");
                 }
             } else {
                 originalMessageParts.remove(0);
                 String targetNpc = Joiner.on(" ").join(originalMessageParts);
-                for (Npc npc: npcsFromFile) {
-                    if (targetNpc.equals(npc.getName())) {
+                for (NpcSpawn npcSpawn : npcsFromFile) {
+                    if (targetNpc.equals(npcSpawn.getName())) {
                         Loot loot = new Loot(0,0, Sets.newHashSet());
-                        Npc modifiedNpc = new NpcBuilder(npc).setSpawnRules(null).setLoot(loot).createNpc();
-                        modifiedNpc.getStats().setExperience(0);
-                        modifiedNpc.setCurrentRoom(currentRoom);
-                        gameManager.getEntityManager().addEntity(modifiedNpc);
-                        currentRoom.addPresentNpc(modifiedNpc.getEntityId());
-                        writeToRoom("A " + modifiedNpc.getColorName() + " appears." + "\r\n");
+                        NpcSpawn modifiedNpcSpawn = new NpcBuilder(npcSpawn).setSpawnRules(null).setLoot(loot).createNpc();
+                        modifiedNpcSpawn.getStats().setExperience(0);
+                        modifiedNpcSpawn.setCurrentRoom(currentRoom);
+                        gameManager.getEntityManager().addEntity(modifiedNpcSpawn);
+                        currentRoom.addPresentNpc(modifiedNpcSpawn.getEntityId());
+                        writeToRoom("A " + modifiedNpcSpawn.getColorName() + " appears." + "\r\n");
                         return;
                     }
                 }

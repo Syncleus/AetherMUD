@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.storage;
+package com.syncleus.aethermud.npc;
 
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.spawner.SpawnRule;
-import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.world.model.Area;
 
 import java.util.Set;
 
-public class NpcMetadata {
+public class NpcPojo implements Npc {
 
     private String name;
     private String colorName;
-    private Stats stats;
+    private StatsData stats;
     private String dieMessage;
     private Temperament temperament;
     private Set<Area> roamAreas;
@@ -44,7 +43,7 @@ public class NpcMetadata {
     // Things that npcs say randomly when idle
     private Set<AetherMudMessage> idleMessages;
 
-    public NpcMetadata() {
+    public NpcPojo() {
     }
 
     public Set<AetherMudMessage> getCriticalAttackMessages() {
@@ -95,11 +94,11 @@ public class NpcMetadata {
         this.colorName = colorName;
     }
 
-    public Stats getStats() {
+    public StatsData getStats() {
         return stats;
     }
 
-    public void setStats(Stats stats) {
+    public void setStats(StatsData stats) {
         this.stats = stats;
     }
 
@@ -151,5 +150,4 @@ public class NpcMetadata {
         this.loot = loot;
     }
 }
-
 

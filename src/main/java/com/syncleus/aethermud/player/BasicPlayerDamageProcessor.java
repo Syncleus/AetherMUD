@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.player;
 
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.stats.Stats;
 
 import java.util.Random;
@@ -25,9 +25,9 @@ public class BasicPlayerDamageProcessor implements DamageProcessor {
     private final Random random = new Random();
 
     @Override
-    public long getAttackAmount(Player player, Npc npc) {
+    public long getAttackAmount(Player player, NpcSpawn npcSpawn) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
-        Stats npcStats = npc.getStats();
+        Stats npcStats = npcSpawn.getStats();
         long rolls = 0;
         long totDamage = 0;
         while (rolls <= playerStats.getNumberOfWeaponRolls()) {
@@ -43,14 +43,14 @@ public class BasicPlayerDamageProcessor implements DamageProcessor {
     }
 
     @Override
-    public int getChanceToHit(Player player, Npc npc) {
+    public int getChanceToHit(Player player, NpcSpawn npcSpawn) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
-        Stats npcStats = npc.getStats();
+        Stats npcStats = npcSpawn.getStats();
         return (int) ((playerStats.getStrength() + playerStats.getMeleSkill()) * 5 - npcStats.getAgile() * 5);
     }
 
     @Override
-    public int getCriticalChance(Player player, Npc npc) {
+    public int getCriticalChance(Player player, NpcSpawn npcSpawn) {
         //y =.20({x}) + 0
         return (int) (5 + (.20f * player.getPlayerStatsWithEquipmentAndLevel().getAim()));
     }

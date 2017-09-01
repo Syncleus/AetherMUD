@@ -19,7 +19,7 @@ import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemBuilder;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.storage.AetherMudStorage;
@@ -44,7 +44,7 @@ public class EntityManager {
     private final AetherMudStorage aetherMudStorage;
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
-    private final Map<String, Npc> npcs = new ConcurrentHashMap<>();
+    private final Map<String, NpcSpawn> npcs = new ConcurrentHashMap<>();
     private final Map<String, AetherMudEntity> entities = new ConcurrentHashMap<>();
     private final ExecutorService mainTickExecutorService = Executors.newFixedThreadPool(50);
 
@@ -59,7 +59,7 @@ public class EntityManager {
         tickOrchestratorService.submit(new EntityTicker());
     }
 
-    public Map<String, Npc> getNpcs() {
+    public Map<String, NpcSpawn> getNpcs() {
         return npcs;
     }
 
@@ -68,9 +68,9 @@ public class EntityManager {
     }
 
     public void addEntity(AetherMudEntity aetherMudEntity) {
-        if (aetherMudEntity instanceof Npc) {
-            Npc npc = (Npc) aetherMudEntity;
-            npcs.put(aetherMudEntity.getEntityId(), npc);
+        if (aetherMudEntity instanceof NpcSpawn) {
+            NpcSpawn npcSpawn = (NpcSpawn) aetherMudEntity;
+            npcs.put(aetherMudEntity.getEntityId(), npcSpawn);
         } else if (aetherMudEntity instanceof Room) {
             roomManager.addRoom((Room) aetherMudEntity);
         } else {
@@ -99,7 +99,7 @@ public class EntityManager {
         npcs.remove(npcId);
     }
 
-    public Npc getNpcEntity(String npcId) {
+    public NpcSpawn getNpcEntity(String npcId) {
         return npcs.get(npcId);
     }
 
@@ -159,7 +159,7 @@ public class EntityManager {
             while (true) {
                 try {
                     final com.codahale.metrics.Timer.Context context = ticktime.time();
-                    for (Map.Entry<String, Npc> next : npcs.entrySet()) {
+                    for (Map.Entry<String, NpcSpawn> next : npcs.entrySet()) {
                         mainTickExecutorService.submit(next.getValue());
                     }
                     context.stop();

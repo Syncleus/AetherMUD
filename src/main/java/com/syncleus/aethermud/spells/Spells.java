@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.spells;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
@@ -33,7 +33,7 @@ public class Spells {
         this.gameManager = gameManager;
     }
 
-    public void executeSpell(Player sourcePlayer, Optional<Npc> destinationNpc, Optional<Player> destinationPlayer, SpellRunnable spellRunnable) {
+    public void executeSpell(Player sourcePlayer, Optional<NpcSpawn> destinationNpc, Optional<Player> destinationPlayer, SpellRunnable spellRunnable) {
         try {
             spellRunnable.run(sourcePlayer, destinationNpc, destinationPlayer, gameManager);
         } catch (Exception e) {

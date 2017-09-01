@@ -44,20 +44,20 @@ public class NpcMover {
     }
 
     public void roam(String npcId) {
-        final Npc npcEntity = gameManager.getEntityManager().getNpcEntity(npcId);
-        if (npcEntity == null) {
+        final NpcSpawn npcSpawnEntity = gameManager.getEntityManager().getNpcEntity(npcId);
+        if (npcSpawnEntity == null) {
             return;
         }
-        if (!gameManager.getRoomManager().getNpcCurrentRoom(npcEntity).isPresent()) {
+        if (!gameManager.getRoomManager().getNpcCurrentRoom(npcSpawnEntity).isPresent()) {
             return;
         }
-        Room npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(npcEntity).get();
+        Room npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(npcSpawnEntity).get();
         Set<Integer> possibleExits = getPossibleExits(npcCurrentRoom);
         Predicate<Integer> roamableByArea = roomId -> {
             Room room = gameManager.getRoomManager().getRoom(roomId);
             for (Area roomArea : room.getAreas()) {
-                if (npcEntity.getRoamAreas().contains(roomArea)) {
-                    if (doesRoomHaveEmptyNpcsSpots(room, npcEntity, roomArea)){
+                if (npcSpawnEntity.getRoamAreas().contains(roomArea)) {
+                    if (doesRoomHaveEmptyNpcsSpots(room, npcSpawnEntity, roomArea)){
                         return true;
                     }
                 }
@@ -71,23 +71,23 @@ public class NpcMover {
         Integer destinationRoomId = canRoam.get(random.nextInt(canRoam.size()));
         String exitMessage = getExitMessage(npcCurrentRoom, destinationRoomId);
         npcCurrentRoom.getNpcIds().remove(npcId);
-        gameManager.roomSay(npcCurrentRoom.getRoomId(), npcEntity.getColorName() + " " + exitMessage, "");
+        gameManager.roomSay(npcCurrentRoom.getRoomId(), npcSpawnEntity.getColorName() + " " + exitMessage, "");
         Room destinationRoom = gameManager.getRoomManager().getRoom(destinationRoomId);
-        npcEntity.setCurrentRoom(destinationRoom);
+        npcSpawnEntity.setCurrentRoom(destinationRoom);
         destinationRoom.getNpcIds().add(npcId);
-        npcEntity.addCoolDown(new CoolDown(CoolDownType.NPC_ROAM));
-        gameManager.roomSay(destinationRoomId, npcEntity.getColorName() + " has arrived.", "");
+        npcSpawnEntity.addCoolDown(new CoolDown(CoolDownType.NPC_ROAM));
+        gameManager.roomSay(destinationRoomId, npcSpawnEntity.getColorName() + " has arrived.", "");
         destinationRoom.getPresentPlayers().forEach(Player::processNpcAggro);
     }
 
-    private boolean doesRoomHaveEmptyNpcsSpots(Room room, Npc npc, Area area) {
-        Set<Area> roamAreas = npc.getRoamAreas();
+    private boolean doesRoomHaveEmptyNpcsSpots(Room room, NpcSpawn npcSpawn, Area area) {
+        Set<Area> roamAreas = npcSpawn.getRoamAreas();
         for (Area ar : roamAreas) {
             if (ar.equals(area)) {
-                Optional<SpawnRule> spawnRuleByArea = npc.getSpawnRuleByArea(area);
+                Optional<SpawnRule> spawnRuleByArea = npcSpawn.getSpawnRuleByArea(area);
                 if (spawnRuleByArea.isPresent()) {
                     int maxPerRoom = spawnRuleByArea.get().getMaxPerRoom();
-                    int numberOfNpcInRoom = numberOfNpcInRoom(npc, room);
+                    int numberOfNpcInRoom = numberOfNpcInRoom(npcSpawn, room);
                     if (numberOfNpcInRoom < maxPerRoom) {
                         return true;
                     }
@@ -97,14 +97,14 @@ public class NpcMover {
         return false;
     }
 
-    private int numberOfNpcInRoom(Npc npc, Room room) {
+    private int numberOfNpcInRoom(NpcSpawn npcSpawn, Room room) {
         int count = 0;
         for (String npcId : room.getNpcIds()) {
-            Npc npcEntity = gameManager.getEntityManager().getNpcEntity(npcId);
-            if (npcEntity == null) {
+            NpcSpawn npcSpawnEntity = gameManager.getEntityManager().getNpcEntity(npcId);
+            if (npcSpawnEntity == null) {
                 continue;
             }
-            if (npc.getName().equals(npcEntity.getName())) {
+            if (npcSpawn.getName().equals(npcSpawnEntity.getName())) {
                 count++;
             }
         }

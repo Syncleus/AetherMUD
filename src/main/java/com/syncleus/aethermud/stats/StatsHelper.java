@@ -15,6 +15,8 @@
  */
 package com.syncleus.aethermud.stats;
 
+import com.syncleus.aethermud.storage.graphdb.StatsData;
+
 public class StatsHelper {
 
     public static Stats getDifference(Stats modifiedStats, Stats origStats) {

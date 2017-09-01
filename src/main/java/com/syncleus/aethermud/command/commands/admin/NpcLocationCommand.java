@@ -17,7 +17,7 @@ package com.syncleus.aethermud.command.commands.admin;
 
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.world.model.Area;
@@ -44,14 +44,14 @@ public class NpcLocationCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
             Map<String, Set<Room>> npcMap = Maps.newTreeMap();
-            Iterator<Map.Entry<String, Npc>> iterator = entityManager.getNpcs().entrySet().iterator();
+            Iterator<Map.Entry<String, NpcSpawn>> iterator = entityManager.getNpcs().entrySet().iterator();
             while (iterator.hasNext()) {
-                Map.Entry<String, Npc> next = iterator.next();
-                Npc npc = next.getValue();
-                if (npcMap.get(npc.getColorName()) == null) {
-                    npcMap.put(npc.getColorName(), Sets.newHashSet(npc.getCurrentRoom()));
+                Map.Entry<String, NpcSpawn> next = iterator.next();
+                NpcSpawn npcSpawn = next.getValue();
+                if (npcMap.get(npcSpawn.getColorName()) == null) {
+                    npcMap.put(npcSpawn.getColorName(), Sets.newHashSet(npcSpawn.getCurrentRoom()));
                 } else {
-                    npcMap.get(npc.getColorName()).add(npc.getCurrentRoom());
+                    npcMap.get(npcSpawn.getColorName()).add(npcSpawn.getCurrentRoom());
                 }
             }
             Iterator<Map.Entry<String, Set<Room>>> iterator1 = npcMap.entrySet().iterator();

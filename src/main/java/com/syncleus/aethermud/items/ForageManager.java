@@ -21,6 +21,7 @@ import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.log4j.Logger;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.player.combat_simuation;
+package com.syncleus.aethermud.player.combatsimuation;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;

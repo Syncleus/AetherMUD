@@ -16,13 +16,14 @@
 package com.syncleus.aethermud.storage;
 
 
+import com.google.common.util.concurrent.Service;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 
 import java.util.Map;
 import java.util.Optional;
 
-public interface AetherMudStorage {
+public interface AetherMudStorage extends Service{
 
     PlayerData newPlayerData();
 

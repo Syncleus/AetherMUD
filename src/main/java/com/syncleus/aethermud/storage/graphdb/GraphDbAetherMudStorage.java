@@ -16,6 +16,7 @@
 package com.syncleus.aethermud.storage.graphdb;
 
 import com.google.common.util.concurrent.AbstractIdleService;
+import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.player.PlayerRole;
@@ -25,24 +26,21 @@ import com.syncleus.aethermud.storage.ItemSerializer;
 import com.syncleus.aethermud.storage.MapDbAutoCommitService;
 import com.syncleus.ferma.DelegatingFramedGraph;
 import com.syncleus.ferma.FramedGraph;
+import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 //TODO : multiple instances of this class could create conflicts in the DB
 public class GraphDbAetherMudStorage extends AbstractIdleService implements AetherMudStorage {
-    private static final Set<Class<?>> TEST_TYPES = new HashSet<>(Arrays.asList(new Class<?>[]{PlayerData.class}));
-    private static final String DEFAULT_FLAT_FILE = "aethermud-graph.json";
 
-    private final Graph graph = TinkerGraph.open();
-    private final FramedGraph framedGraph = new DelegatingFramedGraph(graph, TEST_TYPES);
+
+    private final WrappedFramedGraph<Graph> framedGraph;
     private final DB db;
     private final MapDbAutoCommitService mapDbAutoCommitService;
 
@@ -53,11 +51,11 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
     private final static String EFFECTS_MAP = "effectsMap";
     private final boolean autoPersist;
 
-    public GraphDbAetherMudStorage(DB db){
-        this(db, true);
+    public GraphDbAetherMudStorage(DB db, WrappedFramedGraph<Graph> framedGraph){
+        this(db, framedGraph, true);
     }
 
-    public GraphDbAetherMudStorage(DB db, boolean autoPersist) {
+    public GraphDbAetherMudStorage(DB db, WrappedFramedGraph<Graph> framedGraph, boolean autoPersist) {
         this.db = db;
         this.autoPersist = autoPersist;
         this.items = db.hashMap(ITEM_MAP)
@@ -72,14 +70,7 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
 
         this.mapDbAutoCommitService = new MapDbAutoCommitService(db);
 
-        File f = new File(DEFAULT_FLAT_FILE);
-        if(f.exists() && !f.isDirectory()) {
-            try {
-                graph.io(IoCore.graphson()).readGraph(DEFAULT_FLAT_FILE);
-            } catch (IOException e) {
-                throw new IllegalStateException("Could not read from graph file despite being present.", e);
-            }
-        }
+        this.framedGraph = framedGraph;
     }
 
     @Override
@@ -138,10 +129,9 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
         this.items.remove(itemId);
     }
 
-    @Override
     public void persist() {
         try {
-            graph.io(IoCore.graphson()).writeGraph(DEFAULT_FLAT_FILE);
+            this.framedGraph.getBaseGraph().io(IoCore.graphson()).writeGraph(Main.DEFAULT_GRAPH_DB_FILE);
         } catch (IOException e) {
             throw new IllegalStateException("Could not write to graph file.", e);
         }

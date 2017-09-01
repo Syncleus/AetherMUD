@@ -20,7 +20,9 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.NpcMetadata;
+import com.syncleus.aethermud.stats.StatsPojo;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
+import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.syncleus.aethermud.world.model.Area;
 
 import java.util.Set;
@@ -51,38 +53,38 @@ public class NpcBuilder {
     public NpcBuilder() {
     }
 
-    public NpcBuilder(Npc npc) {
-        this.name = npc.getName();
-        this.colorName = npc.getColorName();
-        this.lastPhraseTimestamp = npc.getLastPhraseTimestamp();
-        this.stats = new Stats(npc.getStats());
-        this.dieMessage = npc.getDieMessage();
-        this.roamAreas = npc.getRoamAreas();
-        this.validTriggers = npc.getValidTriggers();
-        this.loot = npc.getLoot();
-        this.spawnRules = npc.getSpawnRules();
-        this.gameManager = npc.getGameManager();
-        this.temperament = npc.getTemperament();
-        this.attackMessages = npc.getAttackMessages();
-        this.criticalAttackMessages = npc.getCriticalAttackMessages();
-        this.battleMessages = npc.getBattleMessages();
-        this.idleMessages = npc.getIdleMessages();
+    public NpcBuilder(NpcSpawn npcSpawn) {
+        this.name = npcSpawn.getName();
+        this.colorName = npcSpawn.getColorName();
+        this.lastPhraseTimestamp = npcSpawn.getLastPhraseTimestamp();
+        this.stats = new StatsPojo(npcSpawn.getStats());
+        this.dieMessage = npcSpawn.getDieMessage();
+        this.roamAreas = npcSpawn.getRoamAreas();
+        this.validTriggers = npcSpawn.getValidTriggers();
+        this.loot = npcSpawn.getLoot();
+        this.spawnRules = npcSpawn.getSpawnRules();
+        this.gameManager = npcSpawn.getGameManager();
+        this.temperament = npcSpawn.getTemperament();
+        this.attackMessages = npcSpawn.getAttackMessages();
+        this.criticalAttackMessages = npcSpawn.getCriticalAttackMessages();
+        this.battleMessages = npcSpawn.getBattleMessages();
+        this.idleMessages = npcSpawn.getIdleMessages();
     }
 
-    public NpcBuilder(NpcMetadata npcMetadata) {
-        this.name = npcMetadata.getName();
-        this.colorName = npcMetadata.getColorName();
-        this.stats = new Stats(npcMetadata.getStats());
-        this.dieMessage = npcMetadata.getDieMessage();
-        this.roamAreas = npcMetadata.getRoamAreas();
-        this.validTriggers = npcMetadata.getValidTriggers();
-        this.loot = npcMetadata.getLoot();
-        this.spawnRules = npcMetadata.getSpawnRules();
-        this.temperament = npcMetadata.getTemperament();
-        this.attackMessages = npcMetadata.getAttackMessages();
-        this.criticalAttackMessages = npcMetadata.getCriticalAttackMessages();
-        this.battleMessages = npcMetadata.getBattleMessages();
-        this.idleMessages = npcMetadata.getIdleMessages();
+    public NpcBuilder(NpcData npcData) {
+        this.name = npcData.getName();
+        this.colorName = npcData.getColorName();
+        this.stats = new StatsPojo(npcData.getStats());
+        this.dieMessage = npcData.getDieMessage();
+        this.roamAreas = npcData.getRoamAreas();
+        this.validTriggers = npcData.getValidTriggers();
+        this.loot = npcData.getLoot();
+        this.spawnRules = npcData.getSpawnRules();
+        this.temperament = npcData.getTemperament();
+        this.attackMessages = npcData.getAttackMessages();
+        this.criticalAttackMessages = npcData.getCriticalAttackMessages();
+        this.battleMessages = npcData.getBattleMessages();
+        this.idleMessages = npcData.getIdleMessages();
     }
 
     public NpcBuilder setGameManager(GameManager gameManager) {
@@ -105,7 +107,7 @@ public class NpcBuilder {
         return this;
     }
 
-    public NpcBuilder setStats(Stats stats) {
+    public NpcBuilder setStats(StatsData stats) {
         this.stats = stats;
         return this;
     }
@@ -160,13 +162,13 @@ public class NpcBuilder {
         return this;
     }
 
-    public Npc createNpc() {
+    public NpcSpawn createNpc() {
         checkNotNull(gameManager);
         if (loot != null ) {
             if (loot.getLootGoldMin() > loot.getLootGoldMax()) {
                 throw new RuntimeException("Invalid loot configuration.");
             }
         }
-        return new Npc(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules, attackMessages, criticalAttackMessages, battleMessages, idleMessages);
+        return new NpcSpawn(gameManager, name, colorName, lastPhraseTimestamp, stats, dieMessage, temperament, roamAreas, validTriggers, loot, spawnRules, attackMessages, criticalAttackMessages, battleMessages, idleMessages);
     }
 }

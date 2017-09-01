@@ -19,6 +19,8 @@ package com.syncleus.aethermud.items;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.stats.StatsPojo;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.google.common.collect.Sets;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public class ItemMetadata {
     private boolean isDisposable;
     private int maxUses;
     private Set<SpawnRule> spawnRules;
-    private Stats itemApplyStats;
+    private StatsPojo itemApplyStats;
     private Set<Forage> forages;
 
     public Set<Forage> getForages() {
@@ -59,11 +61,11 @@ public class ItemMetadata {
         this.forages = forages;
     }
 
-    public Stats getItemApplyStats() {
+    public StatsPojo getItemApplyStats() {
         return itemApplyStats;
     }
 
-    public void setItemApplyStats(Stats itemApplyStats) {
+    public void setItemApplyStats(StatsPojo itemApplyStats) {
         this.itemApplyStats = itemApplyStats;
     }
 

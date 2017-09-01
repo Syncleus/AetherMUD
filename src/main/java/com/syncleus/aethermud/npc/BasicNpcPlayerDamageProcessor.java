@@ -27,9 +27,9 @@ public class BasicNpcPlayerDamageProcessor implements DamageProcessor {
     private final Random random = new Random();
 
     @Override
-    public long getAttackAmount(Player player, Npc npc) {
+    public long getAttackAmount(Player player, NpcSpawn npcSpawn) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
-        Stats npcStats = npc.getStats();
+        Stats npcStats = npcSpawn.getStats();
         long rolls = 0;
         long totDamage = 0;
         while (rolls <= npcStats.getNumberOfWeaponRolls()) {
@@ -45,16 +45,16 @@ public class BasicNpcPlayerDamageProcessor implements DamageProcessor {
     }
 
     @Override
-    public int getChanceToHit(Player player, Npc npc) {
+    public int getChanceToHit(Player player, NpcSpawn npcSpawn) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
-        Stats npcStats = npc.getStats();
+        Stats npcStats = npcSpawn.getStats();
         return (int) ((npcStats.getStrength() + npcStats.getMeleSkill()) * 5 - playerStats.getAgile() * 5);
     }
 
     @Override
-    public int getCriticalChance(Player player, Npc npc) {
+    public int getCriticalChance(Player player, NpcSpawn npcSpawn) {
         //y =.20({x}) + 0
-        return (int) (5 + (.20f * npc.getStats().getAim()));
+        return (int) (5 + (.20f * npcSpawn.getStats().getAim()));
     }
 
     private int randInt(int min, int max) {

@@ -21,7 +21,7 @@ import com.syncleus.aethermud.entity.AetherMudEntity;
 import com.syncleus.aethermud.items.Forage;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.merchant.Merchant;
-import com.syncleus.aethermud.npc.Npc;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.spawner.ItemSpawner;
 import com.google.common.collect.ImmutableSet;
@@ -288,7 +288,7 @@ public abstract class Room extends AetherMudEntity {
         return gameManager;
     }
 
-    public List<Npc> getPresentNpcs() {
+    public List<NpcSpawn> getPresentNpcs() {
         return npcIds.stream().map(s -> gameManager.getEntityManager().getNpcEntity(s)).collect(Collectors.toList());
     }
 
