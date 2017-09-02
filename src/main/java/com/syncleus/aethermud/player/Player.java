@@ -200,11 +200,11 @@ public class Player extends AetherMudEntity {
                 PlayerData playerData = playerMetadataOptional.get();
                 int newGold = playerData.getGold() / 2;
                 playerData.setGold(newGold);
-                gameManager.getPlayerManager().newPlayerData();
                 if (newGold > 0) {
                     gameManager.getChannelUtils().write(getPlayerId(), "You just " + Color.BOLD_ON + Color.RED + "lost " + Color.RESET + newGold + Color.YELLOW + " gold" + Color.RESET + "!\r\n");
                 }
                 removeActiveAlertStatus();
+                savePlayerMetadata();
                 CoolDownPojo death = new CoolDownPojo(CoolDownType.DEATH);
                 addCoolDown(death);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
@@ -226,7 +226,7 @@ public class Player extends AetherMudEntity {
             PlayerData playerData = playerMetadataOptional.get();
             if (amount > 0) {
                 addHealth(amount, playerData);
-                gameManager.getPlayerManager().newPlayerData();
+                savePlayerMetadata();
                 return false;
             } else {
                 StatsData stats = playerData.getStats();
@@ -235,7 +235,7 @@ public class Player extends AetherMudEntity {
                 } else {
                     stats.setCurrentHealth(stats.getCurrentHealth() + amount);
                 }
-                gameManager.getPlayerManager().newPlayerData();
+                savePlayerMetadata();
                 if (playerData.getStats().getCurrentHealth() == 0) {
                     killPlayer(npcSpawn);
                     return true;
@@ -403,7 +403,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.resetEffects();
-            gameManager.getPlayerManager().newPlayerData();
+            savePlayerMetadata();
         }
     }
 

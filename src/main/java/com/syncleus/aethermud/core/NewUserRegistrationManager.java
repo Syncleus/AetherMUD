@@ -114,7 +114,8 @@ public class NewUserRegistrationManager {
         playerData.setPlayerClass(PlayerClass.BASIC);
         playerData.setPlayerEquipment(new ArrayList<>());
         playerData.setPlayerId(Main.createPlayerId(session.getUsername().get()));
-        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
+        // TODO : remove this, not all players should be admins
+        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL, PlayerRole.ADMIN, PlayerRole.GOD, PlayerRole.TELEPORTER));
         playerData.setPlayerSettings(new HashMap<>());
         try {
             BeanUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());

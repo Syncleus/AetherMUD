@@ -51,7 +51,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.setIsMarkedForDelete(isMark);
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -94,7 +94,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.setGoldInBank(amt);
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -107,7 +107,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.setGold(amt);
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -120,7 +120,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.getStats().setCurrentHealth(amt);
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -148,7 +148,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.setPassword(password);
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -161,7 +161,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.getStats().setCurrentMana(amt);
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -199,7 +199,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.getStats().setExperience(amt);
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -230,7 +230,7 @@ public class PlayerManagement implements PlayerManagementMBean {
                 }
                 playerData.addPlayerRole(byType);
             }
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 
@@ -310,7 +310,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.addInventoryEntityId(item.getItemId());
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
         final String msgWithoutColorCodes = item.getItemName().replaceAll("\u001B\\[[;\\d]*m", "");
         return msgWithoutColorCodes + " created.";
@@ -329,7 +329,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.setPlayerClass(collect.get(0));
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
 
     }
@@ -354,7 +354,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             PlayerData playerData = playerMetadataOptional.get();
             playerData.resetCoolDowns();
 
-            gameManager.getPlayerManager().newPlayerData();
+            gameManager.getPlayerManager().persist();
         }
     }
 

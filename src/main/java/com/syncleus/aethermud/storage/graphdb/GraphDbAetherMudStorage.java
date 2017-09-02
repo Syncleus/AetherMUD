@@ -75,16 +75,7 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
 
     @Override
     public PlayerData newPlayerData(){
-        PlayerData playerData = framedGraph.addFramedVertex(PlayerData.class);
-
-        // TODO : remove this, not all players should be admins
-        Set<PlayerRole> roles = new HashSet<>(3);
-        roles.add(PlayerRole.ADMIN);
-        roles.add(PlayerRole.GOD);
-        roles.add(PlayerRole.TELEPORTER);
-        playerData.setPlayerRoleSet(roles);
-
-        return playerData;
+        return framedGraph.addFramedVertex(PlayerData.class);
     }
 
     @Override
