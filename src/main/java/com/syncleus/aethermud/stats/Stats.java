@@ -52,7 +52,7 @@ public interface Stats {
 
     Integer getMeleSkill();
 
-    void setMeleSkill(int meleSkill);
+    void setMeleeSkill(int meleSkill);
 
     Integer getCurrentHealth();
 

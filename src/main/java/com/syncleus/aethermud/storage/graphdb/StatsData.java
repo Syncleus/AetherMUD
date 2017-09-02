@@ -90,7 +90,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("meleSkill")
-    public abstract void setMeleSkill(int meleSkill);
+    public abstract void setMeleeSkill(int meleSkill);
 
     @Override
     @Property("currentHealth")

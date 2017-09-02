@@ -138,8 +138,10 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
 
         }
 
-        if( stats == null )
+        if( stats == null ) {
+            this.createStats();
             return;
+        }
 
         StatsData statsData;
         if( stats instanceof StatsData ) {
@@ -158,6 +160,24 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
         if( this.getStats() != null )
             throw new IllegalStateException("Already has stats, can't create another");
         final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        stats.setAgile(0);
+        stats.setAim(0);
+        stats.setArmorRating(0);
+        stats.setCurrentHealth(0);
+        stats.setCurrentMana(0);
+        stats.setExperience(0);
+        stats.setForaging(0);
+        stats.setIntelligence(0);
+        stats.setInventorySize(0);
+        stats.setMaxEffects(0);
+        stats.setMaxHealth(0);
+        stats.setMaxMana(0);
+        stats.setMeleeSkill(0);
+        stats.setNumberOfWeaponRolls(0);
+        stats.setStrength(0);
+        stats.setWeaponRatingMax(0);
+        stats.setWeaponRatingMin(0);
+        stats.setWillpower(0);
         this.setStats(stats);
         return stats;
     }

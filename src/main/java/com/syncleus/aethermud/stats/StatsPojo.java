@@ -36,25 +36,24 @@ public class StatsPojo implements Stats {
     private int maxEffects;
 
     public StatsPojo(Stats stats) {
-        this.strength = stats.getStrength();
-        this.intelligence = stats.getIntelligence();
-        this.willpower = stats.getWillpower();
-        this.aim = stats.getAim();
-        this.agile = stats.getAgile();
-        this.armorRating = stats.getArmorRating();
-        this.meleSkill = stats.getMeleSkill();
-        this.currentHealth = stats.getCurrentHealth();
-        this.maxHealth = stats.getMaxHealth();
-        this.maxHealth = stats.getMaxHealth();
-        this.weaponRatingMax = stats.getWeaponRatingMax();
-        this.weaponRatingMin = stats.getWeaponRatingMin();
-        this.numberOfWeaponRolls = stats.getNumberOfWeaponRolls();
-        this.experience = stats.getExperience();
-        this.currentMana = stats.getCurrentMana();
-        this.foraging = stats.getForaging();
-        this.maxMana = stats.getMaxMana();
-        this.inventorySize = stats.getInventorySize();
-        this.maxEffects = stats.getMaxEffects();
+        this.strength = ( stats == null ? 0 : getStrength());
+        this.intelligence = ( stats == null ? 0 : getIntelligence());
+        this.willpower = ( stats == null ? 0 : getWillpower());
+        this.aim = ( stats == null ? 0 : getAim());
+        this.agile = ( stats == null ? 0 : getAgile());
+        this.armorRating = ( stats == null ? 0 : getArmorRating());
+        this.meleSkill = ( stats == null ? 0 : getMeleSkill());
+        this.currentHealth = ( stats == null ? 0 : getCurrentHealth());
+        this.maxHealth = ( stats == null ? 0 : getMaxHealth());
+        this.weaponRatingMax = ( stats == null ? 0 : getWeaponRatingMax());
+        this.weaponRatingMin = ( stats == null ? 0 : getWeaponRatingMin());
+        this.numberOfWeaponRolls = ( stats == null ? 0 : getNumberOfWeaponRolls());
+        this.experience = ( stats == null ? 0 : getExperience());
+        this.currentMana = ( stats == null ? 0 : getCurrentMana());
+        this.foraging = ( stats == null ? 0 : getForaging());
+        this.maxMana = ( stats == null ? 0 : getMaxMana());
+        this.inventorySize = ( stats == null ? 0 : getInventorySize());
+        this.maxEffects = ( stats == null ? 0 : getMaxEffects());
     }
 
     public StatsPojo(int strength,
@@ -164,7 +163,7 @@ public class StatsPojo implements Stats {
         return meleSkill;
     }
 
-    public void setMeleSkill(int meleSkill) {
+    public void setMeleeSkill(int meleSkill) {
         this.meleSkill = meleSkill;
     }
 

@@ -15,8 +15,6 @@
  */
 package com.syncleus.aethermud.stats;
 
-import com.syncleus.aethermud.storage.graphdb.StatsData;
-
 public class StatsHelper {
 
     public static Stats getDifference(Stats modifiedStats, Stats origStats) {
@@ -50,7 +48,7 @@ public class StatsHelper {
         orig.setCurrentHealth(orig.getCurrentHealth() + combine.getCurrentHealth());
         orig.setMaxHealth(orig.getMaxHealth() + combine.getMaxHealth());
         orig.setExperience(orig.getExperience() + combine.getExperience());
-        orig.setMeleSkill(orig.getMeleSkill() + combine.getMeleSkill());
+        orig.setMeleeSkill(orig.getMeleSkill() + combine.getMeleSkill());
         orig.setNumberOfWeaponRolls(orig.getNumberOfWeaponRolls() + combine.getNumberOfWeaponRolls());
         orig.setStrength(orig.getStrength() + combine.getStrength());
         orig.setWeaponRatingMax(orig.getWeaponRatingMax() + combine.getWeaponRatingMax());
@@ -71,7 +69,7 @@ public class StatsHelper {
         stats.setCurrentHealth(-stats.getCurrentHealth());
         stats.setMaxHealth(-stats.getMaxHealth());
         stats.setExperience(-stats.getExperience());
-        stats.setMeleSkill(-stats.getMeleSkill());
+        stats.setMeleeSkill(-stats.getMeleSkill());
         stats.setNumberOfWeaponRolls(-stats.getNumberOfWeaponRolls());
         stats.setStrength(-stats.getStrength());
         stats.setWeaponRatingMax(-stats.getWeaponRatingMax());

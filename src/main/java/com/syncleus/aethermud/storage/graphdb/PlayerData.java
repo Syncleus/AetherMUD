@@ -16,7 +16,6 @@
 package com.syncleus.aethermud.storage.graphdb;
 
 
-import com.google.api.client.util.Lists;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.player.*;
 import com.google.common.collect.Sets;
@@ -25,8 +24,10 @@ import com.syncleus.ferma.ClassInitializer;
 import com.syncleus.ferma.DefaultClassInitializer;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.Property;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class PlayerData extends AbstractVertexFrame {
@@ -210,8 +211,23 @@ public abstract class PlayerData extends AbstractVertexFrame {
             }
 
         }
-        if( stats != null )
-            this.addStats(stats);
+
+        if( stats == null ) {
+            this.createStats();
+            return;
+        }
+
+        StatsData statsData;
+        if( stats instanceof StatsData ) {
+            this.addStats((StatsData) stats);
+        }
+        else {
+            try {
+                BeanUtils.copyProperties(this.createStats(), stats);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Could not copy properties")
+                    ;            }
+        }
     }
 
     public StatsData createStats() {
@@ -230,7 +246,7 @@ public abstract class PlayerData extends AbstractVertexFrame {
         stats.setMaxEffects(0);
         stats.setMaxHealth(0);
         stats.setMaxMana(0);
-        stats.setMeleSkill(0);
+        stats.setMeleeSkill(0);
         stats.setNumberOfWeaponRolls(0);
         stats.setStrength(0);
         stats.setWeaponRatingMax(0);
