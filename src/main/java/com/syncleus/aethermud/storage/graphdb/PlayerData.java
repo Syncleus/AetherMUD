@@ -76,13 +76,13 @@ public abstract class PlayerData extends AbstractVertexFrame {
     public abstract void setGoldInBank(int goldInBank);
 
     @Property("roleSet")
-    public abstract Collection<String> getPlayerRoleTextCollection();
+    public abstract Collection<PlayerRole> getPlayerRoleTextCollection();
 
     public Set<PlayerRole> getPlayerRoleSet() {
         HashSet<PlayerRole> roles = new HashSet<>();
-        Collection<String> rolesText = getPlayerRoleTextCollection();
-        for(final String roleText : rolesText)
-            roles.add(PlayerRole.valueOf(roleText));
+        Collection<PlayerRole> rolesText = getPlayerRoleTextCollection();
+        for(final PlayerRole roleText : rolesText)
+            roles.add(roleText);
         return Collections.unmodifiableSet(roles);
     }
 

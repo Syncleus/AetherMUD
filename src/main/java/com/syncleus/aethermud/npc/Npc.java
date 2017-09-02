@@ -18,6 +18,7 @@ package com.syncleus.aethermud.npc;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
+import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.world.model.Area;
 
@@ -72,8 +73,8 @@ public interface Npc {
 
     void setDieMessage(String dieMessage);
 
-    StatsData getStats();
+    Stats getStats();
 
-    void setStats(StatsData stats);
+    void setStats(Stats stats);
 }
 

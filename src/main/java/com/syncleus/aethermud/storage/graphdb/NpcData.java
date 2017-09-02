@@ -21,12 +21,15 @@ import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.spawner.SpawnRule;
+import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.Property;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -124,7 +127,7 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
     @Adjacency(label = "stats", direction = Direction.OUT)
     public abstract void removeStats(StatsData stats);
 
-    public void setStats(StatsData stats) {
+    public void setStats(Stats stats) {
         Iterator<? extends StatsData> existingAll = this.getAllStats(StatsData.class);
         if( existingAll != null ) {
             while( existingAll.hasNext() ) {
@@ -134,8 +137,21 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
             }
 
         }
-        if( stats != null )
-            this.addStats(stats);
+
+        if( stats == null )
+            return;
+
+        StatsData statsData;
+        if( stats instanceof StatsData ) {
+            this.addStats((StatsData) stats);
+        }
+        else {
+            try {
+                BeanUtils.copyProperties(this.createStats(), stats);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Could not copy properties")
+;            }
+        }
     }
 
     public StatsData createStats() {

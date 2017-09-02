@@ -51,7 +51,7 @@ public class GraphDbNpcStorage implements NpcStorage {
         return framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), NpcData.class)).toList(NpcData.class);
     }
 
-    public Npc newNpcData() {
+    public NpcData newNpcData() {
         return framedGraph.addFramedVertex(NpcData.class);
     }
 

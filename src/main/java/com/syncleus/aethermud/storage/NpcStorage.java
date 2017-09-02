@@ -24,6 +24,6 @@ import java.util.List;
 public interface NpcStorage {
     List<? extends NpcSpawn> getAllNpcs();
     List<? extends NpcData> getNpcDatas();
-    public Npc newNpcData();
+    NpcData newNpcData();
     void persist();
 }

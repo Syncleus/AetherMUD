@@ -93,7 +93,7 @@ public class LoadNpcCommand extends Command {
             httpGet.reset();
 
             NpcStorage storage = gameManager.getNpcStorage();
-            Npc npcData = storage.newNpcData();
+            NpcData npcData = storage.newNpcData();
             BeanUtils.copyProperties(npcData, npc);
             storage.persist();
             write("NPC Saved. - " + npc.getName() + "\r\n");
