@@ -19,7 +19,10 @@ import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.npc.NpcPojo;
+import com.syncleus.aethermud.player.CoolDownPojo;
+import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.PlayerRole;
+import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.storage.NpcStorage;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.google.common.collect.Sets;
@@ -32,6 +35,7 @@ import org.apache.http.util.EntityUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -92,9 +96,17 @@ public class LoadNpcCommand extends Command {
             }
             httpGet.reset();
 
+            System.out.println(npc.getStats().getCurrentHealth());
+
             NpcStorage storage = gameManager.getNpcStorage();
             NpcData npcData = storage.newNpcData();
             PropertyUtils.copyProperties(npcData, npc);
+            try {
+                PropertyUtils.copyProperties(npcData.createStats(), npc.getStats());
+            } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
+                throw new IllegalStateException("Could not copy properties for stats", ex);
+            }
+            System.out.println(npcData.getStats().getCurrentHealth());
             storage.persist();
             write("NPC Saved. - " + npc.getName() + "\r\n");
 
