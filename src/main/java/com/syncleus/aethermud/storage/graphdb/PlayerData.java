@@ -142,26 +142,13 @@ public abstract class PlayerData extends AbstractVertexFrame {
     public abstract <N extends CoolDownData> Iterator<? extends N> getCoolDowns(Class<? extends N> type);
 
     @Adjacency(label = "coolDowns", direction = Direction.OUT)
-    public abstract CoolDownData addCoolDowns(CoolDownData coolDowns);
-
-    @Adjacency(label = "coolDowns", direction = Direction.OUT)
     public abstract void removeCoolDown(CoolDownData stats);
 
     @Adjacency(label = "coolDowns", direction = Direction.OUT)
     public abstract void addCoolDown(CoolDownData coolDown);
 
-    public Map<CoolDownType, CoolDownData> getCoolDownMap() {
-        Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
-        final HashMap<CoolDownType, CoolDownData> coolDownsMap = new HashMap<>();
-        while(coolDowns.hasNext()) {
-            CoolDownData coolDown = coolDowns.next();
-            coolDownsMap.put(coolDown.getCoolDownType(), coolDown);
-        }
-
-        return Collections.unmodifiableMap(coolDownsMap);
-    }
-
     public void setCoolDowns(Map<CoolDownType, CoolDownData> coolDowns) {
+        System.out.println("setting cooldowns: " + coolDowns.size());
         Iterator<? extends CoolDownData> existingCoolDowns = getCoolDowns(CoolDownData.class);
         while(existingCoolDowns.hasNext()) {
             CoolDownData existingCoolDown = existingCoolDowns.next();
@@ -174,14 +161,50 @@ public abstract class PlayerData extends AbstractVertexFrame {
     }
 
     public Set<CoolDownData> getCoolDowns() {
-        Map<CoolDownType, CoolDownData> coolDowns = this.getCoolDownMap();
-        return Collections.unmodifiableSet(Sets.newHashSet(coolDowns.values()));
+        return Collections.unmodifiableSet(Sets.newHashSet(this.getCoolDowns(CoolDownData.class)));
     }
 
-    public CoolDownData createCoolDown() {
+    public CoolDownData createCoolDown(CoolDownType type) {
+        System.out.println("creating cool down");
+        Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
+        while(coolDowns.hasNext()) {
+            CoolDownData coolDown = coolDowns.next();
+            if(coolDown.getCoolDownType().equals(type)) {
+                coolDown.remove();
+            }
+        }
+
         final CoolDownData coolDown = this.getGraph().addFramedVertex(CoolDownData.class);
+        coolDown.setNumberOfTicks(type.getTicks());
+        coolDown.setOriginalNumberOfTicks(type.getTicks());
+        coolDown.setName(type.getName());
+        coolDown.setCoolDownType(type);
         this.addCoolDown(coolDown);
         return coolDown;
+    }
+
+    public CoolDownData createCoolDown(CoolDown coolDownSource) {
+        System.out.println("creating cool down");
+        Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
+        while(coolDowns.hasNext()) {
+            CoolDownData coolDown = coolDowns.next();
+            if(coolDown.getCoolDownType().equals(coolDownSource.getCoolDownType())) {
+                coolDown.remove();
+            }
+        }
+
+        final CoolDownData coolDown = this.getGraph().addFramedVertex(CoolDownData.class);
+        try {
+            PropertyUtils.copyProperties(coolDown, coolDownSource);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalStateException("Can't copy properties", e);
+        }
+        this.addCoolDown(coolDown);
+        return coolDown;
+    }
+
+    public void resetCoolDowns() {
+        this.setCoolDowns(new HashMap<>());
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
@@ -383,10 +406,6 @@ public abstract class PlayerData extends AbstractVertexFrame {
 
     public void resetPlayerRoles() {
         this.setPlayerRoleSet(new HashSet());
-    }
-
-    public void resetCoolDowns() {
-        this.setCoolDowns(new HashMap<>());
     }
 
     public void resetEffects(){

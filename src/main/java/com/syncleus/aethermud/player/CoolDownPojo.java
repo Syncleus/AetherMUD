@@ -71,4 +71,21 @@ public class CoolDownPojo implements CoolDown {
     public void setOriginalNumberOfTicks(int originalNumberOfTicks) {
         this.originalNumberOfTicks = originalNumberOfTicks;
     }
+
+    @Override
+    public int hashCode() {
+        return this.getCoolDownType().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null)
+            return false;
+        if( o instanceof CoolDown )
+            return this.getCoolDownType().equals(((CoolDown)o).getCoolDownType());
+        else if( o instanceof CoolDownType )
+            return this.getCoolDownType().equals((CoolDownType)o);
+        else
+            return false;
+    }
 }

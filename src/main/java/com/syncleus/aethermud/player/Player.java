@@ -130,7 +130,7 @@ public class Player extends AetherMudEntity {
             if (npcIdOptional.isPresent()) {
                 // If the NPC has died- bail out.
                 String npcId = npcIdOptional.get();
-                addCoolDown(new CoolDownPojo(CoolDownType.NPC_FIGHT));
+                addCoolDown(CoolDownType.NPC_FIGHT);
                 NpcSpawn npcSpawn = gameManager.getEntityManager().getNpcEntity(npcId);
                 if (npcSpawn == null) {
                     continue;
@@ -205,8 +205,7 @@ public class Player extends AetherMudEntity {
                 }
                 removeActiveAlertStatus();
                 savePlayerMetadata();
-                CoolDownPojo death = new CoolDownPojo(CoolDownType.DEATH);
-                addCoolDown(death);
+                addCoolDown(CoolDownType.DEATH);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
                 PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
                 movePlayer(playerMovement);
@@ -598,6 +597,18 @@ public class Player extends AetherMudEntity {
         }
     }
 
+    public void addCoolDown(CoolDownType coolDownType) {
+        synchronized (interner.intern(playerId)) {
+            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
+            if (!playerMetadataOptional.isPresent()) {
+                return;
+            }
+            PlayerData playerData = playerMetadataOptional.get();
+            playerData.createCoolDown(coolDownType);
+            savePlayerMetadata();
+        }
+    }
+
     public void addCoolDown(CoolDownPojo coolDown) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
@@ -605,11 +616,7 @@ public class Player extends AetherMudEntity {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            CoolDown newCoolDown = playerData.createCoolDown();
-            newCoolDown.setNumberOfTicks(coolDown.getNumberOfTicks());
-            newCoolDown.setCoolDownType(coolDown.getCoolDownType());
-            newCoolDown.setName(coolDown.getName());
-            newCoolDown.setOriginalNumberOfTicks(coolDown.getOriginalNumberOfTicks());
+            playerData.createCoolDown(coolDown);
             savePlayerMetadata();
         }
     }
@@ -690,6 +697,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             Set<CoolDownData> coolDowns = playerData.getCoolDowns();
+            log.info("removing cooldowns: " + coolDowns.size());
             for(final CoolDownData coolDown : coolDowns) {
                 if (coolDown.isActive()) {
                     coolDown.decrementTick();
@@ -697,10 +705,15 @@ public class Player extends AetherMudEntity {
                     if (coolDown.equals(CoolDownType.DEATH)) {
                         gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
                     }
-                    coolDown.remove();
+
+                    log.info("removed: " + coolDown.getName());
+                    playerData.removeCoolDown(coolDown);
                 }
             }
             savePlayerMetadata();
+
+            coolDowns = playerData.getCoolDowns();
+            log.info(">removing cooldowns: " + coolDowns.size());
         }
     }
 
@@ -1278,7 +1291,7 @@ public class Player extends AetherMudEntity {
         synchronized (interner.intern(playerId)) {
             if (gameManager.getEntityManager().getNpcEntity(npcSpawn.getEntityId()) != null) {
                 if (!doesActiveFightExist(npcSpawn)) {
-                    addCoolDown(new CoolDownPojo(CoolDownType.NPC_FIGHT));
+                    addCoolDown(CoolDownType.NPC_FIGHT);
                     ActiveFight activeFight = ActiveFight.builder()
                             .npcId(npcSpawn.getEntityId())
                             .isPrimary(false)
@@ -1308,13 +1321,17 @@ public class Player extends AetherMudEntity {
     }
 
     public void removeActiveFight(NpcSpawn npcSpawn) {
+        System.out.println("trying to remove a fight...");
         synchronized (interner.intern(playerId)) {
+            System.out.println("still trying...");
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Long, ActiveFight> next = iterator.next();
+                System.out.println("considering this one?");
                 if (next.getValue().getNpcId().equals(npcSpawn.getEntityId())) {
-                    if (next.getValue().isPrimary()) {
-                    }
+//                    if (next.getValue().isPrimary()) {
+//                    }
+                    System.out.println("removed a fight");
                     iterator.remove();
                 }
             }

@@ -45,7 +45,6 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
     private final MapDbAutoCommitService mapDbAutoCommitService;
 
     private final HTreeMap<String, Item> items;
-    private final HTreeMap<String, Effect> effects;
 
     private final static String ITEM_MAP = "itemMap";
     private final static String EFFECTS_MAP = "effectsMap";
@@ -61,11 +60,6 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
         this.items = db.hashMap(ITEM_MAP)
             .keySerializer(Serializer.STRING)
             .valueSerializer(new ItemSerializer())
-            .createOrOpen();
-
-        this.effects = db.hashMap(EFFECTS_MAP)
-            .keySerializer(Serializer.STRING)
-            .valueSerializer(new EffectSerializer())
             .createOrOpen();
 
         this.mapDbAutoCommitService = new MapDbAutoCommitService(db);

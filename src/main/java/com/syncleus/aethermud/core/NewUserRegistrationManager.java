@@ -125,11 +125,7 @@ public class NewUserRegistrationManager {
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             throw new IllegalStateException("Could not copy properties for stats", e);
         }
-        try {
-            PropertyUtils.copyProperties(playerData.createCoolDown(), new CoolDownPojo(CoolDownType.NEWBIE));
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties for stats", e);
-        }
+        playerData.createCoolDown(CoolDownType.NEWBIE);
         gameManager.getPlayerManager().persist();
 
         messageEvent.getChannel().write("User created.\r\n");

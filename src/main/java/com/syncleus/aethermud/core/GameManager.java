@@ -290,7 +290,7 @@ public class GameManager {
             channelUtils.write(destinationPlayer.getPlayerId(),
                     player.getPlayerName() + " has been " + BOLD_ON + Color.RED + "DETAINED" + RESET + "!" + "\r\n", true);
         });
-        player.addCoolDown(new CoolDownPojo(CoolDownType.DETAINMENT));
+        player.addCoolDown(CoolDownType.DETAINMENT);
     }
 
     public void announceConnect(String userName) {

@@ -274,6 +274,7 @@ public class NpcSpawn extends AetherMudEntity {
 
 
     private void killNpc(Player player) {
+        System.out.println("killed");
         isAlive.set(false);
         player.removeActiveAlertStatus(this);
         Map<String, Double> damagePercents;
@@ -281,15 +282,22 @@ public class NpcSpawn extends AetherMudEntity {
         if (!player.isActive(CoolDownType.DEATH)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage() + "\r\n");
         }
+        System.out.println("more");
         damagePercents = gameManager.processExperience(this, getCurrentRoom());
+        System.out.println("more.");
         gameManager.getEntityManager().saveItem(corpse);
+        System.out.println("more..");
         Integer roomId = gameManager.getRoomManager().getNpcCurrentRoom(this).get().getRoomId();
+        System.out.println("more...");
         Room room = gameManager.getRoomManager().getRoom(roomId);
+        System.out.println("and more....");
         room.addPresentItem(corpse.getItemId());
         gameManager.getItemDecayManager().addItem(corpse);
         getCurrentRoom().removePresentNpc(getEntityId());
         gameManager.getEntityManager().deleteNpcEntity(getEntityId());
+        System.out.println("removing active fight: " + player.getActiveFights().size());
         player.removeActiveFight(this);
+        System.out.println("removed active fight: " + player.getActiveFights().size());
         for (Map.Entry<String, Double> playerDamagePercent : damagePercents.entrySet()) {
             Player p = gameManager.getPlayerManager().getPlayer(playerDamagePercent.getKey());
             if (p == null) {

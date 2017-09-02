@@ -51,7 +51,7 @@ public class RecallCommand extends Command {
                 return;
             }
             PlayerMovement playerMovement = new PlayerMovement(player, player.getCurrentRoom().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
-            player.addCoolDown(new CoolDownPojo(CoolDownType.PLAYER_RECALL));
+            player.addCoolDown(CoolDownType.PLAYER_RECALL);
             player.movePlayer(playerMovement);
         });
     }
