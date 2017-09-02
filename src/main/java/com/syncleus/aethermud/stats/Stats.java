@@ -20,75 +20,75 @@ import static java.lang.StrictMath.sqrt;
 public interface Stats {
     Integer getIntelligence();
 
-    void setIntelligence(int intelligence);
+    void setIntelligence(Integer Integerelligence);
 
     Integer getMaxEffects();
 
-    void setMaxEffects(int maxEffects);
+    void setMaxEffects(Integer maxEffects);
 
     Integer getExperience();
 
-    void setExperience(int experience);
+    void setExperience(Integer experience);
 
     Integer getStrength();
 
-    void setStrength(int strength);
+    void setStrength(Integer strength);
 
     Integer getWillpower();
 
-    void setWillpower(int willpower);
+    void setWillpower(Integer willpower);
 
     Integer getAim();
 
-    void setAim(int aim);
+    void setAim(Integer aim);
 
     Integer getAgile();
 
-    void setAgile(int agile);
+    void setAgile(Integer agile);
 
     Integer getArmorRating();
 
-    void setArmorRating(int armorRating);
+    void setArmorRating(Integer armorRating);
 
     Integer getMeleSkill();
 
-    void setMeleeSkill(int meleSkill);
+    void setMeleeSkill(Integer meleSkill);
 
     Integer getCurrentHealth();
 
-    void setCurrentHealth(int currentHealth);
+    void setCurrentHealth(Integer currentHealth);
 
     Integer getMaxHealth();
 
-    void setMaxHealth(int maxHealth);
+    void setMaxHealth(Integer maxHealth);
 
     Integer getWeaponRatingMax();
 
-    void setWeaponRatingMax(int weaponRatingMax);
+    void setWeaponRatingMax(Integer weaponRatingMax);
 
     Integer getWeaponRatingMin();
 
-    void setWeaponRatingMin(int weaponRatingMin);
+    void setWeaponRatingMin(Integer weaponRatingMin);
 
     Integer getNumberOfWeaponRolls();
 
-    void setNumberOfWeaponRolls(int numberOfWeaponRolls);
+    void setNumberOfWeaponRolls(Integer numberOfWeaponRolls);
 
     Integer getCurrentMana();
 
     Integer getMaxMana();
 
-    void setCurrentMana(int currentMana);
+    void setCurrentMana(Integer currentMana);
 
-    void setMaxMana(int maxMana);
+    void setMaxMana(Integer maxMana);
 
     Integer getForaging();
 
-    void setForaging(int foraging);
+    void setForaging(Integer foraging);
 
     Integer getInventorySize();
 
-    void setInventorySize(int inventorySize);
+    void setInventorySize(Integer inventorySize);
 
     default Integer getLevel() {
         double v = 0.02 * sqrt(getExperience());

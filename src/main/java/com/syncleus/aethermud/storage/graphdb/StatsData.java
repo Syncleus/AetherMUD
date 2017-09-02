@@ -26,7 +26,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("intelligence")
-    public abstract void setIntelligence(int intelligence);
+    public abstract void setIntelligence(Integer intelligence);
 
     @Override
     @Property("maxEffects")
@@ -34,7 +34,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("maxEffects")
-    public abstract void setMaxEffects(int maxEffects);
+    public abstract void setMaxEffects(Integer maxEffects);
 
     @Override
     @Property("experience")
@@ -42,7 +42,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("experience")
-    public abstract void setExperience(int experience);
+    public abstract void setExperience(Integer experience);
 
     @Override
     @Property("strength")
@@ -50,7 +50,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("strength")
-    public abstract void setStrength(int strength);
+    public abstract void setStrength(Integer strength);
 
     @Override
     @Property("willpower")
@@ -58,7 +58,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("willpower")
-    public abstract void setWillpower(int willpower);
+    public abstract void setWillpower(Integer willpower);
 
     @Override
     @Property("aim")
@@ -66,7 +66,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("aim")
-    public abstract void setAim(int aim);
+    public abstract void setAim(Integer aim);
 
     @Override
     @Property("agile")
@@ -74,7 +74,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("agile")
-    public abstract void setAgile(int agile);
+    public abstract void setAgile(Integer agile);
 
     @Override
     @Property("armorRating")
@@ -82,7 +82,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("armorRating")
-    public abstract void setArmorRating(int armorRating);
+    public abstract void setArmorRating(Integer armorRating);
 
     @Override
     @Property("meleSkill")
@@ -90,7 +90,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("meleSkill")
-    public abstract void setMeleeSkill(int meleSkill);
+    public abstract void setMeleeSkill(Integer meleSkill);
 
     @Override
     @Property("currentHealth")
@@ -98,7 +98,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("currentHealth")
-    public abstract void setCurrentHealth(int currentHealth);
+    public abstract void setCurrentHealth(Integer currentHealth);
 
     @Override
     @Property("maxHealth")
@@ -106,7 +106,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("maxHealth")
-    public abstract void setMaxHealth(int maxHealth);
+    public abstract void setMaxHealth(Integer maxHealth);
 
     @Override
     @Property("weaponRatingMax")
@@ -114,7 +114,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("weaponRatingMax")
-    public abstract void setWeaponRatingMax(int weaponRatingMax);
+    public abstract void setWeaponRatingMax(Integer weaponRatingMax);
 
     @Override
     @Property("weaponRatingMin")
@@ -122,7 +122,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("weaponRatingMin")
-    public abstract void setWeaponRatingMin(int weaponRatingMin);
+    public abstract void setWeaponRatingMin(Integer weaponRatingMin);
 
     @Override
     @Property("numberOfWeaponRolls")
@@ -130,7 +130,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("numberOfWeaponRolls")
-    public abstract void setNumberOfWeaponRolls(int numberOfWeaponRolls);
+    public abstract void setNumberOfWeaponRolls(Integer numberOfWeaponRolls);
 
     @Override
     @Property("currentMana")
@@ -142,11 +142,11 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("currentMana")
-    public abstract void setCurrentMana(int currentMana);
+    public abstract void setCurrentMana(Integer currentMana);
 
     @Override
     @Property("maxMana")
-    public abstract void setMaxMana(int maxMana);
+    public abstract void setMaxMana(Integer maxMana);
 
     @Override
     @Property("foraging")
@@ -154,7 +154,7 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("foraging")
-    public abstract void setForaging(int foraging);
+    public abstract void setForaging(Integer foraging);
 
     @Override
     @Property("inventorySize")
@@ -162,5 +162,5 @@ public abstract class StatsData extends AbstractVertexFrame implements Stats {
 
     @Override
     @Property("inventorySize")
-    public abstract void setInventorySize(int inventorySize);
+    public abstract void setInventorySize(Integer inventorySize);
 }

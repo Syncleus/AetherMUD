@@ -54,7 +54,6 @@ public class StatsBuilder {
         this.weaponRatingMin = stats.getWeaponRatingMin();
         this.numberOfWeaponRolls = stats.getNumberOfWeaponRolls();
         this.experience = stats.getExperience();
-        this.currentHealth = stats.getCurrentHealth();
         this.maxMana = stats.getMaxMana();
         this.foraging = stats.getForaging();
         this.currentMana = stats.getCurrentMana();

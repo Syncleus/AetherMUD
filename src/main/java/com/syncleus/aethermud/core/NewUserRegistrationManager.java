@@ -23,9 +23,12 @@ import com.syncleus.aethermud.stats.DefaultStats;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.CoolDownData;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
-import org.apache.commons.beanutils.BeanUtils;
+import com.syncleus.aethermud.storage.graphdb.StatsData;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -118,18 +121,19 @@ public class NewUserRegistrationManager {
         playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL, PlayerRole.ADMIN, PlayerRole.GOD, PlayerRole.TELEPORTER));
         playerData.setPlayerSettings(new HashMap<>());
         try {
-            BeanUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             throw new IllegalStateException("Could not copy properties for stats", e);
         }
         try {
-            BeanUtils.copyProperties(playerData.createCoolDown(), new CoolDownPojo(CoolDownType.NEWBIE));
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            PropertyUtils.copyProperties(playerData.createCoolDown(), new CoolDownPojo(CoolDownType.NEWBIE));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties for stats", e);
         }
         gameManager.getPlayerManager().persist();
 
         messageEvent.getChannel().write("User created.\r\n");
+        log.info("User " + playerData.getPlayerName() + " created.");
         session.setState(CreeperSession.State.newUserRegCompleted);
         try {
             PlayerManagementManager.registerPlayer(playerData.getPlayerName(), playerData.getPlayerId(), gameManager);

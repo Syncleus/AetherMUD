@@ -23,7 +23,7 @@ import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.storage.NpcStorage;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.google.common.collect.Sets;
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -94,7 +94,7 @@ public class LoadNpcCommand extends Command {
 
             NpcStorage storage = gameManager.getNpcStorage();
             NpcData npcData = storage.newNpcData();
-            BeanUtils.copyProperties(npcData, npc);
+            PropertyUtils.copyProperties(npcData, npc);
             storage.persist();
             write("NPC Saved. - " + npc.getName() + "\r\n");
 

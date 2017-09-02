@@ -29,7 +29,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -71,7 +71,7 @@ public class AetherMudUtilsTest {
         playerData.setPlayerSettings(new HashMap<>());
         StatsData statsData = mock(StatsData.class);
         try {
-            BeanUtils.copyProperties(statsData, DefaultStats.DEFAULT_PLAYER.createStats());
+            PropertyUtils.copyProperties(statsData, DefaultStats.DEFAULT_PLAYER.createStats());
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not create a stats object", e);
         }

@@ -39,7 +39,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.syncleus.ferma.DelegatingFramedGraph;
 import com.syncleus.ferma.WrappedFramedGraph;
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.configuration.MapConfiguration;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -311,8 +311,8 @@ public class NpcTestHarness {
         playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
         playerData.setPlayerSettings(new HashMap<>());
         try {
-            BeanUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not create a stats object", e);
         }
     }

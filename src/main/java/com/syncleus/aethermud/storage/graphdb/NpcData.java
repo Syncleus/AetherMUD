@@ -26,7 +26,7 @@ import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.Property;
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.lang.reflect.InvocationTargetException;
@@ -149,8 +149,8 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
         }
         else {
             try {
-                BeanUtils.copyProperties(this.createStats(), stats);
-            } catch (IllegalAccessException | InvocationTargetException e) {
+                PropertyUtils.copyProperties(this.createStats(), stats);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalStateException("Could not copy properties")
 ;            }
         }
