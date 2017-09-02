@@ -25,16 +25,16 @@ public class BasicPlayerDamageProcessor implements DamageProcessor {
     private final Random random = new Random();
 
     @Override
-    public long getAttackAmount(Player player, NpcSpawn npcSpawn) {
+    public int getAttackAmount(Player player, NpcSpawn npcSpawn) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
         Stats npcStats = npcSpawn.getStats();
-        long rolls = 0;
-        long totDamage = 0;
+        int rolls = 0;
+        int totDamage = 0;
         while (rolls <= playerStats.getNumberOfWeaponRolls()) {
             rolls++;
-            totDamage = totDamage + randInt((int) playerStats.getWeaponRatingMin(), (int) playerStats.getWeaponRatingMax());
+            totDamage = totDamage + randInt(playerStats.getWeaponRatingMin(), playerStats.getWeaponRatingMax());
         }
-        long i = playerStats.getStrength() + totDamage - npcStats.getArmorRating();
+        int i = playerStats.getStrength() + totDamage - npcStats.getArmorRating();
         if (i < 0) {
             return 0;
         } else {

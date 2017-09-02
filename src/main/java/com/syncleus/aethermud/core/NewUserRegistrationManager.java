@@ -23,6 +23,7 @@ import com.syncleus.aethermud.stats.DefaultStats;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.CoolDownData;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
@@ -98,13 +99,9 @@ public class NewUserRegistrationManager {
             return;
         }
         session.setPassword(Optional.of(password));
-        ConcurrentMap<CoolDownType, CoolDown> cooldowns = Maps.newConcurrentMap();
-        CoolDown newbieCoolDown = new CoolDown(CoolDownType.NEWBIE);
-        cooldowns.put(newbieCoolDown.getCoolDownType(), newbieCoolDown);
 
         PlayerData playerData = gameManager.getPlayerManager().newPlayerData();
         playerData.setNpcKillLog(new HashMap<>());
-        playerData.setCoolDowns(cooldowns);
         playerData.setEffects(new ArrayList<>());
         playerData.setGold(0);
         playerData.setGoldInBank(0);
@@ -121,6 +118,11 @@ public class NewUserRegistrationManager {
         playerData.setPlayerSettings(new HashMap<>());
         try {
             BeanUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties for stats", e);
+        }
+        try {
+            BeanUtils.copyProperties(playerData.createCoolDown(), new CoolDownPojo(CoolDownType.NEWBIE));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties for stats", e);
         }

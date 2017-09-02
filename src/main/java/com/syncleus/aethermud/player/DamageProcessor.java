@@ -19,7 +19,7 @@ import com.syncleus.aethermud.npc.NpcSpawn;
 
 public interface DamageProcessor {
 
-    long getAttackAmount(Player player, NpcSpawn npcSpawn);
+    int getAttackAmount(Player player, NpcSpawn npcSpawn);
 
     int getChanceToHit(Player player, NpcSpawn npcSpawn);
 

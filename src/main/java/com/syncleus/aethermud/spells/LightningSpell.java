@@ -18,7 +18,7 @@ package com.syncleus.aethermud.spells;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.EffectBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
-import com.syncleus.aethermud.player.CoolDown;
+import com.syncleus.aethermud.player.CoolDownPojo;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.communication.Color;
@@ -55,7 +55,7 @@ public class LightningSpell implements SpellRunnable {
         if (destinationNpc.isPresent()) {
             executeSpellAgainstNpc(sourcePlayer, destinationNpc.get());
             sourcePlayer.updatePlayerMana(-manaCost);
-            sourcePlayer.addCoolDown(new CoolDown(getName(), 5, CoolDownType.SPELL));
+            sourcePlayer.addCoolDown(new CoolDownPojo(getName(), 5, CoolDownType.SPELL));
         }
     }
 
@@ -67,7 +67,7 @@ public class LightningSpell implements SpellRunnable {
     private void executeSpellAgainstNpc(Player player, NpcSpawn npcSpawn) {
         announceSpellCastToCurrentRoom(player, npcSpawn.getColorName());
         Stats stats = player.getPlayerStatsWithEquipmentAndLevel();
-        long power = (player.getLevel() * 1) + (3 * stats.getIntelligence());
+        int power = (player.getLevel() * 1) + (3 * stats.getIntelligence());
         player.addActiveFight(npcSpawn);
         gameManager.getEffectsManager().applyEffectsToNpcs(player, Sets.newHashSet(npcSpawn), Sets.newHashSet(selectEffect(stats).createEffect()));
         npcSpawn.doHealthDamage(player, Arrays.asList(getDamageMessage(power, npcSpawn.getColorName())), -power);
@@ -75,10 +75,10 @@ public class LightningSpell implements SpellRunnable {
 
     private EffectBuilder selectEffect(Stats stats) {
         if (Math.random() < 0.1) {
-            long electrofiedPower = (long) ((stats.getLevel() * .3) + (5 * stats.getIntelligence()));
+            int electrofiedPower = (int) ((stats.getLevel() * .3) + (5 * stats.getIntelligence()));
             return getElectrofried(electrofiedPower, 4);
           }
-        long burnEffectPower = (long) ((stats.getLevel() * .05) + (1 * stats.getIntelligence()));
+        int burnEffectPower = (int) ((stats.getLevel() * .05) + (1 * stats.getIntelligence()));
         return getBurnEffect(burnEffectPower, 2);
     }
 
@@ -98,7 +98,7 @@ public class LightningSpell implements SpellRunnable {
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + Color.CYAN + " casts " + Color.RESET + "a " + Color.BOLD_ON + Color.WHITE + "[" + Color.RESET + getName() + Color.BOLD_ON + Color.WHITE + "]" + Color.RESET + " on " + name + "! \r\n");
     }
 
-    private EffectBuilder getBurnEffect(long amt, int ticksDuration) {
+    private EffectBuilder getBurnEffect(int amt, int ticksDuration) {
         return new EffectBuilder()
                 .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.RED + "burning" + Color.RESET + " from the lightning strike!"))
                 .setEffectDescription(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.RED + " BURN" + Color.RESET)
@@ -109,7 +109,7 @@ public class LightningSpell implements SpellRunnable {
                 .setLifeSpanTicks(ticksDuration);
     }
 
-    private EffectBuilder getElectrofried(long amt, int ticksDuration) {
+    private EffectBuilder getElectrofried(int amt, int ticksDuration) {
         return new EffectBuilder()
                 .setEffectApplyMessages(Lists.newArrayList("You are " + Color.BOLD_ON + Color.YELLOW + "ELECTROFIED" + Color.RESET + " from the lightning strike!"))
                 .setEffectDescription(Color.BOLD_ON + Color.YELLOW + "lightning" + Color.RESET + Color.BOLD_ON + Color.YELLOW + " ELECTROFIED" + Color.RESET)

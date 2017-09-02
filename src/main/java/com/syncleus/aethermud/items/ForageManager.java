@@ -16,12 +16,11 @@
 package com.syncleus.aethermud.items;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.CoolDown;
+import com.syncleus.aethermud.player.CoolDownPojo;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.log4j.Logger;
@@ -112,13 +111,13 @@ public class ForageManager {
                 gameManager.getChannelUtils().write(player.getPlayerId(), "Nothing foraged." + "\r\n");
             }
             if (foragingLevel <= 10) {
-                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_LONG));
+                player.addCoolDown(new CoolDownPojo(CoolDownType.FORAGE_LONG));
             } else if (foragingLevel > 10 && foragingLevel <= 30) {
-                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_MEDIUM));
+                player.addCoolDown(new CoolDownPojo(CoolDownType.FORAGE_MEDIUM));
             } else if (foragingLevel > 30 && foragingLevel <= 40) {
-                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_SHORT));
+                player.addCoolDown(new CoolDownPojo(CoolDownType.FORAGE_SHORT));
             } else if (foragingLevel > 40) {
-                player.addCoolDown(new CoolDown(CoolDownType.FORAGE_SUPERSHORT));
+                player.addCoolDown(new CoolDownPojo(CoolDownType.FORAGE_SUPERSHORT));
             }
         }
     }

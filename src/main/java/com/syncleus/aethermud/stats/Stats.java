@@ -18,80 +18,80 @@ package com.syncleus.aethermud.stats;
 import static java.lang.StrictMath.sqrt;
 
 public interface Stats {
-    long getIntelligence();
+    Integer getIntelligence();
 
-    void setIntelligence(long intelligence);
+    void setIntelligence(int intelligence);
 
-    long getMaxEffects();
+    Integer getMaxEffects();
 
-    void setMaxEffects(long maxEffects);
+    void setMaxEffects(int maxEffects);
 
-    long getExperience();
+    Integer getExperience();
 
-    void setExperience(long experience);
+    void setExperience(int experience);
 
-    long getStrength();
+    Integer getStrength();
 
-    void setStrength(long strength);
+    void setStrength(int strength);
 
-    long getWillpower();
+    Integer getWillpower();
 
-    void setWillpower(long willpower);
+    void setWillpower(int willpower);
 
-    long getAim();
+    Integer getAim();
 
-    void setAim(long aim);
+    void setAim(int aim);
 
-    long getAgile();
+    Integer getAgile();
 
-    void setAgile(long agile);
+    void setAgile(int agile);
 
-    long getArmorRating();
+    Integer getArmorRating();
 
-    void setArmorRating(long armorRating);
+    void setArmorRating(int armorRating);
 
-    long getMeleSkill();
+    Integer getMeleSkill();
 
-    void setMeleSkill(long meleSkill);
+    void setMeleSkill(int meleSkill);
 
-    long getCurrentHealth();
+    Integer getCurrentHealth();
 
-    void setCurrentHealth(long currentHealth);
+    void setCurrentHealth(int currentHealth);
 
-    long getMaxHealth();
+    Integer getMaxHealth();
 
-    void setMaxHealth(long maxHealth);
+    void setMaxHealth(int maxHealth);
 
-    long getWeaponRatingMax();
+    Integer getWeaponRatingMax();
 
-    void setWeaponRatingMax(long weaponRatingMax);
+    void setWeaponRatingMax(int weaponRatingMax);
 
-    long getWeaponRatingMin();
+    Integer getWeaponRatingMin();
 
-    void setWeaponRatingMin(long weaponRatingMin);
+    void setWeaponRatingMin(int weaponRatingMin);
 
-    long getNumberOfWeaponRolls();
+    Integer getNumberOfWeaponRolls();
 
-    void setNumberOfWeaponRolls(long numberOfWeaponRolls);
+    void setNumberOfWeaponRolls(int numberOfWeaponRolls);
 
-    long getCurrentMana();
+    Integer getCurrentMana();
 
-    long getMaxMana();
+    Integer getMaxMana();
 
-    void setCurrentMana(long currentMana);
+    void setCurrentMana(int currentMana);
 
-    void setMaxMana(long maxMana);
+    void setMaxMana(int maxMana);
 
-    long getForaging();
+    Integer getForaging();
 
-    void setForaging(long foraging);
+    void setForaging(int foraging);
 
-    long getInventorySize();
+    Integer getInventorySize();
 
-    void setInventorySize(long inventorySize);
+    void setInventorySize(int inventorySize);
 
-    default long getLevel() {
+    default Integer getLevel() {
         double v = 0.02 * sqrt(getExperience());
-        return (long) Math.floor(v);
+        return Double.valueOf(Math.floor(v)).intValue();
     }
 }

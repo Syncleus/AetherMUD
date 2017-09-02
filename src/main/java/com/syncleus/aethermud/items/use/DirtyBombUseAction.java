@@ -69,7 +69,7 @@ public class DirtyBombUseAction implements ItemUseAction {
                 continue;
             }
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), presentPlayer.getPlayerName() + " is heavily damaged by a " + item.getItemName() + "!");
-            presentPlayer.updatePlayerHealth(-Long.MAX_VALUE, null);
+            presentPlayer.updatePlayerHealth(-Integer.MAX_VALUE, null);
         }
     }
 

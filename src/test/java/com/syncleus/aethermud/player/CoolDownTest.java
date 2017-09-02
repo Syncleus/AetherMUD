@@ -25,7 +25,7 @@ public class CoolDownTest {
     public void testSerialization() throws Exception {
 
 
-        CoolDown coolDown = new CoolDown(CoolDownType.DETAINMENT);
+        CoolDownPojo coolDown = new CoolDownPojo(CoolDownType.DETAINMENT);
 
         String s = new GsonBuilder().create().toJson(coolDown, CoolDown.class);
 

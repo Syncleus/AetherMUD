@@ -24,7 +24,7 @@ import com.syncleus.aethermud.entity.AetherMudEntity;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.player.CoolDown;
+import com.syncleus.aethermud.player.CoolDownPojo;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.DamageProcessor;
 import com.syncleus.aethermud.player.Player;
@@ -32,7 +32,6 @@ import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.StatsHelper;
 import com.syncleus.aethermud.stats.experience.Experience;
@@ -83,7 +82,7 @@ public class NpcSpawn extends AetherMudEntity {
     private Map<String, Long> playerDamageMap = Maps.newHashMap();
     private Room currentRoom;
     private int effectsTickBucket = 0;
-    private Set<CoolDown> coolDowns = Sets.newHashSet();
+    private Set<CoolDownPojo> coolDowns = Sets.newHashSet();
     private final Experience experience = new Experience();
     // The messages used when dealing damage
     private final Set<AetherMudMessage> attackMessages;
@@ -230,7 +229,7 @@ public class NpcSpawn extends AetherMudEntity {
     }
 
     public boolean isActiveCooldown(CoolDownType coolDownType) {
-        for (CoolDown c : coolDowns) {
+        for (CoolDownPojo c : coolDowns) {
             if (c.getCoolDownType().equals(coolDownType)) {
                 if (c.isActive()) {
                     return true;
@@ -248,9 +247,9 @@ public class NpcSpawn extends AetherMudEntity {
     }
 
     private void tickAllActiveCoolDowns() {
-        Iterator<CoolDown> iterator = coolDowns.iterator();
+        Iterator<CoolDownPojo> iterator = coolDowns.iterator();
         while (iterator.hasNext()) {
-            CoolDown coolDown = iterator.next();
+            CoolDownPojo coolDown = iterator.next();
             if (coolDown.isActive()) {
                 coolDown.decrementTick();
             } else {
@@ -301,7 +300,7 @@ public class NpcSpawn extends AetherMudEntity {
             int playerLevel = (int) Levels.getLevel(gameManager.getStatsModifierFactory().getStatsModifier(p).getExperience());
             int npcLevel = (int) Levels.getLevel(this.getStats().getExperience());
 
-            long xpEarned = (long) (experience.calculateNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
+            int xpEarned = (int) (experience.calculateNpcXp(playerLevel, npcLevel) * playerDamagePercentValue);
             p.addExperience(xpEarned);
             gameManager.getChannelUtils().write(p.getPlayerId(), getBattleReport(xpEarned) + "\r\n", true);
             p.addNpcKillLog(getName());
@@ -367,7 +366,7 @@ public class NpcSpawn extends AetherMudEntity {
         this.loot = loot;
     }
 
-    public Set<CoolDown> getCoolDowns() {
+    public Set<CoolDownPojo> getCoolDowns() {
         return coolDowns;
     }
 
@@ -437,7 +436,7 @@ public class NpcSpawn extends AetherMudEntity {
         return isAlive;
     }
 
-    public void doHealthDamage(Player player, List<String> damageStrings, long amt) {
+    public void doHealthDamage(Player player, List<String> damageStrings, int amt) {
         NpcStatsChange npcStatsChange =
                 new NpcStatsChangeBuilder().setStats(new StatsBuilder().setCurrentHealth(amt).createStats()).setDamageStrings(damageStrings).setPlayer(player).createNpcStatsChange();
         addNpcDamage(npcStatsChange);
@@ -445,9 +444,9 @@ public class NpcSpawn extends AetherMudEntity {
 
     public void addNpcDamage(NpcStatsChange npcStatsChange) {
         if (!isActiveCooldown(CoolDownType.NPC_FIGHT)) {
-            addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
+            addCoolDown(new CoolDownPojo(CoolDownType.NPC_FIGHT));
         } else {
-            for (CoolDown coolDown : coolDowns) {
+            for (CoolDownPojo coolDown : coolDowns) {
                 if (coolDown.getCoolDownType().equals(CoolDownType.NPC_FIGHT)) {
                     coolDown.setNumberOfTicks(coolDown.getOriginalNumberOfTicks());
                 }
@@ -456,7 +455,7 @@ public class NpcSpawn extends AetherMudEntity {
         this.npcStatsChanges.add(npcStatsChange);
     }
 
-    public void addCoolDown(CoolDown coolDown) {
+    public void addCoolDown(CoolDownPojo coolDown) {
         this.coolDowns.add(coolDown);
     }
 

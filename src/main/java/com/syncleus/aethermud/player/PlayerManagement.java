@@ -15,6 +15,7 @@
  */
 package com.syncleus.aethermud.player;
 
+import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemBuilder;
@@ -111,7 +112,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public void setHealth(long amt) {
+    public void setHealth(int amt) {
         synchronized (findInterner().intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()){
@@ -152,7 +153,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public void setMana(long amt) {
+    public void setMana(int amt) {
         synchronized (findInterner().intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()){
@@ -165,10 +166,10 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public long getHealth() {
+    public int getHealth() {
         Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
         if (!playerMetadataOptional.isPresent()){
-            return 0L;
+            return 0;
         }
         PlayerData playerData = playerMetadataOptional.get();
         return playerData.getStats().getCurrentHealth();
@@ -180,17 +181,17 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public long getMana() {
+    public int getMana() {
         Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
         if (!playerMetadataOptional.isPresent()){
-            return 0L;
+            return 0;
         }
         PlayerData playerData = playerMetadataOptional.get();
         return playerData.getStats().getCurrentMana();
     }
 
     @Override
-    public void setExperience(long amt) {
+    public void setExperience(int amt) {
         synchronized (findInterner().intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()){
@@ -203,10 +204,10 @@ public class PlayerManagement implements PlayerManagementMBean {
     }
 
     @Override
-    public long getExperience() {
+    public int getExperience() {
         Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
         if (!playerMetadataOptional.isPresent()){
-            return 0L;
+            return 0;
         }
         PlayerData playerData = playerMetadataOptional.get();
         return playerData.getStats().getExperience();
@@ -241,7 +242,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             return "";
         }
         PlayerData playerData = playerMetadataOptional.get();
-        Set<PlayerRole> playerRoleSet = playerData.getPlayerRoleSet();
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerData.getPlayerRoleSet());
         for (PlayerRole next : playerRoleSet) {
             rolesList.add(next.getRoleType());
         }

@@ -96,10 +96,11 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
     @Override
     public Map<String, PlayerData> getAllPlayerMetadata() {
         final List<? extends PlayerData> datas = framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), PlayerData.class)).toList(PlayerData.class);
-        System.out.println("Count: " + datas.size());
         final Map<String, PlayerData> retVal = new HashMap<>(datas.size());
         for( PlayerData data : datas ) {
             retVal.put(data.getPlayerId(), data);
+            for(PlayerRole role : data.getPlayerRoleSet())
+            System.out.println("role: " + role);
         }
         return retVal;
     }

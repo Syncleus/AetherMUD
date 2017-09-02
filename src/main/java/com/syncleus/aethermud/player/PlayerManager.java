@@ -17,6 +17,7 @@ package com.syncleus.aethermud.player;
 
 
 import com.codahale.metrics.Gauge;
+import com.google.common.collect.Sets;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
@@ -103,7 +104,7 @@ public class PlayerManager {
         if (!playerMetadata.isPresent()) {
             return false;
         }
-        Set<PlayerRole> playerRoleSet = playerMetadata.get().getPlayerRoleSet();
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerMetadata.get().getPlayerRoleSet());
         return playerRoleSet != null && playerMetadata.get().getPlayerRoleSet().contains(playerRole);
     }
 
@@ -116,7 +117,7 @@ public class PlayerManager {
         if (!playerMetadata.isPresent()) {
             return false;
         }
-        Set<PlayerRole> playerRoleSet = playerMetadata.get().getPlayerRoleSet();
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerMetadata.get().getPlayerRoleSet());
         if (playerRoleSet != null) {
             for (PlayerRole checkRole : checkRoles) {
                 if (playerRoleSet.contains(checkRole)) {
@@ -149,18 +150,18 @@ public class PlayerManager {
         guageName = name(PlayerManager.class, playerData.getPlayerName(), "current-health");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(name(PlayerManager.class, playerData.getPlayerName(), "current-health"),
-                    (Gauge<Long>) () -> {
+                    (Gauge<Integer>) () -> {
                         Optional<PlayerData> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerData::getStats).map(StatsData::getCurrentHealth).orElse(0L);
+                        return playerMetadataOpt.map(PlayerData::getStats).map(StatsData::getCurrentHealth).orElse(0);
                     });
         }
 
         guageName = name(PlayerManager.class, playerData.getPlayerName(), "xp");
         if (!doesGaugeExist(guageName)) {
             Main.metrics.register(name(PlayerManager.class, playerData.getPlayerName(), "xp"),
-                    (Gauge<Long>) () -> {
+                    (Gauge<Integer>) () -> {
                         Optional<PlayerData> playerMetadataOpt = aetherMudStorage.getPlayerMetadata(playerId);
-                        return playerMetadataOpt.map(PlayerData::getStats).map(StatsData::getExperience).orElse(0L);
+                        return playerMetadataOpt.map(PlayerData::getStats).map(StatsData::getExperience).orElse(0);
                     });
         }
     }

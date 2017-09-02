@@ -15,31 +15,23 @@
  */
 package com.syncleus.aethermud.player;
 
+import com.google.gson.GsonBuilder;
+import org.junit.Test;
 
-public interface CoolDown {
-    CoolDownType getCoolDownType();
+public class CoolDownPojoTest {
 
-    void setCoolDownType(CoolDownType coolDownType);
 
-    String getName();
+    @Test
+    public void testSerialization() throws Exception {
 
-    void setName(String name);
 
-    int getNumberOfTicks();
+        CoolDownPojo coolDown = new CoolDownPojo(CoolDownType.DETAINMENT);
 
-    void setNumberOfTicks(int numberOfTicks);
+        String s = new GsonBuilder().create().toJson(coolDown, CoolDownPojo.class);
 
-    int getOriginalNumberOfTicks();
+        System.out.println(s);
 
-    void setOriginalNumberOfTicks(int ticks);
 
-    default void decrementTick() {
-        if (getNumberOfTicks() > 0) {
-            this.setNumberOfTicks(getNumberOfTicks() - 1);
-        }
     }
 
-    default boolean isActive() {
-        return getNumberOfTicks() > 0;
-    }
 }

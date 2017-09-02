@@ -31,19 +31,19 @@ public interface PlayerManagementMBean {
 
     void setGold(int amt);
 
-    long getHealth();
+    int getHealth();
 
-    long getMana();
+    int getMana();
 
-    void setHealth(long amt);
+    void setHealth(int amt);
 
-    void setMana(long amt);
+    void setMana(int amt);
 
     void sendAdminMessage(String message);
 
-    void setExperience(long amt);
+    void setExperience(int amt);
 
-    long getExperience();
+    int getExperience();
 
     void setRoles(String roles);
 

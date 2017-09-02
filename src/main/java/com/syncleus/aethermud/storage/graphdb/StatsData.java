@@ -22,144 +22,145 @@ import com.syncleus.ferma.annotations.Property;
 public abstract class StatsData extends AbstractVertexFrame implements Stats {
     @Override
     @Property("intelligence")
-    public abstract long getIntelligence();
+    public abstract Integer getIntelligence();
+
     @Override
     @Property("intelligence")
-    public abstract void setIntelligence(long intelligence);
+    public abstract void setIntelligence(int intelligence);
 
     @Override
     @Property("maxEffects")
-    public abstract long getMaxEffects();
+    public abstract Integer getMaxEffects();
 
     @Override
     @Property("maxEffects")
-    public abstract void setMaxEffects(long maxEffects);
+    public abstract void setMaxEffects(int maxEffects);
 
     @Override
     @Property("experience")
-    public abstract long getExperience();
+    public abstract Integer getExperience();
 
     @Override
     @Property("experience")
-    public abstract void setExperience(long experience);
+    public abstract void setExperience(int experience);
 
     @Override
     @Property("strength")
-    public abstract long getStrength();
+    public abstract Integer getStrength();
 
     @Override
     @Property("strength")
-    public abstract void setStrength(long strength);
+    public abstract void setStrength(int strength);
 
     @Override
     @Property("willpower")
-    public abstract long getWillpower();
+    public abstract Integer getWillpower();
 
     @Override
     @Property("willpower")
-    public abstract void setWillpower(long willpower);
+    public abstract void setWillpower(int willpower);
 
     @Override
     @Property("aim")
-    public abstract long getAim();
+    public abstract Integer getAim();
 
     @Override
     @Property("aim")
-    public abstract void setAim(long aim);
+    public abstract void setAim(int aim);
 
     @Override
     @Property("agile")
-    public abstract long getAgile();
+    public abstract Integer getAgile();
 
     @Override
     @Property("agile")
-    public abstract void setAgile(long agile);
+    public abstract void setAgile(int agile);
 
     @Override
     @Property("armorRating")
-    public abstract long getArmorRating();
+    public abstract Integer getArmorRating();
 
     @Override
     @Property("armorRating")
-    public abstract void setArmorRating(long armorRating);
+    public abstract void setArmorRating(int armorRating);
 
     @Override
     @Property("meleSkill")
-    public abstract long getMeleSkill();
+    public abstract Integer getMeleSkill();
 
     @Override
     @Property("meleSkill")
-    public abstract void setMeleSkill(long meleSkill);
+    public abstract void setMeleSkill(int meleSkill);
 
     @Override
     @Property("currentHealth")
-    public abstract long getCurrentHealth();
+    public abstract Integer getCurrentHealth();
 
     @Override
     @Property("currentHealth")
-    public abstract void setCurrentHealth(long currentHealth);
+    public abstract void setCurrentHealth(int currentHealth);
 
     @Override
     @Property("maxHealth")
-    public abstract long getMaxHealth();
+    public abstract Integer getMaxHealth();
 
     @Override
     @Property("maxHealth")
-    public abstract void setMaxHealth(long maxHealth);
+    public abstract void setMaxHealth(int maxHealth);
 
     @Override
     @Property("weaponRatingMax")
-    public abstract long getWeaponRatingMax();
+    public abstract Integer getWeaponRatingMax();
 
     @Override
     @Property("weaponRatingMax")
-    public abstract void setWeaponRatingMax(long weaponRatingMax);
+    public abstract void setWeaponRatingMax(int weaponRatingMax);
 
     @Override
     @Property("weaponRatingMin")
-    public abstract long getWeaponRatingMin();
+    public abstract Integer getWeaponRatingMin();
 
     @Override
     @Property("weaponRatingMin")
-    public abstract void setWeaponRatingMin(long weaponRatingMin);
+    public abstract void setWeaponRatingMin(int weaponRatingMin);
 
     @Override
     @Property("numberOfWeaponRolls")
-    public abstract long getNumberOfWeaponRolls();
+    public abstract Integer getNumberOfWeaponRolls();
 
     @Override
     @Property("numberOfWeaponRolls")
-    public abstract void setNumberOfWeaponRolls(long numberOfWeaponRolls);
+    public abstract void setNumberOfWeaponRolls(int numberOfWeaponRolls);
 
     @Override
     @Property("currentMana")
-    public abstract long getCurrentMana();
+    public abstract Integer getCurrentMana();
 
     @Override
     @Property("maxMana")
-    public abstract long getMaxMana();
+    public abstract Integer getMaxMana();
 
     @Override
     @Property("currentMana")
-    public abstract void setCurrentMana(long currentMana);
+    public abstract void setCurrentMana(int currentMana);
 
     @Override
     @Property("maxMana")
-    public abstract void setMaxMana(long maxMana);
+    public abstract void setMaxMana(int maxMana);
 
     @Override
     @Property("foraging")
-    public abstract long getForaging();
+    public abstract Integer getForaging();
 
     @Override
     @Property("foraging")
-    public abstract void setForaging(long foraging);
+    public abstract void setForaging(int foraging);
 
     @Override
     @Property("inventorySize")
-    public abstract long getInventorySize();
+    public abstract Integer getInventorySize();
 
     @Override
     @Property("inventorySize")
-    public abstract void setInventorySize(long inventorySize);
+    public abstract void setInventorySize(int inventorySize);
 }

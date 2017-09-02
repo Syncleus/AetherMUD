@@ -290,7 +290,7 @@ public class GameManager {
             channelUtils.write(destinationPlayer.getPlayerId(),
                     player.getPlayerName() + " has been " + BOLD_ON + Color.RED + "DETAINED" + RESET + "!" + "\r\n", true);
         });
-        player.addCoolDown(new CoolDown(CoolDownType.DETAINMENT));
+        player.addCoolDown(new CoolDownPojo(CoolDownType.DETAINMENT));
     }
 
     public void announceConnect(String userName) {
@@ -666,7 +666,7 @@ public class GameManager {
 
     }
 
-    private String getFormattedNumber(Long longval) {
+    private String getFormattedNumber(Number longval) {
         return NumberFormat.getNumberInstance(Locale.US).format(longval);
     }
 
@@ -710,7 +710,7 @@ public class GameManager {
         return Integer.parseInt(str);
     }
 
-    public String renderCoolDownString(Set<CoolDown> coolDowns) {
+    public String renderCoolDownString(Set<? extends CoolDown> coolDowns) {
         Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 

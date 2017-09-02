@@ -18,24 +18,24 @@ package com.syncleus.aethermud.stats;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
 
 public class StatsBuilder {
-    private long strength;
-    private long intelligence;
-    private long willpower;
-    private long aim;
-    private long agile;
-    private long armorRating;
-    private long meleSkill;
-    private long currentHealth;
-    private long maxHealth;
-    private long weaponRatingMax;
-    private long weaponRatingMin;
-    private long numberOfWeaponRolls;
-    private long experience;
-    private long currentMana;
-    private long maxMana;
-    private long foraging;
-    private long inventorySize;
-    private long maxEffects;
+    private int strength;
+    private int intelligence;
+    private int willpower;
+    private int aim;
+    private int agile;
+    private int armorRating;
+    private int meleSkill;
+    private int currentHealth;
+    private int maxHealth;
+    private int weaponRatingMax;
+    private int weaponRatingMin;
+    private int numberOfWeaponRolls;
+    private int experience;
+    private int currentMana;
+    private int maxMana;
+    private int foraging;
+    private int inventorySize;
+    private int maxEffects;
 
     public StatsBuilder() {
     }
@@ -62,92 +62,92 @@ public class StatsBuilder {
         this.maxEffects = stats.getMaxEffects();
     }
 
-    public StatsBuilder setIntelligence(long intelligence) {
+    public StatsBuilder setIntelligence(int intelligence) {
         this.intelligence = intelligence;
         return this;
     }
 
-    public StatsBuilder setStrength(long strength) {
+    public StatsBuilder setStrength(int strength) {
         this.strength = strength;
         return this;
     }
 
-    public StatsBuilder setWillpower(long willpower) {
+    public StatsBuilder setWillpower(int willpower) {
         this.willpower = willpower;
         return this;
     }
 
-    public StatsBuilder setAim(long aim) {
+    public StatsBuilder setAim(int aim) {
         this.aim = aim;
         return this;
     }
 
-    public StatsBuilder setAgile(long agile) {
+    public StatsBuilder setAgile(int agile) {
         this.agile = agile;
         return this;
     }
 
-    public StatsBuilder setArmorRating(long armorRating) {
+    public StatsBuilder setArmorRating(int armorRating) {
         this.armorRating = armorRating;
         return this;
     }
 
-    public StatsBuilder setMeleSkill(long meleSkill) {
+    public StatsBuilder setMeleSkill(int meleSkill) {
         this.meleSkill = meleSkill;
         return this;
     }
 
-    public StatsBuilder setCurrentHealth(long currentHealth) {
+    public StatsBuilder setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
         return this;
     }
 
-    public StatsBuilder setMaxHealth(long maxHealth) {
+    public StatsBuilder setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
         return this;
     }
 
-    public StatsBuilder setWeaponRatingMax(long weaponRatingMax) {
+    public StatsBuilder setWeaponRatingMax(int weaponRatingMax) {
         this.weaponRatingMax = weaponRatingMax;
         return this;
     }
 
-    public StatsBuilder setWeaponRatingMin(long weaponRatingMin) {
+    public StatsBuilder setWeaponRatingMin(int weaponRatingMin) {
         this.weaponRatingMin = weaponRatingMin;
         return this;
     }
 
-    public StatsBuilder setNumberOfWeaponRolls(long numberOfWeaponRolls) {
+    public StatsBuilder setNumberOfWeaponRolls(int numberOfWeaponRolls) {
         this.numberOfWeaponRolls = numberOfWeaponRolls;
         return this;
     }
 
-    public StatsBuilder setExperience(long experience) {
+    public StatsBuilder setExperience(int experience) {
         this.experience = experience;
         return this;
     }
 
-    public StatsBuilder setCurrentMana(long currentMana) {
+    public StatsBuilder setCurrentMana(int currentMana) {
         this.currentMana = currentMana;
         return this;
     }
 
-    public StatsBuilder setMaxMana(long maxMana) {
+    public StatsBuilder setMaxMana(int maxMana) {
         this.maxMana = maxMana;
         return this;
     }
 
-    public StatsBuilder setForaging(long foraging) {
+    public StatsBuilder setForaging(int foraging) {
         this.foraging = foraging;
         return this;
     }
 
-    public StatsBuilder setInventorySize(long inventorySize) {
+    public StatsBuilder setInventorySize(int inventorySize) {
         this.inventorySize = inventorySize;
         return this;
     }
 
-    public StatsBuilder setMaxEffects(long maxEffects) {
+    public StatsBuilder setMaxEffects(int maxEffects) {
         this.maxEffects = maxEffects;
         return this;
     }

@@ -22,17 +22,17 @@ public class Levels {
 
     private static double CONSTANT_MODIFIER = 0.02;
 
-    public static long getLevel(long experience) {
+    public static int getLevel(long experience) {
         double v = CONSTANT_MODIFIER * sqrt(experience);
-        return (long) Math.floor(v);
+        return (int) Math.floor(v);
     }
 
-    public static long getXp(long level) {
+    public static int getXp(int level) {
         double v = pow(level, 2) / pow(CONSTANT_MODIFIER, 2);
-        return (long) Math.ceil(v);
+        return (int) Math.ceil(v);
     }
 
-    public static long getXp(long fromLevel, long toLevel) {
+    public static int getXp(int fromLevel, int toLevel) {
         return getXp(toLevel) - getXp(fromLevel);
     }
 

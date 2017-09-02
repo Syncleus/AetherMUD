@@ -16,6 +16,7 @@
 package com.syncleus.aethermud.storage.graphdb;
 
 
+import com.google.api.client.util.Lists;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.player.*;
 import com.google.common.collect.Sets;
@@ -75,10 +76,18 @@ public abstract class PlayerData extends AbstractVertexFrame {
     public abstract void setGoldInBank(int goldInBank);
 
     @Property("roleSet")
-    public abstract Set<PlayerRole> getPlayerRoleSet();
+    public abstract Collection<String> getPlayerRoleTextCollection();
+
+    public Set<PlayerRole> getPlayerRoleSet() {
+        HashSet<PlayerRole> roles = new HashSet<>();
+        Collection<String> rolesText = getPlayerRoleTextCollection();
+        for(final String roleText : rolesText)
+            roles.add(PlayerRole.valueOf(roleText));
+        return Collections.unmodifiableSet(roles);
+    }
 
     @Property("roleSet")
-    public abstract void setPlayerRoleSet(Set<PlayerRole> playerRoleSet);
+    public abstract void setPlayerRoleSet(Collection<PlayerRole> playerRoleSet);
 
     @Property("equipment")
     public abstract List<String> getPlayerEquipment();
@@ -122,17 +131,57 @@ public abstract class PlayerData extends AbstractVertexFrame {
     @Property("playerClass")
     public abstract void setPlayerClass(PlayerClass playerClass);
 
-    @Property("coolDowns")
-    public abstract Map<CoolDownType, CoolDown> getCoolDownMap();
-
-    @Property("coolDowns")
-    public abstract void setCoolDowns(Map<CoolDownType, CoolDown> coolDowns);
-
     @Property("currentRoomId")
     public abstract Integer getCurrentRoomId();
 
     @Property("currentRoomId")
     public abstract void setCurrentRoomId(Integer currentRoomId);
+
+    @Adjacency(label = "coolDowns", direction = Direction.OUT)
+    public abstract <N extends CoolDownData> Iterator<? extends N> getCoolDowns(Class<? extends N> type);
+
+    @Adjacency(label = "coolDowns", direction = Direction.OUT)
+    public abstract CoolDownData addCoolDowns(CoolDownData coolDowns);
+
+    @Adjacency(label = "coolDowns", direction = Direction.OUT)
+    public abstract void removeCoolDown(CoolDownData stats);
+
+    @Adjacency(label = "coolDowns", direction = Direction.OUT)
+    public abstract void addCoolDown(CoolDownData coolDown);
+
+    public Map<CoolDownType, CoolDownData> getCoolDownMap() {
+        Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
+        final HashMap<CoolDownType, CoolDownData> coolDownsMap = new HashMap<>();
+        while(coolDowns.hasNext()) {
+            CoolDownData coolDown = coolDowns.next();
+            coolDownsMap.put(coolDown.getCoolDownType(), coolDown);
+        }
+
+        return Collections.unmodifiableMap(coolDownsMap);
+    }
+
+    public void setCoolDowns(Map<CoolDownType, CoolDownData> coolDowns) {
+        Iterator<? extends CoolDownData> existingCoolDowns = getCoolDowns(CoolDownData.class);
+        while(existingCoolDowns.hasNext()) {
+            CoolDownData existingCoolDown = existingCoolDowns.next();
+            this.removeCoolDown(existingCoolDown);
+        }
+
+        for(CoolDownData coolDown : coolDowns.values()) {
+            this.addCoolDown(coolDown);
+        }
+    }
+
+    public Set<CoolDownData> getCoolDowns() {
+        Map<CoolDownType, CoolDownData> coolDowns = this.getCoolDownMap();
+        return Collections.unmodifiableSet(Sets.newHashSet(coolDowns.values()));
+    }
+
+    public CoolDownData createCoolDown() {
+        final CoolDownData coolDown = this.getGraph().addFramedVertex(CoolDownData.class);
+        this.addCoolDown(coolDown);
+        return coolDown;
+    }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
     public abstract <N extends StatsData> Iterator<? extends N> getAllStats(Class<? extends N> type);
@@ -169,6 +218,24 @@ public abstract class PlayerData extends AbstractVertexFrame {
         if( this.getStats() != null )
             throw new IllegalStateException("Already has stats, can't create another");
         final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        stats.setAgile(0);
+        stats.setAim(0);
+        stats.setArmorRating(0);
+        stats.setCurrentHealth(0);
+        stats.setCurrentMana(0);
+        stats.setExperience(0);
+        stats.setForaging(0);
+        stats.setIntelligence(0);
+        stats.setInventorySize(0);
+        stats.setMaxEffects(0);
+        stats.setMaxHealth(0);
+        stats.setMaxMana(0);
+        stats.setMeleSkill(0);
+        stats.setNumberOfWeaponRolls(0);
+        stats.setStrength(0);
+        stats.setWeaponRatingMax(0);
+        stats.setWeaponRatingMin(0);
+        stats.setWillpower(0);
         this.setStats(stats);
         return stats;
     }
@@ -206,16 +273,6 @@ public abstract class PlayerData extends AbstractVertexFrame {
         }
 
         this.setNpcKillLog(npcKillLog);
-    }
-
-    public void addCoolDown(CoolDown coolDown) {
-        Map<CoolDownType, CoolDown> coolDowns = this.getCoolDownMap();
-
-        if (coolDowns == null) {
-            coolDowns = new HashMap<>();
-        }
-        coolDowns.put(coolDown.getCoolDownType(), coolDown);
-        this.setCoolDowns(coolDowns);
     }
 
     public void removeLockerEntityId(String newEntityId) {
@@ -300,7 +357,7 @@ public abstract class PlayerData extends AbstractVertexFrame {
     }
 
     public void addPlayerRole(PlayerRole playerRole) {
-        Set<PlayerRole> playerRoleSet = this.getPlayerRoleSet();
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(this.getPlayerRoleSet());
         if (playerRoleSet == null) {
             playerRoleSet = Sets.newHashSet();
         }
@@ -360,15 +417,5 @@ public abstract class PlayerData extends AbstractVertexFrame {
         playerSettings.remove(key);
         this.setPlayerSettings(playerSettings);
     }
-
-    public Set<CoolDown> getCoolDowns() {
-        Map<CoolDownType, CoolDown> coolDowns = this.getCoolDownMap();
-        if (coolDowns == null) {
-            coolDowns = new HashMap<>();
-        }
-        return Sets.newHashSet(coolDowns.values());
-    }
-
-
 }
 

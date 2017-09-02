@@ -28,6 +28,7 @@ import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.CoolDownData;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.StatsHelper;
@@ -129,7 +130,7 @@ public class Player extends AetherMudEntity {
             if (npcIdOptional.isPresent()) {
                 // If the NPC has died- bail out.
                 String npcId = npcIdOptional.get();
-                addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
+                addCoolDown(new CoolDownPojo(CoolDownType.NPC_FIGHT));
                 NpcSpawn npcSpawn = gameManager.getEntityManager().getNpcEntity(npcId);
                 if (npcSpawn == null) {
                     continue;
@@ -181,7 +182,7 @@ public class Player extends AetherMudEntity {
             for (Effect effect : effectsToRemove) {
                 playerData.removeEffect(effect);
             }
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -204,7 +205,7 @@ public class Player extends AetherMudEntity {
                     gameManager.getChannelUtils().write(getPlayerId(), "You just " + Color.BOLD_ON + Color.RED + "lost " + Color.RESET + newGold + Color.YELLOW + " gold" + Color.RESET + "!\r\n");
                 }
                 removeActiveAlertStatus();
-                CoolDown death = new CoolDown(CoolDownType.DEATH);
+                CoolDownPojo death = new CoolDownPojo(CoolDownType.DEATH);
                 addCoolDown(death);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
                 PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
@@ -216,7 +217,7 @@ public class Player extends AetherMudEntity {
     }
 
 
-    public boolean updatePlayerHealth(long amount, NpcSpawn npcSpawn) {
+    public boolean updatePlayerHealth(int amount, NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             if (!playerMetadataOptional.isPresent()) {
@@ -265,14 +266,14 @@ public class Player extends AetherMudEntity {
     }
 
 
-    private void addHealth(long addAmt, PlayerData playerData) {
-        long currentHealth = playerData.getStats().getCurrentHealth();
+    private void addHealth(int addAmt, PlayerData playerData) {
+        int currentHealth = playerData.getStats().getCurrentHealth();
         Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
-        long maxHealth = statsModifier.getMaxHealth();
-        long proposedNewAmt = currentHealth + addAmt;
+        int maxHealth = statsModifier.getMaxHealth();
+        int proposedNewAmt = currentHealth + addAmt;
         if (proposedNewAmt > maxHealth) {
             if (currentHealth < maxHealth) {
-                long adjust = proposedNewAmt - maxHealth;
+                int adjust = proposedNewAmt - maxHealth;
                 proposedNewAmt = proposedNewAmt - adjust;
             } else {
                 proposedNewAmt = proposedNewAmt - addAmt;
@@ -281,28 +282,28 @@ public class Player extends AetherMudEntity {
         playerData.getStats().setCurrentHealth(proposedNewAmt);
     }
 
-    public void addMana(long addAmt) {
+    public void addMana(int addAmt) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
             PlayerData playerData = playerMetadataOptional.get();
-            long currentMana = playerData.getStats().getCurrentMana();
+            int currentMana = playerData.getStats().getCurrentMana();
             Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
-            long maxMana = statsModifier.getMaxMana();
-            long proposedNewAmt = currentMana + addAmt;
+            int maxMana = statsModifier.getMaxMana();
+            int proposedNewAmt = currentMana + addAmt;
             if (proposedNewAmt > maxMana) {
                 if (currentMana < maxMana) {
-                    long adjust = proposedNewAmt - maxMana;
+                    int adjust = proposedNewAmt - maxMana;
                     proposedNewAmt = proposedNewAmt - adjust;
                 } else {
                     proposedNewAmt = proposedNewAmt - addAmt;
                 }
             }
             playerData.getStats().setCurrentMana(proposedNewAmt);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
-    public void addExperience(long exp) {
+    public void addExperience(int exp) {
         synchronized (interner.intern(playerId)) {
             final Meter requests = Main.metrics.meter("experience-" + playerName);
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
@@ -310,35 +311,35 @@ public class Player extends AetherMudEntity {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            long currentExperience = playerData.getStats().getExperience();
-            long currentLevel = Levels.getLevel(currentExperience);
+            int currentExperience = playerData.getStats().getExperience();
+            int currentLevel = Levels.getLevel(currentExperience);
             playerData.getStats().setExperience(currentExperience + exp);
             requests.mark(exp);
-            long newLevel = Levels.getLevel(playerData.getStats().getExperience());
+            int newLevel = Levels.getLevel(playerData.getStats().getExperience());
             if (newLevel > currentLevel) {
                 gameManager.announceLevelUp(playerName, currentLevel, newLevel);
             }
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
-    public long getLevel() {
+    public int getLevel() {
         Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        return playerMetadataOptional.map(playerMetadata -> Levels.getLevel(playerMetadata.getStats().getExperience())).orElse(0L);
+        return playerMetadataOptional.map(playerMetadata -> Levels.getLevel(playerMetadata.getStats().getExperience())).orElse(0);
     }
 
     private Optional<PlayerData> getPlayerMetadata() {
         return gameManager.getPlayerManager().getPlayerMetadata(playerId);
     }
 
-    private void savePlayerMetadata(PlayerData playerData) {
-        gameManager.getPlayerManager().newPlayerData();
+    private void savePlayerMetadata() {
+        gameManager.getPlayerManager().persist();
     }
 
     public long getCurrentHealth() {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            return playerMetadataOptional.map(playerMetadata -> playerMetadata.getStats().getCurrentHealth()).orElse(0L);
+            return playerMetadataOptional.map(playerMetadata -> playerMetadata.getStats().getCurrentHealth()).orElse(0);
         }
     }
 
@@ -350,7 +351,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.transferGoldToBank(amt);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -362,7 +363,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.transferBankGoldToPlayer(amt);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -374,7 +375,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.incrementGold(amt);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -389,7 +390,7 @@ public class Player extends AetherMudEntity {
                 return false;
             }
             playerData.addEffect(effect);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
             return true;
         }
     }
@@ -414,7 +415,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.addLearnedSpellByName(spellName);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -439,7 +440,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.removeLearnedSpellByName(spellName);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -502,7 +503,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.addInventoryEntityId(inventoryId);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -521,7 +522,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.removeInventoryEntityId(inventoryId);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -533,7 +534,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.addLockerEntityId(entityId);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -546,7 +547,7 @@ public class Player extends AetherMudEntity {
                 }
                 PlayerData playerData = playerMetadataOptional.get();
                 playerData.addNpcKill(npcName);
-                savePlayerMetadata(playerData);
+                savePlayerMetadata();
             }
         });
     }
@@ -567,7 +568,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.removeLockerEntityId(lockerInventoryId);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -580,7 +581,7 @@ public class Player extends AetherMudEntity {
             PlayerData playerData = playerMetadataOptional.get();
             StatsData stats = playerData.getStats();
             stats.setCurrentMana(stats.getCurrentMana() + amount);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -593,23 +594,27 @@ public class Player extends AetherMudEntity {
             PlayerData playerData = playerMetadataOptional.get();
             StatsData stats = playerData.getStats();
             stats.setForaging(stats.getForaging() + amount);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
-    public void addCoolDown(CoolDown coolDown) {
+    public void addCoolDown(CoolDownPojo coolDown) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            playerData.addCoolDown(coolDown);
-            savePlayerMetadata(playerData);
+            CoolDown newCoolDown = playerData.createCoolDown();
+            newCoolDown.setNumberOfTicks(coolDown.getNumberOfTicks());
+            newCoolDown.setCoolDownType(coolDown.getCoolDownType());
+            newCoolDown.setName(coolDown.getName());
+            newCoolDown.setOriginalNumberOfTicks(coolDown.getOriginalNumberOfTicks());
+            savePlayerMetadata();
         }
     }
 
-    public Set<CoolDown> getCoolDowns() {
+    public Set<? extends CoolDown> getCoolDowns() {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
@@ -648,9 +653,9 @@ public class Player extends AetherMudEntity {
                 return false;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            Set<CoolDown> coolDowns = playerData.getCoolDowns();
-            for (CoolDown c : coolDowns) {
-                if (c.getCoolDownType().equals(coolDownType)) {
+            Set<CoolDownData> coolDowns = playerData.getCoolDowns();
+            for (CoolDownData c : coolDowns) {
+                if (c.getCoolDownType() != null && c.getCoolDownType().equals(coolDownType)) {
                     if (c.isActive()) {
                         return true;
                     }
@@ -667,8 +672,8 @@ public class Player extends AetherMudEntity {
                 return false;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            Set<CoolDown> coolDowns = playerData.getCoolDowns();
-            for (CoolDown coolDown : coolDowns) {
+            Set<CoolDownData> coolDowns = playerData.getCoolDowns();
+            for (CoolDownData coolDown : coolDowns) {
                 if (coolDown.getName().equalsIgnoreCase(spellName)) {
                     return true;
                 }
@@ -684,18 +689,18 @@ public class Player extends AetherMudEntity {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            playerData.getCoolDownMap().entrySet().removeIf(coolDownTypeCoolDownEntry -> {
-                if (coolDownTypeCoolDownEntry.getValue().isActive()) {
-                    coolDownTypeCoolDownEntry.getValue().decrementTick();
+            Set<CoolDownData> coolDowns = playerData.getCoolDowns();
+            for(final CoolDownData coolDown : coolDowns) {
+                if (coolDown.isActive()) {
+                    coolDown.decrementTick();
                 } else {
-                    if (coolDownTypeCoolDownEntry.getValue().equals(CoolDownType.DEATH)) {
+                    if (coolDown.equals(CoolDownType.DEATH)) {
                         gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
                     }
-                    return true;
+                    coolDown.remove();
                 }
-                return false;
-            });
-            savePlayerMetadata(playerData);
+            }
+            savePlayerMetadata();
         }
     }
 
@@ -747,7 +752,7 @@ public class Player extends AetherMudEntity {
                 }
                 PlayerData playerData = playerMetadataOptional.get();
                 playerData.setCurrentRoomId(currentRoom.getRoomId());
-                savePlayerMetadata(playerData);
+                savePlayerMetadata();
             }
         });
     }
@@ -1084,7 +1089,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.addEquipmentEntityId(equipmentId);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -1096,7 +1101,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.removeEquipmentEntityId(equipmentId);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -1187,7 +1192,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.setPlayerClass(playerClass);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -1244,7 +1249,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             success = playerData.setSetting(key, value);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
         return success;
     }
@@ -1261,7 +1266,7 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             playerData.deleteSetting(key);
-            savePlayerMetadata(playerData);
+            savePlayerMetadata();
         }
     }
 
@@ -1273,7 +1278,7 @@ public class Player extends AetherMudEntity {
         synchronized (interner.intern(playerId)) {
             if (gameManager.getEntityManager().getNpcEntity(npcSpawn.getEntityId()) != null) {
                 if (!doesActiveFightExist(npcSpawn)) {
-                    addCoolDown(new CoolDown(CoolDownType.NPC_FIGHT));
+                    addCoolDown(new CoolDownPojo(CoolDownType.NPC_FIGHT));
                     ActiveFight activeFight = ActiveFight.builder()
                             .npcId(npcSpawn.getEntityId())
                             .isPrimary(false)
@@ -1387,14 +1392,14 @@ public class Player extends AetherMudEntity {
     }
 
     private void calculatePlayerDamageToNpc(DamageProcessor playerDamageProcessor, NpcSpawn npcSpawn, NpcStatsChangeBuilder npcStatsChangeBuilder) {
-        long damageToVictim = 0;
-        long chanceToHit = playerDamageProcessor.getChanceToHit(this, npcSpawn);
+        int damageToVictim = 0;
+        int chanceToHit = playerDamageProcessor.getChanceToHit(this, npcSpawn);
         if (randInt(0, 100) < chanceToHit) {
             damageToVictim = playerDamageProcessor.getAttackAmount(this, npcSpawn);
         }
         if (damageToVictim > 0) {
             if (randInt(0, 100) > (100 - playerDamageProcessor.getCriticalChance(this, npcSpawn))) {
-                long criticalDamage = damageToVictim * 3;
+                int criticalDamage = damageToVictim * 3;
                 final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + Color.YELLOW + "The " + npcSpawn.getColorName() + " was caught off guard by the attack! " + "+" + NumberFormat.getNumberInstance(Locale.US).format(criticalDamage) + Color.RESET + Color.BOLD_ON + Color.RED + " DAMAGE" + Color.RESET + " done to " + npcSpawn.getColorName();
                 npcStatsChangeBuilder.setStats(new StatsBuilder().setCurrentHealth(-(criticalDamage)).createStats());
                 npcStatsChangeBuilder.setDamageStrings(Collections.singletonList(fightMsg));
@@ -1412,7 +1417,7 @@ public class Player extends AetherMudEntity {
 
     private void calculateNpcDamageToPlayer(DamageProcessor npcDamageProcessor, NpcSpawn npcSpawn, NpcStatsChangeBuilder npcStatsChangeBuilder) {
         int chanceToHitBack = npcDamageProcessor.getChanceToHit(this, npcSpawn);
-        long damageBack = npcDamageProcessor.getAttackAmount(this, npcSpawn);
+        int damageBack = npcDamageProcessor.getAttackAmount(this, npcSpawn);
         if (randInt(0, 100) < chanceToHitBack) {
             final String fightMsg = Color.BOLD_ON + Color.RED + "[attack] " + Color.RESET + npcSpawn.buildAttackMessage(this.getPlayerName()) + " -" + NumberFormat.getNumberInstance(Locale.US).format(damageBack) + Color.RESET;
             npcStatsChangeBuilder.setPlayerStatsChange(new StatsBuilder().setCurrentHealth(-damageBack).createStats());

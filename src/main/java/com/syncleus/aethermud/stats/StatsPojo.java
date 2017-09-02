@@ -16,24 +16,24 @@
 package com.syncleus.aethermud.stats;
 
 public class StatsPojo implements Stats {
-    private long strength;
-    private long intelligence;
-    private long willpower;
-    private long aim;
-    private long agile;
-    private long armorRating;
-    private long meleSkill;
-    private long currentHealth;
-    private long maxHealth;
-    private long weaponRatingMax;
-    private long weaponRatingMin;
-    private long numberOfWeaponRolls;
-    private long experience;
-    private long currentMana;
-    private long maxMana;
-    private long foraging;
-    private long inventorySize;
-    private long maxEffects;
+    private int strength;
+    private int intelligence;
+    private int willpower;
+    private int aim;
+    private int agile;
+    private int armorRating;
+    private int meleSkill;
+    private int currentHealth;
+    private int maxHealth;
+    private int weaponRatingMax;
+    private int weaponRatingMin;
+    private int numberOfWeaponRolls;
+    private int experience;
+    private int currentMana;
+    private int maxMana;
+    private int foraging;
+    private int inventorySize;
+    private int maxEffects;
 
     public StatsPojo(Stats stats) {
         this.strength = stats.getStrength();
@@ -57,24 +57,24 @@ public class StatsPojo implements Stats {
         this.maxEffects = stats.getMaxEffects();
     }
 
-    public StatsPojo(long strength,
-                     long intelligence,
-                     long willpower,
-                     long aim,
-                     long agile,
-                     long armorRating,
-                     long meleSkill,
-                     long currentHealth,
-                     long maxHealth,
-                     long weaponRatingMax,
-                     long weaponRatingMin,
-                     long numberOfWeaponRolls,
-                     long experience,
-                     long currentMana,
-                     long maxMana,
-                     long foraging,
-                     long inventorySize,
-                     long maxEffects) {
+    public StatsPojo(int strength,
+                     int intelligence,
+                     int willpower,
+                     int aim,
+                     int agile,
+                     int armorRating,
+                     int meleSkill,
+                     int currentHealth,
+                     int maxHealth,
+                     int weaponRatingMax,
+                     int weaponRatingMin,
+                     int numberOfWeaponRolls,
+                     int experience,
+                     int currentMana,
+                     int maxMana,
+                     int foraging,
+                     int inventorySize,
+                     int maxEffects) {
         this.strength = strength;
         this.intelligence = intelligence;
         this.willpower = willpower;
@@ -96,147 +96,147 @@ public class StatsPojo implements Stats {
     }
 
 
-    public long getIntelligence() {
+    public Integer getIntelligence() {
         return intelligence;
     }
 
-    public void setIntelligence(long intelligence) {
+    public void setIntelligence(int intelligence) {
         this.intelligence = intelligence;
     }
 
-    public long getMaxEffects() {
+    public Integer getMaxEffects() {
         return maxEffects;
     }
 
-    public void setMaxEffects(long maxEffects) {
+    public void setMaxEffects(int maxEffects) {
         this.maxEffects = maxEffects;
     }
 
-    public long getExperience() {
+    public Integer getExperience() {
         return experience;
     }
 
-    public void setExperience(long experience) {
+    public void setExperience(int experience) {
         this.experience = experience;
     }
 
-    public long getStrength() {
+    public Integer getStrength() {
         return strength;
     }
 
-    public void setStrength(long strength) {
+    public void setStrength(int strength) {
         this.strength = strength;
     }
 
-    public long getWillpower() {
+    public Integer getWillpower() {
         return willpower;
     }
 
-    public void setWillpower(long willpower) {
+    public void setWillpower(int willpower) {
         this.willpower = willpower;
     }
 
-    public long getAim() {
+    public Integer getAim() {
         return aim;
     }
 
-    public void setAim(long aim) {
+    public void setAim(int aim) {
         this.aim = aim;
     }
 
-    public long getAgile() {
+    public Integer getAgile() {
         return agile;
     }
 
-    public void setAgile(long agile) {
+    public void setAgile(int agile) {
         this.agile = agile;
     }
 
-    public long getArmorRating() {
+    public Integer getArmorRating() {
         return armorRating;
     }
 
-    public void setArmorRating(long armorRating) {
+    public void setArmorRating(int armorRating) {
         this.armorRating = armorRating;
     }
 
-    public long getMeleSkill() {
+    public Integer getMeleSkill() {
         return meleSkill;
     }
 
-    public void setMeleSkill(long meleSkill) {
+    public void setMeleSkill(int meleSkill) {
         this.meleSkill = meleSkill;
     }
 
-    public long getCurrentHealth() {
+    public Integer getCurrentHealth() {
         return currentHealth;
     }
 
-    public void setCurrentHealth(long currentHealth) {
+    public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
     }
 
-    public long getMaxHealth() {
+    public Integer getMaxHealth() {
         return maxHealth;
     }
 
-    public void setMaxHealth(long maxHealth) {
+    public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
     }
 
-    public long getWeaponRatingMax() {
+    public Integer getWeaponRatingMax() {
         return weaponRatingMax;
     }
 
-    public void setWeaponRatingMax(long weaponRatingMax) {
+    public void setWeaponRatingMax(int weaponRatingMax) {
         this.weaponRatingMax = weaponRatingMax;
     }
 
-    public long getWeaponRatingMin() {
+    public Integer getWeaponRatingMin() {
         return weaponRatingMin;
     }
 
-    public void setWeaponRatingMin(long weaponRatingMin) {
+    public void setWeaponRatingMin(int weaponRatingMin) {
         this.weaponRatingMin = weaponRatingMin;
     }
 
-    public long getNumberOfWeaponRolls() {
+    public Integer getNumberOfWeaponRolls() {
         return numberOfWeaponRolls;
     }
 
-    public void setNumberOfWeaponRolls(long numberOfWeaponRolls) {
+    public void setNumberOfWeaponRolls(int numberOfWeaponRolls) {
         this.numberOfWeaponRolls = numberOfWeaponRolls;
     }
 
-    public long getCurrentMana() {
+    public Integer getCurrentMana() {
         return currentMana;
     }
 
-    public long getMaxMana() {
+    public Integer getMaxMana() {
         return maxMana;
     }
 
-    public void setCurrentMana(long currentMana) {
+    public void setCurrentMana(int currentMana) {
         this.currentMana = currentMana;
     }
 
-    public void setMaxMana(long maxMana) {
+    public void setMaxMana(int maxMana) {
         this.maxMana = maxMana;
     }
 
-    public long getForaging() {
+    public Integer getForaging() {
         return foraging;
     }
 
-    public void setForaging(long foraging) {
+    public void setForaging(int foraging) {
         this.foraging = foraging;
     }
 
-    public long getInventorySize() {
+    public Integer getInventorySize() {
         return inventorySize;
     }
 
-    public void setInventorySize(long inventorySize) {
+    public void setInventorySize(int inventorySize) {
         this.inventorySize = inventorySize;
     }
 }

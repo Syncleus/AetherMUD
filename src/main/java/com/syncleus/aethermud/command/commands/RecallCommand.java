@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.CoolDown;
+import com.syncleus.aethermud.player.CoolDownPojo;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.PlayerMovement;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -51,7 +51,7 @@ public class RecallCommand extends Command {
                 return;
             }
             PlayerMovement playerMovement = new PlayerMovement(player, player.getCurrentRoom().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
-            player.addCoolDown(new CoolDown(CoolDownType.PLAYER_RECALL));
+            player.addCoolDown(new CoolDownPojo(CoolDownType.PLAYER_RECALL));
             player.movePlayer(playerMovement);
         });
     }
