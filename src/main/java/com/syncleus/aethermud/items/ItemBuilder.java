@@ -16,6 +16,7 @@
 package com.syncleus.aethermud.items;
 
 
+import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
@@ -89,7 +90,7 @@ public class ItemBuilder {
         this.hasBeenWithPlayer = new Boolean(origItem.isHasBeenWithPlayer());
         this.maxUses = origItem.getMaxUses();
         this.isDisposable = origItem.isDisposable();
-        this.validTimeOfDays = origItem.getValidTimeOfDays();
+        this.validTimeOfDays = Sets.newHashSet(origItem.getValidTimeOfDays());
         this.itemApplyStats = origItem.getItemApplyStats();
         return this;
     }

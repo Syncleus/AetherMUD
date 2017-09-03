@@ -36,7 +36,11 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
 
     @Override
     @Property("ValidTimeOfDays")
-    public abstract Set<TimeTracker.TimeOfDay> getValidTimeOfDays();
+    public abstract List<TimeTracker.TimeOfDay> getValidTimeOfDays();
+
+    @Override
+    @Property("ValidTimeOfDays")
+    public abstract void setValidTimeOfDays(List<TimeTracker.TimeOfDay> validTimeOfDays);
 
     @Override
     @Property("ValidTimeOfDays")

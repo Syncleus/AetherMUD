@@ -44,7 +44,7 @@ public class ItemPojo implements Serializable, Item {
     private boolean hasBeenWithPlayer;
     private int maxUses;
     private boolean isDisposable;
-    private Set<TimeTracker.TimeOfDay> validTimeOfDays;
+    private List<TimeTracker.TimeOfDay> validTimeOfDays;
     private Stats itemApplyStats;
 
     public static final String CORPSE_INTENAL_NAME = "corpse";
@@ -67,7 +67,7 @@ public class ItemPojo implements Serializable, Item {
         this.hasBeenWithPlayer = hasBeenWithPlayer;
         this.maxUses = maxUses;
         this.isDisposable = isDisposable;
-        this.validTimeOfDays = validTimeOfDays;
+        this.validTimeOfDays = Lists.newArrayList(validTimeOfDays);
         this.itemApplyStats = itemApplyStats;
     }
 
@@ -77,8 +77,18 @@ public class ItemPojo implements Serializable, Item {
     }
 
     @Override
-    public Set<TimeTracker.TimeOfDay> getValidTimeOfDays() {
+    public List<TimeTracker.TimeOfDay> getValidTimeOfDays() {
         return validTimeOfDays;
+    }
+
+    @Override
+    public void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays) {
+        this.validTimeOfDays = Lists.newArrayList(validTimeOfDays);
+    }
+
+    @Override
+    public void setValidTimeOfDays(List<TimeTracker.TimeOfDay> validTimeOfDays) {
+        this.validTimeOfDays = Lists.newArrayList(validTimeOfDays);
     }
 
     @Override
@@ -163,11 +173,6 @@ public class ItemPojo implements Serializable, Item {
     @Override
     public void setHasBeenWithPlayer(boolean hasBeenWithPlayer) {
         this.hasBeenWithPlayer = hasBeenWithPlayer;
-    }
-
-    @Override
-    public void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays) {
-        this.validTimeOfDays = validTimeOfDays;
     }
 
     @Override

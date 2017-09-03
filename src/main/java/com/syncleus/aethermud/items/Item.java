@@ -24,7 +24,11 @@ import java.util.Set;
 public interface Item {
     Stats getItemApplyStats();
 
-    Set<TimeTracker.TimeOfDay> getValidTimeOfDays();
+    List<TimeTracker.TimeOfDay> getValidTimeOfDays();
+
+    void setValidTimeOfDays(List<TimeTracker.TimeOfDay> validTimeOfDays);
+
+    void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays);
 
     boolean isDisposable();
 
@@ -59,8 +63,6 @@ public interface Item {
     void setEquipment(Equipment equipment);
 
     void setHasBeenWithPlayer(boolean hasBeenWithPlayer);
-
-    void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays);
 
     Equipment getEquipment();
 

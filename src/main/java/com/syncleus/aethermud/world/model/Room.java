@@ -304,7 +304,7 @@ public abstract class Room extends AetherMudEntity {
             if (itemEntity.isHasBeenWithPlayer()) {
                 continue;
             }
-            Set<TimeTracker.TimeOfDay> itemValidTimeOfDays = itemEntity.getValidTimeOfDays();
+            List<TimeTracker.TimeOfDay> itemValidTimeOfDays = itemEntity.getValidTimeOfDays();
             TimeTracker.TimeOfDay timeOfDay = gameManager.getTimeTracker().getTimeOfDay();
             if (itemValidTimeOfDays.size() > 0 && !itemValidTimeOfDays.contains(timeOfDay)) {
                 gameManager.getEntityManager().removeItem(itemId);
