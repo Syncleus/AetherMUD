@@ -48,6 +48,8 @@ public interface Item {
 
     List<String> getItemTriggers();
 
+    void setItemTriggers(List<String> itemTriggers);
+
     String getRestingName();
 
     int getItemHalfLifeTicks();
@@ -75,8 +77,6 @@ public interface Item {
     void setItemDescription(String itemDescription);
 
     void setInternalItemName(String internalItemName);
-
-    void setItemTriggers(List<String> itemTriggers);
 
     void setRestingName(String restingName);
 

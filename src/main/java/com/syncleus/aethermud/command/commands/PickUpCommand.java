@@ -47,6 +47,8 @@ public class PickUpCommand extends Command {
                 if (!itemEntityOptional.isPresent()) {
                     continue;
                 }
+                if( itemEntityOptional.get().getItemTriggers() == null )
+                    throw new IllegalStateException("Item triggers cant be null");
                 if (itemEntityOptional.get().getItemTriggers().contains(desiredPickUpItem)) {
                     if (gameManager.acquireItemFromRoom(player, next)) {
                         String playerName = player.getPlayerName();

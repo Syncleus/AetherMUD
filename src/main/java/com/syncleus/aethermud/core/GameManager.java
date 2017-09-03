@@ -475,7 +475,7 @@ public class GameManager {
     public void placeItemInRoom(Integer roomId, String itemId) {
         Optional<ItemPojo> itemOptional = entityManager.getItemEntity(itemId);
         if (!itemOptional.isPresent()) {
-            return;
+            throw new IllegalArgumentException("itemId not valid.");
         }
         ItemPojo item = itemOptional.get();
         roomManager.getRoom(roomId).addPresentItem(item.getItemId());

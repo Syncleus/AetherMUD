@@ -17,7 +17,6 @@ package com.syncleus.aethermud.entity;
 
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SentryManager;
-import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
@@ -41,7 +40,6 @@ import static com.codahale.metrics.MetricRegistry.name;
 public class EntityManager {
 
     private static final Logger log = Logger.getLogger(EntityManager.class);
-
 
     private final AetherMudStorage aetherMudStorage;
     private final RoomManager roomManager;
@@ -80,8 +78,8 @@ public class EntityManager {
         }
     }
 
-    public void saveItem(ItemPojo item) {
-        aetherMudStorage.saveItemEntity(item);
+    public ItemData saveItem(ItemPojo item) {
+        return aetherMudStorage.saveItem(item);
     }
 
     public void removeItem(ItemPojo item) {

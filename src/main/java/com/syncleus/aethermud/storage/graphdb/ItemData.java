@@ -39,6 +39,10 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     public abstract Set<TimeTracker.TimeOfDay> getValidTimeOfDays();
 
     @Override
+    @Property("ValidTimeOfDays")
+    public abstract void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays);
+
+    @Override
     @Property("Disposable")
     public abstract boolean isDisposable();
 
@@ -83,6 +87,10 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     public abstract List<String> getItemTriggers();
 
     @Override
+    @Property("ItemTriggers")
+    public abstract void setItemTriggers(List<String> itemTriggers);
+
+    @Override
     @Property("RestingName")
     public abstract String getRestingName();
 
@@ -95,22 +103,20 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     public abstract Loot getLoot();
 
     @Override
-    public void setEquipment(Equipment equipment) {
-        this.traverse((v) -> v.property("Equipment", equipment));
-    }
-
-    @Override
-    @Property("HasBeenWithPlayer")
-    public abstract void setHasBeenWithPlayer(boolean hasBeenWithPlayer);
-
-    @Override
-    public void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays) {
-        this.traverse((v) -> v.property("ValidTimeOfDays", validTimeOfDays));
-    }
+    @Property("Loot")
+    public abstract void setLoot(Loot loot);
 
     @Override
     @Property("Equipment")
     public abstract Equipment getEquipment();
+
+    @Override
+    @Property("Equipment")
+    public abstract void setEquipment(Equipment equipment);
+
+    @Override
+    @Property("HasBeenWithPlayer")
+    public abstract void setHasBeenWithPlayer(boolean hasBeenWithPlayer);
 
     @Override
     @Property("Rarity")
@@ -121,9 +127,8 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     public abstract int getValueInGold();
 
     @Override
-    public void setEffects(Set<Effect> effects) {
-        this.traverse((v) -> v.property("Effects", effects));
-    }
+    @Property("Effects")
+    public abstract void setEffects(Set<Effect> effects);
 
     @Override
     @Property("Effects")
@@ -142,22 +147,12 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     public abstract void setInternalItemName(String internalItemName);
 
     @Override
-    public void setItemTriggers(List<String> itemTriggers) {
-        this.traverse((v) -> v.property("ItemTriggers", itemTriggers));
-    }
-
-    @Override
     @Property("RestingName")
     public abstract void setRestingName(String restingName);
 
     @Override
     @Property("ItemId")
     public abstract void setItemId(String itemId);
-
-    @Override
-    public void setLoot(Loot loot) {
-        this.traverse((v) -> v.property("Loot", loot));
-    }
 
     @Override
     @Property("ItemHalfLifeTicks")

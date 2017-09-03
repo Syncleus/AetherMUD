@@ -21,6 +21,7 @@ import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
 
@@ -61,7 +62,7 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
 
     @Override
     public Optional<ItemData> getItemEntity(String itemId) {
-        return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class)).nextOrDefault(ItemData.class, null));
+        return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class).has("ItemId", itemId)).nextOrDefault(ItemData.class, null));
     }
 
     @Override
@@ -79,17 +80,15 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
     }
 
     @Override
-    public ItemData newItem() {
-        return framedGraph.addFramedVertex(ItemData.class);
-    }
-
-    @Override
-    public void saveItemEntity(ItemPojo item) {
+    public ItemData saveItem(ItemPojo item) {
+        ItemData itemData = framedGraph.addFramedVertex(ItemData.class);
         try {
-            BeanUtils.copyProperties(this.newItem(), item);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy bean", e);
+            PropertyUtils.copyProperties(itemData, item);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalStateException("Could not copy beans", e);
         }
+        itemData.setItemTriggers(item.getItemTriggers());
+        return itemData;
     }
 
     @Override

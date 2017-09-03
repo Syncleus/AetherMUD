@@ -18,15 +18,19 @@ package com.syncleus.aethermud.spawner;
 import com.codahale.metrics.MetricRegistry;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
+import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
+import com.syncleus.aethermud.entity.EntityManager;
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.items.ItemMetadata;
+import com.syncleus.aethermud.storage.graphdb.ItemData;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -34,7 +38,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class ItemSpawner extends AetherMudEntity {
-
+    private static final Logger LOGGER = Logger.getLogger(ItemSpawner.class);
     private final ItemMetadata itemMetadata;
     private final SpawnRule spawnRule;
     private final GameManager gameManager;
@@ -58,22 +62,27 @@ public class ItemSpawner extends AetherMudEntity {
 
     @Override
     public void run() {
-        incTicks();
-        if (noTicks >= spawnRule.getSpawnIntervalTicks()) {
-            int randomPercentage = spawnRule.getRandomChance();
-            int numberOfAttempts = spawnRule.getMaxInstances() - counterNumberInArea();
-            for (int i = 0; i < numberOfAttempts; i++) {
-                if (random.nextInt(100) < randomPercentage || randomPercentage == 100) {
-                    if (itemMetadata.getValidTimeOfDays() != null && itemMetadata.getValidTimeOfDays().size() > 0) {
-                        if (itemMetadata.getValidTimeOfDays().contains(gameManager.getTimeTracker().getTimeOfDay())) {
+        try {
+            incTicks();
+            if (noTicks >= spawnRule.getSpawnIntervalTicks()) {
+                int randomPercentage = spawnRule.getRandomChance();
+                int numberOfAttempts = spawnRule.getMaxInstances() - counterNumberInArea();
+                for (int i = 0; i < numberOfAttempts; i++) {
+                    if (random.nextInt(100) < randomPercentage || randomPercentage == 100) {
+                        if (itemMetadata.getValidTimeOfDays() != null && itemMetadata.getValidTimeOfDays().size() > 0) {
+                            if (itemMetadata.getValidTimeOfDays().contains(gameManager.getTimeTracker().getTimeOfDay())) {
+                                createAndAddItem();
+                            }
+                        } else {
                             createAndAddItem();
                         }
-                    } else {
-                        createAndAddItem();
                     }
+                    noTicks = 0;
                 }
-                noTicks = 0;
             }
+        } catch (Exception e) {
+            LOGGER.error("Problem with item spawner ticker!", e);
+            SentryManager.logSentry(this.getClass(), e, "Problem with item spawner!");
         }
     }
 
@@ -81,7 +90,7 @@ public class ItemSpawner extends AetherMudEntity {
         ArrayList<Room> rooms = Lists.newArrayList(Iterators.filter(gameManager.getRoomManager().getRoomsByArea(spawnArea).iterator(), getRoomsWithRoom()));
         Room room = rooms.get(random.nextInt(rooms.size()));
         ItemPojo item = new ItemBuilder().from(itemMetadata).create();
-        gameManager.getEntityManager().saveItem(item);
+        ItemData itemData = gameManager.getEntityManager().saveItem(item);
         gameManager.placeItemInRoom(room.getRoomId(), item.getItemId());
         Main.metrics.counter(MetricRegistry.name(ItemSpawner.class, item.getItemName() + "-spawn")).inc();
     }

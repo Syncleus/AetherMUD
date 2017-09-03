@@ -32,13 +32,11 @@ public interface AetherMudStorage extends Service {
 
     Map<String, PlayerData> getAllPlayerMetadata();
 
-    void saveItemEntity(ItemPojo item);
+    ItemData saveItem(ItemPojo item);
 
     Optional<ItemData> getItemEntity(String itemId);
 
     void removeItem(String itemId);
-
-    ItemData newItem();
 
     void persist();
 }
