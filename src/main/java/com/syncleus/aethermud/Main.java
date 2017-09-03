@@ -44,9 +44,6 @@ import org.apache.log4j.Logger;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;

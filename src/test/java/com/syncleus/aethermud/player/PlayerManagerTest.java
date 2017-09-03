@@ -27,8 +27,6 @@ import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 

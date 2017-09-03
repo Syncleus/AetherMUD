@@ -15,27 +15,18 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
-import com.google.api.client.util.Sets;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.items.ItemPojo;
-import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.storage.AetherMudStorage;
-import com.syncleus.aethermud.storage.ItemSerializer;
-import com.syncleus.aethermud.storage.MapDbAutoCommitService;
 import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
-import org.mapdb.DB;
-import org.mapdb.HTreeMap;
-import org.mapdb.Serializer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.Consumer;
 
 //TODO : multiple instances of this class could create conflicts in the DB
 public class GraphDbAetherMudStorage extends AbstractIdleService implements AetherMudStorage {

@@ -48,8 +48,6 @@ import org.jboss.netty.channel.Channel;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
