@@ -40,7 +40,7 @@ public class ItemBuilder {
     private Equipment equipment;
     private Rarity rarity;
     private int valueInGold;
-    private Set<EffectPojo> effects;
+    private Set<Effect> effects;
     private boolean hasBeenWithPlayer;
     private int maxUses;
     private boolean isDisposable;
@@ -65,7 +65,8 @@ public class ItemBuilder {
         this.isDisposable = itemMetadata.isDisposable();
         this.equipment = itemMetadata.getEquipment();
         this.validTimeOfDays = itemMetadata.getValidTimeOfDays();
-        this.effects = itemMetadata.getEffects();
+        Set<EffectPojo> effects = itemMetadata.getEffects();
+        this.effects = (effects != null ? Sets.newHashSet(itemMetadata.getEffects()) : null );
         this.itemApplyStats = itemMetadata.getItemApplyStats();
         return this;
     }
@@ -160,7 +161,7 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder effects(Set<EffectPojo> effects) {
+    public ItemBuilder effects(Set<Effect> effects) {
         this.effects = effects;
         return this;
     }

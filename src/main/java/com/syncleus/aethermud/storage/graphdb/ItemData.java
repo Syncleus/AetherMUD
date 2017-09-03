@@ -15,6 +15,7 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
+import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.stats.Stats;
@@ -127,14 +128,6 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     public abstract int getValueInGold();
 
     @Override
-    @Property("Effects")
-    public abstract void setEffects(Set<EffectPojo> effects);
-
-    @Override
-    @Property("Effects")
-    public abstract Set<EffectPojo> getEffects();
-
-    @Override
     @Property("ItemName")
     public abstract void setItemName(String itemName);
 
@@ -179,7 +172,56 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     @Property("HasBeenWithPlayer")
     public abstract boolean isHasBeenWithPlayer();
 
-    @Adjacency(label = "Stats", direction = Direction.OUT)
+    @Adjacency(label = "Effects", direction = Direction.OUT)
+    public abstract EffectData addEffect(EffectData effects);
+
+    @Adjacency(label = "Effects", direction = Direction.OUT)
+    public abstract void removeEffect(EffectData stats);
+
+    @Adjacency(label = "Effects", direction = Direction.OUT)
+    public abstract <N extends EffectData> Iterator<? extends N> getEffects(Class<? extends N> type);
+
+    @Override
+    public Set<Effect> getEffects() {
+        return Sets.newHashSet(this.getEffects(EffectData.class));
+    }
+
+    @Override
+    public void setEffects(Set<Effect> effects) {
+        Iterator<? extends EffectData> existingAll = this.getEffects(EffectData.class);
+        if( existingAll != null ) {
+            while( existingAll.hasNext() ) {
+                EffectData existing = existingAll.next();
+                this.removeEffect(existing);
+                existing.remove();
+            }
+
+        }
+
+        if( effects == null || effects.size() == 0 ) {
+            return;
+        }
+
+        for( Effect effect : effects ) {
+            if (effect instanceof EffectData) {
+                this.addEffect((EffectData) effect);
+            } else {
+                try {
+                    PropertyUtils.copyProperties(this.createEffect(), effect);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    throw new IllegalStateException("Could not copy properties");
+                }
+            }
+        }
+    }
+
+    public EffectData createEffect() {
+        final EffectData effect = this.getGraph().addFramedVertex(EffectData.class);
+        this.addEffect(effect);
+        return effect;
+    }
+
+    @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
     public abstract <N extends StatsData> Iterator<? extends N> getAllItemApplyStats(Class<? extends N> type);
 
     public Stats getItemApplyStats() {
@@ -190,10 +232,10 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
             return null;
     }
 
-    @Adjacency(label = "Stats", direction = Direction.OUT)
+    @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
     public abstract StatsData addStats(StatsData stats);
 
-    @Adjacency(label = "Stats", direction = Direction.OUT)
+    @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
     public abstract void removeStats(StatsData stats);
 
     public void setItemApplyStats(Stats stats) {
@@ -212,7 +254,6 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
             return;
         }
 
-        StatsData statsData;
         if( stats instanceof StatsData ) {
             this.addStats((StatsData) stats);
         }

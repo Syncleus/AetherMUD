@@ -70,9 +70,9 @@ public interface Item {
 
     int getValueInGold();
 
-    void setEffects(Set<EffectPojo> effects);
+    void setEffects(Set<Effect> effects);
 
-    Set<EffectPojo> getEffects();
+    Set<Effect> getEffects();
 
     void setItemName(String itemName);
 

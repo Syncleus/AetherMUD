@@ -40,7 +40,7 @@ public class ItemPojo implements Serializable, Item {
     private Equipment equipment;
     private Rarity rarity;
     private int valueInGold;
-    private Set<EffectPojo> effects;
+    private Set<Effect> effects;
     private boolean hasBeenWithPlayer;
     private int maxUses;
     private boolean isDisposable;
@@ -49,7 +49,7 @@ public class ItemPojo implements Serializable, Item {
 
     public static final String CORPSE_INTENAL_NAME = "corpse";
 
-    protected ItemPojo(String itemName, String itemDescription, String internalItemName, List<String> itemTriggers, String restingName, String itemId, int numberOfUses, boolean isWithPlayer, Loot loot, int itemHalfLifeTicks, Equipment equipment, Rarity rarity, int valueInGold, Set<EffectPojo> effects, boolean hasBeenWithPlayer, int maxUses, boolean isDisposable, Set<TimeTracker.TimeOfDay> validTimeOfDays, Stats itemApplyStats) {
+    protected ItemPojo(String itemName, String itemDescription, String internalItemName, List<String> itemTriggers, String restingName, String itemId, int numberOfUses, boolean isWithPlayer, Loot loot, int itemHalfLifeTicks, Equipment equipment, Rarity rarity, int valueInGold, Set<Effect> effects, boolean hasBeenWithPlayer, int maxUses, boolean isDisposable, Set<TimeTracker.TimeOfDay> validTimeOfDays, Stats itemApplyStats) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.internalItemName = internalItemName;
@@ -191,12 +191,12 @@ public class ItemPojo implements Serializable, Item {
     }
 
     @Override
-    public void setEffects(Set<EffectPojo> effects) {
+    public void setEffects(Set<Effect> effects) {
         this.effects = effects;
     }
 
     @Override
-    public Set<EffectPojo> getEffects() {
+    public Set<Effect> getEffects() {
         return effects;
     }
 
