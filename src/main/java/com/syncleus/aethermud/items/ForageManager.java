@@ -16,7 +16,6 @@
 package com.syncleus.aethermud.items;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.CoolDownPojo;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.communication.Color;
@@ -93,7 +92,7 @@ public class ForageManager {
                     totalForageXp += forage.getForageExperience();
                     for (long i = 0; i < numberToHarvest; i++) {
                         countOfForagesFound++;
-                        Item item = new ItemBuilder().from(itemMetadata).create();
+                        ItemPojo item = new ItemBuilder().from(itemMetadata).create();
                         gameManager.getEntityManager().saveItem(item);
                         gameManager.acquireItem(player, item.getItemId());
                     }

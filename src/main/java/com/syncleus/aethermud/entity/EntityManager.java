@@ -18,11 +18,13 @@ package com.syncleus.aethermud.entity;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.storage.AetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.ItemData;
 import com.syncleus.aethermud.world.RoomManager;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.log4j.Logger;
@@ -78,11 +80,11 @@ public class EntityManager {
         }
     }
 
-    public void saveItem(Item item) {
+    public void saveItem(ItemPojo item) {
         aetherMudStorage.saveItemEntity(item);
     }
 
-    public void removeItem(Item item) {
+    public void removeItem(ItemPojo item) {
         aetherMudStorage.removeItem(item.getItemId());
     }
 
@@ -90,8 +92,8 @@ public class EntityManager {
         aetherMudStorage.removeItem(itemId);
     }
 
-    public Optional<Item> getItemEntity(String itemId) {
-        Optional<Item> item = aetherMudStorage.getItemEntity(itemId);
+    public Optional<ItemPojo> getItemEntity(String itemId) {
+        Optional<ItemData> item = aetherMudStorage.getItemEntity(itemId);
         return item.map(itemName -> new ItemBuilder().from(itemName).create());
     }
 

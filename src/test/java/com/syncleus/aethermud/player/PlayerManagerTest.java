@@ -50,9 +50,8 @@ public class PlayerManagerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        DB db = DBMaker.memoryDB().transactionEnable().make();
         WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, framedGraph, false);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph);
         playerManager = new PlayerManager(graphStorage, sessionManager);
     }
 

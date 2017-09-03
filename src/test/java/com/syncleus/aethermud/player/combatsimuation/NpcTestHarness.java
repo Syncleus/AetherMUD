@@ -21,7 +21,7 @@ import com.syncleus.aethermud.configuration.AetherMudConfiguration;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.entity.EntityManager;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.player.*;
@@ -131,18 +131,18 @@ public class NpcTestHarness {
         processRunAndVerify(npcSpawnFromFile, 10, getMidLevelArmorSet(), 100f, 0f, 10, 0, 24, 18);
     }
 
-    private Set<Item> getEarlyLevelArmorSet() {
+    private Set<ItemPojo> getEarlyLevelArmorSet() {
         //  return Sets.newHashSet(ItemType.BERSERKER_BATON.create(), ItemType.BERSEKER_BOOTS.create(), ItemType.BERSEKER_SHORTS.create());
         return Sets.newConcurrentHashSet();
     }
 
-    private Set<Item> getMidLevelArmorSet() {
-        Set<Item> armorSet = getEarlyLevelArmorSet();
+    private Set<ItemPojo> getMidLevelArmorSet() {
+        Set<ItemPojo> armorSet = getEarlyLevelArmorSet();
         //  armorSet.addAll(Sets.newHashSet(ItemType.BERSERKER_BRACERS.create(), ItemType.BERSERKER_CHEST.create()));
         return armorSet;
     }
 
-    private void processRunAndVerify(NpcSpawn testNpcSpawn, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
+    private void processRunAndVerify(NpcSpawn testNpcSpawn, int desiredLevel, Set<ItemPojo> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
         CombatSimulationDetails combatSimulationDetailsLevel = new CombatSimulationDetails(desiredLevel, equipment, testNpcSpawn);
         CombatSimulationResult combatSimulationResultLevel = executeCombat(combatSimulationDetailsLevel);
         printCombatResults(combatSimulationDetailsLevel, combatSimulationResultLevel);
@@ -176,7 +176,7 @@ public class NpcTestHarness {
                 playerWins++;
                 int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npcSpawn.getLoot());
                 totalGold += gold;
-                Set<Item> items = gameManager.getLootManager().lootItemsReturn(npcSpawn.getLoot());
+                Set<ItemPojo> items = gameManager.getLootManager().lootItemsReturn(npcSpawn.getLoot());
                 items.forEach(item -> {
                     if (!drops.containsKey(item.getItemName())) {
                         drops.put(item.getItemName(), new AtomicInteger(1));
@@ -248,7 +248,7 @@ public class NpcTestHarness {
         return player;
     }
 
-    private void equipArmor(Player player, Set<Item> equipment) {
+    private void equipArmor(Player player, Set<ItemPojo> equipment) {
         equipment.forEach(item -> {
             entityManager.saveItem(item);
             gameManager.acquireItem(player, item.getItemId());
@@ -331,9 +331,8 @@ public class NpcTestHarness {
             }
         };
         AetherMudConfiguration aetherMudConfiguration = new AetherMudConfiguration(new MapConfiguration(Maps.newHashMap()));
-        DB db = DBMaker.memoryDB().transactionEnable().closeOnJvmShutdown().make();
         WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, framedGraph);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph);
         PlayerManager playerManager = new PlayerManager(graphStorage, new SessionManager());
         RoomManager roomManager = new RoomManager(playerManager);
         MapsManager mapsManager = new MapsManager(aetherMudConfiguration, roomManager);

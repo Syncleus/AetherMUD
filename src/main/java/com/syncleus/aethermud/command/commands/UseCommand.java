@@ -17,7 +17,7 @@ package com.syncleus.aethermud.command.commands;
 
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +49,7 @@ public class UseCommand extends Command {
                 return;
             }
 
-            Optional<Item> inventoryItemOptional = player.getInventoryItem(useItemOn.getItem());
+            Optional<ItemPojo> inventoryItemOptional = player.getInventoryItem(useItemOn.getItem());
             if (!inventoryItemOptional.isPresent()) {
                 write("Useable item is not found in your inventory.\r\n");
                 return;

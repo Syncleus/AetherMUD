@@ -697,7 +697,6 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             Set<CoolDownData> coolDowns = playerData.getCoolDowns();
-            log.info("removing cooldowns: " + coolDowns.size());
             for(final CoolDownData coolDown : coolDowns) {
                 if (coolDown.isActive()) {
                     coolDown.decrementTick();
@@ -706,14 +705,10 @@ public class Player extends AetherMudEntity {
                         gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
                     }
 
-                    log.info("removed: " + coolDown.getName());
                     playerData.removeCoolDown(coolDown);
                 }
             }
             savePlayerMetadata();
-
-            coolDowns = playerData.getCoolDowns();
-            log.info(">removing cooldowns: " + coolDowns.size());
         }
     }
 
@@ -862,7 +857,7 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public Optional<Item> getInventoryItem(String itemKeyword) {
+    public Optional<ItemPojo> getInventoryItem(String itemKeyword) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
@@ -870,12 +865,12 @@ public class Player extends AetherMudEntity {
             }
             PlayerData playerData = playerMetadataOptional.get();
             for (String itemId : playerData.getInventory()) {
-                Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                 if (!itemOptional.isPresent()) {
                     log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
                     continue;
                 }
-                Item itemEntity = itemOptional.get();
+                ItemPojo itemEntity = itemOptional.get();
                 if (itemEntity.getItemTriggers().contains(itemKeyword)) {
                     return Optional.of(itemEntity);
                 }
@@ -891,10 +886,10 @@ public class Player extends AetherMudEntity {
     public List<String> getRolledUpLockerInventory() {
         synchronized (interner.intern(playerId)) {
             List<String> rolledUp = Lists.newArrayList();
-            List<Item> inventory = getLockerInventory();
+            List<ItemPojo> inventory = getLockerInventory();
             Map<String, Integer> itemAndCounts = Maps.newHashMap();
             if (inventory != null) {
-                for (Item item : inventory) {
+                for (ItemPojo item : inventory) {
                     StringBuilder invItem = new StringBuilder();
                     invItem.append(item.getItemName());
                     int maxUses = item.getMaxUses();
@@ -929,18 +924,18 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public List<Item> getLockerInventory() {
+    public List<ItemPojo> getLockerInventory() {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptonal = getPlayerMetadata();
             if (!playerMetadataOptonal.isPresent()) {
                 return Lists.newArrayList();
             }
             PlayerData playerData = playerMetadataOptonal.get();
-            List<Item> inventoryItems = Lists.newArrayList();
+            List<ItemPojo> inventoryItems = Lists.newArrayList();
             List<String> inventory = playerData.getLockerInventory();
             if (inventory != null) {
                 for (String itemId : inventory) {
-                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                     if (!itemOptional.isPresent()) {
                         log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
                         continue;
@@ -948,7 +943,7 @@ public class Player extends AetherMudEntity {
                     inventoryItems.add(itemOptional.get());
                 }
             }
-            inventoryItems.sort(Comparator.comparing(Item::getItemName));
+            inventoryItems.sort(Comparator.comparing(ItemPojo::getItemName));
             return inventoryItems;
         }
     }
@@ -956,10 +951,10 @@ public class Player extends AetherMudEntity {
     public List<String> getRolledUpIntentory() {
         synchronized (interner.intern(playerId)) {
             List<String> rolledUp = Lists.newArrayList();
-            List<Item> inventory = getInventory();
+            List<ItemPojo> inventory = getInventory();
             Map<String, Integer> itemAndCounts = Maps.newHashMap();
             if (inventory != null) {
-                for (Item item : inventory) {
+                for (ItemPojo item : inventory) {
                     StringBuilder invItem = new StringBuilder();
                     invItem.append(item.getItemName());
                     int maxUses = item.getMaxUses();
@@ -994,18 +989,18 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public List<Item> getInventory() {
+    public List<ItemPojo> getInventory() {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
                 return Lists.newArrayList();
             }
             PlayerData playerData = playerMetadataOptional.get();
-            List<Item> inventoryItems = Lists.newArrayList();
+            List<ItemPojo> inventoryItems = Lists.newArrayList();
             List<String> inventory = playerData.getInventory();
             if (inventory != null) {
                 for (String itemId : inventory) {
-                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                     if (!itemOptional.isPresent()) {
                         log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
                         continue;
@@ -1013,23 +1008,23 @@ public class Player extends AetherMudEntity {
                     inventoryItems.add(itemOptional.get());
                 }
             }
-            inventoryItems.sort(Comparator.comparing(Item::getItemName));
+            inventoryItems.sort(Comparator.comparing(ItemPojo::getItemName));
             return inventoryItems;
         }
     }
 
-    public Set<Item> getEquipment() {
+    public Set<ItemPojo> getEquipment() {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
                 return Sets.newHashSet();
             }
             PlayerData playerData = playerMetadataOptional.get();
-            Set<Item> equipmentItems = Sets.newHashSet();
+            Set<ItemPojo> equipmentItems = Sets.newHashSet();
             List<String> equipment = playerData.getPlayerEquipment();
             if (equipment != null) {
                 for (String itemId : equipment) {
-                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                     if (!itemOptional.isPresent()) {
                         log.info("Orphaned equipmentId:" + itemId + " player: " + getPlayerName());
                         continue;
@@ -1041,14 +1036,14 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public void equip(Item item) {
+    public void equip(ItemPojo item) {
         synchronized (interner.intern(playerId)) {
             if (item.getEquipment() == null) {
                 return;
             }
             Equipment equipment = item.getEquipment();
             EquipmentSlotType equipmentSlotType = equipment.getEquipmentSlotType();
-            Optional<Item> slotItemOptional = getSlotItem(equipmentSlotType);
+            Optional<ItemPojo> slotItemOptional = getSlotItem(equipmentSlotType);
             if (slotItemOptional.isPresent()) {
                 if (!unEquip(slotItemOptional.get())) {
                     return;
@@ -1060,7 +1055,7 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public Optional<Item> getSlotItem(EquipmentSlotType slot) {
+    public Optional<ItemPojo> getSlotItem(EquipmentSlotType slot) {
         Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
         if (!playerMetadataOptional.isPresent()) {
             return Optional.empty();
@@ -1070,11 +1065,11 @@ public class Player extends AetherMudEntity {
             return Optional.empty();
         }
         for (String item : playerData.getPlayerEquipment()) {
-            Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(item);
+            Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(item);
             if (!itemOptional.isPresent()) {
                 continue;
             }
-            Item itemEntity = itemOptional.get();
+            ItemPojo itemEntity = itemOptional.get();
             EquipmentSlotType equipmentSlotType = itemEntity.getEquipment().getEquipmentSlotType();
             if (equipmentSlotType.equals(slot)) {
                 return Optional.of(itemEntity);
@@ -1083,7 +1078,7 @@ public class Player extends AetherMudEntity {
         return Optional.empty();
     }
 
-    public boolean unEquip(Item item) {
+    public boolean unEquip(ItemPojo item) {
         synchronized (interner.intern(playerId)) {
             gameManager.getChannelUtils().write(playerId, "Un-equipping " + item.getItemName() + "\r\n");
             if (gameManager.acquireItem(this, item.getItemId())) {
@@ -1164,11 +1159,11 @@ public class Player extends AetherMudEntity {
                 return playerStats;
             }
             for (String equipId : playerEquipment) {
-                Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(equipId);
+                Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(equipId);
                 if (!itemOptional.isPresent()) {
                     continue;
                 }
-                Item itemEntity = itemOptional.get();
+                ItemPojo itemEntity = itemOptional.get();
                 Equipment equipment = itemEntity.getEquipment();
                 Stats stats = equipment.getStats();
                 StatsHelper.combineStats(newStats, stats);
@@ -1217,7 +1212,7 @@ public class Player extends AetherMudEntity {
         List<EquipmentSlotType> all = EquipmentSlotType.getAll();
         for (EquipmentSlotType slot : all) {
             t.addCell(capitalize(slot.getName()));
-            Optional<Item> slotItemOptional = getSlotItem(slot);
+            Optional<ItemPojo> slotItemOptional = getSlotItem(slot);
             if (slotItemOptional.isPresent()) {
                 t.addCell(slotItemOptional.get().getItemName());
             } else {
@@ -1321,17 +1316,11 @@ public class Player extends AetherMudEntity {
     }
 
     public void removeActiveFight(NpcSpawn npcSpawn) {
-        System.out.println("trying to remove a fight...");
         synchronized (interner.intern(playerId)) {
-            System.out.println("still trying...");
             Iterator<Map.Entry<Long, ActiveFight>> iterator = activeFights.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Long, ActiveFight> next = iterator.next();
-                System.out.println("considering this one?");
-                if (next.getValue().getNpcId().equals(npcSpawn.getEntityId())) {
-//                    if (next.getValue().isPrimary()) {
-//                    }
-                    System.out.println("removed a fight");
+                if (next.getValue().getNpcId().orElse("").equals(npcSpawn.getEntityId())) {
                     iterator.remove();
                 }
             }

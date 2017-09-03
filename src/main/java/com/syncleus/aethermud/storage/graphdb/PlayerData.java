@@ -148,7 +148,6 @@ public abstract class PlayerData extends AbstractVertexFrame {
     public abstract void addCoolDown(CoolDownData coolDown);
 
     public void setCoolDowns(Map<CoolDownType, CoolDownData> coolDowns) {
-        System.out.println("setting cooldowns: " + coolDowns.size());
         Iterator<? extends CoolDownData> existingCoolDowns = getCoolDowns(CoolDownData.class);
         while(existingCoolDowns.hasNext()) {
             CoolDownData existingCoolDown = existingCoolDowns.next();
@@ -165,7 +164,6 @@ public abstract class PlayerData extends AbstractVertexFrame {
     }
 
     public CoolDownData createCoolDown(CoolDownType type) {
-        System.out.println("creating cool down");
         Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
         while(coolDowns.hasNext()) {
             CoolDownData coolDown = coolDowns.next();
@@ -184,7 +182,6 @@ public abstract class PlayerData extends AbstractVertexFrame {
     }
 
     public CoolDownData createCoolDown(CoolDown coolDownSource) {
-        System.out.println("creating cool down");
         Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
         while(coolDowns.hasNext()) {
             CoolDownData coolDown = coolDowns.next();
@@ -248,8 +245,8 @@ public abstract class PlayerData extends AbstractVertexFrame {
             try {
                 PropertyUtils.copyProperties(this.createStats(), stats);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalStateException("Could not copy properties")
-                    ;            }
+                throw new IllegalStateException("Could not copy properties");
+            }
         }
     }
 

@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.merchant.lockers;
 
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.core.GameManager;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -39,7 +39,7 @@ public class PutCommand extends LockerCommand {
             configure(e);
             originalMessageParts.remove(0);
             String desiredDropOffItem = Joiner.on(" ").join(originalMessageParts);
-            for (Item item : player.getInventory()) {
+            for (ItemPojo item : player.getInventory()) {
                 if (item.getItemTriggers().contains(desiredDropOffItem)) {
                     item.setWithPlayer(false);
                     player.transferItemToLocker(item.getItemId());

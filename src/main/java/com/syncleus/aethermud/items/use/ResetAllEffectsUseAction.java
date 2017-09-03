@@ -36,13 +36,13 @@ public class ResetAllEffectsUseAction implements ItemUseAction {
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemPojo item, UseCommand.UseItemOn useItemOn) {
         player.resetEffects();
         gameManager.getChannelUtils().write(player.getPlayerId(), "All Effects are removed." + "\r\n");
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemPojo item) {
         ItemUseHandler.incrementUses(item);
         if (item.isDisposable()) {
             if (item.getNumberOfUses() < item.getMaxUses()) {

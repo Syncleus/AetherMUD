@@ -61,7 +61,7 @@ public class Main {
 
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
     public static final String DEFAULT_GRAPH_DB_FILE = "aethermud-graph.json";
-    public static final Set<Class<?>> FRAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new Class<?>[]{PlayerData.class, NpcData.class, StatsData.class})));
+    public static final Set<Class<?>> FRAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new Class<?>[]{PlayerData.class, NpcData.class, StatsData.class, ItemData.class})));
 
     public static String getCreeperVersion() {
 
@@ -93,11 +93,6 @@ public class Main {
 
         Files.isDirectory().apply(new File("world/"));
 
-        DB db = DBMaker.fileDB(new File("world/" + aetherMudConfiguration.databaseFileName))
-                .transactionEnable()
-                .closeOnJvmShutdown()
-                .make();
-
         Graph graph = TinkerGraph.open();
         File f = new File(DEFAULT_GRAPH_DB_FILE);
         if(f.exists() && !f.isDirectory()) {
@@ -109,7 +104,7 @@ public class Main {
         }
         WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(graph, FRAMED_TYPES);
 
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(db, framedGraph);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph);
         graphStorage.startAsync();
         graphStorage.awaitRunning();
 

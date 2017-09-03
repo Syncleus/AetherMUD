@@ -20,7 +20,6 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 import org.apache.log4j.Logger;
 
 import java.util.Set;
@@ -44,7 +43,7 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemPojo item, UseCommand.UseItemOn useItemOn) {
         String playerName = player.getPlayerName();
 
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), playerName + " uses " + item.getItemName() + ".\r\n");
@@ -61,7 +60,7 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemPojo item) {
         ItemUseHandler.incrementUses(item);
         if (item.isDisposable()) {
             if (item.getNumberOfUses() < item.getMaxUses()) {

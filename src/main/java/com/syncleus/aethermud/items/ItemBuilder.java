@@ -189,8 +189,8 @@ public class ItemBuilder {
         return this;
     }
 
-    public Item create() {
-            return new Item(itemName, itemDescription, internalItemName, itemTriggers, restingName, itemId, numberOfUses, isWithPlayer, loot, itemHalfLifeTicks, equipment, rarity, valueInGold, effects, hasBeenWithPlayer, maxUses, isDisposable, validTimeOfDays, itemApplyStats);
+    public ItemPojo create() {
+            return new ItemPojo(itemName, itemDescription, internalItemName, itemTriggers, restingName, itemId, numberOfUses, isWithPlayer, loot, itemHalfLifeTicks, equipment, rarity, valueInGold, effects, hasBeenWithPlayer, maxUses, isDisposable, validTimeOfDays, itemApplyStats);
     }
 
 

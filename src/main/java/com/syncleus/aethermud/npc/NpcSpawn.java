@@ -22,7 +22,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
 import com.syncleus.aethermud.items.Effect;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.player.CoolDownPojo;
 import com.syncleus.aethermud.player.CoolDownType;
@@ -224,6 +224,7 @@ public class NpcSpawn extends AetherMudEntity {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             SentryManager.logSentry(this.getClass(), e, "Problem processing NPC Stat Change!");
         }
     }
@@ -274,30 +275,22 @@ public class NpcSpawn extends AetherMudEntity {
 
 
     private void killNpc(Player player) {
-        System.out.println("killed");
         isAlive.set(false);
         player.removeActiveAlertStatus(this);
         Map<String, Double> damagePercents;
-        Item corpse = Item.createCorpseItem(getName(), getLoot());
+        ItemPojo corpse = ItemPojo.createCorpseItem(getName(), getLoot());
         if (!player.isActive(CoolDownType.DEATH)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage() + "\r\n");
         }
-        System.out.println("more");
         damagePercents = gameManager.processExperience(this, getCurrentRoom());
-        System.out.println("more.");
         gameManager.getEntityManager().saveItem(corpse);
-        System.out.println("more..");
         Integer roomId = gameManager.getRoomManager().getNpcCurrentRoom(this).get().getRoomId();
-        System.out.println("more...");
         Room room = gameManager.getRoomManager().getRoom(roomId);
-        System.out.println("and more....");
         room.addPresentItem(corpse.getItemId());
         gameManager.getItemDecayManager().addItem(corpse);
         getCurrentRoom().removePresentNpc(getEntityId());
         gameManager.getEntityManager().deleteNpcEntity(getEntityId());
-        System.out.println("removing active fight: " + player.getActiveFights().size());
         player.removeActiveFight(this);
-        System.out.println("removed active fight: " + player.getActiveFights().size());
         for (Map.Entry<String, Double> playerDamagePercent : damagePercents.entrySet()) {
             Player p = gameManager.getPlayerManager().getPlayer(playerDamagePercent.getKey());
             if (p == null) {

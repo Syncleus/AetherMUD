@@ -15,18 +15,17 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
+import com.google.api.client.util.Sets;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.syncleus.aethermud.Main;
-import com.syncleus.aethermud.items.Effect;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.storage.AetherMudStorage;
-import com.syncleus.aethermud.storage.EffectSerializer;
 import com.syncleus.aethermud.storage.ItemSerializer;
 import com.syncleus.aethermud.storage.MapDbAutoCommitService;
-import com.syncleus.ferma.DelegatingFramedGraph;
-import com.syncleus.ferma.FramedGraph;
 import com.syncleus.ferma.WrappedFramedGraph;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
 import org.mapdb.DB;
@@ -34,36 +33,17 @@ import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Consumer;
 
 //TODO : multiple instances of this class could create conflicts in the DB
 public class GraphDbAetherMudStorage extends AbstractIdleService implements AetherMudStorage {
 
 
     private final WrappedFramedGraph<Graph> framedGraph;
-    private final DB db;
-    private final MapDbAutoCommitService mapDbAutoCommitService;
 
-    private final HTreeMap<String, Item> items;
-
-    private final static String ITEM_MAP = "itemMap";
-    private final static String EFFECTS_MAP = "effectsMap";
-    private final boolean autoPersist;
-
-    public GraphDbAetherMudStorage(DB db, WrappedFramedGraph<Graph> framedGraph){
-        this(db, framedGraph, true);
-    }
-
-    public GraphDbAetherMudStorage(DB db, WrappedFramedGraph<Graph> framedGraph, boolean autoPersist) {
-        this.db = db;
-        this.autoPersist = autoPersist;
-        this.items = db.hashMap(ITEM_MAP)
-            .keySerializer(Serializer.STRING)
-            .valueSerializer(new ItemSerializer())
-            .createOrOpen();
-
-        this.mapDbAutoCommitService = new MapDbAutoCommitService(db);
-
+    public GraphDbAetherMudStorage(WrappedFramedGraph<Graph> framedGraph) {
         this.framedGraph = framedGraph;
     }
 
@@ -84,35 +64,19 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
         final Map<String, PlayerData> retVal = new HashMap<>(datas.size());
         for( PlayerData data : datas ) {
             retVal.put(data.getPlayerId(), data);
-            for(PlayerRole role : data.getPlayerRoleSet())
-            System.out.println("role: " + role);
         }
         return retVal;
     }
 
     @Override
-    public void removePlayerMetadata(String playerId) {
-        final PlayerData data = framedGraph.traverse((g) -> g.V().has("playerId", playerId)).next(PlayerData.class);
-        data.remove();
-
-        if (this.autoPersist) {
-            this.persist();
-        }
-    }
-
-    @Override
-    public void saveItemEntity(Item item) {
-        this.items.put(item.getItemId(), item);
-    }
-
-    @Override
-    public Optional<Item> getItemEntity(String itemId) {
-        return Optional.ofNullable(this.items.get(itemId));
+    public Optional<ItemData> getItemEntity(String itemId) {
+        return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class)).nextOrDefault(ItemData.class, null));
     }
 
     @Override
     public void removeItem(String itemId) {
-        this.items.remove(itemId);
+        this.getItemEntity(itemId).ifPresent((i) -> i.remove());
+
     }
 
     public void persist() {
@@ -124,14 +88,24 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
     }
 
     @Override
-    protected void startUp() throws Exception {
-        mapDbAutoCommitService.startAsync();
+    public ItemData newItem() {
+        return framedGraph.addFramedVertex(ItemData.class);
     }
 
     @Override
-    protected void shutDown() throws Exception {
-        mapDbAutoCommitService.stopAsync();
-        mapDbAutoCommitService.awaitTerminated();
-        db.commit();
+    public void saveItemEntity(ItemPojo item) {
+        try {
+            BeanUtils.copyProperties(this.newItem(), item);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy bean", e);
+        }
+    }
+
+    @Override
+    protected void startUp() {
+    }
+
+    @Override
+    protected void shutDown() {
     }
 }

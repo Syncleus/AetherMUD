@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.storage;
 
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -26,18 +26,18 @@ import org.mapdb.Serializer;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class ItemSerializer implements Serializer<Item>, Serializable {
+public class ItemSerializer implements Serializer<ItemPojo>, Serializable {
 
     private final static Gson GSON = new GsonBuilder().create();
 
     @Override
-    public void serialize(@NotNull DataOutput2 out, @NotNull Item value) throws IOException {
-        out.writeUTF(GSON.toJson(value, Item.class));
+    public void serialize(@NotNull DataOutput2 out, @NotNull ItemPojo value) throws IOException {
+        out.writeUTF(GSON.toJson(value, ItemPojo.class));
     }
 
     @Override
-    public Item deserialize(@NotNull DataInput2 input, int available) throws IOException {
-        return GSON.fromJson(input.readUTF(), Item.class);
+    public ItemPojo deserialize(@NotNull DataInput2 input, int available) throws IOException {
+        return GSON.fromJson(input.readUTF(), ItemPojo.class);
     }
 
     @Override

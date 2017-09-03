@@ -48,8 +48,8 @@ public class LootManager {
         return randInt(loot.getLootGoldMin(), loot.getLootGoldMax());
     }
 
-    public Set<Item> lootItemsReturn(Loot loot) {
-        Set<Item> lootItems = Sets.newHashSet();
+    public Set<ItemPojo> lootItemsReturn(Loot loot) {
+        Set<ItemPojo> lootItems = Sets.newHashSet();
         for (String internalItemName: loot.getInternalItemNames()) {
             Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(internalItemName);
             if (!itemMetadataOptional.isPresent()) {
@@ -57,7 +57,7 @@ public class LootManager {
             }
             ItemMetadata itemMetadata = itemMetadataOptional.get();
             if (lootDropSuccess(itemMetadata.getRarity().getPercentToLoot())) {
-                Item i = new ItemBuilder().from(itemMetadata).create();
+                ItemPojo i = new ItemBuilder().from(itemMetadata).create();
                 gameManager.getEntityManager().saveItem(i);
                 lootItems.add(i);
             }

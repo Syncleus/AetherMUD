@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.command.commands;
 
 
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.core.GameManager;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -40,7 +40,7 @@ public class InventoryCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         this.execCommand(ctx, e, () -> {
-            List<Item> inventory = player.getInventory();
+            List<ItemPojo> inventory = player.getInventory();
             if (inventory == null) {
                 write("You aren't carrying anything.");
                 return;

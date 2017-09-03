@@ -44,7 +44,7 @@ public class DirtyBombUseAction implements ItemUseAction {
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemPojo item, UseCommand.UseItemOn useItemOn) {
         Room currentRoom = player.getCurrentRoom();
         if (currentRoom.getRoomId().equals(1)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " tried to detonate a " + item.getItemName() + "!");
@@ -74,7 +74,7 @@ public class DirtyBombUseAction implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemPojo item) {
         ItemUseHandler.incrementUses(item);
         if (item.isDisposable()) {
             if (item.getNumberOfUses() < item.getMaxUses()) {

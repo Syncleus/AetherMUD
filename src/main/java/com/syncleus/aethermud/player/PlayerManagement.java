@@ -17,7 +17,7 @@ package com.syncleus.aethermud.player;
 
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.server.communication.Color;
@@ -259,11 +259,11 @@ public class PlayerManagement implements PlayerManagementMBean {
         PlayerData playerData = playerMetadataOptional.get();
         List<String> inventory = playerData.getInventory();
         for (String itemId : inventory) {
-            Optional<Item> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
+            Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
             if (!itemEntityOptional.isPresent()) {
                 continue;
             }
-            Item itemEntity = itemEntityOptional.get();
+            ItemPojo itemEntity = itemEntityOptional.get();
             String itemName = itemEntity.getItemName();
             final String msgWithoutColorCodes =
                     itemName.replaceAll("\u001B\\[[;\\d]*m", "");
@@ -282,11 +282,11 @@ public class PlayerManagement implements PlayerManagementMBean {
         PlayerData playerData = playerMetadataOptional.get();
         List<String> inventory = playerData.getLockerInventory();
         for (String itemId : inventory) {
-            Optional<Item> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
+            Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
             if (!itemEntityOptional.isPresent()) {
                 continue;
             }
-            Item itemEntity = itemEntityOptional.get();
+            ItemPojo itemEntity = itemEntityOptional.get();
             String itemName = itemEntity.getItemName();
             final String msgWithoutColorCodes =
                     itemName.replaceAll("\u001B\\[[;\\d]*m", "");
@@ -301,7 +301,7 @@ public class PlayerManagement implements PlayerManagementMBean {
         if (!itemMetadata.isPresent()) {
             return "No such item exists with internal name: " + internalItemName;
         }
-        Item item = new ItemBuilder().from(itemMetadata.get()).create();
+        ItemPojo item = new ItemBuilder().from(itemMetadata.get()).create();
         gameManager.getEntityManager().saveItem(item);
         synchronized (findInterner().intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);

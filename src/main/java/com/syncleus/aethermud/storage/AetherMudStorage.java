@@ -17,13 +17,14 @@ package com.syncleus.aethermud.storage;
 
 
 import com.google.common.util.concurrent.Service;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.storage.graphdb.ItemData;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 
 import java.util.Map;
 import java.util.Optional;
 
-public interface AetherMudStorage extends Service{
+public interface AetherMudStorage extends Service {
 
     PlayerData newPlayerData();
 
@@ -31,13 +32,13 @@ public interface AetherMudStorage extends Service{
 
     Map<String, PlayerData> getAllPlayerMetadata();
 
-    void removePlayerMetadata(String playerId);
+    void saveItemEntity(ItemPojo item);
 
-    void saveItemEntity(Item item);
-
-    Optional<Item> getItemEntity(String itemId);
+    Optional<ItemData> getItemEntity(String itemId);
 
     void removeItem(String itemId);
+
+    ItemData newItem();
 
     void persist();
 }
