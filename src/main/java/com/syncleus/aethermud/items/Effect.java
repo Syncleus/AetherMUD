@@ -15,88 +15,44 @@
  */
 package com.syncleus.aethermud.items;
 
-
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 
 import java.util.List;
 
-public class Effect {
+public interface Effect {
+    String getEffectName();
 
-    private final String effectName;
-    private final String effectDescription;
-    private final List<String> effectApplyMessages;
-    private final Stats applyStatsOnTick;
-    private final Stats durationStats;
-    private final int maxEffectApplications;
-    private final boolean frozenMovement;
-    private int effectApplications;
-    private String playerId;
+    String getEffectDescription();
 
-    public Effect(String effectName, String effectDescription, List<String> effectApplyMessages, Stats applyStatsOnTick, Stats durationStats, int maxEffectApplications, boolean frozenMovement) {
-        this.effectName = effectName;
-        this.effectDescription = effectDescription;
-        this.effectApplyMessages = effectApplyMessages;
-        this.applyStatsOnTick = applyStatsOnTick;
-        this.durationStats = durationStats;
-        this.maxEffectApplications = maxEffectApplications;
-        this.frozenMovement = frozenMovement;
-        this.effectApplications = 0;
-    }
+    List<String> getEffectApplyMessages();
 
-    public Effect(Effect effect) {
-        this.effectName = effect.effectName;
-        this.effectDescription = effect.effectDescription;
-        this.effectApplyMessages = effect.effectApplyMessages;
-        this.applyStatsOnTick = effect.applyStatsOnTick;
-        this.durationStats = effect.durationStats;
-        this.maxEffectApplications = effect.maxEffectApplications;
-        this.frozenMovement = effect.frozenMovement;
-        this.effectApplications = effect.effectApplications;
-    }
+    Stats getApplyStatsOnTick();
 
+    int getMaxEffectApplications();
 
-    public String getEffectName() {
-        return effectName;
-    }
+    boolean isFrozenMovement();
 
-    public String getEffectDescription() {
-        return effectDescription;
-    }
+    int getEffectApplications();
 
-    public List<String> getEffectApplyMessages() {
-        return effectApplyMessages;
-    }
+    void setEffectApplications(int effectApplications);
 
-    public Stats getApplyStatsOnTick() {
-        return applyStatsOnTick;
-    }
+    Stats getDurationStats();
 
-    public int getMaxEffectApplications() {
-        return maxEffectApplications;
-    }
+    String getPlayerId();
 
-    public boolean isFrozenMovement() {
-        return frozenMovement;
-    }
+    void setPlayerId(String playerId);
 
-    public int getEffectApplications() {
-        return effectApplications;
-    }
+    void setEffectName(String effectName);
 
-    public void setEffectApplications(int effectApplications) {
-        this.effectApplications = effectApplications;
-    }
+    void setEffectDescription(String effectDescription);
 
-    public Stats getDurationStats() {
-        return durationStats;
-    }
+    void setEffectApplyMessages(List<String> effectApplyMessages);
 
-    public String getPlayerId() {
-        return playerId;
-    }
+    void setApplyStatsOnTick(Stats applyStatsOnTick);
 
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
+    void setDurationStats(Stats durationStats);
+
+    void setMaxEffectApplications(int maxEffectApplications);
+
+    void setFrozenMovement(boolean frozenMovement);
 }

@@ -27,7 +27,7 @@ import java.util.Set;
 public class DefaultApplyEffectsStats implements ItemUseAction {
 
     private final String internalItemName;
-    private final Set<Effect> effectSet;
+    private final Set<EffectPojo> effectSet;
     private final Stats itemApplyStats;
     private static final Logger log = Logger.getLogger(DefaultApplyEffectsStats.class);
 
@@ -73,16 +73,16 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     }
 
     @Override
-    public Set<Effect> getEffects() {
+    public Set<EffectPojo> getEffects() {
         return effectSet;
     }
 
-    public static void processEffects(GameManager gameManager, Player player, Set<Effect> effects) {
+    public static void processEffects(GameManager gameManager, Player player, Set<EffectPojo> effects) {
         if (effects == null) {
             return;
         }
-        for (Effect effect : effects) {
-            Effect nEffect = new Effect(effect);
+        for (EffectPojo effect : effects) {
+            EffectPojo nEffect = new EffectPojo(effect);
             nEffect.setPlayerId(player.getPlayerId());
             boolean effectResult = player.addEffect(nEffect);
             if (effect.getDurationStats() != null) {

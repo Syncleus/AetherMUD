@@ -40,7 +40,7 @@ public class ItemBuilder {
     private Equipment equipment;
     private Rarity rarity;
     private int valueInGold;
-    private Set<Effect> effects;
+    private Set<EffectPojo> effects;
     private boolean hasBeenWithPlayer;
     private int maxUses;
     private boolean isDisposable;
@@ -160,7 +160,7 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder effects(Set<Effect> effects) {
+    public ItemBuilder effects(Set<EffectPojo> effects) {
         this.effects = effects;
         return this;
     }

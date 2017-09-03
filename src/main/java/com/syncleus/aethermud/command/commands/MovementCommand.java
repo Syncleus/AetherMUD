@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.Effect;
+import com.syncleus.aethermud.items.EffectPojo;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.player.PlayerMovement;
@@ -68,7 +68,7 @@ public class MovementCommand extends Command {
             if (!playerMetadataOptional.isPresent()) {
                 return;
             }
-            for (Effect effect : playerMetadataOptional.get().getEffects()) {
+            for (EffectPojo effect : playerMetadataOptional.get().getEffects()) {
                 if (effect.isFrozenMovement()) {
                     MovementCommand.this.write("You are frozen and can not move.");
                     return;

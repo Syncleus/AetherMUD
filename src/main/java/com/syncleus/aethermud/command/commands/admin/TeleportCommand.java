@@ -18,7 +18,7 @@ package com.syncleus.aethermud.command.commands.admin;
 
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.Effect;
+import com.syncleus.aethermud.items.EffectPojo;
 import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
@@ -61,7 +61,7 @@ public class TeleportCommand extends Command {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            for (Effect effect : playerData.getEffects()) {
+            for (EffectPojo effect : playerData.getEffects()) {
                 if (effect.isFrozenMovement()) {
                     write("You are frozen and can not move.");
                     return;

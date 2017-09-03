@@ -16,7 +16,6 @@
 package com.syncleus.aethermud.items;
 
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class EffectBuilder {
         return this;
     }
 
-    public Effect createEffect() {
-        return new Effect(effectName, effectDescription, effectApplyMessages, applyStatsOnTick, durationStats, lifeSpanTicks, frozenMovement);
+    public EffectPojo createEffect() {
+        return new EffectPojo(effectName, effectDescription, effectApplyMessages, applyStatsOnTick, durationStats, lifeSpanTicks, frozenMovement);
     }
 }

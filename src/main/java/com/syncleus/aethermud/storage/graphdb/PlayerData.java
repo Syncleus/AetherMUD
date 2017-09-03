@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.storage.graphdb;
 
 
-import com.syncleus.aethermud.items.Effect;
+import com.syncleus.aethermud.items.EffectPojo;
 import com.syncleus.aethermud.player.*;
 import com.google.common.collect.Sets;
 import com.syncleus.ferma.AbstractVertexFrame;
@@ -97,10 +97,10 @@ public abstract class PlayerData extends AbstractVertexFrame {
     public abstract void setPlayerEquipment(List<String> playerEquipment);
 
     @Property("effects")
-    public abstract List<Effect> getEffects();
+    public abstract List<EffectPojo> getEffects();
 
     @Property("effects")
-    public abstract void setEffects(List<Effect> effects);
+    public abstract void setEffects(List<EffectPojo> effects);
 
     @Property("markedForDelete")
     public abstract boolean isMarkedForDelete();
@@ -272,7 +272,7 @@ public abstract class PlayerData extends AbstractVertexFrame {
         stats.setWeaponRatingMax(0);
         stats.setWeaponRatingMin(0);
         stats.setWillpower(0);
-        this.setStats(stats);
+        this.addStats(stats);
         return stats;
     }
 
@@ -353,8 +353,8 @@ public abstract class PlayerData extends AbstractVertexFrame {
         this.setPlayerEquipment(playerEquipment);
     }
 
-    public void addEffect(Effect effect) {
-        List<Effect> effects = this.getEffects();
+    public void addEffect(EffectPojo effect) {
+        List<EffectPojo> effects = this.getEffects();
         if (effects == null) {
             effects = new ArrayList<>();
         }
@@ -362,8 +362,8 @@ public abstract class PlayerData extends AbstractVertexFrame {
         this.setEffects(effects);
     }
 
-    public void removeEffect(Effect effect) {
-        List<Effect> effects = this.getEffects();
+    public void removeEffect(EffectPojo effect) {
+        List<EffectPojo> effects = this.getEffects();
         effects.remove(effect);
         this.setEffects(effects);
     }

@@ -61,7 +61,7 @@ public class UseCommand extends Command {
 
     public static class UseItemOn {
 
-        public static String ON_KEYWORD = "on";
+        public static String ON_KEYWORD = " on ";
 
         private final Optional<String> target;
         private final String item;
@@ -69,6 +69,8 @@ public class UseCommand extends Command {
         public UseItemOn(List<String> originalMessageParts) {
             originalMessageParts.remove(0);
             String fullCommand = Joiner.on(" ").join(originalMessageParts);
+            if(fullCommand.endsWith(" on"))
+                fullCommand = fullCommand.substring(0, fullCommand.length() - 3);
             item = getItem(fullCommand);
             target = getItemTarget(fullCommand);
         }

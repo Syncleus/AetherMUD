@@ -670,7 +670,7 @@ public class GameManager {
         return NumberFormat.getNumberInstance(Locale.US).format(longval);
     }
 
-    public String renderEffectsString(List<Effect> effects) {
+    public String renderEffectsString(List<EffectPojo> effects) {
         Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
@@ -678,7 +678,7 @@ public class GameManager {
         // t.setColumnWidth(1, 10, 13);
 
         int i = 1;
-        for (Effect effect : effects) {
+        for (EffectPojo effect : effects) {
             int percent = 100 - (int) ((effect.getEffectApplications() * 100.0f) / effect.getMaxEffectApplications());
             t.addCell(drawProgressBar(percent));
             t.addCell(effect.getEffectName());

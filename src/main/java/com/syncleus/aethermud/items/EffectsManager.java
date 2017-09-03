@@ -43,10 +43,10 @@ public class EffectsManager {
         this.gameManager = gameManager;
     }
 
-    public void applyEffectsToNpcs(Player player, Set<NpcSpawn> npcSpawns, Set<Effect> effects) {
+    public void applyEffectsToNpcs(Player player, Set<NpcSpawn> npcSpawns, Set<EffectPojo> effects) {
         effects.forEach(effect ->
                 npcSpawns.forEach(npc -> {
-                    Effect nEffect = new Effect(effect);
+                    EffectPojo nEffect = new EffectPojo(effect);
                     nEffect.setPlayerId(player.getPlayerId());
                     if (effect.getDurationStats().getCurrentHealth() < 0) {
                         log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
@@ -57,9 +57,9 @@ public class EffectsManager {
                 }));
     }
 
-    public void applyEffectsToPlayer(Player destinationPlayer, Player player, Set<Effect> effects) {
-        for (Effect effect : effects) {
-            Effect nEffect = new Effect(effect);
+    public void applyEffectsToPlayer(Player destinationPlayer, Player player, Set<EffectPojo> effects) {
+        for (EffectPojo effect : effects) {
+            EffectPojo nEffect = new EffectPojo(effect);
             nEffect.setPlayerId(player.getPlayerId());
             if (effect.getDurationStats().getCurrentHealth() < 0) {
                 log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
@@ -76,7 +76,7 @@ public class EffectsManager {
         }
     }
 
-    public void application(Effect effect, Player player) {
+    public void application(EffectPojo effect, Player player) {
         // if there are effecst that modify player health, deal with it here, you can't rely on combine stats.
         Stats applyStatsOnTick = effect.getApplyStatsOnTick();
         if (effect.getApplyStatsOnTick() != null) {
@@ -95,7 +95,7 @@ public class EffectsManager {
         }
     }
 
-    public void application(Effect effect, NpcSpawn npcSpawn) {
+    public void application(EffectPojo effect, NpcSpawn npcSpawn) {
         Player player = gameManager.getPlayerManager().getPlayer(effect.getPlayerId());
         Stats applyStats = new StatsPojo(effect.getApplyStatsOnTick());
         // if there are effecst that modify npc health, deal with it here, you can't rely on combine stats.
@@ -113,13 +113,13 @@ public class EffectsManager {
         StatsHelper.combineStats(npcSpawn.getStats(), finalCombineWorthyStats);
     }
 
-    public void removeDurationStats(Effect effect, NpcSpawn npcSpawn) {
+    public void removeDurationStats(EffectPojo effect, NpcSpawn npcSpawn) {
         Stats newStats = new StatsPojo(effect.getDurationStats());
         StatsHelper.inverseStats(newStats);
         StatsHelper.combineStats(npcSpawn.getStats(), newStats);
     }
 
-    public void removeDurationStats(Effect effect, PlayerData playerData) {
+    public void removeDurationStats(EffectPojo effect, PlayerData playerData) {
         Stats newStats = new StatsPojo(effect.getDurationStats());
         StatsHelper.inverseStats(newStats);
         StatsHelper.combineStats(playerData.getStats(), newStats);

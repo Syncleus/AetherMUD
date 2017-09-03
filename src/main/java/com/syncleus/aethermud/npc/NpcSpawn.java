@@ -21,7 +21,7 @@ import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
-import com.syncleus.aethermud.items.Effect;
+import com.syncleus.aethermud.items.EffectPojo;
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.player.CoolDownPojo;
@@ -77,7 +77,7 @@ public class NpcSpawn extends AetherMudEntity {
     private final Random random = new Random();
     private long lastPhraseTimestamp;
     private Loot loot;
-    private List<Effect> effects = Lists.newArrayList();
+    private List<EffectPojo> effects = Lists.newArrayList();
     private int maxEffects = 4;
     private Map<String, Long> playerDamageMap = Maps.newHashMap();
     private Room currentRoom;
@@ -136,9 +136,9 @@ public class NpcSpawn extends AetherMudEntity {
                     if (effectsTickBucket == 5) {
 
                         // START Process NPC Effects
-                        Iterator<Effect> iterator = effects.iterator();
+                        Iterator<EffectPojo> iterator = effects.iterator();
                         while (iterator.hasNext()) {
-                            Effect effect = iterator.next();
+                            EffectPojo effect = iterator.next();
                             if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
                                 Optional<Room> npcCurrentRoom = gameManager.getRoomManager().getNpcCurrentRoom(this);
                                 if (npcCurrentRoom.isPresent()) {
@@ -412,7 +412,7 @@ public class NpcSpawn extends AetherMudEntity {
         return spawnRules;
     }
 
-    public void addEffect(Effect effect) {
+    public void addEffect(EffectPojo effect) {
         synchronized (interner.intern(getEntityId())) {
             if (effects.size() >= maxEffects) {
             } else {
@@ -421,7 +421,7 @@ public class NpcSpawn extends AetherMudEntity {
         }
     }
 
-    public List<Effect> getEffects() {
+    public List<EffectPojo> getEffects() {
         return effects;
     }
 

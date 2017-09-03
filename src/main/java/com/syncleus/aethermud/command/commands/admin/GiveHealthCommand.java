@@ -43,10 +43,6 @@ public class GiveHealthCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            if (!player.getPlayerName().equals("fibs")) {
-                write("This attempt to cheat has been logged.");
-                return;
-            }
             if (originalMessageParts.size() > 2) {
                 String destinationPlayerName = originalMessageParts.get(1);
                 String amt = originalMessageParts.get(2);
@@ -59,8 +55,8 @@ public class GiveHealthCommand extends Command {
                     write("Player does not exist.");
                     return;
                 }
-                playerByUsername.incrementGold(Integer.parseInt(amt));
-                write("The amount of " + amt + " gold has been placed into " + destinationPlayerName + "'s inventory.");
+                playerByUsername.setCurrentHealth(playerByUsername.getCurrentHealth() + Integer.valueOf(amt));
+                write("The amount of " + amt + " health has been given to " + destinationPlayerName + ".");
             }
         });
     }

@@ -178,7 +178,7 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
         stats.setWeaponRatingMax(0);
         stats.setWeaponRatingMin(0);
         stats.setWillpower(0);
-        this.setStats(stats);
+        this.addStats(stats);
         return stats;
     }
 }

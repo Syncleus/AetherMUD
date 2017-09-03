@@ -18,9 +18,7 @@ package com.syncleus.aethermud.items;
 
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.spawner.SpawnRule;
-import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.stats.StatsPojo;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.google.common.collect.Sets;
 
 import java.util.List;
@@ -41,7 +39,7 @@ public class ItemMetadata {
     private int itemHalfLifeTicks;
     private Rarity rarity;
     private Equipment equipment;
-    private Set<Effect> effects;
+    private Set<EffectPojo> effects;
     private List<String> itemTriggers;
     private Set<TimeTracker.TimeOfDay> validTimeOfDays;
     private boolean isDisposable;
@@ -125,11 +123,11 @@ public class ItemMetadata {
         this.equipment = equipment;
     }
 
-    public Set<Effect> getEffects() {
+    public Set<EffectPojo> getEffects() {
         return effects;
     }
 
-    public void setEffects(Set<Effect> effects) {
+    public void setEffects(Set<EffectPojo> effects) {
         this.effects = effects;
     }
 

@@ -65,4 +65,3 @@ public class ItemUseHandler {
         item.setNumberOfUses(item.getNumberOfUses() + 1);
     }
 }
-

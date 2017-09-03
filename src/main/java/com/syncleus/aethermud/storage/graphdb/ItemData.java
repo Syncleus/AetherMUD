@@ -19,21 +19,17 @@ import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.ferma.AbstractVertexFrame;
+import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.Property;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.tinkerpop.gremlin.structure.Direction;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 public abstract class ItemData extends AbstractVertexFrame implements Item {
-    @Override
-    @Property("Stats")
-    public abstract Stats getItemApplyStats();
-
-    @Override
-    public void setItemApplyStats(Stats itemApplyStats) {
-        this.traverse((v) -> v.property("Stats", itemApplyStats));
-    }
-
     @Override
     @Property("ValidTimeOfDays")
     public abstract List<TimeTracker.TimeOfDay> getValidTimeOfDays();
@@ -132,11 +128,11 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
 
     @Override
     @Property("Effects")
-    public abstract void setEffects(Set<Effect> effects);
+    public abstract void setEffects(Set<EffectPojo> effects);
 
     @Override
     @Property("Effects")
-    public abstract Set<Effect> getEffects();
+    public abstract Set<EffectPojo> getEffects();
 
     @Override
     @Property("ItemName")
@@ -182,4 +178,77 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     @Override
     @Property("HasBeenWithPlayer")
     public abstract boolean isHasBeenWithPlayer();
+
+    @Adjacency(label = "Stats", direction = Direction.OUT)
+    public abstract <N extends StatsData> Iterator<? extends N> getAllItemApplyStats(Class<? extends N> type);
+
+    public Stats getItemApplyStats() {
+        Iterator<? extends StatsData> allStats = this.getAllItemApplyStats(StatsData.class);
+        if( allStats.hasNext() )
+            return allStats.next();
+        else
+            return null;
+    }
+
+    @Adjacency(label = "Stats", direction = Direction.OUT)
+    public abstract StatsData addStats(StatsData stats);
+
+    @Adjacency(label = "Stats", direction = Direction.OUT)
+    public abstract void removeStats(StatsData stats);
+
+    public void setItemApplyStats(Stats stats) {
+        Iterator<? extends StatsData> existingAll = this.getAllItemApplyStats(StatsData.class);
+        if( existingAll != null ) {
+            while( existingAll.hasNext() ) {
+                StatsData existing = existingAll.next();
+                this.removeStats(existing);
+                existing.remove();
+            }
+
+        }
+
+        if( stats == null ) {
+            this.createItemApplyStats();
+            return;
+        }
+
+        StatsData statsData;
+        if( stats instanceof StatsData ) {
+            this.addStats((StatsData) stats);
+        }
+        else {
+            try {
+                PropertyUtils.copyProperties(this.createItemApplyStats(), stats);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Could not copy properties");
+            }
+        }
+    }
+
+    public StatsData createItemApplyStats() {
+        if( this.getItemApplyStats() != null )
+            throw new IllegalStateException("Already has stats, can't create another");
+        final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        stats.setAgile(0);
+        stats.setAim(0);
+        stats.setArmorRating(0);
+        stats.setCurrentHealth(0);
+        stats.setCurrentMana(0);
+        stats.setExperience(0);
+        stats.setForaging(0);
+        stats.setIntelligence(0);
+        stats.setInventorySize(0);
+        stats.setMaxEffects(0);
+        stats.setMaxHealth(0);
+        stats.setMaxMana(0);
+        stats.setMeleeSkill(0);
+        stats.setNumberOfWeaponRolls(0);
+        stats.setStrength(0);
+        stats.setWeaponRatingMax(0);
+        stats.setWeaponRatingMin(0);
+        stats.setWillpower(0);
+        this.addStats(stats);
+        return stats;
+    }
+
 }

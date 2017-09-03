@@ -167,8 +167,8 @@ public class Player extends AetherMudEntity {
                 return;
             }
             PlayerData playerData = playerMetadataOptional.get();
-            List<Effect> effectsToRemove = Lists.newArrayList();
-            for (Effect effect : playerData.getEffects()) {
+            List<EffectPojo> effectsToRemove = Lists.newArrayList();
+            for (EffectPojo effect : playerData.getEffects()) {
                 if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
                     gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
                     effectsToRemove.add(effect);
@@ -179,7 +179,7 @@ public class Player extends AetherMudEntity {
                 }
 
             }
-            for (Effect effect : effectsToRemove) {
+            for (EffectPojo effect : effectsToRemove) {
                 playerData.removeEffect(effect);
             }
             savePlayerMetadata();
@@ -335,10 +335,17 @@ public class Player extends AetherMudEntity {
         gameManager.getPlayerManager().persist();
     }
 
-    public long getCurrentHealth() {
+    public int getCurrentHealth() {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
             return playerMetadataOptional.map(playerMetadata -> playerMetadata.getStats().getCurrentHealth()).orElse(0);
+        }
+    }
+
+    public void setCurrentHealth(int health) {
+        synchronized (interner.intern(playerId)) {
+            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
+            playerMetadataOptional.ifPresent((p) -> p.getStats().setCurrentHealth(health));
         }
     }
 
@@ -378,7 +385,7 @@ public class Player extends AetherMudEntity {
         }
     }
 
-    public boolean addEffect(Effect effect) {
+    public boolean addEffect(EffectPojo effect) {
         synchronized (interner.intern(playerId)) {
             Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
             if (!playerMetadataOptional.isPresent()) {
@@ -867,7 +874,6 @@ public class Player extends AetherMudEntity {
             for (String itemId : playerData.getInventory()) {
                 Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                 if (!itemOptional.isPresent()) {
-                    log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
                     continue;
                 }
                 ItemPojo itemEntity = itemOptional.get();
@@ -1169,7 +1175,7 @@ public class Player extends AetherMudEntity {
                 StatsHelper.combineStats(newStats, stats);
             }
             if (playerData.getEffects() != null) {
-                for (Effect effect : playerData.getEffects()) {
+                for (EffectPojo effect : playerData.getEffects()) {
                     StatsHelper.combineStats(newStats, effect.getDurationStats());
                 }
             }
@@ -1230,7 +1236,7 @@ public class Player extends AetherMudEntity {
             return "";
         }
         PlayerData playerData = playerMetadataOptional.get();
-        List<Effect> effects = playerData.getEffects();
+        List<EffectPojo> effects = playerData.getEffects();
         return gameManager.renderEffectsString(effects);
     }
 
