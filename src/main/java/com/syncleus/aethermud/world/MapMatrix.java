@@ -277,12 +277,9 @@ public class MapMatrix {
                 boolean borderColumn = (column % 4 == 0);
                 int roomColumn = column / 4;
                 Integer renderRoomId = matrix.get(roomRow).get(roomColumn);
-                Room renderRoom = roomManager.getRoom(renderRoomId);
                 boolean hereRoom = (renderRoomId != 0 && row < height - 1 && column < width - 1);
                 boolean westRoom = (roomColumn == 0 || row >= height - 1 ? false : matrix.get(roomRow).get(roomColumn - 1) != 0);
-                //boolean eastRoom = (roomColumn == max.getColumn() - 1 ? false : matrix.get(roomRow).get(roomColumn + 1) != 0);
                 boolean northRoom = (roomRow == 0 || column >= width - 1 ? false : matrix.get(roomRow - 1).get(roomColumn) != 0);
-                //boolean southRoom = (roomRow == max.getRow() - 1 ? false : matrix.get(roomRow + 1).get(roomColumn) != 0);
                 boolean northWestRoom = (roomRow == 0 || roomColumn == 0 ? false : matrix.get(roomRow - 1).get(roomColumn - 1) != 0);
                 if(borderRow) {
                     if(borderColumn) {
