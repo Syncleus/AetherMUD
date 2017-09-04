@@ -35,7 +35,7 @@ public class ConfigureNpc {
 
     public static void configureAllNpcs(GameManager gameManager) throws IOException {
         EntityManager entityManager = gameManager.getEntityManager();
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
         for (NpcSpawn npcSpawn : npcsFromFile) {
             Main.startUpMessage("Adding npc spawn: " + npcSpawn.getName());
             entityManager.addEntity(npcSpawn);

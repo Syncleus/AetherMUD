@@ -46,7 +46,7 @@ public class SpawnCommand  extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            List<? extends NpcSpawn> npcsFromFile = gameManager.getNpcStorage().getAllNpcs();
+            List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
             if (originalMessageParts.size() == 1) {
                 write(getHeader());
                 for (NpcSpawn npcSpawn : npcsFromFile) {

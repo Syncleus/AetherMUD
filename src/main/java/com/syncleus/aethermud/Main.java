@@ -110,7 +110,7 @@ public class Main {
         }
         WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(graph, FRAMED_TYPES);
 
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph, aetherMudConfiguration.databaseFileName);
         graphStorage.startAsync();
         graphStorage.awaitRunning();
 

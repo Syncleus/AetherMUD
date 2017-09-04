@@ -18,9 +18,9 @@ package com.syncleus.aethermud.common;
 import com.google.common.collect.Lists;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.storage.graphdb.GraphDbNpcStorage;
+import com.syncleus.aethermud.storage.AetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
-import com.syncleus.aethermud.storage.NpcStorage;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +66,7 @@ public class ColorizedTextTemplateTest {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
-        NpcStorage npcStorage = new GraphDbNpcStorage(null, framedGraph);
+        AetherMudStorage npcStorage = new GraphDbAetherMudStorage(framedGraph, null);
 
         List<? extends NpcData> npcData = npcStorage.getNpcDatas();
         Assert.assertTrue(npcData.isEmpty());

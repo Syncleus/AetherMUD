@@ -20,7 +20,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.spawner.SpawnRule;
-import com.syncleus.aethermud.storage.NpcStorage;
+import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.google.common.collect.Sets;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -94,7 +94,7 @@ public class LoadNpcCommand extends Command {
             }
             httpGet.reset();
 
-            NpcStorage storage = gameManager.getNpcStorage();
+            AetherMudStorage storage = gameManager.getGraphStorage();
             NpcData npcData = storage.newNpcData();
             try {
                 PropertyUtils.copyProperties(npcData, npc);

@@ -28,7 +28,7 @@ public class ItemStorage {
 
     public final static String LOCAL_ITEM_DIRECTORY = "world/items/";
 
-    private static final Logger log = Logger.getLogger(NpcStorage.class);
+    private static final Logger log = Logger.getLogger(ItemStorage.class);
     private final FilebasedJsonStorage filebasedJsonStorage;
 
     private final List<ItemMetadata> itemMetadatas;

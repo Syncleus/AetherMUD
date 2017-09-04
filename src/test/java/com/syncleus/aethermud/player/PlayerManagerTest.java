@@ -49,7 +49,7 @@ public class PlayerManagerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph);
+        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph, "aethermud-test-graph.json");
         playerManager = new PlayerManager(graphStorage, sessionManager);
     }
 

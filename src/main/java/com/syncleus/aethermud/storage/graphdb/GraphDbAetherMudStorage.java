@@ -17,26 +17,35 @@ package com.syncleus.aethermud.storage.graphdb;
 
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.syncleus.aethermud.Main;
+import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.npc.NpcBuilder;
+import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.stream.Collectors;
 
 //TODO : multiple instances of this class could create conflicts in the DB
 public class GraphDbAetherMudStorage extends AbstractIdleService implements AetherMudStorage {
-
-
+    private static final Logger LOGGER = Logger.getLogger(GraphDbAetherMudStorage.class);
     private final WrappedFramedGraph<Graph> framedGraph;
+    private final String graphDbFile;
 
-    public GraphDbAetherMudStorage(WrappedFramedGraph<Graph> framedGraph) {
+
+    public GraphDbAetherMudStorage(WrappedFramedGraph<Graph> framedGraph, String graphDbFile) {
         this.framedGraph = framedGraph;
+        this.graphDbFile = graphDbFile;
     }
 
     @Override
@@ -73,7 +82,7 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
 
     public void persist() {
         try {
-            this.framedGraph.getBaseGraph().io(IoCore.graphson()).writeGraph(Main.DEFAULT_GRAPH_DB_FILE);
+            this.framedGraph.getBaseGraph().io(IoCore.graphson()).writeGraph(this.graphDbFile);
         } catch (IOException e) {
             throw new IllegalStateException("Could not write to graph file.", e);
         }
@@ -89,6 +98,21 @@ public class GraphDbAetherMudStorage extends AbstractIdleService implements Aeth
         }
         itemData.setItemTriggers(item.getItemTriggers());
         return itemData;
+    }
+
+    public List<? extends NpcSpawn> getAllNpcs(GameManager gameManager) {
+        List<? extends NpcData> npcData = this.getNpcDatas();
+        return npcData.stream()
+            .map(metadata -> new NpcBuilder(metadata).setGameManager(gameManager).createNpc())
+            .collect(Collectors.toList());
+    }
+
+    public List<? extends NpcData> getNpcDatas() {
+        return framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), NpcData.class)).toList(NpcData.class);
+    }
+
+    public NpcData newNpcData() {
+        return framedGraph.addFramedVertex(NpcData.class);
     }
 
     @Override

@@ -39,7 +39,6 @@ import com.syncleus.aethermud.spawner.NpcSpawner;
 import com.syncleus.aethermud.spells.Spells;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.GraphDbNpcStorage;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.syncleus.aethermud.storage.*;
@@ -104,7 +103,6 @@ public class GameManager {
     private final Spells spells;
     private final MultiThreadedEventProcessor eventProcessor = new MultiThreadedEventProcessor(new ArrayBlockingQueue<>(10000));
     private final Room detainmentRoom;
-    private final NpcStorage npcStorage;
     private final ItemStorage itemStorage;
     private final HttpClient httpclient;
     private final Gson gson;
@@ -148,7 +146,6 @@ public class GameManager {
         this.detainmentRoom = buildDetainmentRoom();
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.filebasedJsonStorage = new FilebasedJsonStorage(gson);
-        this.npcStorage = new GraphDbNpcStorage(this, framedGraph);;
         this.itemStorage = new ItemStorage(filebasedJsonStorage);
         this.merchantStorage = new MerchantStorage(this, filebasedJsonStorage);
         this.httpclient = httpClient;
@@ -257,10 +254,6 @@ public class GameManager {
 
     public MultiThreadedEventProcessor getEventProcessor() {
         return eventProcessor;
-    }
-
-    public NpcStorage getNpcStorage() {
-        return npcStorage;
     }
 
     public void placePlayerInLobby(Player player) {
