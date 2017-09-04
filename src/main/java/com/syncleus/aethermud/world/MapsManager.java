@@ -81,21 +81,43 @@ public class MapsManager {
         return roomId -> {
             Room room = roomManager.getRoom(roomId);
             if (roomId > 0) {
-                if (roomId.equals(currentroomId)) {
-                    return " " + Color.BOLD_ON + Color.WHITE + "☺" + Color.RESET + " ";
-                } else if (roomId.equals(1)) {
-                    return " " + Color.BOLD_ON + Color.BLUE + "L" + Color.RESET + " ";
-                } else if (room.getMerchants().size() > 0) {
-                    return " " + Color.YELLOW + "m" + Color.RESET + " ";
-                }  else if (room.getEnterExits().size() > 0) {
-                    return " " + Color.CYAN + "e" + Color.RESET + " ";
-                } else if (room.getUpId().isPresent()) {
-                    return " " + Color.GREEN + "^" + Color.RESET + " ";
-                } else if (room.getDownId().isPresent()) {
-                    return " " + Color.GREEN + "v" + Color.RESET + " ";
-                } else {
-                    return "   ";
+                boolean meHere = roomId.equals(currentroomId);
+                boolean merchantsHere = room.getMerchants().size() > 0;
+                boolean zoneChangeHere = room.getEnterExits().size() > 0;
+                boolean upHere = room.getUpId().isPresent();
+                boolean downHere = room.getDownId().isPresent();
+                boolean mobsHere = room.getPresentNpcs().size() > 0;
+
+                String leftChar = " ";
+                if(zoneChangeHere)
+                    leftChar = Color.BOLD_ON + Color.GREEN + "☼" + Color.RESET;
+                else if(upHere)
+                    leftChar = Color.BOLD_ON + Color.GREEN + "↑" + Color.RESET;
+                else if(downHere)
+                    leftChar = Color.BOLD_ON + Color.GREEN + "↓" + Color.RESET;
+
+                String rightChar = " ";
+                if(mobsHere)
+                    rightChar = Color.BOLD_ON + Color.RED + "*" + Color.RESET;
+                else if(merchantsHere)
+                    rightChar = Color.BOLD_ON + Color.BLUE + "☻" + Color.RESET;
+
+                String middleChar = " ";
+                if(meHere)
+                    middleChar = Color.BOLD_ON + Color.WHITE + "☺" + Color.RESET;
+
+                if(leftChar.equals(" ") && !rightChar.equals(" ")) {
+                    if(mobsHere && merchantsHere)
+                        leftChar = Color.BOLD_ON + Color.BLUE + "☻" + Color.RESET;
                 }
+                else if(!leftChar.equals(" ") && rightChar.equals(" ")) {
+                    if(zoneChangeHere && upHere)
+                        rightChar = Color.BOLD_ON + Color.GREEN + "↑" + Color.RESET;
+                    else if((zoneChangeHere || upHere) && downHere)
+                        rightChar = Color.BOLD_ON + Color.GREEN + "↓" + Color.RESET;
+                }
+
+                return leftChar + middleChar + rightChar;
             } else {
                 return "   ";
             }
