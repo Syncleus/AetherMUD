@@ -19,6 +19,7 @@ import com.syncleus.aethermud.world.model.Coords;
 import com.syncleus.aethermud.world.model.RemoteExit;
 import com.google.common.base.Predicate;
 import com.google.common.collect.*;
+import com.syncleus.aethermud.world.model.Room;
 
 import java.util.*;
 
@@ -267,10 +268,86 @@ public class MapMatrix {
 
     public String renderMap(Integer roomId, RoomManager roomManager) {
         StringBuilder sb = new StringBuilder();
-        Iterator<List<Integer>> rows = getRows();
-        while (rows.hasNext()) {
-            List<Integer> next = rows.next();
-            next.stream().map(MapsManager.render(roomId, roomManager)).forEach(sb::append);
+        int width = (max.getRow()-1) * 4 + 1;
+        int height = (max.getColumn()-1) * 2 + 1;
+        for(int row = 0; row < height; row++) {
+            boolean borderRow = (row % 2 == 0);
+            int roomRow = row / 2;
+            for(int column = 0; column < width; column++) {
+                boolean borderColumn = (column % 4 == 0);
+                int roomColumn = column / 4;
+                Integer renderRoomId = matrix.get(roomRow).get(roomColumn);
+                Room renderRoom = roomManager.getRoom(renderRoomId);
+                boolean hereRoom = (renderRoomId != 0 && row < height - 1 && column < width - 1);
+                boolean westRoom = (roomColumn == 0 || row >= height - 1 ? false : matrix.get(roomRow).get(roomColumn - 1) != 0);
+                //boolean eastRoom = (roomColumn == max.getColumn() - 1 ? false : matrix.get(roomRow).get(roomColumn + 1) != 0);
+                boolean northRoom = (roomRow == 0 || column >= width - 1 ? false : matrix.get(roomRow - 1).get(roomColumn) != 0);
+                //boolean southRoom = (roomRow == max.getRow() - 1 ? false : matrix.get(roomRow + 1).get(roomColumn) != 0);
+                boolean northWestRoom = (roomRow == 0 || roomColumn == 0 ? false : matrix.get(roomRow - 1).get(roomColumn - 1) != 0);
+                if(borderRow) {
+                    if(borderColumn) {
+                        //is an intersection between the four rooms
+                        if( (hereRoom && northWestRoom) || (westRoom && northRoom) )
+                            sb.append("┼");
+                        else if(hereRoom && northRoom)
+                            sb.append("├");
+                        else if(hereRoom && westRoom)
+                            sb.append("┬");
+                        else if(northWestRoom && westRoom)
+                            sb.append("┤");
+                        else if(northWestRoom && northRoom)
+                            sb.append("┴");
+                        else if(hereRoom)
+                            sb.append("┌");
+                        else if(westRoom)
+                            sb.append("┐");
+                        else if(northWestRoom)
+                            sb.append("┘");
+                        else if(northRoom)
+                            sb.append("└");
+                        else
+                            sb.append(" ");
+                    }
+                    else if((column >= 2) && ((column - 2) % 4 == 0)) {
+                        // is a row exit
+                        if( hereRoom || northRoom ) {
+                            if(hereRoom && northRoom)
+                                sb.append("↕");
+                            else
+                                sb.append("─");
+                        }
+                        else
+                            sb.append(" ");
+                    }
+                    else {
+                        //is a row wall
+                        if(hereRoom || northRoom)
+                            sb.append("─");
+                        else
+                            sb.append(" ");
+                    }
+                }
+                else {
+                    if(borderColumn) {
+                        //is an intersection between the four rooms
+                        if( hereRoom || westRoom ) {
+                            if(hereRoom && westRoom)
+                                sb.append("↔");
+                            else
+                                sb.append("│");
+                        }
+                        else
+                            sb.append(" ");
+                    }
+                    else {
+                        //a room space
+                        sb.append(MapsManager.render(roomId, roomManager).apply(renderRoomId));
+                        column += 2;
+                        //if unexplored
+                        //sb.append("░");
+                    }
+                }
+            }
             sb.append("\r\n");
         }
         return sb.toString();
