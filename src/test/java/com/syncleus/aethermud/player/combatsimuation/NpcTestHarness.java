@@ -306,7 +306,7 @@ public class NpcTestHarness {
         playerData.setPlayerClass(PlayerClass.BASIC);
         playerData.setPlayerEquipment(new ArrayList<>());
         playerData.setPlayerId(Main.createPlayerId(username));
-        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
+        playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL));
         playerData.setPlayerSettings(new HashMap<>());
         try {
             PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());

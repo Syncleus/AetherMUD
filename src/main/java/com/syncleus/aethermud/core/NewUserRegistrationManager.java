@@ -21,13 +21,8 @@ import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.server.model.CreeperSession;
 import com.syncleus.aethermud.stats.DefaultStats;
 import com.google.common.base.Optional;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.CoolDownData;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.MessageEvent;
@@ -37,7 +32,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class NewUserRegistrationManager {
 
@@ -118,7 +112,7 @@ public class NewUserRegistrationManager {
         playerData.setPlayerEquipment(new ArrayList<>());
         playerData.setPlayerId(Main.createPlayerId(session.getUsername().get()));
         // TODO : remove this, not all players should be admins
-        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL, PlayerRole.ADMIN, PlayerRole.GOD, PlayerRole.TELEPORTER));
+        playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL, PlayerRole.ADMIN, PlayerRole.GOD, PlayerRole.TELEPORTER));
         playerData.setPlayerSettings(new HashMap<>());
         try {
             PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());

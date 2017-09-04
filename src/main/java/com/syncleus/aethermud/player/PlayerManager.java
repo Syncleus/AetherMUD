@@ -104,8 +104,8 @@ public class PlayerManager {
         if (!playerMetadata.isPresent()) {
             return false;
         }
-        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerMetadata.get().getPlayerRoleSet());
-        return playerRoleSet != null && playerMetadata.get().getPlayerRoleSet().contains(playerRole);
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerMetadata.get().getPlayerRoles());
+        return playerRoleSet != null && playerMetadata.get().getPlayerRoles().contains(playerRole);
     }
 
     public Optional<PlayerData> getPlayerMetadata(String playerId) {
@@ -117,7 +117,7 @@ public class PlayerManager {
         if (!playerMetadata.isPresent()) {
             return false;
         }
-        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerMetadata.get().getPlayerRoleSet());
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerMetadata.get().getPlayerRoles());
         if (playerRoleSet != null) {
             for (PlayerRole checkRole : checkRoles) {
                 if (playerRoleSet.contains(checkRole)) {

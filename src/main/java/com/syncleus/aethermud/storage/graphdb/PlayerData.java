@@ -77,18 +77,23 @@ public abstract class PlayerData extends AbstractVertexFrame {
     public abstract void setGoldInBank(int goldInBank);
 
     @Property("roleSet")
-    public abstract Collection<PlayerRole> getPlayerRoleTextCollection();
+    public abstract Collection<String> getPlayerRoleTextCollection();
 
-    public Set<PlayerRole> getPlayerRoleSet() {
+    public Set<PlayerRole> getPlayerRoles() {
         HashSet<PlayerRole> roles = new HashSet<>();
-        Collection<PlayerRole> rolesText = getPlayerRoleTextCollection();
-        for(final PlayerRole roleText : rolesText)
-            roles.add(roleText);
+        Collection<String> rolesText = getPlayerRoleTextCollection();
+        for(final String roleText : rolesText)
+            roles.add(PlayerRole.valueOf(roleText));
         return Collections.unmodifiableSet(roles);
     }
 
-    @Property("roleSet")
-    public abstract void setPlayerRoleSet(Collection<PlayerRole> playerRoleSet);
+    public void setPlayerRoles(Collection<PlayerRole> playerRoleSet) {
+        ArrayList<String> newProperty = new ArrayList<String>();
+        for(PlayerRole role : playerRoleSet) {
+            newProperty.add(role.toString());
+        }
+        this.setProperty("roleSet", newProperty);
+    }
 
     @Property("equipment")
     public abstract List<String> getPlayerEquipment();
@@ -393,16 +398,16 @@ public abstract class PlayerData extends AbstractVertexFrame {
     }
 
     public void addPlayerRole(PlayerRole playerRole) {
-        Set<PlayerRole> playerRoleSet = Sets.newHashSet(this.getPlayerRoleSet());
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(this.getPlayerRoles());
         if (playerRoleSet == null) {
             playerRoleSet = Sets.newHashSet();
         }
         playerRoleSet.add(playerRole);
-        this.setPlayerRoleSet(playerRoleSet);
+        this.setPlayerRoles(playerRoleSet);
     }
 
     public void resetPlayerRoles() {
-        this.setPlayerRoleSet(new HashSet());
+        this.setPlayerRoles(new HashSet());
     }
 
     public void resetEffects(){

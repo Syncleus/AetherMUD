@@ -25,7 +25,6 @@ import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.storage.graphdb.PlayerData;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
@@ -67,7 +66,7 @@ public class AetherMudUtilsTest {
         playerData.setPlayerClass(PlayerClass.BASIC);
         playerData.setPlayerEquipment(strings);
         playerData.setPlayerId(Main.createPlayerId("usertest"));
-        playerData.setPlayerRoleSet(Sets.newHashSet(PlayerRole.MORTAL));
+        playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL));
         playerData.setPlayerSettings(new HashMap<>());
         StatsData statsData = mock(StatsData.class);
         try {

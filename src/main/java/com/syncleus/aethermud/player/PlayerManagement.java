@@ -242,7 +242,7 @@ public class PlayerManagement implements PlayerManagementMBean {
             return "";
         }
         PlayerData playerData = playerMetadataOptional.get();
-        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerData.getPlayerRoleSet());
+        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerData.getPlayerRoles());
         for (PlayerRole next : playerRoleSet) {
             rolesList.add(next.getRoleType());
         }
