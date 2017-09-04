@@ -22,24 +22,25 @@ import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.world.model.Area;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Npc {
-    Set<AetherMudMessage> getCriticalAttackMessages();
+    List<AetherMudMessage> getCriticalAttackMessages();
 
-    void setCriticalAttackMessages(Set<AetherMudMessage> criticalAttackMessages);
+    void setCriticalAttackMessages(List<AetherMudMessage> criticalAttackMessages);
 
-    Set<AetherMudMessage> getBattleMessages();
+    List<AetherMudMessage> getBattleMessages();
 
-    void setBattleMessages(Set<AetherMudMessage> battleMessages);
+    void setBattleMessages(List<AetherMudMessage> battleMessages);
 
-    Set<AetherMudMessage> getIdleMessages();
+    List<AetherMudMessage> getIdleMessages();
 
-    void setIdleMessages(Set<AetherMudMessage> idleMessages);
+    void setIdleMessages(List<AetherMudMessage> idleMessages);
 
-    Set<AetherMudMessage> getAttackMessages();
+    List<AetherMudMessage> getAttackMessages();
 
-    void setAttackMessages(Set<AetherMudMessage> attackMessages);
+    void setAttackMessages(List<AetherMudMessage> attackMessages);
 
     String getName();
 
@@ -49,17 +50,17 @@ public interface Npc {
 
     void setTemperament(Temperament temperament);
 
-    Set<Area> getRoamAreas();
+    List<Area> getRoamAreas();
 
-    void setRoamAreas(Set<Area> roamAreas);
+    void setRoamAreas(List<Area> roamAreas);
 
-    Set<String> getValidTriggers();
+    List<String> getValidTriggers();
 
-    void setValidTriggers(Set<String> validTriggers);
+    void setValidTriggers(List<String> validTriggers);
 
-    Set<SpawnRule> getSpawnRules();
+    List<SpawnRule> getSpawnRules();
 
-    void setSpawnRules(Set<SpawnRule> spawnRules);
+    void setSpawnRules(List<SpawnRule> spawnRules);
 
     Loot getLoot();
 

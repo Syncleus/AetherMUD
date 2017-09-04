@@ -15,6 +15,7 @@
  */
 package com.syncleus.aethermud.npc;
 
+import com.google.common.collect.Sets;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Loot;
@@ -25,6 +26,7 @@ import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.syncleus.aethermud.world.model.Area;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -76,15 +78,15 @@ public class NpcBuilder {
         this.colorName = npcData.getColorName();
         this.stats = new StatsPojo(npcData.getStats());
         this.dieMessage = npcData.getDieMessage();
-        this.roamAreas = npcData.getRoamAreas();
-        this.validTriggers = npcData.getValidTriggers();
+        this.roamAreas = new HashSet<>(npcData.getRoamAreas());
+        this.validTriggers = Sets.newHashSet(npcData.getValidTriggers());
         this.loot = npcData.getLoot();
-        this.spawnRules = npcData.getSpawnRules();
+        this.spawnRules = Sets.newHashSet(npcData.getSpawnRules());
         this.temperament = npcData.getTemperament();
-        this.attackMessages = npcData.getAttackMessages();
-        this.criticalAttackMessages = npcData.getCriticalAttackMessages();
-        this.battleMessages = npcData.getBattleMessages();
-        this.idleMessages = npcData.getIdleMessages();
+        this.attackMessages = Sets.newHashSet(npcData.getAttackMessages());
+        this.criticalAttackMessages = Sets.newHashSet(npcData.getCriticalAttackMessages());
+        this.battleMessages = Sets.newHashSet(npcData.getBattleMessages());
+        this.idleMessages = Sets.newHashSet(npcData.getIdleMessages());
     }
 
     public NpcBuilder setGameManager(GameManager gameManager) {

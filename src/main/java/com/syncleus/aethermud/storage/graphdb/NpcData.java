@@ -15,6 +15,7 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
+import com.google.api.client.util.Sets;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.common.ColorizedTextTemplate;
 import com.syncleus.aethermud.items.Loot;
@@ -30,33 +31,35 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public abstract class NpcData extends AbstractVertexFrame implements Npc {
     @Property("criticalAttackMessages")
-    public abstract Set<AetherMudMessage> getCriticalAttackMessages();
+    public abstract List<AetherMudMessage> getCriticalAttackMessages();
 
     @Property("criticalAttackMessages")
-    public abstract void setCriticalAttackMessages(Set<AetherMudMessage> criticalAttackMessages);
+    public abstract void setCriticalAttackMessages(List<AetherMudMessage> criticalAttackMessages);
 
     @Property("battleMessages")
-    public abstract Set<AetherMudMessage> getBattleMessages();
+    public abstract List<AetherMudMessage> getBattleMessages();
 
     @Property("battleMessages")
-    public abstract void setBattleMessages(Set<AetherMudMessage> battleMessages);
+    public abstract void setBattleMessages(List<AetherMudMessage> battleMessages);
 
     @Property("idleMessages")
-    public abstract Set<AetherMudMessage> getIdleMessages();
+    public abstract List<AetherMudMessage> getIdleMessages();
 
     @Property("idleMessages")
-    public abstract void setIdleMessages(Set<AetherMudMessage> idleMessages);
+    public abstract void setIdleMessages(List<AetherMudMessage> idleMessages);
 
     @Property("attackMessages")
-    public abstract Set<AetherMudMessage> getAttackMessages();
+    public abstract List<AetherMudMessage> getAttackMessages();
 
     @Property("attackMessages")
-    public abstract void setAttackMessages(Set<AetherMudMessage> attackMessages);
+    public abstract void setAttackMessages(List<AetherMudMessage> attackMessages);
 
     @Property("name")
     public abstract String getName();
@@ -71,22 +74,22 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
     public abstract void setTemperament(Temperament temperament);
 
     @Property("roamAreas")
-    public abstract Set<Area> getRoamAreas();
+    public abstract List<Area> getRoamAreas();
 
     @Property("roamAreas")
-    public abstract void setRoamAreas(Set<Area> roamAreas);
+    public abstract void setRoamAreas(List<Area> roamAreas);
 
     @Property("validTriggers")
-    public abstract Set<String> getValidTriggers();
+    public abstract List<String> getValidTriggers();
 
     @Property("validTriggers")
-    public abstract void setValidTriggers(Set<String> validTriggers);
+    public abstract void setValidTriggers(List<String> validTriggers);
 
     @Property("spawnRules")
-    public abstract Set<SpawnRule> getSpawnRules();
+    public abstract List<SpawnRule> getSpawnRules();
 
     @Property("spawnRules")
-    public abstract void setSpawnRules(Set<SpawnRule> spawnRules);
+    public abstract void setSpawnRules(List<SpawnRule> spawnRules);
 
     @Property("loot")
     public abstract Loot getLoot();

@@ -23,6 +23,9 @@ import com.syncleus.aethermud.stats.StatsPojo;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.world.model.Area;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class NpcPojo implements Npc {
@@ -32,51 +35,51 @@ public class NpcPojo implements Npc {
     private StatsPojo stats;
     private String dieMessage;
     private Temperament temperament;
-    private Set<Area> roamAreas;
-    private Set<String> validTriggers;
-    private Set<SpawnRule> spawnRules;
+    private List<Area> roamAreas;
+    private List<String> validTriggers;
+    private List<SpawnRule> spawnRules;
     private Loot loot;
     // The messages used when dealing damage
-    private Set<AetherMudMessage> attackMessages;
+    private List<AetherMudMessage> attackMessages;
     // The messages used when landing critical attacks
-    private Set<AetherMudMessage> criticalAttackMessages;
+    private List<AetherMudMessage> criticalAttackMessages;
     // Things the NPC randomly says during battle
-    private Set<AetherMudMessage> battleMessages;
+    private List<AetherMudMessage> battleMessages;
     // Things that npcs say randomly when idle
-    private Set<AetherMudMessage> idleMessages;
+    private List<AetherMudMessage> idleMessages;
 
     public NpcPojo() {
     }
 
-    public Set<AetherMudMessage> getCriticalAttackMessages() {
+    public List<AetherMudMessage> getCriticalAttackMessages() {
         return criticalAttackMessages;
     }
 
-    public void setCriticalAttackMessages(Set<AetherMudMessage> criticalAttackMessages) {
+    public void setCriticalAttackMessages(List<AetherMudMessage> criticalAttackMessages) {
         this.criticalAttackMessages = criticalAttackMessages;
     }
 
-    public Set<AetherMudMessage> getBattleMessages() {
+    public List<AetherMudMessage> getBattleMessages() {
         return battleMessages;
     }
 
-    public void setBattleMessages(Set<AetherMudMessage> battleMessages) {
+    public void setBattleMessages(List<AetherMudMessage> battleMessages) {
         this.battleMessages = battleMessages;
     }
 
-    public Set<AetherMudMessage> getIdleMessages() {
+    public List<AetherMudMessage> getIdleMessages() {
         return idleMessages;
     }
 
-    public void setIdleMessages(Set<AetherMudMessage> idleMessages) {
+    public void setIdleMessages(List<AetherMudMessage> idleMessages) {
         this.idleMessages = idleMessages;
     }
 
-    public Set<AetherMudMessage> getAttackMessages() {
+    public List<AetherMudMessage> getAttackMessages() {
         return attackMessages;
     }
 
-    public void setAttackMessages(Set<AetherMudMessage> attackMessages) {
+    public void setAttackMessages(List<AetherMudMessage> attackMessages) {
         this.attackMessages = attackMessages;
     }
 
@@ -122,27 +125,19 @@ public class NpcPojo implements Npc {
         this.temperament = temperament;
     }
 
-    public Set<Area> getRoamAreas() {
-        return roamAreas;
-    }
-
-    public void setRoamAreas(Set<Area> roamAreas) {
-        this.roamAreas = roamAreas;
-    }
-
-    public Set<String> getValidTriggers() {
+    public List<String> getValidTriggers() {
         return validTriggers;
     }
 
-    public void setValidTriggers(Set<String> validTriggers) {
+    public void setValidTriggers(List<String> validTriggers) {
         this.validTriggers = validTriggers;
     }
 
-    public Set<SpawnRule> getSpawnRules() {
+    public List<SpawnRule> getSpawnRules() {
         return spawnRules;
     }
 
-    public void setSpawnRules(Set<SpawnRule> spawnRules) {
+    public void setSpawnRules(List<SpawnRule> spawnRules) {
         this.spawnRules = spawnRules;
     }
 
@@ -152,6 +147,16 @@ public class NpcPojo implements Npc {
 
     public void setLoot(Loot loot) {
         this.loot = loot;
+    }
+
+    @Override
+    public List<Area> getRoamAreas() {
+        return roamAreas;
+    }
+
+    @Override
+    public void setRoamAreas(List<Area> roamAreas) {
+        this.roamAreas = roamAreas;
     }
 }
 
