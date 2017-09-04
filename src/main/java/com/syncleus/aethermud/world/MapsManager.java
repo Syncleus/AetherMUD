@@ -79,14 +79,14 @@ public class MapsManager {
 
     public static Function<Integer, String> render(final Integer currentroomId, final RoomManager roomManager) {
         return roomId -> {
-            Room room = roomManager.getRoom(roomId);
             if (roomId > 0) {
+                Room room = roomManager.getRoom(roomId);
                 boolean meHere = roomId.equals(currentroomId);
                 boolean merchantsHere = room.getMerchants().size() > 0;
                 boolean zoneChangeHere = room.getEnterExits().size() > 0;
                 boolean upHere = room.getUpId().isPresent();
                 boolean downHere = room.getDownId().isPresent();
-                boolean mobsHere = room.getPresentNpcs().size() > 0;
+                boolean mobsHere = room.getNpcIds().size() > 0;
 
                 String leftChar = " ";
                 if(zoneChangeHere)
