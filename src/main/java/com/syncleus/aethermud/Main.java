@@ -26,6 +26,7 @@ import com.syncleus.aethermud.configuration.AetherMudConfiguration;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.entity.EntityManager;
+import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.player.PlayerManagementManager;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.server.communication.ChannelUtils;
@@ -58,7 +59,16 @@ public class Main {
 
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
     public static final String DEFAULT_GRAPH_DB_FILE = "aethermud-graph.json";
-    public static final Set<Class<?>> FRAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new Class<?>[]{PlayerData.class, NpcData.class, StatsData.class, ItemData.class})));
+    public static final Set<Class<?>> FRAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new Class<?>[]{
+        PlayerData.class,
+        NpcData.class,
+        StatsData.class,
+        ItemData.class,
+        LootData.class,
+        SpawnRuleData.class,
+        CoolDownData.class,
+        EffectData.class
+    })));
 
     public static String getCreeperVersion() {
 

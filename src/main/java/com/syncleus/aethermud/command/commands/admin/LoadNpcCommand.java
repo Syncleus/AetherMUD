@@ -19,6 +19,7 @@ import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.player.PlayerRole;
+import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.storage.NpcStorage;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.google.common.collect.Sets;
@@ -38,6 +39,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class LoadNpcCommand extends Command {
 
@@ -99,10 +101,20 @@ public class LoadNpcCommand extends Command {
             try {
                 PropertyUtils.copyProperties(npcData, npc);
                 PropertyUtils.copyProperties(npcData.createStats(), npc.getStats());
-                PropertyUtils.copyProperties(npcData.createLoot(), npc.getLoot());
+                PropertyUtils.copyProperties(npcData.createLootData(), npc.getLoot());
             } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
                 throw new IllegalStateException("Could not copy properties for stats", ex);
             }
+            npc.getSpawnRules().forEach(new Consumer<SpawnRule>() {
+                @Override
+                public void accept(SpawnRule spawnRule) {
+                    try {
+                        PropertyUtils.copyProperties(npcData.createSpawnRuleData(), spawnRule);
+                    } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
+                        throw new IllegalStateException("Could not copy properties for stats", ex);
+                    }
+                }
+            });
             System.out.println(npcData.getStats().getCurrentHealth());
             storage.persist();
             write("NPC Saved. - " + npc.getName() + "\r\n");

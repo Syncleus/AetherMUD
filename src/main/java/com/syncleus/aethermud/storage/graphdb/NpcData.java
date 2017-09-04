@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.common.ColorizedTextTemplate;
 import com.syncleus.aethermud.npc.Temperament;
-import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.ferma.AbstractVertexFrame;
@@ -81,11 +80,43 @@ public abstract class NpcData extends AbstractVertexFrame {
     @Property("validTriggers")
     public abstract void setValidTriggers(List<String> validTriggers);
 
-    @Property("spawnRules")
-    public abstract List<SpawnRule> getSpawnRules();
+    @Adjacency(label = "spawnRules", direction = Direction.OUT)
+    public abstract <N extends SpawnRuleData> Iterator<? extends N> getSpawnRulesDataIterator(Class<? extends N> type);
 
-    @Property("spawnRules")
-    public abstract void setSpawnRules(List<SpawnRule> spawnRules);
+    public List<SpawnRuleData> getSpawnRulesData() {
+        return Lists.newArrayList(this.getSpawnRulesDataIterator(SpawnRuleData.class));
+    }
+
+    @Adjacency(label = "spawnRules", direction = Direction.OUT)
+    public abstract void addSpawnRuleData(SpawnRuleData spawnRule);
+
+    @Adjacency(label = "spawnRules", direction = Direction.OUT)
+    public abstract void removeSpawnRuleData(SpawnRuleData spawnRule);
+
+    public void setSpawnRulesData(List<SpawnRuleData> spawnRules) {
+        Iterator<? extends SpawnRuleData> existingAll = this.getSpawnRulesDataIterator(SpawnRuleData.class);
+        if( existingAll != null ) {
+            while( existingAll.hasNext() ) {
+                SpawnRuleData existing = existingAll.next();
+                this.removeSpawnRuleData(existing);
+                existing.remove();
+            }
+        }
+
+        if( spawnRules == null || spawnRules.isEmpty() ) {
+            this.createLootData();
+            return;
+        }
+
+        for(SpawnRuleData spawnRuleData : spawnRules)
+            this.addSpawnRuleData(spawnRuleData);
+    }
+
+    public SpawnRuleData createSpawnRuleData() {
+        final SpawnRuleData rule = this.getGraph().addFramedVertex(SpawnRuleData.class);
+        this.addSpawnRuleData(rule);
+        return rule;
+    }
 
     public String getColorName() {
         return ColorizedTextTemplate.renderFromTemplateLanguage(this.getProperty("colorName"));
@@ -132,14 +163,14 @@ public abstract class NpcData extends AbstractVertexFrame {
         }
 
         if( loot == null ) {
-            this.createLoot();
+            this.createLootData();
             return;
         }
 
         this.addLootData(loot);
     }
 
-    public LootData createLoot() {
+    public LootData createLootData() {
         if( this.getLootData() != null )
             throw new IllegalStateException("Already has stats, can't create another");
         final LootData loot = this.getGraph().addFramedVertex(LootData.class);
