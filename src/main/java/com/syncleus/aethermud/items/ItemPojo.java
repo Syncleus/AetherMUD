@@ -67,7 +67,7 @@ public class ItemPojo implements Serializable, Item {
         this.hasBeenWithPlayer = hasBeenWithPlayer;
         this.maxUses = maxUses;
         this.isDisposable = isDisposable;
-        this.validTimeOfDays = Lists.newArrayList(validTimeOfDays);
+        this.validTimeOfDays = ( validTimeOfDays == null ? Lists.newArrayList() : Lists.newArrayList(validTimeOfDays));
         this.itemApplyStats = itemApplyStats;
     }
 
