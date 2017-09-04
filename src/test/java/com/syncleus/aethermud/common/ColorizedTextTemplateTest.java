@@ -15,15 +15,13 @@
  */
 package com.syncleus.aethermud.common;
 
+import com.google.common.collect.Lists;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.npc.Npc;
-import com.syncleus.aethermud.storage.FilebasedJsonStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphDbNpcStorage;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.syncleus.aethermud.storage.NpcStorage;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.syncleus.ferma.DelegatingFramedGraph;
@@ -33,10 +31,8 @@ import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
 
 public class ColorizedTextTemplateTest {
@@ -75,7 +71,7 @@ public class ColorizedTextTemplateTest {
         List<? extends NpcData> npcData = npcStorage.getNpcDatas();
         Assert.assertTrue(npcData.isEmpty());
 
-        Npc newNpc = npcStorage.newNpcData();
+        NpcData newNpc = npcStorage.newNpcData();
         newNpc.setColorName("blue");
 
         npcData = npcStorage.getNpcDatas();
@@ -193,7 +189,7 @@ public class ColorizedTextTemplateTest {
 //        }
 
 
-        Loot loot = new Loot(16, 28, Sets.newHashSet("beserker baton", "bersker boots"));
+        Loot loot = new Loot(16, 28, Lists.newArrayList("beserker baton", "bersker boots"));
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String s = gson.toJson(loot);
         Assert.assertEquals(EXPECTED_LOOT, s);

@@ -18,11 +18,7 @@ package com.syncleus.aethermud.command.commands.admin;
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.npc.Npc;
-import com.syncleus.aethermud.npc.NpcPojo;
-import com.syncleus.aethermud.player.CoolDownPojo;
-import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.PlayerRole;
-import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.storage.NpcStorage;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.google.common.collect.Sets;
@@ -89,7 +85,7 @@ public class LoadNpcCommand extends Command {
 
             Npc npc = null;
             try {
-                npc = gameManager.getGson().fromJson(npcJson, NpcPojo.class);
+                npc = gameManager.getGson().fromJson(npcJson, Npc.class);
             } catch (Exception ex) {
                 write("Retrieved JSON file is malformed. " + ex.getLocalizedMessage() + "\r\n");
                 return;
@@ -100,9 +96,10 @@ public class LoadNpcCommand extends Command {
 
             NpcStorage storage = gameManager.getNpcStorage();
             NpcData npcData = storage.newNpcData();
-            PropertyUtils.copyProperties(npcData, npc);
             try {
+                PropertyUtils.copyProperties(npcData, npc);
                 PropertyUtils.copyProperties(npcData.createStats(), npc.getStats());
+                PropertyUtils.copyProperties(npcData.createLoot(), npc.getLoot());
             } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
                 throw new IllegalStateException("Could not copy properties for stats", ex);
             }

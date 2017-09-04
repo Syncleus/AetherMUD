@@ -15,6 +15,7 @@
  */
 package com.syncleus.aethermud.command.commands.admin;
 
+import com.google.common.collect.Lists;
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Loot;
@@ -56,7 +57,7 @@ public class SpawnCommand  extends Command {
                 String targetNpc = Joiner.on(" ").join(originalMessageParts);
                 for (NpcSpawn npcSpawn : npcsFromFile) {
                     if (targetNpc.equals(npcSpawn.getName())) {
-                        Loot loot = new Loot(0,0, Sets.newHashSet());
+                        Loot loot = new Loot(0,0, Lists.newArrayList());
                         NpcSpawn modifiedNpcSpawn = new NpcBuilder(npcSpawn).setSpawnRules(null).setLoot(loot).createNpc();
                         modifiedNpcSpawn.getStats().setExperience(0);
                         modifiedNpcSpawn.setCurrentRoom(currentRoom);

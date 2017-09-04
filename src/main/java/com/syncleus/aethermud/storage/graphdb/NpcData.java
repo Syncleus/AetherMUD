@@ -15,11 +15,9 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
-import com.google.api.client.util.Sets;
+import com.google.common.collect.Lists;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.common.ColorizedTextTemplate;
-import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
@@ -31,12 +29,10 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-public abstract class NpcData extends AbstractVertexFrame implements Npc {
+public abstract class NpcData extends AbstractVertexFrame {
     @Property("criticalAttackMessages")
     public abstract List<AetherMudMessage> getCriticalAttackMessages();
 
@@ -91,12 +87,6 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
     @Property("spawnRules")
     public abstract void setSpawnRules(List<SpawnRule> spawnRules);
 
-    @Property("loot")
-    public abstract Loot getLoot();
-
-    @Property("loot")
-    public abstract void setLoot(Loot loot);
-
     public String getColorName() {
         return ColorizedTextTemplate.renderFromTemplateLanguage(this.getProperty("colorName"));
     }
@@ -111,6 +101,53 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
 
     public void setDieMessage(String dieMessage) {
         this.setProperty("dieMessage", ColorizedTextTemplate.renderToTemplateLanguage(dieMessage));
+    }
+
+    @Adjacency(label = "loot", direction = Direction.OUT)
+    public abstract <N extends LootData> Iterator<? extends N> getAllLootDatas(Class<? extends N> type);
+
+    public LootData getLootData() {
+        Iterator<? extends LootData> allLoots = this.getAllLootDatas(LootData.class);
+        if( allLoots.hasNext() )
+            return allLoots.next();
+        else
+            return null;
+    }
+
+    @Adjacency(label = "loot", direction = Direction.OUT)
+    public abstract LootData addLootData(LootData loot);
+
+    @Adjacency(label = "loot", direction = Direction.OUT)
+    public abstract void removeLootData(LootData loot);
+
+    public void setLootData(LootData loot) {
+        Iterator<? extends LootData> existingAll = this.getAllLootDatas(LootData.class);
+        if( existingAll != null ) {
+            while( existingAll.hasNext() ) {
+                LootData existing = existingAll.next();
+                this.removeLootData(existing);
+                existing.remove();
+            }
+
+        }
+
+        if( loot == null ) {
+            this.createLoot();
+            return;
+        }
+
+        this.addLootData(loot);
+    }
+
+    public LootData createLoot() {
+        if( this.getLootData() != null )
+            throw new IllegalStateException("Already has stats, can't create another");
+        final LootData loot = this.getGraph().addFramedVertex(LootData.class);
+        loot.setInternalItemNames(Lists.newArrayList());
+        loot.setLootGoldMax(0);
+        loot.setLootGoldMin(0);
+        this.addLootData(loot);
+        return loot;
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
@@ -146,7 +183,6 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
             return;
         }
 
-        StatsData statsData;
         if( stats instanceof StatsData ) {
             this.addStats((StatsData) stats);
         }
@@ -154,9 +190,10 @@ public abstract class NpcData extends AbstractVertexFrame implements Npc {
             try {
                 PropertyUtils.copyProperties(this.createStats(), stats);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalStateException("Could not copy properties")
-;            }
+                throw new IllegalStateException("Could not copy properties");
+            }
         }
+
     }
 
     public StatsData createStats() {

@@ -19,63 +19,138 @@ import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
+import com.syncleus.aethermud.stats.StatsPojo;
 import com.syncleus.aethermud.world.model.Area;
 
 import java.util.List;
-import java.util.Set;
 
-public interface Npc {
-    List<AetherMudMessage> getCriticalAttackMessages();
+public class Npc {
 
-    void setCriticalAttackMessages(List<AetherMudMessage> criticalAttackMessages);
+    private String name;
+    private String colorName;
+    private StatsPojo stats;
+    private String dieMessage;
+    private Temperament temperament;
+    private List<Area> roamAreas;
+    private List<String> validTriggers;
+    private List<SpawnRule> spawnRules;
+    private Loot loot;
+    // The messages used when dealing damage
+    private List<AetherMudMessage> attackMessages;
+    // The messages used when landing critical attacks
+    private List<AetherMudMessage> criticalAttackMessages;
+    // Things the NPC randomly says during battle
+    private List<AetherMudMessage> battleMessages;
+    // Things that npcs say randomly when idle
+    private List<AetherMudMessage> idleMessages;
 
-    List<AetherMudMessage> getBattleMessages();
+    public Npc() {
+    }
 
-    void setBattleMessages(List<AetherMudMessage> battleMessages);
+    public List<AetherMudMessage> getCriticalAttackMessages() {
+        return criticalAttackMessages;
+    }
 
-    List<AetherMudMessage> getIdleMessages();
+    public void setCriticalAttackMessages(List<AetherMudMessage> criticalAttackMessages) {
+        this.criticalAttackMessages = criticalAttackMessages;
+    }
 
-    void setIdleMessages(List<AetherMudMessage> idleMessages);
+    public List<AetherMudMessage> getBattleMessages() {
+        return battleMessages;
+    }
 
-    List<AetherMudMessage> getAttackMessages();
+    public void setBattleMessages(List<AetherMudMessage> battleMessages) {
+        this.battleMessages = battleMessages;
+    }
 
-    void setAttackMessages(List<AetherMudMessage> attackMessages);
+    public List<AetherMudMessage> getIdleMessages() {
+        return idleMessages;
+    }
 
-    String getName();
+    public void setIdleMessages(List<AetherMudMessage> idleMessages) {
+        this.idleMessages = idleMessages;
+    }
 
-    void setName(String name);
+    public List<AetherMudMessage> getAttackMessages() {
+        return attackMessages;
+    }
 
-    Temperament getTemperament();
+    public void setAttackMessages(List<AetherMudMessage> attackMessages) {
+        this.attackMessages = attackMessages;
+    }
 
-    void setTemperament(Temperament temperament);
+    public String getName() {
+        return name;
+    }
 
-    List<Area> getRoamAreas();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    void setRoamAreas(List<Area> roamAreas);
+    public String getColorName() {
+        return colorName;
+    }
 
-    List<String> getValidTriggers();
+    public void setColorName(String colorName) {
+        this.colorName = colorName;
+    }
 
-    void setValidTriggers(List<String> validTriggers);
+    public Stats getStats() {
+        return stats;
+    }
 
-    List<SpawnRule> getSpawnRules();
+    public void setStats(Stats stats) {
+        if( ! (stats instanceof StatsPojo) )
+            throw new IllegalStateException("not a pojo");
+        this.stats = (StatsPojo) stats;
+    }
 
-    void setSpawnRules(List<SpawnRule> spawnRules);
+    public String getDieMessage() {
+        return dieMessage;
+    }
 
-    Loot getLoot();
+    public void setDieMessage(String dieMessage) {
+        this.dieMessage = dieMessage;
+    }
 
-    void setLoot(Loot loot);
+    public Temperament getTemperament() {
+        return temperament;
+    }
 
-    String getColorName();
+    public void setTemperament(Temperament temperament) {
+        this.temperament = temperament;
+    }
 
-    void setColorName(String colorName);
+    public List<String> getValidTriggers() {
+        return validTriggers;
+    }
 
-    String getDieMessage();
+    public void setValidTriggers(List<String> validTriggers) {
+        this.validTriggers = validTriggers;
+    }
 
-    void setDieMessage(String dieMessage);
+    public List<SpawnRule> getSpawnRules() {
+        return spawnRules;
+    }
 
-    Stats getStats();
+    public void setSpawnRules(List<SpawnRule> spawnRules) {
+        this.spawnRules = spawnRules;
+    }
 
-    void setStats(Stats stats);
+    public Loot getLoot() {
+        return loot;
+    }
+
+    public void setLoot(Loot loot) {
+        this.loot = loot;
+    }
+
+    public List<Area> getRoamAreas() {
+        return roamAreas;
+    }
+
+    public void setRoamAreas(List<Area> roamAreas) {
+        this.roamAreas = roamAreas;
+    }
 }
 

@@ -17,19 +17,22 @@ package com.syncleus.aethermud.items;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class Loot implements Serializable {
+public class Loot {
 
-    private Set<String> internalItemNames;
+    private List<String> internalItemNames;
     private int lootGoldMax;
     private int lootGoldMin;
 
     @JsonCreator
-    public Loot(@JsonProperty("lootGoldMin") int lootGoldMin, @JsonProperty("lootGoldMax") int lootGoldMax, @JsonProperty("items") Set<String> internalItemNames) {
+    public Loot(@JsonProperty("lootGoldMin") int lootGoldMin, @JsonProperty("lootGoldMax") int lootGoldMax, @JsonProperty("items") List<String> internalItemNames) {
         this.internalItemNames = internalItemNames;
         this.lootGoldMax = lootGoldMax;
         this.lootGoldMin = lootGoldMin;
@@ -38,9 +41,9 @@ public class Loot implements Serializable {
     public Loot() {
     }
 
-    public Set<String> getInternalItemNames() {
+    public List<String> getInternalItemNames() {
         if (internalItemNames == null) {
-            internalItemNames = Sets.newHashSet();
+            internalItemNames = Lists.newArrayList();
         }
         return internalItemNames;
     }
@@ -53,15 +56,15 @@ public class Loot implements Serializable {
         return lootGoldMin;
     }
 
-    public void setItems(Set<String> items) {
-        this.internalItemNames = items;
-    }
-
     public void setLootGoldMax(int lootGoldMax) {
         this.lootGoldMax = lootGoldMax;
     }
 
     public void setLootGoldMin(int lootGoldMin) {
         this.lootGoldMin = lootGoldMin;
+    }
+
+    public void setInternalItemNames(List<String> internalItemNames) {
+        this.internalItemNames = internalItemNames;
     }
 }

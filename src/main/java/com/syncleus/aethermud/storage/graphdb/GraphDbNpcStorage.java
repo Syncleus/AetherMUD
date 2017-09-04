@@ -17,7 +17,6 @@ package com.syncleus.aethermud.storage.graphdb;
 
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.storage.NpcStorage;

@@ -25,7 +25,9 @@ import com.syncleus.aethermud.stats.StatsPojo;
 import com.syncleus.aethermud.storage.graphdb.StatsData;
 import com.syncleus.aethermud.storage.graphdb.NpcData;
 import com.syncleus.aethermud.world.model.Area;
+import org.apache.commons.beanutils.PropertyUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -80,13 +82,18 @@ public class NpcBuilder {
         this.dieMessage = npcData.getDieMessage();
         this.roamAreas = new HashSet<>(npcData.getRoamAreas());
         this.validTriggers = Sets.newHashSet(npcData.getValidTriggers());
-        this.loot = npcData.getLoot();
         this.spawnRules = Sets.newHashSet(npcData.getSpawnRules());
         this.temperament = npcData.getTemperament();
         this.attackMessages = Sets.newHashSet(npcData.getAttackMessages());
         this.criticalAttackMessages = Sets.newHashSet(npcData.getCriticalAttackMessages());
         this.battleMessages = Sets.newHashSet(npcData.getBattleMessages());
         this.idleMessages = Sets.newHashSet(npcData.getIdleMessages());
+        this.loot = new Loot();
+        try {
+            PropertyUtils.copyProperties(this.loot, npcData.getLootData());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
     }
 
     public NpcBuilder setGameManager(GameManager gameManager) {
