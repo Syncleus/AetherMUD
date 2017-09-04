@@ -38,7 +38,7 @@ public class LeaveCommand extends PlayerClassCommand {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
-        creeperSession.setGrabMerchant(Optional.<AetherMudEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
+        aetherMudSession.setGrabMerchant(Optional.<AetherMudEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
         e.getChannel().getPipeline().remove("executed_command");
         e.getChannel().getPipeline().remove("executed_playerclass_command");
         String s = gameManager.buildPrompt(playerId);

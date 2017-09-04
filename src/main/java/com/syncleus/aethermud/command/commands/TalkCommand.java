@@ -48,8 +48,8 @@ public class TalkCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         TalkCommand talkCommand = this;
         execCommand(ctx, e, () -> {
-            if (creeperSession.getGrabMerchant().isPresent()) {
-                creeperSession.setGrabMerchant(Optional.empty());
+            if (aetherMudSession.getGrabMerchant().isPresent()) {
+                aetherMudSession.setGrabMerchant(Optional.empty());
                 return;
             }
             originalMessageParts.remove(0);
@@ -78,7 +78,7 @@ public class TalkCommand extends Command {
                         }
                         write(PlayerClassCommand.getPrompt());
                     }
-                    creeperSession.setGrabMerchant(Optional.of(
+                    aetherMudSession.setGrabMerchant(Optional.of(
                             new AetherMudEntry<>(merchant, talkCommand)));
                 }
             }

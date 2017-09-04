@@ -94,8 +94,6 @@ public class LoadNpcCommand extends Command {
             }
             httpGet.reset();
 
-            System.out.println(npc.getStats().getCurrentHealth());
-
             NpcStorage storage = gameManager.getNpcStorage();
             NpcData npcData = storage.newNpcData();
             try {
@@ -115,7 +113,6 @@ public class LoadNpcCommand extends Command {
                     }
                 }
             });
-            System.out.println(npcData.getStats().getCurrentHealth());
             storage.persist();
             write("NPC Saved. - " + npc.getName() + "\r\n");
 

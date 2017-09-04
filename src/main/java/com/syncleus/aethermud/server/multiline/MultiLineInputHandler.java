@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.server.multiline;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
@@ -33,13 +33,13 @@ public class MultiLineInputHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
-            CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
+            AetherMudSession aetherMudSession = (AetherMudSession) e.getChannel().getAttachment();
             String message = (String) e.getMessage();
             if (message.equalsIgnoreCase("done")) {
-                e.getChannel().getPipeline().addLast(UUID.randomUUID().toString(), creeperSession.getGrabMultiLineInput().get().getValue());
+                e.getChannel().getPipeline().addLast(UUID.randomUUID().toString(), aetherMudSession.getGrabMultiLineInput().get().getValue());
                 return;
             }
-            gameManager.getMultiLineInputManager().addToMultiLine(creeperSession.getGrabMultiLineInput().get().getKey(), message + "\r\n");
+            gameManager.getMultiLineInputManager().addToMultiLine(aetherMudSession.getGrabMultiLineInput().get().getKey(), message + "\r\n");
         } finally {
             e.getChannel().getPipeline().remove(ctx.getHandler());
             super.messageReceived(ctx, e);

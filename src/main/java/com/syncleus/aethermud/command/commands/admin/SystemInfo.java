@@ -81,7 +81,7 @@ public class SystemInfo extends Command {
                     .append(Color.MAGENTA)
                     .append("build:")
                     .append(Color.RESET)
-                    .append(Main.getCreeperVersion())
+                    .append(Main.getAetherMudVersion())
                     .append("\r\n").toString());
         });
     }

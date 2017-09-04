@@ -44,7 +44,7 @@ public class LockerCommandRegistry {
     }
 
     public Set<LockerCommand> getLockerCommands() {
-        Set<LockerCommand> creeperCommandUniq = new HashSet<LockerCommand>(lockerCommands.values());
-        return creeperCommandUniq;
+        Set<LockerCommand> aetherMudCommandUniq = new HashSet<LockerCommand>(lockerCommands.values());
+        return aetherMudCommandUniq;
     }
 }

@@ -43,12 +43,12 @@ public class DescriptionCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         DescriptionCommand descriptionCommand = this;
         execCommand(ctx, e, () -> {
-            if (creeperSession.getGrabMultiLineInput().isPresent()) {
+            if (aetherMudSession.getGrabMultiLineInput().isPresent()) {
                 MultiLineInputManager multiLineInputManager = gameManager.getMultiLineInputManager();
-                UUID uuid = creeperSession.getGrabMultiLineInput().get().getKey();
+                UUID uuid = aetherMudSession.getGrabMultiLineInput().get().getKey();
                 String multiLineInput = multiLineInputManager.retrieveMultiLineInput(uuid);
                 currentRoom.setRoomDescription(multiLineInput);
-                creeperSession.setGrabMultiLineInput(Optional.empty());
+                aetherMudSession.setGrabMultiLineInput(Optional.empty());
                 return;
             }
             if (originalMessageParts.size() > 1) {
@@ -67,7 +67,7 @@ public class DescriptionCommand extends Command {
                 }
             }
             write("You are now in multi-line mode.  Type \"done\" on an empty line to exit and save.\r\n");
-            creeperSession.setGrabMultiLineInput(Optional.of(
+            aetherMudSession.setGrabMultiLineInput(Optional.of(
                     new AetherMudEntry<>(gameManager.getMultiLineInputManager().createNewMultiLineInput(), descriptionCommand)));
         });
     }

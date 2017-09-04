@@ -39,7 +39,7 @@ public class ChooseClassCommand extends PlayerClassCommand {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
-        creeperSession.setGrabMerchant(Optional.<AetherMudEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
+        aetherMudSession.setGrabMerchant(Optional.<AetherMudEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
         player.setPlayerClass(playerClass);
         write("You are now and forever, a " + AetherMudUtils.capitalize(playerClass.getIdentifier()) + "\r\n");
         e.getChannel().getPipeline().remove("executed_command");

@@ -18,7 +18,7 @@ package com.syncleus.aethermud.core;
 
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.player.*;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.stats.DefaultStats;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
@@ -48,7 +48,7 @@ public class NewUserRegistrationManager {
         this.gameManager = gameManager;
     }
 
-    public void handle(CreeperSession session, MessageEvent e) {
+    public void handle(AetherMudSession session, MessageEvent e) {
         switch (session.getState()) {
             case newUserPromptedForUsername:
                 if (setDesiredUsername(session, e)) {
@@ -61,12 +61,12 @@ public class NewUserRegistrationManager {
         }
     }
 
-    public void newUserRegistrationFlow(CreeperSession session, MessageEvent e) {
+    public void newUserRegistrationFlow(AetherMudSession session, MessageEvent e) {
         e.getChannel().write("desired username: ");
-        session.setState(CreeperSession.State.newUserPromptedForUsername);
+        session.setState(AetherMudSession.State.newUserPromptedForUsername);
     }
 
-    private boolean setDesiredUsername(CreeperSession session, MessageEvent e) {
+    private boolean setDesiredUsername(AetherMudSession session, MessageEvent e) {
         String name = (String) e.getMessage();
         String username = name.replaceAll("[^a-zA-Z0-9]", "");
         java.util.Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
@@ -83,12 +83,12 @@ public class NewUserRegistrationManager {
         return true;
     }
 
-    private void promptForDesirePassword(CreeperSession session, MessageEvent e) {
+    private void promptForDesirePassword(AetherMudSession session, MessageEvent e) {
         e.getChannel().write("desired password: ");
-        session.setState(CreeperSession.State.newUserPromptedForPassword);
+        session.setState(AetherMudSession.State.newUserPromptedForPassword);
     }
 
-    private void createUser(CreeperSession session, MessageEvent messageEvent) {
+    private void createUser(AetherMudSession session, MessageEvent messageEvent) {
         String password = (String) messageEvent.getMessage();
         if (password.length() < 8) {
             messageEvent.getChannel().write("Passwords must be at least 8 characters.\r\n");
@@ -124,7 +124,7 @@ public class NewUserRegistrationManager {
 
         messageEvent.getChannel().write("User created.\r\n");
         log.info("User " + playerData.getPlayerName() + " created.");
-        session.setState(CreeperSession.State.newUserRegCompleted);
+        session.setState(AetherMudSession.State.newUserRegCompleted);
         try {
             PlayerManagementManager.registerPlayer(playerData.getPlayerName(), playerData.getPlayerId(), gameManager);
         } catch (Exception e) {

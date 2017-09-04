@@ -19,7 +19,7 @@ import com.syncleus.aethermud.command.commands.CommandAuditLog;
 import com.syncleus.aethermud.configuration.ConfigureCommands;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.merchant.Merchant;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
@@ -41,7 +41,7 @@ public class LockerCommandHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         String rootCommand = getRootCommand(e);
-        CreeperSession session = (CreeperSession) e.getChannel().getAttachment();
+        AetherMudSession session = (AetherMudSession) e.getChannel().getAttachment();
         CommandAuditLog.logCommand(rootCommand, session.getUsername().get());
         LockerCommand commandByTrigger = ConfigureCommands.lockerCommandRegistry.getCommandByTrigger(rootCommand);
         LockerCommand cmd = commandByTrigger.createObj(commandByTrigger.getClass().getName());
@@ -54,8 +54,8 @@ public class LockerCommandHandler extends SimpleChannelUpstreamHandler {
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         e.getCause().printStackTrace();
         e.getChannel().close();
-        CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
-        gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
+        AetherMudSession aetherMudSession = (AetherMudSession) e.getChannel().getAttachment();
+        gameManager.getPlayerManager().removePlayer(aetherMudSession.getUsername().get());
     }
 
     private String getRootCommand(MessageEvent e) {

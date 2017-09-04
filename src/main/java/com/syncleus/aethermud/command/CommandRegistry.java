@@ -27,17 +27,17 @@ public class CommandRegistry {
         this.unknownCommand = unknownCommand;
     }
 
-    private final HashMap<String, Command> creeperCommands = new HashMap<>();
+    private final HashMap<String, Command> aetherMudCommands = new HashMap<>();
 
     public void addCommand(Command command) {
         List<String> validTriggers = command.validTriggers;
         for (String trigger: validTriggers) {
-            creeperCommands.put(trigger, command);
+            aetherMudCommands.put(trigger, command);
         }
     }
 
     public Command getCommandByTrigger(String trigger) {
-        for (Map.Entry<String, Command> next : creeperCommands.entrySet()) {
+        for (Map.Entry<String, Command> next : aetherMudCommands.entrySet()) {
             if (trigger.equals(next.getKey())) {
                 return next.getValue();
             }
@@ -45,8 +45,8 @@ public class CommandRegistry {
         return unknownCommand;
     }
 
-    public Set<Command> getCreeperCommands() {
-        Set<Command> creeperCommandUniq = new HashSet<Command>(creeperCommands.values());
-        return creeperCommandUniq;
+    public Set<Command> getAetherMudCommands() {
+        Set<Command> aetherMudCommandUniq = new HashSet<Command>(aetherMudCommands.values());
+        return aetherMudCommandUniq;
     }
 }

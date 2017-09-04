@@ -49,26 +49,13 @@ public class MapsManager {
         this.aetherMudConfiguration = aetherMudConfiguration;
     }
 
-    private void generate() {
-        Timer.Context time = ticktime.time();
+    public Optional<String> generateMap(Room room) {
         int maxRows = aetherMudConfiguration.defaultMapSize;
         int maxColumns = aetherMudConfiguration.defaultMapSize;
-        Iterator<Map.Entry<Integer, Room>> rooms = roomManager.getRoomsIterator();
-        while (rooms.hasNext()) {
-            Map.Entry<Integer, Room> next = rooms.next();
-            Integer roomId = next.getValue().getRoomId();
-            try {
-                String s = drawMap(roomId, new Coords(maxRows, maxColumns));
-                next.getValue().setMapData(Optional.of(s));
-            } catch (Exception e) {
-                log.error("Unable to generate room map for roomId: " + roomId);
-            }
-        }
-        time.stop();
-    }
 
-    public void generateAllMaps() {
-        mapGeneratorService.submit(new MapGeneration());
+        Integer roomId = room.getRoomId();
+        String s = drawMap(roomId, new Coords(maxRows, maxColumns));
+        return Optional.of(s);
     }
 
     public String drawMap(Integer roomId, Coords max) {
@@ -130,16 +117,5 @@ public class MapsManager {
 
     public Map<Integer, MapMatrix> getFloorMatrixMaps() {
         return floorMatrixMaps;
-    }
-
-    class MapGeneration implements Runnable {
-        @Override
-        public void run() {
-            try {
-                generate();
-            } catch (Exception e) {
-                log.error("Unable to generate map data!", e);
-            }
-        }
     }
 }

@@ -23,7 +23,7 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
 import java.util.UUID;
 
-public class CreeperSession {
+public class AetherMudSession {
 
     private java.util.Optional<String> username = java.util.Optional.empty();
     private Optional<String> password = Optional.absent();
@@ -34,7 +34,7 @@ public class CreeperSession {
     private final Long initialLoginTime;
     private Long lastActivity;
 
-    public CreeperSession() {
+    public AetherMudSession() {
         long currentTime = System.currentTimeMillis();
         this.initialLoginTime = currentTime;
         this.lastActivity = currentTime;

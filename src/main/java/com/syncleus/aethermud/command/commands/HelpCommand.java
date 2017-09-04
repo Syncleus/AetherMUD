@@ -50,8 +50,8 @@ public class HelpCommand extends Command {
             t.setColumnWidth(1, 30, 55);
             t.addCell("commands");
             t.addCell("description");
-            Set<Command> creeperCommands = ConfigureCommands.commandRegistry.getCreeperCommands();
-            for (Command command : creeperCommands) {
+            Set<Command> aetherMudCommands = ConfigureCommands.commandRegistry.getAetherMudCommands();
+            for (Command command : aetherMudCommands) {
                 Joiner.on(" ").join(validTriggers);
                 if (command.roles != null) {
                     if (command.roles.contains(PlayerRole.ADMIN)) {

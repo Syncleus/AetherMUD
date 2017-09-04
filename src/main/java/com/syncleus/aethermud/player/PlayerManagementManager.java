@@ -66,6 +66,6 @@ public class PlayerManagementManager {
     public static void registerPlayer(String playerName, String playerId, GameManager gameManager) throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
         MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
         PlayerManagement playerJMXManagement = new PlayerManagement(gameManager, playerId);
-        platformMBeanServer.registerMBean(playerJMXManagement, new ObjectName("CreeperManagement:00=Players,name=" + playerName));
+        platformMBeanServer.registerMBean(playerJMXManagement, new ObjectName("AetherMudManagement:00=Players,name=" + playerName));
     }
 }

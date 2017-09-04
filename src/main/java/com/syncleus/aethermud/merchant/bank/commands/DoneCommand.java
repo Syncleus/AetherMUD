@@ -40,7 +40,7 @@ public class DoneCommand extends BankCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         configure(e);
         gameManager.getChannelUtils().write(playerId, "Thanks, COME AGAIN." + "\r\n", true);
-        creeperSession.setGrabMerchant(Optional.<AetherMudEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
+        aetherMudSession.setGrabMerchant(Optional.<AetherMudEntry<Merchant, SimpleChannelUpstreamHandler>>empty());
         e.getChannel().getPipeline().remove("executed_command");
         e.getChannel().getPipeline().remove("executed_bank_command");
         String s = gameManager.buildPrompt(playerId);

@@ -456,7 +456,7 @@ public class ItemMetadataTest {
 
 
         {
-            String welcomeMessage = "Welcome to the First National Bank of Creeper.";
+            String welcomeMessage = "Welcome to the First National Bank of Aether.";
             final String name = "jim the banker";
             final String colorName = BOLD_ON + Color.CYAN + name + Color.RESET;
             Set<String> validTriggers = new HashSet<String>(Arrays.asList(new String[]

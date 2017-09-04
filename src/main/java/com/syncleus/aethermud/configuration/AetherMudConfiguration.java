@@ -24,7 +24,7 @@ public class AetherMudConfiguration {
     public final boolean isProduction;
 
     public static final String MUD_NAME = "mud.name";
-    public static final String MUD_NAME_DEFAULT = "creeper";
+    public static final String MUD_NAME_DEFAULT = "aether";
     public final String mudName;
 
     public static final String TELNET_PORT = "telnet.port";
@@ -32,7 +32,7 @@ public class AetherMudConfiguration {
     public final int telnetPort;
 
     public static final String DATABASE_FILE_NAME = "database.file.name";
-    public static final String DATABASE_FILE_NAME_DEFAULT = "creeper.mapdb";
+    public static final String DATABASE_FILE_NAME_DEFAULT = "aethermud-graph.json";
     public final String databaseFileName;
 
     public static final String GRAPHITE_HOSTNAME = "graphite.hostname";
@@ -48,15 +48,15 @@ public class AetherMudConfiguration {
     public final String ircServer;
 
     public static final String IRC_USERNAME = "irc.username";
-    public static final String IRC_USERNAME_DEFAULT = "creeper";
+    public static final String IRC_USERNAME_DEFAULT = "AetherMUD";
     public final String ircUsername;
 
     public static final String IRC_NICKNAME = "irc.nickname";
-    public static final String IRC_NICKNAME_DEFAULT = "creeper1";
+    public static final String IRC_NICKNAME_DEFAULT = "AetherMUD1";
     public final String ircNickname;
 
     public static final String IRC_CHANNEL = "irc.channel";
-    public static final String IRC_CHANNEL_DEFAULT = "#creeper";
+    public static final String IRC_CHANNEL_DEFAULT = "#aethermud";
     public final String ircChannel;
 
     public static final String IRC_BRIDGE_ROOM_ID = "irc.bridge.room.id";

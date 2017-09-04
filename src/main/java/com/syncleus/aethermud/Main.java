@@ -58,7 +58,6 @@ public class Main {
     final public static MetricRegistry metrics = new MetricRegistry();
 
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
-    public static final String DEFAULT_GRAPH_DB_FILE = "aethermud-graph.json";
     public static final Set<Class<?>> FRAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new Class<?>[]{
         PlayerData.class,
         NpcData.class,
@@ -70,11 +69,11 @@ public class Main {
         EffectData.class
     })));
 
-    public static String getCreeperVersion() {
+    public static String getAetherMudVersion() {
 
         String buildVersion = Main.class.getPackage().getSpecificationVersion();
         if (buildVersion == null || buildVersion.isEmpty()) {
-            return "creeper-local-dev";
+            return "aethermud-local-dev";
         }
 
         return buildVersion ;
@@ -101,10 +100,10 @@ public class Main {
         Files.isDirectory().apply(new File("world/"));
 
         Graph graph = TinkerGraph.open();
-        File f = new File(DEFAULT_GRAPH_DB_FILE);
+        File f = new File(aetherMudConfiguration.databaseFileName);
         if(f.exists() && !f.isDirectory()) {
             try {
-                graph.io(IoCore.graphson()).readGraph(DEFAULT_GRAPH_DB_FILE);
+                graph.io(IoCore.graphson()).readGraph(aetherMudConfiguration.databaseFileName);
             } catch (IOException e) {
                 throw new IllegalStateException("Could not read from graph file despite being present.", e);
             }
@@ -151,13 +150,10 @@ public class Main {
         ConfigureNpc.configure(entityManager, gameManager);
         AetherMudServer aetherMudServer = new AetherMudServer(aetherMudConfiguration.telnetPort);
 
-        startUpMessage("Generating map data.");
-        mapsManager.generateAllMaps();
-
-        startUpMessage("Creeper MUD engine started");
+        startUpMessage("Aether MUD engine started");
 
         aetherMudServer.run(gameManager);
-        startUpMessage("Creeper MUD engine online");
+        startUpMessage("Aether MUD engine online");
 
         if (aetherMudConfiguration.isIrcEnabled) {
             startUpMessage("Starting irc server.");

@@ -62,7 +62,6 @@ public abstract class Room extends AetherMudEntity {
     private final Set<String> itemIds = Sets.newConcurrentHashSet();
     private List<ItemSpawner> itemSpawners = Lists.newArrayList();
     private Set<Area> areas = Sets.newConcurrentHashSet();
-    private Optional<String> mapData = Optional.empty();
     private final Set<String> roomTags;
     private final Set<Merchant> merchants = Sets.newConcurrentHashSet();
     private Map<String, Forage> forages = Maps.newHashMap();
@@ -152,11 +151,7 @@ public abstract class Room extends AetherMudEntity {
     }
 
     public Optional<String> getMapData() {
-        return mapData;
-    }
-
-    public void setMapData(Optional<String> mapData) {
-        this.mapData = mapData;
+        return gameManager.getMapsManager().generateMap(this);
     }
 
     public Set<Area> getAreas() {

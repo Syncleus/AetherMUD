@@ -18,7 +18,7 @@ package com.syncleus.aethermud.player;
 import java.lang.reflect.Type;
 
 public enum PlayerSettings {
-    AUTO_MAP("auto_map", "Automatically draws the creeper map on the CurrentRoomLogic function.", Integer.TYPE);
+    AUTO_MAP("auto_map", "Automatically draws the map on the CurrentRoomLogic function.", Integer.TYPE);
 
     private final String settingName;
     private final String settingDescription;

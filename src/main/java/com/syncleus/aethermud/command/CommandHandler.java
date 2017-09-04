@@ -31,7 +31,7 @@ import com.syncleus.aethermud.merchant.bank.commands.BankCommandHandler;
 import com.syncleus.aethermud.merchant.lockers.LockerCommandHandler;
 import com.syncleus.aethermud.merchant.playerclass_selector.PlayerClassCommandHandler;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.server.multiline.MultiLineInputHandler;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
@@ -48,7 +48,7 @@ public class CommandHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        CreeperSession session = (CreeperSession) e.getChannel().getAttachment();
+        AetherMudSession session = (AetherMudSession) e.getChannel().getAttachment();
         Player player = gameManager.getPlayerManager().getPlayerByUsername(session.getUsername().get());
         session.setLastActivity(System.currentTimeMillis());
         if (session.getGrabMultiLineInput().isPresent()) {
@@ -113,9 +113,9 @@ public class CommandHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         SentryManager.logSentry(this.getClass(), e.getCause(), "Exception caught in command handler!");
-        CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
-        log.error("Error in the Command Handler!, last message: \"" + creeperSession.getLastMessage() + "\" - from username:" + creeperSession.getUsername().get(), e.getCause());
-        gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
+        AetherMudSession aetherMudSession = (AetherMudSession) e.getChannel().getAttachment();
+        log.error("Error in the Command Handler!, last message: \"" + aetherMudSession.getLastMessage() + "\" - from username:" + aetherMudSession.getUsername().get(), e.getCause());
+        gameManager.getPlayerManager().removePlayer(aetherMudSession.getUsername().get());
         e.getChannel().close();
     }
 

@@ -42,8 +42,8 @@ public class OpenCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         OpenCommand openCommand = this;
         execCommand(ctx, e, () -> {
-            if (creeperSession.getGrabMerchant().isPresent()) {
-                creeperSession.setGrabMerchant(Optional.empty());
+            if (aetherMudSession.getGrabMerchant().isPresent()) {
+                aetherMudSession.setGrabMerchant(Optional.empty());
                 return;
             }
             originalMessageParts.remove(0);
@@ -56,7 +56,7 @@ public class OpenCommand extends Command {
                 if (merchant.getValidTriggers().contains(desiredMerchantTalk)) {
                     write(merchant.getWelcomeMessage() + "\r\n");
                     write(LockerCommand.getPrompt());
-                    creeperSession.setGrabMerchant(Optional.of(new AetherMudEntry<>(merchant, openCommand)));
+                    aetherMudSession.setGrabMerchant(Optional.of(new AetherMudEntry<>(merchant, openCommand)));
                 }
             }
         });

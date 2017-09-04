@@ -38,7 +38,7 @@ public class QuitCommand extends Command {
             if (player.getActiveFights().size() > 0) {
                 write("You can't quit in the middle of a fight!");
             } else {
-                gameManager.getPlayerManager().removePlayer(creeperSession.getUsername().get());
+                gameManager.getPlayerManager().removePlayer(aetherMudSession.getUsername().get());
             }
         });
     }

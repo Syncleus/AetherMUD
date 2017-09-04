@@ -78,7 +78,7 @@ public class GameManager {
 
     public static final Integer LOBBY_ID = 1;
     private static final Logger log = Logger.getLogger(GameManager.class);
-    public static String LOGO = "Creeper.";
+    public static String LOGO = "AetherMUD.";
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private final ChannelCommunicationUtils channelUtils;

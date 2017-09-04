@@ -19,7 +19,7 @@ import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.command.CommandHandler;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.google.common.base.Optional;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
@@ -82,36 +82,36 @@ public class AetherMudAuthenticationHandler extends SimpleChannelUpstreamHandler
                 .append("First time here? Type \"tupac\".\r\n")
                 .append("username: ");
         e.getChannel().write(stringBuilder.toString());
-        CreeperSession creeperSession = new CreeperSession();
-        creeperSession.setState(CreeperSession.State.promptedForUsername);
-        ctx.setAttachment(creeperSession);
+        AetherMudSession aetherMudSession = new AetherMudSession();
+        aetherMudSession.setState(AetherMudSession.State.promptedForUsername);
+        ctx.setAttachment(aetherMudSession);
     }
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        CreeperSession creeperSession = (CreeperSession) ctx.getAttachment();
-        if (!creeperSession.isAuthed()) {
-            if (creeperSession.state.equals(CreeperSession.State.newUserPromptedForUsername) || creeperSession.state.equals(CreeperSession.State.newUserPromptedForPassword)) {
-                gameManager.getNewUserRegistrationManager().handle(creeperSession, e);
-                if (!creeperSession.state.equals(CreeperSession.State.newUserRegCompleted)) {
+        AetherMudSession aetherMudSession = (AetherMudSession) ctx.getAttachment();
+        if (!aetherMudSession.isAuthed()) {
+            if (aetherMudSession.state.equals(AetherMudSession.State.newUserPromptedForUsername) || aetherMudSession.state.equals(AetherMudSession.State.newUserPromptedForPassword)) {
+                gameManager.getNewUserRegistrationManager().handle(aetherMudSession, e);
+                if (!aetherMudSession.state.equals(AetherMudSession.State.newUserRegCompleted)) {
                     return;
                 }
             }
             doAuthentication(ctx, e);
-            if (creeperSession.isAuthed()) {
-                gameManager.getPlayerManager().getSessionManager().putSession(creeperSession);
+            if (aetherMudSession.isAuthed()) {
+                gameManager.getPlayerManager().getSessionManager().putSession(aetherMudSession);
                 e.getChannel().getPipeline().remove(this);
                 e.getChannel().getPipeline().addLast("server_handler", new CommandHandler(gameManager));
-                e.getChannel().setAttachment(creeperSession);
-                gameManager.announceConnect(creeperSession.getUsername().get());
-                gameManager.currentRoomLogic(Main.createPlayerId(creeperSession.getUsername().get()));
-                gameManager.getChannelUtils().write(Main.createPlayerId(creeperSession.getUsername().get()), "\r\n" + gameManager.buildPrompt(Main.createPlayerId(creeperSession.getUsername().get())));
+                e.getChannel().setAttachment(aetherMudSession);
+                gameManager.announceConnect(aetherMudSession.getUsername().get());
+                gameManager.currentRoomLogic(Main.createPlayerId(aetherMudSession.getUsername().get()));
+                gameManager.getChannelUtils().write(Main.createPlayerId(aetherMudSession.getUsername().get()), "\r\n" + gameManager.buildPrompt(Main.createPlayerId(aetherMudSession.getUsername().get())));
             }
         } else {
             //gameManager.getPlayerManager().getSessionManager().putSession(creeperSession);
             e.getChannel().getPipeline().addLast("server_handler", new CommandHandler(gameManager));
             e.getChannel().getPipeline().remove(this);
-            e.getChannel().setAttachment(creeperSession);
+            e.getChannel().setAttachment(aetherMudSession);
         }
         super.messageReceived(ctx, e);
     }
@@ -125,29 +125,29 @@ public class AetherMudAuthenticationHandler extends SimpleChannelUpstreamHandler
 
     private void doAuthentication(ChannelHandlerContext ctx, MessageEvent e) {
         String message = (String) e.getMessage();
-        CreeperSession creeperSession = (CreeperSession) ctx.getAttachment();
-        if (creeperSession.getState().equals(CreeperSession.State.promptedForUsername)) {
-            creeperSession.setUsername(java.util.Optional.of(message.replaceAll("[^a-zA-Z0-9]", "")));
-            if (creeperSession.getUsername().isPresent() && creeperSession.getUsername().get().equals("tupac")) {
-                gameManager.getNewUserRegistrationManager().newUserRegistrationFlow(creeperSession, e);
+        AetherMudSession aetherMudSession = (AetherMudSession) ctx.getAttachment();
+        if (aetherMudSession.getState().equals(AetherMudSession.State.promptedForUsername)) {
+            aetherMudSession.setUsername(java.util.Optional.of(message.replaceAll("[^a-zA-Z0-9]", "")));
+            if (aetherMudSession.getUsername().isPresent() && aetherMudSession.getUsername().get().equals("tupac")) {
+                gameManager.getNewUserRegistrationManager().newUserRegistrationFlow(aetherMudSession, e);
                 return;
             }
-            creeperSession.setState(CreeperSession.State.promptedForPassword);
+            aetherMudSession.setState(AetherMudSession.State.promptedForPassword);
             e.getChannel().write("password: ");
             return;
         }
-        if (creeperSession.getState().equals(CreeperSession.State.promptedForPassword)) {
-            creeperSession.setPassword(Optional.of(message));
+        if (aetherMudSession.getState().equals(AetherMudSession.State.promptedForPassword)) {
+            aetherMudSession.setPassword(Optional.of(message));
         }
-        boolean b = aetherMudAuthenticator.authenticateAndRegisterPlayer(creeperSession.getUsername().get(), creeperSession.getPassword().get(), e.getChannel());
+        boolean b = aetherMudAuthenticator.authenticateAndRegisterPlayer(aetherMudSession.getUsername().get(), aetherMudSession.getPassword().get(), e.getChannel());
         if (!b) {
             e.getChannel().write("authentication failed.\r\n");
             e.getChannel().write("username: ");
-            creeperSession.setState(CreeperSession.State.promptedForUsername);
+            aetherMudSession.setState(AetherMudSession.State.promptedForUsername);
         } else {
-            creeperSession.setAuthed(true);
-            creeperSession.setState(CreeperSession.State.authed);
-            e.getChannel().write("Welcome to creeper. (version: " + Main.getCreeperVersion() + ")\r\n");
+            aetherMudSession.setAuthed(true);
+            aetherMudSession.setState(AetherMudSession.State.authed);
+            e.getChannel().write("Welcome to the Aether. (version: " + Main.getAetherMudVersion() + ")\r\n");
         }
     }
 

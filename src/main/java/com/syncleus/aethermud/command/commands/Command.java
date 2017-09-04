@@ -22,7 +22,7 @@ import com.syncleus.aethermud.items.LootManager;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.player.PlayerRole;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.server.communication.ChannelCommunicationUtils;
 import com.syncleus.aethermud.storage.WorldStorage;
 import com.syncleus.aethermud.world.FloorManager;
@@ -56,7 +56,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public final ChannelCommunicationUtils channelUtils;
     public final LootManager lootManager;
     public final String correctUsage;
-    public CreeperSession creeperSession;
+    public AetherMudSession aetherMudSession;
     public Player player;
     public Room currentRoom;
     public String playerId;
@@ -98,11 +98,11 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     }
 
     private void init(MessageEvent e) {
-        this.creeperSession = (CreeperSession) e.getChannel().getAttachment();;
+        this.aetherMudSession = (AetherMudSession) e.getChannel().getAttachment();;
         this.originalMessageParts = getOriginalMessageParts(e);
         this.rootCommand = getRootCommand(e);
         this.rootCommand = rootCommand.startsWith("/") ? rootCommand.substring(1) : rootCommand;
-        this.player = playerManager.getPlayer(Main.createPlayerId(creeperSession.getUsername().get()));
+        this.player = playerManager.getPlayer(Main.createPlayerId(aetherMudSession.getUsername().get()));
         this.playerId = player.getPlayerId();
         this.currentRoom = gameManager.getRoomManager().getPlayerCurrentRoom(player).get();
         this.mapMatrix = Optional.ofNullable(mapsManager.getFloorMatrixMaps().get(currentRoom.getFloorId()));
@@ -144,7 +144,7 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
 
     public void removeCurrentHandlerAndWritePrompt(ChannelHandlerContext ctx, MessageEvent e, boolean newLine) {
         e.getChannel().getPipeline().remove(ctx.getHandler());
-        if (creeperSession.getGrabMerchant().isPresent()) {
+        if (aetherMudSession.getGrabMerchant().isPresent()) {
             return;
         }
         gameManager.getChannelUtils().write(playerId, getPrompt(), newLine);

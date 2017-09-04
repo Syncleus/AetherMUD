@@ -19,7 +19,7 @@ import com.syncleus.aethermud.command.commands.CommandAuditLog;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.server.communication.Color;
 import com.google.common.collect.Maps;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -46,8 +46,8 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        CreeperSession creeperSession = (CreeperSession) e.getChannel().getAttachment();
-        Player playerByUsername = gameManager.getPlayerManager().getPlayerByUsername(creeperSession.getUsername().get());
+        AetherMudSession aetherMudSession = (AetherMudSession) e.getChannel().getAttachment();
+        Player playerByUsername = gameManager.getPlayerManager().getPlayerByUsername(aetherMudSession.getUsername().get());
         Map<Integer, InventoryItemForSale> inventoryMenu = getInventoryMenu(playerByUsername);
         try {
             String message = (String) e.getMessage();
@@ -82,7 +82,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
                 }
             } else if (cmd.equalsIgnoreCase("done")) {
                 gameManager.getChannelUtils().write(playerByUsername.getPlayerId(), "Thanks, COME AGAIN." + "\r\n" + "\r\n" + "\r\n", true);
-                e.getChannel().getPipeline().addLast(UUID.randomUUID().toString(), creeperSession.getGrabMerchant().get().getValue());
+                e.getChannel().getPipeline().addLast(UUID.randomUUID().toString(), aetherMudSession.getGrabMerchant().get().getValue());
                 return;
             }
             gameManager.getChannelUtils().write(playerByUsername.getPlayerId(), "\r\n" + buildPrompt());

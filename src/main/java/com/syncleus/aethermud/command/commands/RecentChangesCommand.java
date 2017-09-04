@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 public class RecentChangesCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("recentchanges");
-    final static String description = "Print the recent changes to the creeper codebase.";
+    final static String description = "Print the recent changes to the AetherMud codebase.";
     final static String correctUsage = "recentchanges";
 
     public RecentChangesCommand(GameManager gameManager) {

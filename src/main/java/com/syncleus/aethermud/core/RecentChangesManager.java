@@ -43,7 +43,7 @@ public class RecentChangesManager {
         StringBuilder sb = new StringBuilder();
         try {
             GitHub github = GitHub.connectAnonymously();
-            GHRepository repo = github.getRepository("chriskearney/creeper");
+            GHRepository repo = github.getRepository("Syncleus/AetherMUD");
             PagedIterable<GHCommit> list = repo.queryCommits().list();
             int i = 1;
             for (GHCommit ghCommit : list.asList()) {

@@ -21,7 +21,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerClass;
 import com.syncleus.aethermud.player.PlayerManager;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.server.communication.ChannelCommunicationUtils;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.world.model.Room;
@@ -40,7 +40,7 @@ public class PlayerClassCommand extends SimpleChannelUpstreamHandler {
     public final GameManager gameManager;
     public final PlayerManager playerManager;
     public final ChannelCommunicationUtils channelUtils;
-    public CreeperSession creeperSession;
+    public AetherMudSession aetherMudSession;
     public Player player;
     public String playerId;
     public Room currentRoom;
@@ -57,11 +57,11 @@ public class PlayerClassCommand extends SimpleChannelUpstreamHandler {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
-            CreeperSession creeperSession = extractCreeperSession(e.getChannel());
+            AetherMudSession aetherMudSession = extractAetherMudSession(e.getChannel());
             e.getChannel().getPipeline().remove("executed_command");
             e.getChannel().getPipeline().remove("executed_playerclass_command");
             gameManager.getChannelUtils().write(playerId, PlayerClassCommand.getPrompt(), true);
-            if (creeperSession.getGrabMerchant().isPresent()) {
+            if (aetherMudSession.getGrabMerchant().isPresent()) {
                 return;
             }
         } finally {
@@ -70,21 +70,21 @@ public class PlayerClassCommand extends SimpleChannelUpstreamHandler {
     }
 
     public void configure(MessageEvent e) {
-        this.creeperSession = extractCreeperSession(e.getChannel());
-        this.player = playerManager.getPlayer(extractPlayerId(creeperSession));
+        this.aetherMudSession = extractAetherMudSession(e.getChannel());
+        this.player = playerManager.getPlayer(extractPlayerId(aetherMudSession));
         this.playerId = player.getPlayerId();
         this.currentRoom = gameManager.getRoomManager().getPlayerCurrentRoom(player).get();
         this.originalMessageParts = getOriginalMessageParts(e);
         rootCommand = getRootCommand(e);
     }
 
-    public CreeperSession extractCreeperSession(Channel channel) {
-        return (CreeperSession) channel.getAttachment();
+    public AetherMudSession extractAetherMudSession(Channel channel) {
+        return (AetherMudSession) channel.getAttachment();
     }
 
 
-    public String extractPlayerId(CreeperSession creeperSession) {
-        return Main.createPlayerId(creeperSession.getUsername().get());
+    public String extractPlayerId(AetherMudSession aetherMudSession) {
+        return Main.createPlayerId(aetherMudSession.getUsername().get());
     }
 
     public String getRootCommand(MessageEvent e) {

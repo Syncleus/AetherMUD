@@ -44,7 +44,7 @@ public class BankCommandRegistry {
     }
 
     public Set<BankCommand> getBankCommands() {
-        Set<BankCommand> creeperCommandUniq = new HashSet<BankCommand>(bankCommands.values());
-        return creeperCommandUniq;
+        Set<BankCommand> aetherMudCommandUniq = new HashSet<BankCommand>(bankCommands.values());
+        return aetherMudCommandUniq;
     }
 }

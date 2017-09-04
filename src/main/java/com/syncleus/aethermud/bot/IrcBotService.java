@@ -49,7 +49,7 @@ public class IrcBotService extends AbstractIdleService {
                 .setServerHostname(aetherMudConfiguration.ircServer)
                 .addAutoJoinChannel(aetherMudConfiguration.ircChannel)
                 .addListener(new MyListener(gameManager, 376))
-                .setVersion("Creeper MUD IRC But.")
+                .setVersion("Aether MUD IRC But.")
                 .setAutoReconnect(true)
                 .buildConfiguration();
         bot = new PircBotX(configuration);

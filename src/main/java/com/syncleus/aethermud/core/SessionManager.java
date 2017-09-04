@@ -16,19 +16,19 @@
 package com.syncleus.aethermud.core;
 
 import com.syncleus.aethermud.Main;
-import com.syncleus.aethermud.server.model.CreeperSession;
+import com.syncleus.aethermud.server.model.AetherMudSession;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
 
-    private final ConcurrentHashMap<String, CreeperSession> sessionMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, AetherMudSession> sessionMap = new ConcurrentHashMap<>();
 
-    public void putSession(CreeperSession creeperSession) {
-        sessionMap.put(Main.createPlayerId(creeperSession.getUsername().get()), creeperSession);
+    public void putSession(AetherMudSession aetherMudSession) {
+        sessionMap.put(Main.createPlayerId(aetherMudSession.getUsername().get()), aetherMudSession);
     }
 
-    public CreeperSession getSession(String playerId) {
+    public AetherMudSession getSession(String playerId) {
         return sessionMap.get(playerId);
     }
 }
