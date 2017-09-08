@@ -15,6 +15,7 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.ferma.DelegatingFramedGraph;
 import com.syncleus.ferma.FramedGraph;
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -30,23 +31,24 @@ public class PlayerDataTest {
     @Test
     public void testPersist() {
 
-        Graph graph = TinkerGraph.open();
+        GraphStorageFactory txFactory = new GraphStorageFactory();
+        try( GraphStorageFactory.AetherMudTx tx = txFactory.beginTransaction() ) {
 
-        final FramedGraph fg = new DelegatingFramedGraph(graph, TEST_TYPES);
+            Map<String, Long> testMap = new HashMap<>();
+            testMap.put("foo", 77L);
+            testMap.put("bar", 23L);
 
-        Map<String, Long> testMap = new HashMap<>();
-        testMap.put("foo", 77L);
-        testMap.put("bar", 23L);
+            PlayerData p1 = tx.getStorage().newPlayerData();
+            p1.setPlayerName("Jeff");
+            p1.setPlayerId("Jeff");
+            p1.setNpcKillLog(testMap);
 
-        PlayerData p1 = fg.addFramedVertex(PlayerData.class);
-        p1.setPlayerName("Jeff");
-        p1.setNpcKillLog(testMap);
+            PlayerData jeff = tx.getStorage().getPlayerMetadata("Jeff").get();
 
-        PlayerData jeff = fg.traverse((g) -> g.V().has("name", "Jeff")).next(PlayerData.class);
-
-        Assert.assertTrue(PlayerData.class.isAssignableFrom(jeff.getClass()));
-        Assert.assertEquals(testMap, jeff.getNpcKillLog());
-        Assert.assertEquals(2, jeff.getNpcKillLog().size());
-        Assert.assertEquals(2, testMap.size());
+            Assert.assertTrue(PlayerData.class.isAssignableFrom(jeff.getClass()));
+            Assert.assertEquals(testMap, jeff.getNpcKillLog());
+            Assert.assertEquals(2, jeff.getNpcKillLog().size());
+            Assert.assertEquals(2, testMap.size());
+        }
     }
 }

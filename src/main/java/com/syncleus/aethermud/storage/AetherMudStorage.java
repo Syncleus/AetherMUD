@@ -20,15 +20,15 @@ import com.google.common.util.concurrent.Service;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.npc.NpcSpawn;
-import com.syncleus.aethermud.storage.graphdb.ItemData;
-import com.syncleus.aethermud.storage.graphdb.NpcData;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.storage.graphdb.model.NpcData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface AetherMudStorage extends Service {
+public interface AetherMudStorage {
 
     PlayerData newPlayerData();
 
@@ -47,6 +47,4 @@ public interface AetherMudStorage extends Service {
     List<? extends NpcData> getNpcDatas();
 
     NpcData newNpcData();
-
-    void persist();
 }

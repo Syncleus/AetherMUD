@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.storage.graphdb;
+package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.service.TimeTracker;
@@ -21,16 +21,17 @@ import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
+import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
+import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public abstract class ItemData extends AbstractVertexFrame implements Item {
+@GraphElement
+public abstract class ItemData extends AbstractInterceptingVertexFrame implements Item {
     @Override
     @Property("ValidTimeOfDays")
     public abstract List<TimeTracker.TimeOfDay> getValidTimeOfDays();
@@ -172,18 +173,24 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
     @Property("HasBeenWithPlayer")
     public abstract boolean isHasBeenWithPlayer();
 
-    @Adjacency(label = "Effects", direction = Direction.OUT)
+    @Adjacency(label = "Effect", direction = Direction.OUT)
     public abstract EffectData addEffect(EffectData effects);
 
-    @Adjacency(label = "Effects", direction = Direction.OUT)
+    @Adjacency(label = "Effect", direction = Direction.OUT)
     public abstract void removeEffect(EffectData stats);
 
-    @Adjacency(label = "Effects", direction = Direction.OUT)
+    @Adjacency(label = "Effect", direction = Direction.OUT)
     public abstract <N extends EffectData> Iterator<? extends N> getEffects(Class<? extends N> type);
 
     @Override
     public Set<Effect> getEffects() {
-        return Sets.newHashSet(this.getEffects(EffectData.class));
+        Set<Effect> retVal = new HashSet<>();
+        Iterator<? extends EffectData> iterator = this.getEffects(EffectData.class);
+        while(iterator.hasNext()) {
+            EffectData effectData = iterator.next();
+            retVal.add(EffectData.copyEffect(effectData));
+        }
+        return Collections.unmodifiableSet(retVal);
     }
 
     @Override
@@ -203,14 +210,10 @@ public abstract class ItemData extends AbstractVertexFrame implements Item {
         }
 
         for( Effect effect : effects ) {
-            if (effect instanceof EffectData) {
-                this.addEffect((EffectData) effect);
-            } else {
-                try {
-                    PropertyUtils.copyProperties(this.createEffect(), effect);
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    throw new IllegalStateException("Could not copy properties");
-                }
+            try {
+                PropertyUtils.copyProperties(this.createEffect(), effect);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Could not copy properties");
             }
         }
     }

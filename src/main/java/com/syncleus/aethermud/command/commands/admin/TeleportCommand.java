@@ -18,10 +18,11 @@ package com.syncleus.aethermud.command.commands.admin;
 
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.EffectPojo;
 import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.server.communication.Color;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.EffectData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.collect.Sets;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -56,15 +57,17 @@ public class TeleportCommand extends Command {
                 write("You are dead and can not move.");
                 return;
             }
-            Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            for (EffectPojo effect : playerData.getEffects()) {
-                if (effect.isFrozenMovement()) {
-                    write("You are frozen and can not move.");
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                Optional<PlayerData> playerMetadataOptional = tx.getStorage().getPlayerMetadata(playerId);
+                if (!playerMetadataOptional.isPresent()) {
                     return;
+                }
+                PlayerData playerData = playerMetadataOptional.get();
+                for (EffectData effect : playerData.getEffects()) {
+                    if (effect.isFrozenMovement()) {
+                        write("You are frozen and can not move.");
+                        return;
+                    }
                 }
             }
             String desiredId = originalMessageParts.get(1);

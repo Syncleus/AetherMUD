@@ -18,7 +18,7 @@ package com.syncleus.aethermud.spells;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.EffectBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
-import com.syncleus.aethermud.player.CoolDownPojo;
+import com.syncleus.aethermud.player.CoolDown;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.communication.Color;
@@ -55,7 +55,7 @@ public class LightningSpell implements SpellRunnable {
         if (destinationNpc.isPresent()) {
             executeSpellAgainstNpc(sourcePlayer, destinationNpc.get());
             sourcePlayer.updatePlayerMana(-manaCost);
-            sourcePlayer.addCoolDown(new CoolDownPojo(getName(), 5, CoolDownType.SPELL));
+            sourcePlayer.addCoolDown(new CoolDown(getName(), 5, CoolDownType.SPELL));
         }
     }
 

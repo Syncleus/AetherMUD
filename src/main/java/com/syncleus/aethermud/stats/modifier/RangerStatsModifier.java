@@ -17,14 +17,7 @@ package com.syncleus.aethermud.stats.modifier;
 
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
-import com.syncleus.aethermud.stats.DefaultStats;
-import com.syncleus.aethermud.stats.Levels;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
-import com.syncleus.aethermud.stats.StatsBuilder;
-
-import java.util.Optional;
+import com.syncleus.aethermud.stats.*;
 
 import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;
@@ -94,12 +87,7 @@ public class RangerStatsModifier implements StatsModifier {
 
     @Override
     public Stats modify(Player player) {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
-        if (!playerMetadataOptional.isPresent()) {
-            return DefaultStats.DEFAULT_PLAYER.createStats();
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        StatsData baseStats = playerData.getStats();
+        StatsPojo baseStats = player.getStats();
         int level = Levels.getLevel(baseStats.getExperience());
         int newMaxHealth = getHealthForLevel(baseStats.getMaxHealth(), level);
         int newArmorRating = getArmorForLevel(baseStats.getArmorRating(), level);
@@ -109,7 +97,7 @@ public class RangerStatsModifier implements StatsModifier {
         int newWillpowerRating = getWillpowerForLevel(baseStats.getWillpower(), level);
         int newIntelligenceRating = getIntelligenceForLevel(baseStats.getIntelligence(), level);
         int newAgileRating = getAgileForLevel(baseStats.getAgile(), level);
-        int newMeleRating = getMeleForLevel(baseStats.getMeleSkill(), level);
+        int newMeleRating = getMeleForLevel(baseStats.getMeleeSkill(), level);
         StatsBuilder statsBuilder = new StatsBuilder(baseStats);
         statsBuilder.setMaxHealth(newMaxHealth);
         statsBuilder.setArmorRating(newArmorRating);

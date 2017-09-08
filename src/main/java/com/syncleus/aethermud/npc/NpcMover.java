@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.npc;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.CoolDownPojo;
+import com.syncleus.aethermud.player.CoolDown;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.spawner.SpawnRule;
@@ -75,7 +75,7 @@ public class NpcMover {
         Room destinationRoom = gameManager.getRoomManager().getRoom(destinationRoomId);
         npcSpawnEntity.setCurrentRoom(destinationRoom);
         destinationRoom.getNpcIds().add(npcId);
-        npcSpawnEntity.addCoolDown(new CoolDownPojo(CoolDownType.NPC_ROAM));
+        npcSpawnEntity.addCoolDown(new CoolDown(CoolDownType.NPC_ROAM));
         gameManager.roomSay(destinationRoomId, npcSpawnEntity.getColorName() + " has arrived.", "");
         destinationRoom.getPresentPlayers().forEach(Player::processNpcAggro);
     }

@@ -13,25 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.storage.graphdb;
+package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.google.common.collect.Lists;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.common.ColorizedTextTemplate;
 import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.ferma.AbstractVertexFrame;
+import com.syncleus.ferma.ElementFrame;
 import com.syncleus.ferma.annotations.Adjacency;
+import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
+import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public abstract class NpcData extends AbstractVertexFrame {
+@GraphElement
+public abstract class NpcData extends AbstractInterceptingVertexFrame {
     @Property("criticalAttackMessages")
     public abstract List<AetherMudMessage> getCriticalAttackMessages();
 
@@ -94,22 +104,7 @@ public abstract class NpcData extends AbstractVertexFrame {
     public abstract void removeSpawnRuleData(SpawnRuleData spawnRule);
 
     public void setSpawnRulesData(List<SpawnRuleData> spawnRules) {
-        Iterator<? extends SpawnRuleData> existingAll = this.getSpawnRulesDataIterator(SpawnRuleData.class);
-        if( existingAll != null ) {
-            while( existingAll.hasNext() ) {
-                SpawnRuleData existing = existingAll.next();
-                this.removeSpawnRuleData(existing);
-                existing.remove();
-            }
-        }
-
-        if( spawnRules == null || spawnRules.isEmpty() ) {
-            this.createLootData();
-            return;
-        }
-
-        for(SpawnRuleData spawnRuleData : spawnRules)
-            this.addSpawnRuleData(spawnRuleData);
+        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> this.createSpawnRuleData() );
     }
 
     public SpawnRuleData createSpawnRuleData() {
@@ -152,22 +147,7 @@ public abstract class NpcData extends AbstractVertexFrame {
     public abstract void removeLootData(LootData loot);
 
     public void setLootData(LootData loot) {
-        Iterator<? extends LootData> existingAll = this.getAllLootDatas(LootData.class);
-        if( existingAll != null ) {
-            while( existingAll.hasNext() ) {
-                LootData existing = existingAll.next();
-                this.removeLootData(existing);
-                existing.remove();
-            }
-
-        }
-
-        if( loot == null ) {
-            this.createLootData();
-            return;
-        }
-
-        this.addLootData(loot);
+        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getAllLootDatas(LootData.class), lootData -> this.addLootData(lootData), () -> this.createLootData() );
     }
 
     public LootData createLootData() {
@@ -198,33 +178,8 @@ public abstract class NpcData extends AbstractVertexFrame {
     @Adjacency(label = "stats", direction = Direction.OUT)
     public abstract void removeStats(StatsData stats);
 
-    public void setStats(Stats stats) {
-        Iterator<? extends StatsData> existingAll = this.getAllStats(StatsData.class);
-        if( existingAll != null ) {
-            while( existingAll.hasNext() ) {
-                StatsData existing = existingAll.next();
-                this.removeStats(existing);
-                existing.remove();
-            }
-
-        }
-
-        if( stats == null ) {
-            this.createStats();
-            return;
-        }
-
-        if( stats instanceof StatsData ) {
-            this.addStats((StatsData) stats);
-        }
-        else {
-            try {
-                PropertyUtils.copyProperties(this.createStats(), stats);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalStateException("Could not copy properties");
-            }
-        }
-
+    public void setStats(StatsData stats) {
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getAllStats(StatsData.class), statsData -> this.addStats(statsData), () -> this.createStats() );
     }
 
     public StatsData createStats() {

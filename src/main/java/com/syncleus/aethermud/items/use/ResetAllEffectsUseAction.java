@@ -55,7 +55,7 @@ public class ResetAllEffectsUseAction implements ItemUseAction {
     }
 
     @Override
-    public Set<EffectPojo> getEffects() {
+    public Set<Effect> getEffects() {
         return null;
     }
 

@@ -22,7 +22,8 @@ import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.stats.DefaultStats;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.jboss.netty.channel.MessageEvent;
@@ -32,6 +33,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class NewUserRegistrationManager {
 
@@ -69,18 +71,21 @@ public class NewUserRegistrationManager {
     private boolean setDesiredUsername(AetherMudSession session, MessageEvent e) {
         String name = (String) e.getMessage();
         String username = name.replaceAll("[^a-zA-Z0-9]", "");
-        java.util.Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
-        if (!isValidUsername(username)) {
-            e.getChannel().write("Username is in invalid.\r\n");
-            return false;
+        try( GraphStorageFactory.AetherMudTx tx = gameManager.getGraphStorageFactory().beginTransaction() ) {
+            java.util.Optional<PlayerData> playerMetadataOptional = tx.getStorage().getPlayerMetadata(Main.createPlayerId(username));
+
+            if (!isValidUsername(username)) {
+                e.getChannel().write("Username is in invalid.\r\n");
+                return false;
+            }
+            if (playerMetadataOptional.isPresent()) {
+                e.getChannel().write("Username is in use.\r\n");
+                newUserRegistrationFlow(session, e);
+                return false;
+            }
+            session.setUsername(java.util.Optional.of(username));
+            return true;
         }
-        if (playerMetadataOptional.isPresent()) {
-            e.getChannel().write("Username is in use.\r\n");
-            newUserRegistrationFlow(session, e);
-            return false;
-        }
-        session.setUsername(java.util.Optional.of(username));
-        return true;
     }
 
     private void promptForDesirePassword(AetherMudSession session, MessageEvent e) {
@@ -97,36 +102,40 @@ public class NewUserRegistrationManager {
         }
         session.setPassword(Optional.of(password));
 
-        PlayerData playerData = gameManager.getPlayerManager().newPlayerData();
-        playerData.setNpcKillLog(new HashMap<>());
-        playerData.setEffects(new ArrayList<>());
-        playerData.setGold(0);
-        playerData.setGoldInBank(0);
-        playerData.setInventory(new ArrayList<>());
-        playerData.setLearnedSpells(new ArrayList<>());
-        playerData.setLockerInventory(new ArrayList<>());
-        playerData.setIsMarkedForDelete(false);
-        playerData.setPlayerName(session.getUsername().get());
-        playerData.setPassword(session.getPassword().get());
-        playerData.setPlayerClass(PlayerClass.BASIC);
-        playerData.setPlayerEquipment(new ArrayList<>());
-        playerData.setPlayerId(Main.createPlayerId(session.getUsername().get()));
-        // TODO : remove this, not all players should be admins
-        playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL, PlayerRole.ADMIN, PlayerRole.GOD, PlayerRole.TELEPORTER));
-        playerData.setPlayerSettings(new HashMap<>());
-        try {
-            PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-            throw new IllegalStateException("Could not copy properties for stats", e);
+        String playerId = Main.createPlayerId(session.getUsername().get());
+        String playerName = session.getUsername().get();
+        try( GraphStorageFactory.AetherMudTx tx = gameManager.getGraphStorageFactory().beginTransaction() ) {
+            PlayerData playerData = tx.getStorage().newPlayerData();
+            playerData.setNpcKillLog(new HashMap<>());
+            playerData.setEffects(new HashSet<>());
+            playerData.setGold(0);
+            playerData.setGoldInBank(0);
+            playerData.setInventory(new ArrayList<>());
+            playerData.setLearnedSpells(new ArrayList<>());
+            playerData.setLockerInventory(new ArrayList<>());
+            playerData.setIsMarkedForDelete(false);
+            playerData.setPlayerName(playerName);
+            playerData.setPassword(session.getPassword().get());
+            playerData.setPlayerClass(PlayerClass.BASIC);
+            playerData.setPlayerEquipment(new ArrayList<>());
+            playerData.setPlayerId(playerId);
+            // TODO : remove this, not all players should be admins
+            playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL, PlayerRole.ADMIN, PlayerRole.GOD, PlayerRole.TELEPORTER));
+            playerData.setPlayerSettings(new HashMap<>());
+            try {
+                PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+            } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+                throw new IllegalStateException("Could not copy properties for stats", e);
+            }
+            playerData.createCoolDown(CoolDownType.NEWBIE);
+            tx.success();
         }
-        playerData.createCoolDown(CoolDownType.NEWBIE);
-        gameManager.getPlayerManager().persist();
 
         messageEvent.getChannel().write("User created.\r\n");
-        log.info("User " + playerData.getPlayerName() + " created.");
+        log.info("User " + playerName + " created.");
         session.setState(AetherMudSession.State.newUserRegCompleted);
         try {
-            PlayerManagementManager.registerPlayer(playerData.getPlayerName(), playerData.getPlayerId(), gameManager);
+            PlayerManagementManager.registerPlayer(playerName, playerId, gameManager);
         } catch (Exception e) {
             log.error("Problem registering new player in the MBean server!");
         }

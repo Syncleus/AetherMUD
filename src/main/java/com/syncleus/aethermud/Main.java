@@ -26,13 +26,13 @@ import com.syncleus.aethermud.configuration.AetherMudConfiguration;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.entity.EntityManager;
-import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.player.PlayerManagementManager;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.server.communication.ChannelUtils;
 import com.syncleus.aethermud.server.telnet.AetherMudServer;
 import com.syncleus.aethermud.storage.WorldStorage;
 import com.syncleus.aethermud.storage.graphdb.*;
+import com.syncleus.aethermud.storage.graphdb.model.*;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.io.Files;
@@ -58,16 +58,6 @@ public class Main {
     final public static MetricRegistry metrics = new MetricRegistry();
 
     final public static Set<Character> vowels = new HashSet<Character>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
-    public static final Set<Class<?>> FRAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new Class<?>[]{
-        PlayerData.class,
-        NpcData.class,
-        StatsData.class,
-        ItemData.class,
-        LootData.class,
-        SpawnRuleData.class,
-        CoolDownData.class,
-        EffectData.class
-    })));
 
     public static String getAetherMudVersion() {
 
@@ -99,22 +89,9 @@ public class Main {
 
         Files.isDirectory().apply(new File("world/"));
 
-        Graph graph = TinkerGraph.open();
-        File f = new File(aetherMudConfiguration.databaseFileName);
-        if(f.exists() && !f.isDirectory()) {
-            try {
-                graph.io(IoCore.graphson()).readGraph(aetherMudConfiguration.databaseFileName);
-            } catch (IOException e) {
-                throw new IllegalStateException("Could not read from graph file despite being present.", e);
-            }
-        }
-        WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(graph, FRAMED_TYPES);
+        GraphStorageFactory graphStorageFactory = new GraphStorageFactory();
 
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph, aetherMudConfiguration.databaseFileName);
-        graphStorage.startAsync();
-        graphStorage.awaitRunning();
-
-        PlayerManager playerManager = new PlayerManager(graphStorage, new SessionManager());
+        PlayerManager playerManager = new PlayerManager(graphStorageFactory, new SessionManager());
         playerManager.createAllGauges();
 
         RoomManager roomManager = new RoomManager(playerManager);
@@ -122,8 +99,8 @@ public class Main {
         startUpMessage("Configuring core systems.");
         MapsManager mapsManager = new MapsManager(aetherMudConfiguration, roomManager);
         ChannelUtils channelUtils = new ChannelUtils(playerManager, roomManager);
-        EntityManager entityManager = new EntityManager(graphStorage, roomManager, playerManager);
-        GameManager gameManager = new GameManager(graphStorage, framedGraph, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
+        EntityManager entityManager = new EntityManager(graphStorageFactory, roomManager, playerManager);
+        GameManager gameManager = new GameManager(graphStorageFactory, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
 
         startUpMessage("Reading world from disk.");
         WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);

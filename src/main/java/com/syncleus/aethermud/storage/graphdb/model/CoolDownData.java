@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.storage.graphdb;
+package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.syncleus.aethermud.player.CoolDown;
 import com.syncleus.aethermud.player.CoolDownType;
-import com.syncleus.ferma.AbstractVertexFrame;
+import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
+import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 
-public abstract class CoolDownData extends AbstractVertexFrame implements CoolDown {
+@GraphElement
+public abstract class CoolDownData extends AbstractInterceptingVertexFrame {
     @Property("type")
     public abstract CoolDownType getCoolDownType();
 
@@ -50,12 +52,26 @@ public abstract class CoolDownData extends AbstractVertexFrame implements CoolDo
         return this.getCoolDownType().hashCode();
     }
 
+    public static CoolDown copyCoolDown(CoolDownData src) {
+        return new CoolDown(src.getName(), src.getNumberOfTicks(), src.getCoolDownType());
+    }
+
+    public void decrementTick() {
+        if (getNumberOfTicks() > 0) {
+            this.setNumberOfTicks(getNumberOfTicks() - 1);
+        }
+    }
+
+    public boolean isActive() {
+        return getNumberOfTicks() > 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if(o == null)
             return false;
-        if( o instanceof CoolDown )
-            return this.getCoolDownType().equals(((CoolDown)o).getCoolDownType());
+        if( o instanceof CoolDownData )
+            return this.getCoolDownType().equals(((CoolDownData)o).getCoolDownType());
         else if( o instanceof CoolDownType )
             return this.getCoolDownType().equals((CoolDownType)o);
         else

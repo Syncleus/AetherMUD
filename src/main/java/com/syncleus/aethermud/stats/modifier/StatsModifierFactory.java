@@ -19,7 +19,6 @@ package com.syncleus.aethermud.stats.modifier;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 
 public class StatsModifierFactory {
 
@@ -30,7 +29,7 @@ public class StatsModifierFactory {
     }
 
     public Stats getStatsModifier(Player player) {
-        StatsModifier modifer = new BasicPlayerLevelStatsModifier(gameManager);
+        StatsModifier modifer;
         switch (player.getPlayerClass()) {
             case WARRIOR:
                 modifer = new WarriorStatsModifier(gameManager);

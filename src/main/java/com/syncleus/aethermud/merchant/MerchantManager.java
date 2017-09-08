@@ -23,7 +23,8 @@ import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 
 import java.util.Optional;
 
@@ -58,21 +59,18 @@ public class MerchantManager {
                         return;
                     }
                     int price = merchantItemForSale.getCost();
-                    Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(player.getPlayerId());
-                    if (!playerMetadataOptional.isPresent()) {
-                        continue;
-                    }
-                    PlayerData playerData = playerMetadataOptional.get();
-                    long availableGold = playerData.getGold();
-                    if (availableGold >= price) {
-                        ItemPojo item = new ItemBuilder().from(itemMetadata).create();
-                        gameManager.getEntityManager().saveItem(item);
-                        gameManager.acquireItem(player, item.getItemId());
-                        player.incrementGold(-price);
-                        gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
-                    } else {
-                        gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + itemMetadata.getItemName() + "\r\n");
-                    }
+                    PlayerUtil.consume(gameManager, player.getPlayerId(), playerData -> {
+                        long availableGold = playerData.getGold();
+                        if (availableGold >= price) {
+                            ItemPojo item = new ItemBuilder().from(itemMetadata).create();
+                            gameManager.getEntityManager().saveItem(item);
+                            gameManager.acquireItem(player, item.getItemId());
+                            player.incrementGold(-price);
+                            gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
+                        } else {
+                            gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + itemMetadata.getItemName() + "\r\n");
+                        }
+                    });
                 }
             }
         } finally {

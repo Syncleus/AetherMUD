@@ -16,30 +16,82 @@
 package com.syncleus.aethermud.player;
 
 
-public interface CoolDown {
-    CoolDownType getCoolDownType();
+public class CoolDown {
 
-    void setCoolDownType(CoolDownType coolDownType);
+    private int numberOfTicks;
+    private String name;
+    private CoolDownType coolDownType;
+    private int originalNumberOfTicks;
 
-    String getName();
+    public CoolDown(CoolDownType coolDownType) {
+        this.name = coolDownType.getName();
+        this.numberOfTicks = coolDownType.getTicks();
+        this.coolDownType = coolDownType;
+        this.originalNumberOfTicks = coolDownType.getTicks();
+    }
 
-    void setName(String name);
+    public CoolDown(String name, int numberOfTicks, CoolDownType coolDownType){
+        this.name = name;
+        this.numberOfTicks = numberOfTicks;
+        this.coolDownType = coolDownType;
+        this.originalNumberOfTicks = numberOfTicks;
+    }
 
-    int getNumberOfTicks();
+    public CoolDownType getCoolDownType() {
+        return coolDownType;
+    }
 
-    void setNumberOfTicks(int numberOfTicks);
+    public String getName() {
+        return name;
+    }
 
-    int getOriginalNumberOfTicks();
+    public int getNumberOfTicks() {
+        return numberOfTicks;
+    }
 
-    void setOriginalNumberOfTicks(int ticks);
+    public int getOriginalNumberOfTicks() {
+        return originalNumberOfTicks;
+    }
 
-    default void decrementTick() {
+    public void setNumberOfTicks(int numberOfTicks) {
+        this.numberOfTicks = numberOfTicks;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCoolDownType(CoolDownType coolDownType) {
+        this.coolDownType = coolDownType;
+    }
+
+    public void setOriginalNumberOfTicks(int originalNumberOfTicks) {
+        this.originalNumberOfTicks = originalNumberOfTicks;
+    }
+
+    public int hashCode() {
+        return this.getCoolDownType().hashCode();
+    }
+
+    public void decrementTick() {
         if (getNumberOfTicks() > 0) {
             this.setNumberOfTicks(getNumberOfTicks() - 1);
         }
     }
 
-    default boolean isActive() {
+    public boolean isActive() {
         return getNumberOfTicks() > 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null)
+            return false;
+        if( o instanceof CoolDown)
+            return this.getCoolDownType().equals(((CoolDown)o).getCoolDownType());
+        else if( o instanceof CoolDownType )
+            return this.getCoolDownType().equals((CoolDownType)o);
+        else
+            return false;
     }
 }

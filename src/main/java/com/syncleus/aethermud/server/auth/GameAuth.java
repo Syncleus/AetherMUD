@@ -18,7 +18,9 @@ package com.syncleus.aethermud.server.auth;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import org.jboss.netty.channel.Channel;
 
@@ -34,14 +36,17 @@ public class GameAuth implements AetherMudAuthenticator {
 
     @Override
     public boolean authenticateAndRegisterPlayer(String username, String password, Channel channel) {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
-        if (!playerMetadataOptional.isPresent()) {
-            return false;
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            Optional<PlayerData> playerMetadataOptional = tx.getStorage().getPlayerMetadata(Main.createPlayerId(username));
+            if (!playerMetadataOptional.isPresent()) {
+                return false;
+            }
+            PlayerData playerData = playerMetadataOptional.get();
+            if (!playerData.getPassword().equals(password)) {
+                return false;
+            }
         }
-        PlayerData playerData = playerMetadataOptional.get();
-        if (!playerData.getPassword().equals(password)) {
-            return false;
-        }
+
         Room currentRoom = null;
         if (gameManager.getPlayerManager().doesPlayerExist(username)) {
             currentRoom = gameManager.getPlayerManager().getPlayerByUsername(username).getCurrentRoom();

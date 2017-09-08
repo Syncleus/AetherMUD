@@ -15,8 +15,6 @@
  */
 package com.syncleus.aethermud.stats;
 
-import com.syncleus.aethermud.storage.graphdb.StatsData;
-
 public class StatsBuilder {
     private int strength;
     private int intelligence;
@@ -47,7 +45,7 @@ public class StatsBuilder {
         this.aim = stats.getAim();
         this.agile = stats.getAgile();
         this.armorRating = stats.getArmorRating();
-        this.meleSkill = stats.getMeleSkill();
+        this.meleSkill = stats.getMeleeSkill();
         this.currentHealth = stats.getCurrentHealth();
         this.maxHealth = stats.getMaxHealth();
         this.weaponRatingMax = stats.getWeaponRatingMax();

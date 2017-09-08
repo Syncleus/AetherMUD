@@ -42,6 +42,7 @@ import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.syncleus.aethermud.storage.*;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import com.syncleus.aethermud.world.FloorManager;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
@@ -56,11 +57,9 @@ import com.google.common.collect.Interners;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
-import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
@@ -77,7 +76,7 @@ public class GameManager {
 
     public static final Integer LOBBY_ID = 1;
     private static final Logger log = Logger.getLogger(GameManager.class);
-    public static String LOGO = "AetherMUD.";
+    public static String LOGO = "AetherMUD";
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private final ChannelCommunicationUtils channelUtils;
@@ -107,7 +106,7 @@ public class GameManager {
     private final HttpClient httpclient;
     private final Gson gson;
     private final FilebasedJsonStorage filebasedJsonStorage;
-    private final AetherMudStorage graphStorage;
+    private final GraphStorageFactory graphStorageFactory;
 
     public MerchantStorage getMerchantStorage() {
         return merchantStorage;
@@ -116,8 +115,8 @@ public class GameManager {
     private final MerchantStorage merchantStorage;
 
 
-    public GameManager(AetherMudStorage graphStorage, WrappedFramedGraph<Graph> framedGraph, AetherMudConfiguration aetherMudConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
-        this.graphStorage = graphStorage;
+    public GameManager(GraphStorageFactory graphStorageFactory, AetherMudConfiguration aetherMudConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
+        this.graphStorageFactory = graphStorageFactory;
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         this.entityManager = entityManager;
@@ -151,8 +150,8 @@ public class GameManager {
         this.httpclient = httpClient;
     }
 
-    public AetherMudStorage getGraphStorage() {
-        return graphStorage;
+    public GraphStorageFactory getGraphStorageFactory() {
+        return graphStorageFactory;
     }
 
     public Gson getGson() {
@@ -612,9 +611,9 @@ public class GameManager {
 
         sb = new StringBuilder();
         t.addCell("Mele");
-        t.addCell(getFormattedNumber(stats.getMeleSkill()));
-        if (diff.getMeleSkill() > 0)
-            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getMeleSkill())).append(RESET).append(")");
+        t.addCell(getFormattedNumber(stats.getMeleeSkill()));
+        if (diff.getMeleeSkill() > 0)
+            sb.append("(").append(Color.GREEN).append("+").append(getFormattedNumber(diff.getMeleeSkill())).append(RESET).append(")");
         t.addCell(sb.toString());
 
         sb = new StringBuilder();
@@ -663,7 +662,7 @@ public class GameManager {
         return NumberFormat.getNumberInstance(Locale.US).format(longval);
     }
 
-    public String renderEffectsString(List<EffectPojo> effects) {
+    public String renderEffectsString(List<Effect> effects) {
         Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
@@ -671,7 +670,7 @@ public class GameManager {
         // t.setColumnWidth(1, 10, 13);
 
         int i = 1;
-        for (EffectPojo effect : effects) {
+        for (Effect effect : effects) {
             int percent = 100 - (int) ((effect.getEffectApplications() * 100.0f) / effect.getMaxEffectApplications());
             t.addCell(drawProgressBar(percent));
             t.addCell(effect.getEffectName());

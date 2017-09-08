@@ -22,7 +22,7 @@ public class StatsPojo implements Stats {
     private Integer aim;
     private Integer agile;
     private Integer armorRating;
-    private Integer meleSkill;
+    private Integer meleeSkill;
     private Integer currentHealth;
     private Integer maxHealth;
     private Integer weaponRatingMax;
@@ -35,6 +35,10 @@ public class StatsPojo implements Stats {
     private Integer inventorySize;
     private Integer maxEffects;
 
+    public StatsPojo() {
+
+    }
+
     public StatsPojo(Stats stats) {
         this.strength = ( stats == null ? 0 : stats.getStrength());
         this.intelligence = ( stats == null ? 0 : stats.getIntelligence());
@@ -42,7 +46,7 @@ public class StatsPojo implements Stats {
         this.aim = ( stats == null ? 0 : stats.getAim());
         this.agile = ( stats == null ? 0 : stats.getAgile());
         this.armorRating = ( stats == null ? 0 : stats.getArmorRating());
-        this.meleSkill = ( stats == null ? 0 : stats.getMeleSkill());
+        this.meleeSkill = ( stats == null ? 0 : stats.getMeleeSkill());
         this.currentHealth = ( stats == null ? 0 : stats.getCurrentHealth());
         this.maxHealth = ( stats == null ? 0 : stats.getMaxHealth());
         this.weaponRatingMax = ( stats == null ? 0 : stats.getWeaponRatingMax());
@@ -62,7 +66,7 @@ public class StatsPojo implements Stats {
                      Integer aim,
                      Integer agile,
                      Integer armorRating,
-                     Integer meleSkill,
+                     Integer meleeSkill,
                      Integer currentHealth,
                      Integer maxHealth,
                      Integer weaponRatingMax,
@@ -80,7 +84,7 @@ public class StatsPojo implements Stats {
         this.aim = aim;
         this.agile = agile;
         this.armorRating = armorRating;
-        this.meleSkill = meleSkill;
+        this.meleeSkill = meleeSkill;
         this.currentHealth = currentHealth;
         this.maxHealth = maxHealth;
         this.weaponRatingMax = weaponRatingMax;
@@ -159,12 +163,12 @@ public class StatsPojo implements Stats {
         this.armorRating = armorRating;
     }
 
-    public Integer getMeleSkill() {
-        return meleSkill;
+    public Integer getMeleeSkill() {
+        return meleeSkill;
     }
 
     public void setMeleeSkill(Integer meleSkill) {
-        this.meleSkill = meleSkill;
+        this.meleeSkill = meleSkill;
     }
 
     public Integer getCurrentHealth() {

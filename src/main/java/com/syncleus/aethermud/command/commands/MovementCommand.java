@@ -16,9 +16,10 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.EffectPojo;
 import com.syncleus.aethermud.player.CoolDownType;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.EffectData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.player.PlayerMovement;
 import com.syncleus.aethermud.world.model.RemoteExit;
 import com.syncleus.aethermud.world.model.Room;
@@ -64,14 +65,16 @@ public class MovementCommand extends Command {
                 MovementCommand.this.write("You are unable to progress, but can return to where you came from by typing \"back\".");
                 return;
             }
-            java.util.Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            for (EffectPojo effect : playerMetadataOptional.get().getEffects()) {
-                if (effect.isFrozenMovement()) {
-                    MovementCommand.this.write("You are frozen and can not move.");
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                java.util.Optional<PlayerData> playerMetadataOptional = tx.getStorage().getPlayerMetadata(playerId);
+                if (!playerMetadataOptional.isPresent()) {
                     return;
+                }
+                for (EffectData effect : playerMetadataOptional.get().getEffects()) {
+                    if (effect.isFrozenMovement()) {
+                        MovementCommand.this.write("You are frozen and can not move.");
+                        return;
+                    }
                 }
             }
             final String command = rootCommand;

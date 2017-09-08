@@ -17,7 +17,8 @@ package com.syncleus.aethermud.merchant.bank.commands;
 
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.server.communication.Color;
 import org.apache.commons.lang.math.NumberUtils;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -57,13 +58,7 @@ public class DepositCommand extends BankCommand {
     }
 
     private boolean areFundsAvailable(long amt) {
-        Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()) {
-            return false;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        long inventoryGold = playerData.getGold();
-        return (inventoryGold >= amt);
+        return PlayerUtil.transactRead(gameManager, player.getPlayerId(), playerData -> playerData.getGold() >= amt);
     }
 
 }

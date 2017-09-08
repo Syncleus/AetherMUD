@@ -17,7 +17,6 @@ package com.syncleus.aethermud.stats.modifier;
 
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
 
 @FunctionalInterface
 public interface StatsModifier {

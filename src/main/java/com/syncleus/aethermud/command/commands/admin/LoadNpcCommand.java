@@ -21,7 +21,8 @@ import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.storage.AetherMudStorage;
-import com.syncleus.aethermud.storage.graphdb.NpcData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.google.common.collect.Sets;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.HttpEntity;
@@ -94,27 +95,29 @@ public class LoadNpcCommand extends Command {
             }
             httpGet.reset();
 
-            AetherMudStorage storage = gameManager.getGraphStorage();
-            NpcData npcData = storage.newNpcData();
-            try {
-                PropertyUtils.copyProperties(npcData, npc);
-                PropertyUtils.copyProperties(npcData.createStats(), npc.getStats());
-                PropertyUtils.copyProperties(npcData.createLootData(), npc.getLoot());
-            } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
-                throw new IllegalStateException("Could not copy properties for stats", ex);
-            }
-            npc.getSpawnRules().forEach(new Consumer<SpawnRule>() {
-                @Override
-                public void accept(SpawnRule spawnRule) {
-                    try {
-                        PropertyUtils.copyProperties(npcData.createSpawnRuleData(), spawnRule);
-                    } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
-                        throw new IllegalStateException("Could not copy properties for stats", ex);
-                    }
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                AetherMudStorage storage = tx.getStorage();
+                NpcData npcData = storage.newNpcData();
+                try {
+                    PropertyUtils.copyProperties(npcData, npc);
+                    PropertyUtils.copyProperties(npcData.createStats(), npc.getStats());
+                    PropertyUtils.copyProperties(npcData.createLootData(), npc.getLoot());
+                } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
+                    throw new IllegalStateException("Could not copy properties for stats", ex);
                 }
-            });
-            storage.persist();
-            write("NPC Saved. - " + npc.getName() + "\r\n");
+                npc.getSpawnRules().forEach(new Consumer<SpawnRule>() {
+                    @Override
+                    public void accept(SpawnRule spawnRule) {
+                        try {
+                            PropertyUtils.copyProperties(npcData.createSpawnRuleData(), spawnRule);
+                        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
+                            throw new IllegalStateException("Could not copy properties for stats", ex);
+                        }
+                    }
+                });
+                tx.success();
+                write("NPC Saved. - " + npc.getName() + "\r\n");
+            }
 
         });
     }

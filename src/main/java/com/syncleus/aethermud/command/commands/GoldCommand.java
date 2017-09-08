@@ -17,7 +17,8 @@ package com.syncleus.aethermud.command.commands;
 
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.server.communication.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -41,12 +42,7 @@ public class GoldCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            write("You have " + NumberFormat.getNumberInstance(Locale.US).format(playerData.getGold()) + Color.YELLOW + " gold." + Color.RESET);
+            PlayerUtil.consume(gameManager, playerId, playerData -> write("You have " + NumberFormat.getNumberInstance(Locale.US).format(playerData.getGold()) + Color.YELLOW + " gold." + Color.RESET));
         });
     }
 }

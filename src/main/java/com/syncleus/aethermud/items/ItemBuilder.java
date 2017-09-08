@@ -19,7 +19,7 @@ package com.syncleus.aethermud.items;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
+import com.syncleus.aethermud.storage.graphdb.model.StatsData;
 
 import java.util.List;
 import java.util.Set;
@@ -65,7 +65,7 @@ public class ItemBuilder {
         this.isDisposable = itemMetadata.isDisposable();
         this.equipment = itemMetadata.getEquipment();
         this.validTimeOfDays = itemMetadata.getValidTimeOfDays();
-        Set<EffectPojo> effects = itemMetadata.getEffects();
+        Set<Effect> effects = itemMetadata.getEffects();
         this.effects = (effects != null ? Sets.newHashSet(itemMetadata.getEffects()) : null );
         this.itemApplyStats = itemMetadata.getItemApplyStats();
         return this;

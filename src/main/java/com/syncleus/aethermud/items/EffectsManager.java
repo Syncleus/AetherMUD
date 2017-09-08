@@ -22,7 +22,7 @@ import com.syncleus.aethermud.npc.NpcStatsChangeBuilder;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.stats.StatsPojo;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.StatsBuilder;
 import com.syncleus.aethermud.stats.StatsHelper;
@@ -43,10 +43,10 @@ public class EffectsManager {
         this.gameManager = gameManager;
     }
 
-    public void applyEffectsToNpcs(Player player, Set<NpcSpawn> npcSpawns, Set<EffectPojo> effects) {
+    public void applyEffectsToNpcs(Player player, Set<NpcSpawn> npcSpawns, Set<Effect> effects) {
         effects.forEach(effect ->
                 npcSpawns.forEach(npc -> {
-                    EffectPojo nEffect = new EffectPojo(effect);
+                    Effect nEffect = new Effect(effect);
                     nEffect.setPlayerId(player.getPlayerId());
                     if (effect.getDurationStats().getCurrentHealth() < 0) {
                         log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
@@ -57,9 +57,9 @@ public class EffectsManager {
                 }));
     }
 
-    public void applyEffectsToPlayer(Player destinationPlayer, Player player, Set<EffectPojo> effects) {
-        for (EffectPojo effect : effects) {
-            EffectPojo nEffect = new EffectPojo(effect);
+    public void applyEffectsToPlayer(Player destinationPlayer, Player player, Set<Effect> effects) {
+        for (Effect effect : effects) {
+            Effect nEffect = new Effect(effect);
             nEffect.setPlayerId(player.getPlayerId());
             if (effect.getDurationStats().getCurrentHealth() < 0) {
                 log.error("ERROR! Someone added an effect with a health modifier which won't work for various reasons.");
@@ -76,17 +76,17 @@ public class EffectsManager {
         }
     }
 
-    public void application(EffectPojo effect, Player player) {
+    public void application(Effect effect, Player player) {
         // if there are effecst that modify player health, deal with it here, you can't rely on combine stats.
         Stats applyStatsOnTick = effect.getApplyStatsOnTick();
-        if (effect.getApplyStatsOnTick() != null) {
-            if (effect.getApplyStatsOnTick().getCurrentHealth() != 0) {
-                gameManager.getPlayerManager().getPlayer(player.getPlayerId()).updatePlayerHealth(effect.getApplyStatsOnTick().getCurrentHealth(), null);
+        if (applyStatsOnTick != null) {
+            if (applyStatsOnTick.getCurrentHealth() != 0) {
+                gameManager.getPlayerManager().getPlayer(player.getPlayerId()).updatePlayerHealth(applyStatsOnTick.getCurrentHealth(), null);
                 for (String message : effect.getEffectApplyMessages()) {
-                    if (effect.getApplyStatsOnTick().getCurrentHealth() > 0) {
-                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " +" + Color.GREEN + NumberFormat.getNumberInstance(Locale.US).format(effect.getApplyStatsOnTick().getCurrentHealth()) + Color.RESET + "\r\n", true);
+                    if (applyStatsOnTick.getCurrentHealth() > 0) {
+                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " +" + Color.GREEN + NumberFormat.getNumberInstance(Locale.US).format(applyStatsOnTick.getCurrentHealth()) + Color.RESET + "\r\n", true);
                     } else {
-                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " -" + Color.RED + NumberFormat.getNumberInstance(Locale.US).format(effect.getApplyStatsOnTick().getCurrentHealth()) + Color.RESET + "\r\n", true);
+                        gameManager.getChannelUtils().write(player.getPlayerId(), Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + message + " -" + Color.RED + NumberFormat.getNumberInstance(Locale.US).format(applyStatsOnTick.getCurrentHealth()) + Color.RESET + "\r\n", true);
                     }
                 }
                 //applyStatsOnTick = new StatsBuilder(applyStatsOnTick).setCurrentHealth(0).createStats();
@@ -95,7 +95,7 @@ public class EffectsManager {
         }
     }
 
-    public void application(EffectPojo effect, NpcSpawn npcSpawn) {
+    public void application(Effect effect, NpcSpawn npcSpawn) {
         Player player = gameManager.getPlayerManager().getPlayer(effect.getPlayerId());
         Stats applyStats = new StatsPojo(effect.getApplyStatsOnTick());
         // if there are effecst that modify npc health, deal with it here, you can't rely on combine stats.
@@ -113,13 +113,13 @@ public class EffectsManager {
         StatsHelper.combineStats(npcSpawn.getStats(), finalCombineWorthyStats);
     }
 
-    public void removeDurationStats(EffectPojo effect, NpcSpawn npcSpawn) {
+    public void removeDurationStats(Effect effect, NpcSpawn npcSpawn) {
         Stats newStats = new StatsPojo(effect.getDurationStats());
         StatsHelper.inverseStats(newStats);
         StatsHelper.combineStats(npcSpawn.getStats(), newStats);
     }
 
-    public void removeDurationStats(EffectPojo effect, PlayerData playerData) {
+    public void removeDurationStats(Effect effect, PlayerData playerData) {
         Stats newStats = new StatsPojo(effect.getDurationStats());
         StatsHelper.inverseStats(newStats);
         StatsHelper.combineStats(playerData.getStats(), newStats);

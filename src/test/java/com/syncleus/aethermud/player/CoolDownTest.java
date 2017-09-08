@@ -20,12 +20,11 @@ import org.junit.Test;
 
 public class CoolDownTest {
 
-
     @Test
     public void testSerialization() throws Exception {
 
 
-        CoolDownPojo coolDown = new CoolDownPojo(CoolDownType.DETAINMENT);
+        CoolDown coolDown = new CoolDown(CoolDownType.DETAINMENT);
 
         String s = new GsonBuilder().create().toJson(coolDown, CoolDown.class);
 

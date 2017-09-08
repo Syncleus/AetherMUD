@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.syncleus.aethermud.storage.graphdb;
+package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.ferma.AbstractVertexFrame;
+import com.syncleus.aethermud.stats.StatsPojo;
 import com.syncleus.ferma.annotations.Adjacency;
+import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
+import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
@@ -27,70 +29,56 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class EffectData extends AbstractVertexFrame implements Effect {
-    @Override
+@GraphElement
+public abstract class EffectData extends AbstractInterceptingVertexFrame {
     @Property("EffectName")
     public abstract String getEffectName();
 
-    @Override
     @Property("EffectDescription")
     public abstract String getEffectDescription();
 
-    @Override
     @Property("EffectApplyMessages")
     public abstract List<String> getEffectApplyMessages();
 
-    @Override
     @Property("MaxEffectApplications")
     public abstract int getMaxEffectApplications();
 
-    @Override
     @Property("FrozenMovement")
     public abstract boolean isFrozenMovement();
 
-    @Override
     @Property("EffectApplications")
     public abstract int getEffectApplications();
 
-    @Override
     @Property("EffectApplications")
     public abstract void setEffectApplications(int effectApplications);
 
-    @Override
     @Property("PlayerId")
     public abstract String getPlayerId();
 
-    @Override
     @Property("PlayerId")
     public abstract void setPlayerId(String playerId);
 
-    @Override
     @Property("EffectName")
     public abstract void setEffectName(String effectName);
 
-    @Override
     @Property("EffectDescription")
     public abstract void setEffectDescription(String effectDescription);
 
-    @Override
     @Property("EffectApplyMessages")
     public abstract void setEffectApplyMessages(List<String> effectApplyMessages);
 
-    @Override
     @Property("MaxEffectApplications")
     public abstract void setMaxEffectApplications(int maxEffectApplications);
 
-    @Override
     @Property("FrozenMovement")
     public abstract void setFrozenMovement(boolean frozenMovement);
 
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
     public abstract <N extends StatsData> Iterator<? extends N> getAllApplyStatsOnTick(Class<? extends N> type);
 
-    @Override
     public Stats getApplyStatsOnTick() {
         Iterator<? extends StatsData> allStats = this.getAllApplyStatsOnTick(StatsData.class);
-        if( allStats.hasNext() )
+        if (allStats.hasNext())
             return allStats.next();
         else
             return null;
@@ -102,28 +90,23 @@ public abstract class EffectData extends AbstractVertexFrame implements Effect {
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
     public abstract void removeApplyStatsOnTick(StatsData stats);
 
-    @Override
     public void setApplyStatsOnTick(Stats stats) {
         Iterator<? extends StatsData> existingAll = this.getAllApplyStatsOnTick(StatsData.class);
-        if( existingAll != null ) {
-            while( existingAll.hasNext() ) {
+        if (existingAll != null) {
+            while (existingAll.hasNext()) {
                 StatsData existing = existingAll.next();
                 this.removeApplyStatsOnTick(existing);
                 existing.remove();
             }
-
         }
-
-        if( stats == null ) {
+        if (stats == null) {
             this.addApplyStatsOnTick(this.createStats());
             return;
         }
-
         StatsData statsData;
-        if( stats instanceof StatsData ) {
+        if (stats instanceof StatsData) {
             this.addApplyStatsOnTick((StatsData) stats);
-        }
-        else {
+        } else {
             StatsData createdData = this.createStats();
             try {
                 PropertyUtils.copyProperties(createdData, stats);
@@ -137,10 +120,9 @@ public abstract class EffectData extends AbstractVertexFrame implements Effect {
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
     public abstract <N extends StatsData> Iterator<? extends N> getAllDurationStats(Class<? extends N> type);
 
-    @Override
     public Stats getDurationStats() {
         Iterator<? extends StatsData> allStats = this.getAllDurationStats(StatsData.class);
-        if( allStats.hasNext() )
+        if (allStats.hasNext())
             return allStats.next();
         else
             return null;
@@ -152,28 +134,23 @@ public abstract class EffectData extends AbstractVertexFrame implements Effect {
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
     public abstract void removeDurationStats(StatsData stats);
 
-    @Override
     public void setDurationStats(Stats stats) {
         Iterator<? extends StatsData> existingAll = this.getAllDurationStats(StatsData.class);
-        if( existingAll != null ) {
-            while( existingAll.hasNext() ) {
+        if (existingAll != null) {
+            while (existingAll.hasNext()) {
                 StatsData existing = existingAll.next();
                 this.removeDurationStats(existing);
                 existing.remove();
             }
-
         }
-
-        if( stats == null ) {
+        if (stats == null) {
             this.addApplyStatsOnTick(this.createStats());
             return;
         }
-
         StatsData statsData;
-        if( stats instanceof StatsData ) {
+        if (stats instanceof StatsData) {
             this.addDurationStats((StatsData) stats);
-        }
-        else {
+        } else {
             StatsData createdData = this.createStats();
             try {
                 PropertyUtils.copyProperties(createdData, stats);
@@ -185,7 +162,7 @@ public abstract class EffectData extends AbstractVertexFrame implements Effect {
     }
 
     private StatsData createStats() {
-        if( this.getDurationStats() != null )
+        if (this.getDurationStats() != null)
             throw new IllegalStateException("Already has stats, can't create another");
         final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
         stats.setAgile(0);
@@ -207,5 +184,31 @@ public abstract class EffectData extends AbstractVertexFrame implements Effect {
         stats.setWeaponRatingMin(0);
         stats.setWillpower(0);
         return stats;
+    }
+
+    public static void copyEffect(EffectData dest, Effect src) {
+        try {
+            PropertyUtils.copyProperties(dest, src);
+            dest.setApplyStatsOnTick(src.getApplyStatsOnTick());
+            dest.setDurationStats(src.getDurationStats());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+    }
+
+    public static Effect copyEffect(EffectData src) {
+        Effect retVal = new Effect();
+        try {
+            PropertyUtils.copyProperties(retVal, src);
+            StatsPojo durationStats = new StatsPojo();
+            PropertyUtils.copyProperties(durationStats, src.getDurationStats());
+            retVal.setDurationStats(durationStats);
+            StatsPojo applyStats = new StatsPojo();
+            PropertyUtils.copyProperties(applyStats, src.getApplyStatsOnTick());
+            retVal.setApplyStatsOnTick(applyStats);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+        return retVal;
     }
 }

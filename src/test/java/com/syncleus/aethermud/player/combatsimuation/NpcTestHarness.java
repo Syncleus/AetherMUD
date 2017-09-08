@@ -32,7 +32,8 @@ import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.experience.Experience;
 import com.syncleus.aethermud.storage.WorldStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.collect.Maps;
@@ -68,65 +69,77 @@ public class NpcTestHarness {
     // Levels 1-3
     @Test
     public void testDemonCat() throws Exception {
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("demon cat")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 98f, 90f, 10, 5, 3, 0);
-        processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4, 3, 0);
-        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3, 3, 0);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+            NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("demon cat")).collect(Collectors.toList()).get(0);
+            processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 98f, 90f, 10, 5, 3, 0);
+            processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 99.9f, 96f, 7, 4, 3, 0);
+            processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 100f, 98f, 6, 3, 3, 0);
+        }
     }
 
     // Levels 2-4
     @Test
     public void testSwampBerserker() throws Exception {
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 10, 5);
-        processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 10, 5);
-        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 10, 5);
-        processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 10, 5);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+            NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp berserker")).collect(Collectors.toList()).get(0);
+            processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 10, 5);
+            processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 10, 5);
+            processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 10, 5);
+            processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 10, 5);
+        }
     }
 
     // Levels 2-4
     @Test
     public void testBloodWolf() throws Exception {
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("blood wolf")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 14, 5);
-        processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 14, 5);
-        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 14, 5);
-        processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 14, 5);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+            NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("blood wolf")).collect(Collectors.toList()).get(0);
+            processRunAndVerify(npcSpawnFromFile, 1, Sets.newHashSet(), 15f, 0f, 10, 0, 14, 5);
+            processRunAndVerify(npcSpawnFromFile, 2, Sets.newHashSet(), 25f, 0f, 10, 0, 14, 5);
+            processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 55f, 0f, 10, 0, 14, 5);
+            processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 90f, 0f, 10, 0, 14, 5);
+        }
     }
 
     // Levels 4-6
     @Test
     public void testTreeBerserker() throws Exception {
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0, 14, 8);
-        processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0, 14, 8);
-        processRunAndVerify(npcSpawnFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0, 14, 8);
-        processRunAndVerify(npcSpawnFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0, 14, 8);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+            NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("tree berserker")).collect(Collectors.toList()).get(0);
+            processRunAndVerify(npcSpawnFromFile, 3, Sets.newHashSet(), 20f, 12f, 10, 0, 14, 8);
+            processRunAndVerify(npcSpawnFromFile, 4, Sets.newHashSet(), 40f, 33f, 10, 0, 14, 8);
+            processRunAndVerify(npcSpawnFromFile, 5, Sets.newHashSet(), 80f, 70f, 10, 0, 14, 8);
+            processRunAndVerify(npcSpawnFromFile, 6, Sets.newHashSet(), 95f, 86f, 10, 0, 14, 8);
+        }
     }
 
     // Levels 6-8
     @Test
     public void testSwampBear() throws Exception {
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcSpawnFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0, 18, 12);
-        processRunAndVerify(npcSpawnFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0, 18, 12);
-        processRunAndVerify(npcSpawnFromFile, 8, getEarlyLevelArmorSet(), 95f, 86f, 10, 0, 18, 12);
-        processRunAndVerify(npcSpawnFromFile, 9, getEarlyLevelArmorSet(), 100f, 0f, 10, 0, 18, 12);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+            NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("swamp bear")).collect(Collectors.toList()).get(0);
+            processRunAndVerify(npcSpawnFromFile, 6, getEarlyLevelArmorSet(), 55, 40f, 10, 0, 18, 12);
+            processRunAndVerify(npcSpawnFromFile, 7, getEarlyLevelArmorSet(), 85, 70f, 10, 0, 18, 12);
+            processRunAndVerify(npcSpawnFromFile, 8, getEarlyLevelArmorSet(), 95f, 86f, 10, 0, 18, 12);
+            processRunAndVerify(npcSpawnFromFile, 9, getEarlyLevelArmorSet(), 100f, 0f, 10, 0, 18, 12);
+        }
     }
 
     // Levels 8-10
     @Test
     public void testRedEyeBear() throws Exception {
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-        NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
-        processRunAndVerify(npcSpawnFromFile, 8, getMidLevelArmorSet(), 55, 36f, 10, 0, 24, 18);
-        processRunAndVerify(npcSpawnFromFile, 9, getMidLevelArmorSet(), 85, 70f, 10, 0, 24, 18);
-        processRunAndVerify(npcSpawnFromFile, 10, getMidLevelArmorSet(), 100f, 0f, 10, 0, 24, 18);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+            NpcSpawn npcSpawnFromFile = npcsFromFile.stream().filter(npc -> npc.getName().equals("red-eyed bear")).collect(Collectors.toList()).get(0);
+            processRunAndVerify(npcSpawnFromFile, 8, getMidLevelArmorSet(), 55, 36f, 10, 0, 24, 18);
+            processRunAndVerify(npcSpawnFromFile, 9, getMidLevelArmorSet(), 85, 70f, 10, 0, 24, 18);
+            processRunAndVerify(npcSpawnFromFile, 10, getMidLevelArmorSet(), 100f, 0f, 10, 0, 24, 18);
+        }
     }
 
     private Set<ItemPojo> getEarlyLevelArmorSet() {
@@ -291,27 +304,29 @@ public class NpcTestHarness {
     }
 
     private void createUser(String username, String password) {
-        PlayerData playerData = gameManager.getPlayerManager().newPlayerData();
-        playerData.setNpcKillLog(new HashMap<>());
-        playerData.setCoolDowns(new HashMap<>());
-        playerData.setEffects(new ArrayList<>());
-        playerData.setGold(0);
-        playerData.setGoldInBank(0);
-        playerData.setInventory(new ArrayList<>());
-        playerData.setLearnedSpells(new ArrayList<>());
-        playerData.setLockerInventory(new ArrayList<>());
-        playerData.setIsMarkedForDelete(false);
-        playerData.setPlayerName(username);
-        playerData.setPassword(password);
-        playerData.setPlayerClass(PlayerClass.BASIC);
-        playerData.setPlayerEquipment(new ArrayList<>());
-        playerData.setPlayerId(Main.createPlayerId(username));
-        playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL));
-        playerData.setPlayerSettings(new HashMap<>());
-        try {
-            PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not create a stats object", e);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            PlayerData playerData = tx.getStorage().newPlayerData();
+            playerData.setNpcKillLog(new HashMap<>());
+            playerData.setCoolDowns(new HashMap<>());
+            playerData.setEffects(new HashSet<>());
+            playerData.setGold(0);
+            playerData.setGoldInBank(0);
+            playerData.setInventory(new ArrayList<>());
+            playerData.setLearnedSpells(new ArrayList<>());
+            playerData.setLockerInventory(new ArrayList<>());
+            playerData.setIsMarkedForDelete(false);
+            playerData.setPlayerName(username);
+            playerData.setPassword(password);
+            playerData.setPlayerClass(PlayerClass.BASIC);
+            playerData.setPlayerEquipment(new ArrayList<>());
+            playerData.setPlayerId(Main.createPlayerId(username));
+            playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL));
+            playerData.setPlayerSettings(new HashMap<>());
+            try {
+                PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Could not create a stats object", e);
+            }
         }
     }
 
@@ -329,13 +344,12 @@ public class NpcTestHarness {
             }
         };
         AetherMudConfiguration aetherMudConfiguration = new AetherMudConfiguration(new MapConfiguration(Maps.newHashMap()));
-        WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
-        GraphDbAetherMudStorage graphStorage = new GraphDbAetherMudStorage(framedGraph, "aethermud-tests-graph.json");
-        PlayerManager playerManager = new PlayerManager(graphStorage, new SessionManager());
+        GraphStorageFactory storageFactory = new GraphStorageFactory();
+        PlayerManager playerManager = new PlayerManager(storageFactory, new SessionManager());
         RoomManager roomManager = new RoomManager(playerManager);
         MapsManager mapsManager = new MapsManager(aetherMudConfiguration, roomManager);
-        EntityManager entityManager = new EntityManager(graphStorage, roomManager, playerManager);
-        GameManager gameManager = new GameManager(null, framedGraph, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
+        EntityManager entityManager = new EntityManager(storageFactory, roomManager, playerManager);
+        GameManager gameManager = new GameManager(storageFactory, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
         WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
         worldExporter.buildTestworld();
         ConfigureCommands.configure(gameManager);

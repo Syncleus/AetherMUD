@@ -18,7 +18,8 @@ package com.syncleus.aethermud.server.auth;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import org.jboss.netty.channel.Channel;
 
@@ -34,41 +35,39 @@ public class GameAuthorizationAndRegistration implements AetherMudAuthenticator 
 
     @Override
     public boolean authenticateAndRegisterPlayer(String username, String password, Channel channel) {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(Main.createPlayerId(username));
-        if (!playerMetadataOptional.isPresent()) {
-            return false;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        if (!playerData.getPassword().equals(password)) {
-            return false;
-        }
-        Room currentRoom = null;
-        if (gameManager.getPlayerManager().doesPlayerExist(username)) {
-            currentRoom = gameManager.getPlayerManager().getPlayerByUsername(username).getCurrentRoom();
-            gameManager.getPlayerManager().removePlayer(username);
-        } else {
-            Optional<Room> playerCurrentRoom = gameManager.getRoomManager().getPlayerCurrentRoom(Main.createPlayerId(username));
-            if (playerCurrentRoom.isPresent()) {
-                currentRoom = playerCurrentRoom.get();
+        return PlayerUtil.transact(gameManager, Main.createPlayerId(username), playerData -> {
+            if (!playerData.getPassword().equals(password)) {
+                return false;
             }
-        }
 
-        Player player = new Player(username, gameManager);
-        if (currentRoom != null) {
-            player.setCurrentRoomAndPersist(currentRoom);
-            currentRoom.addPresentPlayer(player.getPlayerId());
-        } else {
-            currentRoom = player.getCurrentRoom();
-            if (currentRoom != null) {
-                currentRoom.addPresentPlayer(player.getPlayerId());
-                player.setCurrentRoom(player.getCurrentRoom());
+            Room currentRoom = null;
+            if (gameManager.getPlayerManager().doesPlayerExist(username)) {
+                currentRoom = gameManager.getPlayerManager().getPlayerByUsername(username).getCurrentRoom();
+                gameManager.getPlayerManager().removePlayer(username);
+            } else {
+                Optional<Room> playerCurrentRoom = gameManager.getRoomManager().getPlayerCurrentRoom(Main.createPlayerId(username));
+                if (playerCurrentRoom.isPresent()) {
+                    currentRoom = playerCurrentRoom.get();
+                }
             }
-        }
-        player.setChannel(channel);
-        gameManager.getPlayerManager().addPlayer(player);
-        if (currentRoom == null) {
-            gameManager.placePlayerInLobby(player);
-        }
-        return true;
+
+            Player player = new Player(username, gameManager);
+            if (currentRoom != null) {
+                player.setCurrentRoomAndPersist(currentRoom);
+                currentRoom.addPresentPlayer(player.getPlayerId());
+            } else {
+                currentRoom = player.getCurrentRoom();
+                if (currentRoom != null) {
+                    currentRoom.addPresentPlayer(player.getPlayerId());
+                    player.setCurrentRoom(player.getCurrentRoom());
+                }
+            }
+            player.setChannel(channel);
+            gameManager.getPlayerManager().addPlayer(player);
+            if (currentRoom == null) {
+                gameManager.placePlayerInLobby(player);
+            }
+            return true;
+        });
     }
 }

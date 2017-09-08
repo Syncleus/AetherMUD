@@ -15,44 +15,119 @@
  */
 package com.syncleus.aethermud.items;
 
+
 import com.syncleus.aethermud.stats.Stats;
 
 import java.util.List;
 
-public interface Effect {
-    String getEffectName();
+public class Effect {
 
-    String getEffectDescription();
+    private String effectName;
+    private String effectDescription;
+    private List<String> effectApplyMessages;
+    private Stats applyStatsOnTick;
+    private Stats durationStats;
+    private int maxEffectApplications;
+    private boolean frozenMovement;
+    private int effectApplications;
+    private String playerId;
 
-    List<String> getEffectApplyMessages();
+    public Effect() {
 
-    Stats getApplyStatsOnTick();
+    }
 
-    int getMaxEffectApplications();
+    public Effect(String effectName, String effectDescription, List<String> effectApplyMessages, Stats applyStatsOnTick, Stats durationStats, int maxEffectApplications, boolean frozenMovement) {
+        this.effectName = effectName;
+        this.effectDescription = effectDescription;
+        this.effectApplyMessages = effectApplyMessages;
+        this.applyStatsOnTick = applyStatsOnTick;
+        this.durationStats = durationStats;
+        this.maxEffectApplications = maxEffectApplications;
+        this.frozenMovement = frozenMovement;
+        this.effectApplications = 0;
+    }
 
-    boolean isFrozenMovement();
+    public Effect(Effect effect) {
+        this.effectName = effect.effectName;
+        this.effectDescription = effect.effectDescription;
+        this.effectApplyMessages = effect.effectApplyMessages;
+        this.applyStatsOnTick = effect.applyStatsOnTick;
+        this.durationStats = effect.durationStats;
+        this.maxEffectApplications = effect.maxEffectApplications;
+        this.frozenMovement = effect.frozenMovement;
+        this.effectApplications = effect.effectApplications;
+    }
 
-    int getEffectApplications();
 
-    void setEffectApplications(int effectApplications);
+    public String getEffectName() {
+        return effectName;
+    }
 
-    Stats getDurationStats();
+    public String getEffectDescription() {
+        return effectDescription;
+    }
 
-    String getPlayerId();
+    public List<String> getEffectApplyMessages() {
+        return effectApplyMessages;
+    }
 
-    void setPlayerId(String playerId);
+    public Stats getApplyStatsOnTick() {
+        return applyStatsOnTick;
+    }
 
-    void setEffectName(String effectName);
+    public int getMaxEffectApplications() {
+        return maxEffectApplications;
+    }
 
-    void setEffectDescription(String effectDescription);
+    public boolean isFrozenMovement() {
+        return frozenMovement;
+    }
 
-    void setEffectApplyMessages(List<String> effectApplyMessages);
+    public int getEffectApplications() {
+        return effectApplications;
+    }
 
-    void setApplyStatsOnTick(Stats applyStatsOnTick);
+    public void setEffectApplications(int effectApplications) {
+        this.effectApplications = effectApplications;
+    }
 
-    void setDurationStats(Stats durationStats);
+    public Stats getDurationStats() {
+        return durationStats;
+    }
 
-    void setMaxEffectApplications(int maxEffectApplications);
+    public String getPlayerId() {
+        return playerId;
+    }
 
-    void setFrozenMovement(boolean frozenMovement);
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
+
+    public void setEffectName(String effectName) {
+        this.effectName = effectName;
+    }
+
+    public void setEffectDescription(String effectDescription) {
+        this.effectDescription = effectDescription;
+    }
+
+    public void setEffectApplyMessages(List<String> effectApplyMessages) {
+        this.effectApplyMessages = effectApplyMessages;
+    }
+
+    public void setApplyStatsOnTick(Stats applyStatsOnTick) {
+        this.applyStatsOnTick = applyStatsOnTick;
+    }
+
+    public void setDurationStats(Stats durationStats) {
+        this.durationStats = durationStats;
+    }
+
+    public void setMaxEffectApplications(int maxEffectApplications) {
+        this.maxEffectApplications = maxEffectApplications;
+    }
+
+    public void setFrozenMovement(boolean frozenMovement) {
+        this.frozenMovement = frozenMovement;
+    }
 }

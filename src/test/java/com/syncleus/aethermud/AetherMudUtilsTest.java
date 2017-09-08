@@ -26,8 +26,11 @@ import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
+import com.syncleus.aethermud.storage.AetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.model.StatsData;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,7 +57,7 @@ public class AetherMudUtilsTest {
         PlayerData playerData = mock(PlayerData.class);
         playerData.setNpcKillLog(new HashMap<>());
         playerData.setCoolDowns(new HashMap<>());
-        playerData.setEffects(new ArrayList<>());
+        playerData.setEffects(new HashSet<>());
         playerData.setGold(0);
         playerData.setGoldInBank(0);
         playerData.setInventory(new ArrayList<>());
@@ -80,8 +83,16 @@ public class AetherMudUtilsTest {
         StatsModifierFactory statsModifierFactory = mock(StatsModifierFactory.class);
         when(statsModifierFactory.getStatsModifier(Matchers.any())).thenReturn(DefaultStats.DEFAULT_PLAYER.createStats());
         when(gameManager.getStatsModifierFactory()).thenReturn(statsModifierFactory);
+
+        GraphStorageFactory storageFactory = mock(GraphStorageFactory.class);
+        GraphStorageFactory.AetherMudTx tx = mock(GraphStorageFactory.AetherMudTx.class);
+        GraphDbAetherMudStorage aetherStorage = mock(GraphDbAetherMudStorage.class);
+        when(gameManager.getGraphStorageFactory()).thenReturn(storageFactory);
+        when(storageFactory.beginTransaction()).thenReturn(tx);
+        when( tx.getStorage() ).thenReturn(aetherStorage);
+        when(aetherStorage.getPlayerMetadata(Matchers.any())).thenReturn(java.util.Optional.ofNullable(playerData));
+
         PlayerManager playerManager = mock(PlayerManager.class);
-        when(playerManager.getPlayerMetadata(Matchers.any())).thenReturn(java.util.Optional.ofNullable(playerData));
         when(gameManager.getPlayerManager()).thenReturn(playerManager);
         EntityManager entityManager = mock(EntityManager.class);
         when(gameManager.getEntityManager()).thenReturn(entityManager);

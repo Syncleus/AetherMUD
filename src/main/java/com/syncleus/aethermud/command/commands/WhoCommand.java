@@ -17,7 +17,8 @@ package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.stats.Levels;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -55,14 +56,16 @@ public class WhoCommand extends Command {
             Set<Player> allPlayers = gameManager.getAllPlayers();
             for (Player allPlayer : allPlayers) {
                 t.addCell(allPlayer.getPlayerName());
-                Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(allPlayer.getPlayerId());
-                if (!playerMetadataOptional.isPresent()){
-                    continue;
+                try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                    Optional<PlayerData> playerMetadataOptional = tx.getStorage().getPlayerMetadata(allPlayer.getPlayerId());
+                    if (!playerMetadataOptional.isPresent()){
+                        continue;
+                    }
+                    PlayerData playerData = playerMetadataOptional.get();
+                    t.addCell(Long.toString(Levels.getLevel(playerData.getStats().getExperience())));
+                    t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerData.getStats().getExperience())));
+                    t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
                 }
-                PlayerData playerData = playerMetadataOptional.get();
-                t.addCell(Long.toString(Levels.getLevel(playerData.getStats().getExperience())));
-                t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerData.getStats().getExperience())));
-                t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
             }
             output.append(t.render());
             write(output.toString());

@@ -16,7 +16,6 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.player.CoolDownPojo;
 import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.PlayerMovement;
 import org.jboss.netty.channel.ChannelHandlerContext;

@@ -26,6 +26,7 @@ import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.spawner.ItemSpawner;
 import com.syncleus.aethermud.spawner.NpcSpawner;
 import com.syncleus.aethermud.spawner.SpawnRule;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,13 +36,15 @@ public class ConfigureNpc {
 
     public static void configureAllNpcs(GameManager gameManager) throws IOException {
         EntityManager entityManager = gameManager.getEntityManager();
-        List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-        for (NpcSpawn npcSpawn : npcsFromFile) {
-            Main.startUpMessage("Adding npc spawn: " + npcSpawn.getName());
-            entityManager.addEntity(npcSpawn);
-            Set<SpawnRule> spawnRules = npcSpawn.getSpawnRules();
-            for (SpawnRule spawnRule : spawnRules) {
-                entityManager.addEntity(new NpcSpawner(npcSpawn, gameManager, spawnRule));
+        try( GraphStorageFactory.AetherMudTx tx = gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+            for (NpcSpawn npcSpawn : npcsFromFile) {
+                Main.startUpMessage("Adding npc spawn: " + npcSpawn.getName());
+                entityManager.addEntity(npcSpawn);
+                Set<SpawnRule> spawnRules = npcSpawn.getSpawnRules();
+                for (SpawnRule spawnRule : spawnRules) {
+                    entityManager.addEntity(new NpcSpawner(npcSpawn, gameManager, spawnRule));
+                }
             }
         }
     }

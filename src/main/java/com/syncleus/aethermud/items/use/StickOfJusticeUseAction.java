@@ -17,7 +17,7 @@ package com.syncleus.aethermud.items.use;
 
 import com.syncleus.aethermud.command.commands.UseCommand;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.EffectPojo;
+import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.items.ItemUseAction;
@@ -64,7 +64,7 @@ public class StickOfJusticeUseAction implements ItemUseAction {
     }
 
     @Override
-    public Set<EffectPojo> getEffects() {
+    public Set<Effect> getEffects() {
         return null;
     }
 }

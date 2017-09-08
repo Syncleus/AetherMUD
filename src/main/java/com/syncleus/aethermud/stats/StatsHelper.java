@@ -26,7 +26,7 @@ public class StatsHelper {
         statsBuilder.setCurrentHealth(modifiedStats.getCurrentHealth() - origStats.getCurrentHealth());
         statsBuilder.setMaxHealth(modifiedStats.getMaxHealth() - origStats.getMaxHealth());
         statsBuilder.setExperience(modifiedStats.getExperience() - origStats.getExperience());
-        statsBuilder.setMeleSkill(modifiedStats.getMeleSkill() - origStats.getMeleSkill());
+        statsBuilder.setMeleSkill(modifiedStats.getMeleeSkill() - origStats.getMeleeSkill());
         statsBuilder.setNumberOfWeaponRolls(modifiedStats.getNumberOfWeaponRolls() - origStats.getNumberOfWeaponRolls());
         statsBuilder.setStrength(modifiedStats.getStrength() - origStats.getStrength());
         statsBuilder.setWeaponRatingMax(modifiedStats.getWeaponRatingMax() - origStats.getWeaponRatingMax());
@@ -48,7 +48,7 @@ public class StatsHelper {
         orig.setCurrentHealth(orig.getCurrentHealth() + combine.getCurrentHealth());
         orig.setMaxHealth(orig.getMaxHealth() + combine.getMaxHealth());
         orig.setExperience(orig.getExperience() + combine.getExperience());
-        orig.setMeleeSkill(orig.getMeleSkill() + combine.getMeleSkill());
+        orig.setMeleeSkill(orig.getMeleeSkill() + combine.getMeleeSkill());
         orig.setNumberOfWeaponRolls(orig.getNumberOfWeaponRolls() + combine.getNumberOfWeaponRolls());
         orig.setStrength(orig.getStrength() + combine.getStrength());
         orig.setWeaponRatingMax(orig.getWeaponRatingMax() + combine.getWeaponRatingMax());
@@ -69,7 +69,7 @@ public class StatsHelper {
         stats.setCurrentHealth(-stats.getCurrentHealth());
         stats.setMaxHealth(-stats.getMaxHealth());
         stats.setExperience(-stats.getExperience());
-        stats.setMeleeSkill(-stats.getMeleSkill());
+        stats.setMeleeSkill(-stats.getMeleeSkill());
         stats.setNumberOfWeaponRolls(-stats.getNumberOfWeaponRolls());
         stats.setStrength(-stats.getStrength());
         stats.setWeaponRatingMax(-stats.getWeaponRatingMax());

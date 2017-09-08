@@ -17,6 +17,7 @@ package com.syncleus.aethermud.player;
 
 
 import com.codahale.metrics.Meter;
+import com.google.common.base.*;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.common.AetherMudUtils;
 import com.syncleus.aethermud.core.GameManager;
@@ -26,13 +27,11 @@ import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcStatsChangeBuilder;
 import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.server.communication.Color;
-import com.syncleus.aethermud.stats.Levels;
-import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.CoolDownData;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
-import com.syncleus.aethermud.stats.StatsBuilder;
-import com.syncleus.aethermud.stats.StatsHelper;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.stats.*;
+import com.syncleus.aethermud.storage.graphdb.model.CoolDownData;
+import com.syncleus.aethermud.storage.graphdb.model.EffectData;
+import com.syncleus.aethermud.storage.graphdb.model.StatsData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.collect.*;
 import com.syncleus.aethermud.items.*;
@@ -45,9 +44,11 @@ import org.nocrala.tools.texttablefmt.Table;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.Optional;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Player extends AetherMudEntity {
@@ -142,47 +143,35 @@ public class Player extends AetherMudEntity {
 
     private void processRegens() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
             Stats stats = getPlayerStatsWithEquipmentAndLevel();
             if (isActive(CoolDownType.NPC_FIGHT) || isActive(CoolDownType.DEATH)) {
                 return;
             }
-            if (playerData.getStats().getCurrentHealth() < stats.getMaxHealth()) {
-                updatePlayerHealth((int) (stats.getMaxHealth() * .05), null);
-            }
-            if (playerData.getStats().getCurrentMana() < stats.getMaxMana()) {
-                addMana((int) (stats.getMaxMana() * .03));
-            }
+            int maxHealth = stats.getMaxHealth();
+            this.consumeRead((p) -> {
+                if (p.getStats().getCurrentHealth() < maxHealth) {
+                    updatePlayerHealth((int) (maxHealth * .05), null);
+                }
+                if (p.getStats().getCurrentMana() < maxHealth) {
+                    addMana((int) (maxHealth * .03));
+                }
+            });
         }
     }
 
     private void processEffects() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            List<EffectPojo> effectsToRemove = Lists.newArrayList();
-            for (EffectPojo effect : playerData.getEffects()) {
-                if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
-                    gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
-                    effectsToRemove.add(effect);
-                    continue;
-                } else {
-                    effect.setEffectApplications(effect.getEffectApplications() + 1);
-                    gameManager.getEffectsManager().application(effect, this);
+            this.consume((playerData) -> {
+                for (EffectData effect : playerData.getEffects()) {
+                    if (effect.getEffectApplications() >= effect.getMaxEffectApplications()) {
+                        gameManager.getChannelUtils().write(playerId, Color.BOLD_ON + Color.GREEN + "[effect] " + Color.RESET + effect.getEffectName() + " has worn off.\r\n", true);
+                        playerData.removeEffect(effect);
+                    } else {
+                        effect.setEffectApplications(effect.getEffectApplications() + 1);
+                        gameManager.getEffectsManager().application(EffectData.copyEffect(effect), this);
+                    }
                 }
-
-            }
-            for (EffectPojo effect : effectsToRemove) {
-                playerData.removeEffect(effect);
-            }
-            savePlayerMetadata();
+            });
         }
     }
 
@@ -193,18 +182,14 @@ public class Player extends AetherMudEntity {
                 removeAllActiveFights();
             }
             if (!isActive(CoolDownType.DEATH)) {
-                Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-                if (!playerMetadataOptional.isPresent()) {
-                    return;
-                }
-                PlayerData playerData = playerMetadataOptional.get();
-                int newGold = playerData.getGold() / 2;
-                playerData.setGold(newGold);
-                if (newGold > 0) {
-                    gameManager.getChannelUtils().write(getPlayerId(), "You just " + Color.BOLD_ON + Color.RED + "lost " + Color.RESET + newGold + Color.YELLOW + " gold" + Color.RESET + "!\r\n");
-                }
-                removeActiveAlertStatus();
-                savePlayerMetadata();
+                this.consume((playerData) -> {
+                    int newGold = playerData.getGold() / 2;
+                    playerData.setGold(newGold);
+                    if (newGold > 0) {
+                        gameManager.getChannelUtils().write(getPlayerId(), "You just " + Color.BOLD_ON + Color.RED + "lost " + Color.RESET + newGold + Color.YELLOW + " gold" + Color.RESET + "!\r\n");
+                    }
+                    removeActiveAlertStatus();
+                });
                 addCoolDown(CoolDownType.DEATH);
                 gameManager.writeToPlayerCurrentRoom(getPlayerId(), getPlayerName() + " is now dead." + "\r\n");
                 PlayerMovement playerMovement = new PlayerMovement(this, gameManager.getRoomManager().getPlayerCurrentRoom(this).get().getRoomId(), GameManager.LOBBY_ID, "vanished into the ether.", "");
@@ -218,24 +203,30 @@ public class Player extends AetherMudEntity {
 
     public boolean updatePlayerHealth(int amount, NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return false;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
             if (amount > 0) {
-                addHealth(amount, playerData);
-                savePlayerMetadata();
+                int currentHealth = this.transactRead(playerData -> playerData.getStats().getCurrentHealth());
+                Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
+                int maxHealth = statsModifier.getMaxHealth();
+                int proposedNewAmt = currentHealth + amount;
+                final int finalNewAmount;
+                if (proposedNewAmt > maxHealth) {
+                    if (currentHealth < maxHealth) {
+                        finalNewAmount = proposedNewAmt - (proposedNewAmt - maxHealth);
+                    } else {
+                        finalNewAmount = proposedNewAmt - amount;
+                    }
+                }
+                else
+                    finalNewAmount = proposedNewAmt;
+                this.consume(playerData -> playerData.getStats().setCurrentHealth(finalNewAmount));
                 return false;
             } else {
-                StatsData stats = playerData.getStats();
-                if ((stats.getCurrentHealth() + amount) < 0) {
-                    stats.setCurrentHealth(0);
+                if ((this.transactRead(playerData -> playerData.getStats().getCurrentHealth()) + amount) < 0) {
+                    this.consume(playerData -> playerData.getStats().setCurrentHealth(0));
                 } else {
-                    stats.setCurrentHealth(stats.getCurrentHealth() + amount);
+                    this.consume(playerData -> playerData.getStats().setCurrentHealth(playerData.getStats().getCurrentHealth() + amount));
                 }
-                savePlayerMetadata();
-                if (playerData.getStats().getCurrentHealth() == 0) {
+                if (this.transactRead(playerData -> playerData.getStats().getCurrentHealth()) == 0) {
                     killPlayer(npcSpawn);
                     return true;
                 }
@@ -264,199 +255,119 @@ public class Player extends AetherMudEntity {
         return getPlayerStatsWithEquipmentAndLevel().getCurrentMana();
     }
 
-
-    private void addHealth(int addAmt, PlayerData playerData) {
-        int currentHealth = playerData.getStats().getCurrentHealth();
-        Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
-        int maxHealth = statsModifier.getMaxHealth();
-        int proposedNewAmt = currentHealth + addAmt;
-        if (proposedNewAmt > maxHealth) {
-            if (currentHealth < maxHealth) {
-                int adjust = proposedNewAmt - maxHealth;
-                proposedNewAmt = proposedNewAmt - adjust;
-            } else {
-                proposedNewAmt = proposedNewAmt - addAmt;
-            }
-        }
-        playerData.getStats().setCurrentHealth(proposedNewAmt);
-    }
-
     public void addMana(int addAmt) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            PlayerData playerData = playerMetadataOptional.get();
-            int currentMana = playerData.getStats().getCurrentMana();
+            int currentMana = this.transactRead(playerData -> playerData.getStats().getCurrentMana());
             Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
             int maxMana = statsModifier.getMaxMana();
             int proposedNewAmt = currentMana + addAmt;
+            final int finalNewAmount;
             if (proposedNewAmt > maxMana) {
                 if (currentMana < maxMana) {
-                    int adjust = proposedNewAmt - maxMana;
-                    proposedNewAmt = proposedNewAmt - adjust;
+                    finalNewAmount = proposedNewAmt - (proposedNewAmt - maxMana);
                 } else {
-                    proposedNewAmt = proposedNewAmt - addAmt;
+                    finalNewAmount = proposedNewAmt - addAmt;
                 }
             }
-            playerData.getStats().setCurrentMana(proposedNewAmt);
-            savePlayerMetadata();
+            else
+                finalNewAmount = proposedNewAmt;
+            this.consume(playerData -> playerData.getStats().setCurrentMana(finalNewAmount));
         }
     }
 
     public void addExperience(int exp) {
         synchronized (interner.intern(playerId)) {
             final Meter requests = Main.metrics.meter("experience-" + playerName);
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            int currentExperience = playerData.getStats().getExperience();
-            int currentLevel = Levels.getLevel(currentExperience);
-            playerData.getStats().setExperience(currentExperience + exp);
-            requests.mark(exp);
-            int newLevel = Levels.getLevel(playerData.getStats().getExperience());
-            if (newLevel > currentLevel) {
-                gameManager.announceLevelUp(playerName, currentLevel, newLevel);
-            }
-            savePlayerMetadata();
+            this.consume(playerData -> {
+                int currentExperience = playerData.getStats().getExperience();
+                int currentLevel = Levels.getLevel(currentExperience);
+                playerData.getStats().setExperience(currentExperience + exp);
+                requests.mark(exp);
+                int newLevel = Levels.getLevel(playerData.getStats().getExperience());
+                if (newLevel > currentLevel) {
+                    gameManager.announceLevelUp(playerName, currentLevel, newLevel);
+                }
+            });
         }
     }
 
     public int getLevel() {
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        return playerMetadataOptional.map(playerMetadata -> Levels.getLevel(playerMetadata.getStats().getExperience())).orElse(0);
-    }
-
-    private Optional<PlayerData> getPlayerMetadata() {
-        return gameManager.getPlayerManager().getPlayerMetadata(playerId);
-    }
-
-    private void savePlayerMetadata() {
-        gameManager.getPlayerManager().persist();
+        return this.transactRead(playerData -> Levels.getLevel(playerData.getStats().getExperience()));
     }
 
     public int getCurrentHealth() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            return playerMetadataOptional.map(playerMetadata -> playerMetadata.getStats().getCurrentHealth()).orElse(0);
+            return this.transactRead(playerData -> playerData.getStats().getCurrentHealth());
         }
     }
 
     public void setCurrentHealth(int health) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            playerMetadataOptional.ifPresent((p) -> p.getStats().setCurrentHealth(health));
+            this.consume(playerData -> playerData.getStats().setCurrentHealth(health));
         }
     }
 
     public void transferGoldToBank(int amt) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.transferGoldToBank(amt);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.transferGoldToBank(amt));
         }
     }
 
     public void transferBankGoldToPlayer(int amt) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.transferBankGoldToPlayer(amt);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.transferBankGoldToPlayer(amt));
         }
     }
 
     public void incrementGold(int amt) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.incrementGold(amt);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.incrementGold(amt));
         }
     }
 
-    public boolean addEffect(EffectPojo effect) {
+    public boolean addEffect(Effect effect) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return false;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            if (playerData.getEffects() != null && (playerData.getEffects().size() >= playerData.getStats().getMaxEffects())) {
-                return false;
-            }
-            playerData.addEffect(effect);
-            savePlayerMetadata();
-            return true;
+            return this.transact(playerData -> {
+                if (playerData.getEffects() != null && (playerData.getEffects().size() >= playerData.getStats().getMaxEffects())) {
+                    return false;
+                }
+
+                EffectData.copyEffect(playerData.createEffect(), effect);
+                return true;
+            });
         }
     }
 
     public void resetEffects() {
         synchronized (interner) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.resetEffects();
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.resetEffects());
         }
     }
 
     public void addLearnedSpellByName(String spellName) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.addLearnedSpellByName(spellName);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.addLearnedSpellByName(spellName));
         }
     }
 
     public boolean doesHaveSpellLearned(String spellName) {
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        if (!playerMetadataOptional.isPresent()) {
-            return false;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        List<String> learnedSpells = playerData.getLearnedSpells();
-        if (learnedSpells == null || learnedSpells.isEmpty()) {
-            return false;
-        }
-        return learnedSpells.contains(spellName);
+        return this.transactRead(playerData -> {
+            List<String> learnedSpells = playerData.getLearnedSpells();
+            if (learnedSpells == null || learnedSpells.isEmpty()) {
+                return false;
+            }
+            return learnedSpells.contains(spellName);
+        });
     }
 
     public void removeLearnedSpellByName(String spellName) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.removeLearnedSpellByName(spellName);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.removeLearnedSpellByName(spellName));
         }
     }
 
     public List<String> getLearnedSpells() {
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        if (!playerMetadataOptional.isPresent()) {
-            return Lists.newArrayList();
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return Lists.newArrayList(playerData.getLearnedSpells());
+        return this.transactRead(playerData -> Lists.newArrayList(playerData.getLearnedSpells()));
     }
 
     public boolean isActiveAlertNpcStatus(NpcSpawn npcSpawn) {
@@ -503,13 +414,7 @@ public class Player extends AetherMudEntity {
 
     public void addInventoryId(String inventoryId) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.addInventoryEntityId(inventoryId);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.addInventoryEntityId(inventoryId));
         }
     }
 
@@ -522,41 +427,24 @@ public class Player extends AetherMudEntity {
 
     public void removeInventoryId(String inventoryId) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.removeInventoryEntityId(inventoryId);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.removeInventoryEntityId(inventoryId));
         }
     }
 
     public void addLockerInventoryId(String entityId) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.addLockerEntityId(entityId);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.addLockerEntityId(entityId));
         }
     }
 
     public void addNpcKillLog(String npcName) {
         gameManager.getEventProcessor().addEvent(() -> {
             synchronized (interner.intern(playerId)) {
-                Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-                if (!playerMetadataOptional.isPresent()) {
-                    return;
-                }
-                PlayerData playerData = playerMetadataOptional.get();
-                playerData.addNpcKill(npcName);
-                savePlayerMetadata();
+                this.consume(playerData -> playerData.addNpcKill(npcName));
             }
         });
     }
+
 
     public void transferItemFromLocker(String entityId) {
         synchronized (interner.intern(playerId)) {
@@ -568,85 +456,47 @@ public class Player extends AetherMudEntity {
 
     public void removeLockerInventoryId(String lockerInventoryId) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.removeLockerEntityId(lockerInventoryId);
-            savePlayerMetadata();
+            this.consume((p) -> p.removeLockerEntityId(lockerInventoryId));
         }
     }
 
     public void updatePlayerMana(int amount) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            StatsData stats = playerData.getStats();
-            stats.setCurrentMana(stats.getCurrentMana() + amount);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.getStats().setCurrentMana(playerData.getStats().getCurrentMana() + amount));
         }
     }
 
     public void updatePlayerForageExperience(int amount) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            StatsData stats = playerData.getStats();
-            stats.setForaging(stats.getForaging() + amount);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.getStats().setForaging(playerData.getStats().getForaging() + amount));
         }
     }
 
     public void addCoolDown(CoolDownType coolDownType) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.createCoolDown(coolDownType);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.createCoolDown(coolDownType));
         }
     }
 
-    public void addCoolDown(CoolDownPojo coolDown) {
+    public void addCoolDown(CoolDown coolDown) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.createCoolDown(coolDown);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.createCoolDown(coolDown));
         }
     }
 
     public Set<? extends CoolDown> getCoolDowns() {
-        synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return Sets.newHashSet();
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            return playerData.getCoolDowns();
-        }
+        return this.transactRead(playerDate -> {
+            Set<CoolDownData> coolDowns = playerDate.getCoolDowns();
+            Set<CoolDown> pojos = new HashSet<CoolDown>();
+            for(CoolDownData coolDown : coolDowns)
+                pojos.add(CoolDownData.copyCoolDown(coolDown));
+            return Collections.unmodifiableSet(pojos);
+        });
     }
 
     public boolean isActiveCoolDown() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return false;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            return playerData.getCoolDowns().size() > 0;
+            return this.transactRead(playerData -> playerData.getCoolDowns().size() > 0);
         }
     }
 
@@ -662,60 +512,50 @@ public class Player extends AetherMudEntity {
 
     public boolean isActive(CoolDownType coolDownType) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return false;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            Set<CoolDownData> coolDowns = playerData.getCoolDowns();
-            for (CoolDownData c : coolDowns) {
-                if (c.getCoolDownType() != null && c.getCoolDownType().equals(coolDownType)) {
-                    if (c.isActive()) {
-                        return true;
+            return this.transactRead( playerData -> {
+                Set<CoolDownData> coolDowns = playerData.getCoolDowns();
+                for (CoolDownData c : coolDowns) {
+                    if (c.getCoolDownType() != null && c.getCoolDownType().equals(coolDownType)) {
+                        if (c.isActive()) {
+                            return true;
+                        }
                     }
                 }
-            }
+                return false;
+            });
         }
-        return false;
     }
 
     public boolean isActiveSpellCoolDown(String spellName) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return false;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            Set<CoolDownData> coolDowns = playerData.getCoolDowns();
-            for (CoolDownData coolDown : coolDowns) {
-                if (coolDown.getName().equalsIgnoreCase(spellName)) {
-                    return true;
+            return this.transactRead(playerData -> {
+                Set<CoolDownData> coolDowns = playerData.getCoolDowns();
+                for (CoolDownData coolDown : coolDowns) {
+                    if (coolDown.getName().equalsIgnoreCase(spellName)) {
+                        return true;
+                    }
                 }
-            }
-            return false;
+                return false;
+            });
         }
     }
 
     private void tickAllActiveCoolDowns() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            Set<CoolDownData> coolDowns = playerData.getCoolDowns();
-            for(final CoolDownData coolDown : coolDowns) {
-                if (coolDown.isActive()) {
-                    coolDown.decrementTick();
-                } else {
-                    if (coolDown.equals(CoolDownType.DEATH)) {
-                        gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
-                    }
+            this.consume(playerData -> {
+                Set<CoolDownData> coolDowns = playerData.getCoolDowns();
+                for(final CoolDownData coolDown : coolDowns) {
+                    if (coolDown.isActive()) {
+                        coolDown.decrementTick();
+                    } else {
+                        if (coolDown.equals(CoolDownType.DEATH)) {
+                            gameManager.getChannelUtils().write(playerId, "You have risen from the dead.\r\n");
+                        }
 
-                    playerData.removeCoolDown(coolDown);
+                        playerData.removeCoolDown(coolDown);
+                    }
                 }
-            }
-            savePlayerMetadata();
+            });
         }
     }
 
@@ -745,15 +585,16 @@ public class Player extends AetherMudEntity {
     }
 
     public Room getCurrentRoom() {
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        if (currentRoom == null && playerMetadataOptional.isPresent()) {
-            PlayerData playerData = playerMetadataOptional.get();
-            Integer currentRoomId = playerData.getCurrentRoomId();
-            if (currentRoomId != null) {
-                this.currentRoom = gameManager.getRoomManager().getRoom(currentRoomId);
+        return this.transactRead(playerData -> {
+            if (currentRoom == null) {
+                Integer currentRoomId = playerData.getCurrentRoomId();
+                if (currentRoomId != null) {
+                    this.currentRoom = gameManager.getRoomManager().getRoom(currentRoomId);
+                }
             }
-        }
-        return currentRoom;
+            return currentRoom;
+        });
+
     }
 
     public void setCurrentRoomAndPersist(Room currentRoom) {
@@ -761,13 +602,7 @@ public class Player extends AetherMudEntity {
         setCurrentRoom(currentRoom);
         gameManager.getEventProcessor().addEvent(() -> {
             synchronized (interner.intern(playerId)) {
-                Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-                if (!playerMetadataOptional.isPresent()) {
-                    return;
-                }
-                PlayerData playerData = playerMetadataOptional.get();
-                playerData.setCurrentRoomId(currentRoom.getRoomId());
-                savePlayerMetadata();
+                this.consume(playerData -> playerData.setCurrentRoomId(currentRoom.getRoomId()));
             }
         });
     }
@@ -777,14 +612,11 @@ public class Player extends AetherMudEntity {
     }
 
     public Map<String, Long> getNpcKillLog() {
-        ImmutableMap.Builder<String, Long> builder = ImmutableMap.builder();
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        if (!playerMetadataOptional.isPresent()) {
-            return Maps.newHashMap();
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        playerData.getNpcKillLog().forEach(builder::put);
-        return builder.build();
+        return this.transactRead(playerData -> {
+            ImmutableMap.Builder<String, Long> builder = ImmutableMap.builder();
+            playerData.getNpcKillLog().forEach(builder::put);
+            return builder.build();
+        });
     }
 
     public void removePlayerFromRoom(Room room) {
@@ -866,12 +698,9 @@ public class Player extends AetherMudEntity {
 
     public Optional<ItemPojo> getInventoryItem(String itemKeyword) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return Optional.empty();
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            for (String itemId : playerData.getInventory()) {
+            final List<String> inventory = new ArrayList<>();
+            this.consumeRead(playerData -> inventory.addAll(playerData.getInventory()));
+            for (String itemId : inventory) {
                 Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                 if (!itemOptional.isPresent()) {
                     continue;
@@ -932,25 +761,22 @@ public class Player extends AetherMudEntity {
 
     public List<ItemPojo> getLockerInventory() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptonal = getPlayerMetadata();
-            if (!playerMetadataOptonal.isPresent()) {
-                return Lists.newArrayList();
-            }
-            PlayerData playerData = playerMetadataOptonal.get();
-            List<ItemPojo> inventoryItems = Lists.newArrayList();
-            List<String> inventory = playerData.getLockerInventory();
-            if (inventory != null) {
-                for (String itemId : inventory) {
-                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (!itemOptional.isPresent()) {
-                        log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
-                        continue;
+            return this.transactRead(playerData -> {
+                List<ItemPojo> inventoryItems = Lists.newArrayList();
+                List<String> inventory = playerData.getLockerInventory();
+                if (inventory != null) {
+                    for (String itemId : inventory) {
+                        Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                        if (!itemOptional.isPresent()) {
+                            log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
+                            continue;
+                        }
+                        inventoryItems.add(itemOptional.get());
                     }
-                    inventoryItems.add(itemOptional.get());
                 }
-            }
-            inventoryItems.sort(Comparator.comparing(ItemPojo::getItemName));
-            return inventoryItems;
+                inventoryItems.sort(Comparator.comparing(ItemPojo::getItemName));
+                return inventoryItems;
+            });
         }
     }
 
@@ -997,48 +823,42 @@ public class Player extends AetherMudEntity {
 
     public List<ItemPojo> getInventory() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return Lists.newArrayList();
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            List<ItemPojo> inventoryItems = Lists.newArrayList();
-            List<String> inventory = playerData.getInventory();
-            if (inventory != null) {
-                for (String itemId : inventory) {
-                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (!itemOptional.isPresent()) {
-                        log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
-                        continue;
+            return this.transactRead(playerData -> {
+                List<ItemPojo> inventoryItems = Lists.newArrayList();
+                List<String> inventory = playerData.getInventory();
+                if (inventory != null) {
+                    for (String itemId : inventory) {
+                        Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                        if (!itemOptional.isPresent()) {
+                            log.info("Orphaned inventoryId:" + itemId + " player: " + getPlayerName());
+                            continue;
+                        }
+                        inventoryItems.add(itemOptional.get());
                     }
-                    inventoryItems.add(itemOptional.get());
                 }
-            }
-            inventoryItems.sort(Comparator.comparing(ItemPojo::getItemName));
-            return inventoryItems;
+                inventoryItems.sort(Comparator.comparing(ItemPojo::getItemName));
+                return inventoryItems;
+            });
         }
     }
 
     public Set<ItemPojo> getEquipment() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return Sets.newHashSet();
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            Set<ItemPojo> equipmentItems = Sets.newHashSet();
-            List<String> equipment = playerData.getPlayerEquipment();
-            if (equipment != null) {
-                for (String itemId : equipment) {
-                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
-                    if (!itemOptional.isPresent()) {
-                        log.info("Orphaned equipmentId:" + itemId + " player: " + getPlayerName());
-                        continue;
+            return this.transactRead(playerData -> {
+                Set<ItemPojo> equipmentItems = Sets.newHashSet();
+                List<String> equipment = playerData.getPlayerEquipment();
+                if (equipment != null) {
+                    for (String itemId : equipment) {
+                        Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                        if (!itemOptional.isPresent()) {
+                            log.info("Orphaned equipmentId:" + itemId + " player: " + getPlayerName());
+                            continue;
+                        }
+                        equipmentItems.add(itemOptional.get());
                     }
-                    equipmentItems.add(itemOptional.get());
                 }
-            }
-            return equipmentItems;
+                return equipmentItems;
+            });
         }
     }
 
@@ -1062,26 +882,23 @@ public class Player extends AetherMudEntity {
     }
 
     public Optional<ItemPojo> getSlotItem(EquipmentSlotType slot) {
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        if (!playerMetadataOptional.isPresent()) {
-            return Optional.empty();
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        if (playerData.getPlayerEquipment() == null) {
-            return Optional.empty();
-        }
-        for (String item : playerData.getPlayerEquipment()) {
-            Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(item);
-            if (!itemOptional.isPresent()) {
-                continue;
+        return this.transactRead(playerData -> {
+            if (playerData.getPlayerEquipment() == null) {
+                return Optional.empty();
             }
-            ItemPojo itemEntity = itemOptional.get();
-            EquipmentSlotType equipmentSlotType = itemEntity.getEquipment().getEquipmentSlotType();
-            if (equipmentSlotType.equals(slot)) {
-                return Optional.of(itemEntity);
+            for (String item : playerData.getPlayerEquipment()) {
+                Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(item);
+                if (!itemOptional.isPresent()) {
+                    continue;
+                }
+                ItemPojo itemEntity = itemOptional.get();
+                EquipmentSlotType equipmentSlotType = itemEntity.getEquipment().getEquipmentSlotType();
+                if (equipmentSlotType.equals(slot)) {
+                    return Optional.of(itemEntity);
+                }
             }
-        }
-        return Optional.empty();
+            return Optional.empty();
+        });
     }
 
     public boolean unEquip(ItemPojo item) {
@@ -1097,25 +914,13 @@ public class Player extends AetherMudEntity {
 
     public void addEquipmentId(String equipmentId) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.addEquipmentEntityId(equipmentId);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.addEquipmentEntityId(equipmentId));
         }
     }
 
     public void removeEquipmentId(String equipmentId) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.removeEquipmentEntityId(equipmentId);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.removeEquipmentEntityId(equipmentId));
         }
     }
 
@@ -1135,14 +940,12 @@ public class Player extends AetherMudEntity {
         sb.append(buildEquipmentString()).append("\r\n");
         sb.append(Color.MAGENTA + "Stats--------------------------------" + Color.RESET).append("\r\n");
         sb.append(gameManager.buildLookString(playerName, modifiedStats, diffStats)).append("\r\n");
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        if (playerMetadataOptional.isPresent()) {
-            PlayerData playerData = playerMetadataOptional.get();
+        this.consumeRead(playerData -> {
             if (playerData.getEffects() != null && playerData.getEffects().size() > 0) {
                 sb.append(Color.MAGENTA + "Effects--------------------------------" + Color.RESET).append("\r\n");
                 sb.append(buldEffectsString()).append("\r\n");
             }
-        }
+        });
         StringBuilder finalString = new StringBuilder();
         Lists.newArrayList(sb.toString().split("[\\r\\n]+")).forEach(s -> finalString.append(AetherMudUtils.trimTrailingBlanks(s)).append("\r\n"));
         return finalString.toString();
@@ -1153,60 +956,48 @@ public class Player extends AetherMudEntity {
             StatsBuilder statsBuilder = new StatsBuilder();
             Stats newStats = statsBuilder.createStats();
 
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return newStats;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
             Stats playerStats = gameManager.getStatsModifierFactory().getStatsModifier(this);
             StatsHelper.combineStats(newStats, playerStats);
-            List<String> playerEquipment = playerData.getPlayerEquipment();
-            if (playerEquipment == null) {
-                return playerStats;
-            }
-            for (String equipId : playerEquipment) {
-                Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(equipId);
-                if (!itemOptional.isPresent()) {
-                    continue;
+            return this.transactRead(playerData -> {
+                List<String> playerEquipment = playerData.getPlayerEquipment();
+                if (playerEquipment == null) {
+                    return playerStats;
                 }
-                ItemPojo itemEntity = itemOptional.get();
-                Equipment equipment = itemEntity.getEquipment();
-                Stats stats = equipment.getStats();
-                StatsHelper.combineStats(newStats, stats);
-            }
-            if (playerData.getEffects() != null) {
-                for (EffectPojo effect : playerData.getEffects()) {
-                    StatsHelper.combineStats(newStats, effect.getDurationStats());
+                for (String equipId : playerEquipment) {
+                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(equipId);
+                    if (!itemOptional.isPresent()) {
+                        continue;
+                    }
+                    ItemPojo itemEntity = itemOptional.get();
+                    Equipment equipment = itemEntity.getEquipment();
+                    Stats stats = equipment.getStats();
+                    StatsHelper.combineStats(newStats, stats);
                 }
-            }
-            return newStats;
+                if (playerData.getEffects() != null) {
+                    for (EffectData effect : playerData.getEffects()) {
+                        StatsHelper.combineStats(newStats, StatsData.copyStats(effect.getDurationStats()));
+                    }
+                }
+                return newStats;
+            });
         }
     }
 
     public PlayerClass getPlayerClass() {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return PlayerClass.BASIC;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            PlayerClass playerClass = playerData.getPlayerClass();
-            if (playerClass == null) {
-                return PlayerClass.BASIC;
-            }
-            return playerClass;
+            return this.transactRead(playerData -> {
+                PlayerClass playerClass = playerData.getPlayerClass();
+                if (playerClass == null) {
+                    return PlayerClass.BASIC;
+                }
+                return playerClass;
+            });
         }
     }
 
     public void setPlayerClass(PlayerClass playerClass) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.setPlayerClass(playerClass);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.setPlayerClass(playerClass));
         }
     }
 
@@ -1228,16 +1019,13 @@ public class Player extends AetherMudEntity {
         return t.render();
     }
 
-    /* FIGHT FIGHT FIGHT FIGHT */
-
     public String buldEffectsString() {
-        Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-        if (!playerMetadataOptional.isPresent()) {
-            return "";
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        List<EffectPojo> effects = playerData.getEffects();
-        return gameManager.renderEffectsString(effects);
+        return this.transactRead(playerData -> {
+            List<Effect> effects = new ArrayList<Effect>();
+            for(EffectData effect : playerData.getEffects())
+                effects.add(EffectData.copyEffect(effect));
+            return gameManager.renderEffectsString(effects);
+        });
     }
 
     private String capitalize(final String line) {
@@ -1255,37 +1043,23 @@ public class Player extends AetherMudEntity {
     }
 
     public boolean setPlayerSetting(String key, String value) {
-        boolean success;
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return false;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            success = playerData.setSetting(key, value);
-            savePlayerMetadata();
+            return this.transact(playerData -> playerData.setSetting(key, value));
         }
-        return success;
     }
 
     public Optional<String> getPlayerSetting(String key) {
-        return getPlayerMetadata().flatMap(playerMetadata -> Optional.ofNullable(playerMetadata.getSetting(key)));
+        return this.transactRead(playerData -> Optional.ofNullable(playerData.getSetting(key)));
     }
 
     public void removePlayerSetting(String key) {
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = getPlayerMetadata();
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.deleteSetting(key);
-            savePlayerMetadata();
+            this.consume(playerData -> playerData.deleteSetting(key));
         }
     }
 
     public Map<String, String> getPlayerSettings() {
-        return getPlayerMetadata().map(PlayerData::getPlayerSettings).orElseGet(Maps::newHashMap);
+        return this.transactRead(playerData -> new HashMap<>(playerData.getPlayerSettings()));
     }
 
     public boolean addActiveFight(NpcSpawn npcSpawn) {
@@ -1479,5 +1253,29 @@ public class Player extends AetherMudEntity {
 
     public boolean isChatModeOn() {
         return isChatMode.get();
+    }
+
+    public Set<PlayerRole> getRoles() {
+        return this.transactRead(playerData -> new HashSet<PlayerRole>(playerData.getPlayerRoles()));
+    }
+
+    public StatsPojo getStats() {
+        return this.transactRead(playerData -> StatsData.copyStats(playerData.getStats()));
+    }
+
+    private <T> T transact(Function<PlayerData, T> func) {
+        return PlayerUtil.transact(this.gameManager, this.playerId, func);
+    }
+
+    private void consume(Consumer<PlayerData> func) {
+        PlayerUtil.consume(this.gameManager, this.playerId, func);
+    }
+
+    private <T> T transactRead(Function<PlayerData, T> func) {
+        return PlayerUtil.transactRead(this.gameManager, this.playerId, func);
+    }
+
+    private void consumeRead(Consumer<PlayerData> func) {
+        PlayerUtil.consumeRead(this.gameManager, this.playerId, func);
     }
 }

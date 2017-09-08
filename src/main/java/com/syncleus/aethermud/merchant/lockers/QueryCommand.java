@@ -16,7 +16,8 @@
 package com.syncleus.aethermud.merchant.lockers;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -37,19 +38,16 @@ public class QueryCommand extends LockerCommand {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         try {
             configure(e);
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            write("----LOCKER ITEMS\r\n");
-            for (String rolledUpInvLine: player.getRolledUpLockerInventory()) {
-                write(rolledUpInvLine);;
-            }
-            write("\r\n\r\n----PERSONAL INVENTORY\r\n");
-            for (String rolledUpInvLine: player.getRolledUpIntentory()) {
-                write(rolledUpInvLine);
-            }
+            PlayerUtil.consume(gameManager, playerId, playerData -> {
+                write("----LOCKER ITEMS\r\n");
+                for (String rolledUpInvLine: player.getRolledUpLockerInventory()) {
+                    write(rolledUpInvLine);;
+                }
+                write("\r\n\r\n----PERSONAL INVENTORY\r\n");
+                for (String rolledUpInvLine: player.getRolledUpIntentory()) {
+                    write(rolledUpInvLine);
+                }
+            });
         } finally {
             super.messageReceived(ctx, e);
         }

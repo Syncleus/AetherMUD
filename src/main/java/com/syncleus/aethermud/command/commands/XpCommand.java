@@ -18,7 +18,8 @@ package com.syncleus.aethermud.command.commands;
 import com.codahale.metrics.Meter;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.stats.Levels;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -48,29 +49,26 @@ public class XpCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            Optional<PlayerData> playerMetadataOptional = playerManager.getPlayerMetadata(player.getPlayerId());
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            int nextLevel = Levels.getLevel(playerData.getStats().getExperience()) + 1;
-            int expToNextLevel = Levels.getXp(nextLevel) - playerData.getStats().getExperience();
-            Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
+            PlayerUtil.consume(gameManager, playerId, playerData -> {
+                int nextLevel = Levels.getLevel(playerData.getStats().getExperience()) + 1;
+                int expToNextLevel = Levels.getXp(nextLevel) - playerData.getStats().getExperience();
+                Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
 
-            Table table = new Table(2, BorderStyle.CLASSIC_COMPATIBLE, ShownBorders.NONE);
+                Table table = new Table(2, BorderStyle.CLASSIC_COMPATIBLE, ShownBorders.NONE);
 
-            table.setColumnWidth(0, 8, 20);
-            table.setColumnWidth(1, 10, 20);
-            table.addCell("Window");
-            table.addCell("XP/sec");
-            table.addCell(" 1 min");
-            table.addCell(String.valueOf(round(meter.getOneMinuteRate())));
-            table.addCell(" 5 min");
-            table.addCell(String.valueOf(round(meter.getFiveMinuteRate())));
-            table.addCell("15 min");
-            table.addCell(String.valueOf(round(meter.getFifteenMinuteRate())));
+                table.setColumnWidth(0, 8, 20);
+                table.setColumnWidth(1, 10, 20);
+                table.addCell("Window");
+                table.addCell("XP/sec");
+                table.addCell(" 1 min");
+                table.addCell(String.valueOf(round(meter.getOneMinuteRate())));
+                table.addCell(" 5 min");
+                table.addCell(String.valueOf(round(meter.getFiveMinuteRate())));
+                table.addCell("15 min");
+                table.addCell(String.valueOf(round(meter.getFifteenMinuteRate())));
 
-            write(NumberFormat.getNumberInstance(Locale.US).format(expToNextLevel) + " experience to level " + nextLevel + ".\r\n" + table.render());
+                write(NumberFormat.getNumberInstance(Locale.US).format(expToNextLevel) + " experience to level " + nextLevel + ".\r\n" + table.render());
+            });
         });
     }
 

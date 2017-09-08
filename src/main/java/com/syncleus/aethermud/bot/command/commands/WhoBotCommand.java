@@ -17,7 +17,7 @@ package com.syncleus.aethermud.bot.command.commands;
 
 import com.syncleus.aethermud.bot.command.BotCommandManager;
 import com.syncleus.aethermud.player.Player;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.stats.Levels;
 import com.google.api.client.util.Lists;
 import com.google.common.collect.Sets;
@@ -42,12 +42,7 @@ public class WhoBotCommand extends BotCommand {
         ArrayList<String> resp = Lists.newArrayList();
         Set<Player> allPlayers = botCommandManager.getGameManager().getAllPlayers();
         for (Player player: allPlayers) {
-            Optional<PlayerData> playerMetadataOptional = botCommandManager.getGameManager().getPlayerManager().getPlayerMetadata(player.getPlayerId());
-            if (!playerMetadataOptional.isPresent()) {
-                continue;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            String line = player.getPlayerName() + " (level " + Levels.getLevel(playerData.getStats().getExperience()) + ") - " + player.getCurrentRoom().getRoomTitle();
+            String line = player.getPlayerName() + " (level " + Levels.getLevel(player.getStats().getExperience()) + ") - " + player.getCurrentRoom().getRoomTitle();
             resp.add(line);
         }
         return resp;

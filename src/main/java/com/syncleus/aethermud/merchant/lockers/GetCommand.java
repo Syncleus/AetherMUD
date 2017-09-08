@@ -17,7 +17,8 @@ package com.syncleus.aethermud.merchant.lockers;
 
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
@@ -42,24 +43,26 @@ public class GetCommand extends LockerCommand {
             configure(e);
             originalMessageParts.remove(0);
             String desiredRetrieveOption = Joiner.on(" ").join(originalMessageParts);
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            for (String entityId: playerData.getLockerInventory()) {
-                Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(entityId);
-                if (!itemEntityOptional.isPresent()) {
-                    continue;
-                }
-                ItemPojo itemEntity = itemEntityOptional.get();
-                if (itemEntity.getItemTriggers().contains(desiredRetrieveOption)) {
-                    player.transferItemFromLocker(entityId);
-                    write(itemEntity.getItemName() + " retrieved from locker.\r\n");
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                Optional<PlayerData> playerMetadataOptional = tx.getStorage().getPlayerMetadata(playerId);
+                if (!playerMetadataOptional.isPresent()) {
                     return;
                 }
+                PlayerData playerData = playerMetadataOptional.get();
+                for (String entityId : playerData.getLockerInventory()) {
+                    Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(entityId);
+                    if (!itemEntityOptional.isPresent()) {
+                        continue;
+                    }
+                    ItemPojo itemEntity = itemEntityOptional.get();
+                    if (itemEntity.getItemTriggers().contains(desiredRetrieveOption)) {
+                        player.transferItemFromLocker(entityId);
+                        write(itemEntity.getItemName() + " retrieved from locker.\r\n");
+                        return;
+                    }
+                }
+                write("Item not found in locker.\r\n");
             }
-            write("Item not found in locker.\r\n");
         } finally {
             super.messageReceived(ctx, e);
         }

@@ -48,7 +48,7 @@ public class BasicNpcPlayerDamageProcessor implements DamageProcessor {
     public int getChanceToHit(Player player, NpcSpawn npcSpawn) {
         Stats playerStats = player.getPlayerStatsWithEquipmentAndLevel();
         Stats npcStats = npcSpawn.getStats();
-        return (int) ((npcStats.getStrength() + npcStats.getMeleSkill()) * 5 - playerStats.getAgile() * 5);
+        return (int) ((npcStats.getStrength() + npcStats.getMeleeSkill()) * 5 - playerStats.getAgile() * 5);
     }
 
     @Override

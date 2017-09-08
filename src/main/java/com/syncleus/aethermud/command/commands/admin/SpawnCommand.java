@@ -25,6 +25,7 @@ import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.server.communication.Color;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -46,28 +47,30 @@ public class SpawnCommand  extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
-            List<? extends NpcSpawn> npcsFromFile = gameManager.getGraphStorage().getAllNpcs(gameManager);
-            if (originalMessageParts.size() == 1) {
-                write(getHeader());
-                for (NpcSpawn npcSpawn : npcsFromFile) {
-                    write(npcSpawn.getName() + "\r\n");
-                }
-            } else {
-                originalMessageParts.remove(0);
-                String targetNpc = Joiner.on(" ").join(originalMessageParts);
-                for (NpcSpawn npcSpawn : npcsFromFile) {
-                    if (targetNpc.equals(npcSpawn.getName())) {
-                        Loot loot = new Loot(0,0, Lists.newArrayList());
-                        NpcSpawn modifiedNpcSpawn = new NpcBuilder(npcSpawn).setSpawnRules(null).setLoot(loot).createNpc();
-                        modifiedNpcSpawn.getStats().setExperience(0);
-                        modifiedNpcSpawn.setCurrentRoom(currentRoom);
-                        gameManager.getEntityManager().addEntity(modifiedNpcSpawn);
-                        currentRoom.addPresentNpc(modifiedNpcSpawn.getEntityId());
-                        writeToRoom("A " + modifiedNpcSpawn.getColorName() + " appears." + "\r\n");
-                        return;
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                List<? extends NpcSpawn> npcsFromFile = tx.getStorage().getAllNpcs(gameManager);
+                if (originalMessageParts.size() == 1) {
+                    write(getHeader());
+                    for (NpcSpawn npcSpawn : npcsFromFile) {
+                        write(npcSpawn.getName() + "\r\n");
                     }
+                } else {
+                    originalMessageParts.remove(0);
+                    String targetNpc = Joiner.on(" ").join(originalMessageParts);
+                    for (NpcSpawn npcSpawn : npcsFromFile) {
+                        if (targetNpc.equals(npcSpawn.getName())) {
+                            Loot loot = new Loot(0, 0, Lists.newArrayList());
+                            NpcSpawn modifiedNpcSpawn = new NpcBuilder(npcSpawn).setSpawnRules(null).setLoot(loot).createNpc();
+                            modifiedNpcSpawn.getStats().setExperience(0);
+                            modifiedNpcSpawn.setCurrentRoom(currentRoom);
+                            gameManager.getEntityManager().addEntity(modifiedNpcSpawn);
+                            currentRoom.addPresentNpc(modifiedNpcSpawn.getEntityId());
+                            writeToRoom("A " + modifiedNpcSpawn.getColorName() + " appears." + "\r\n");
+                            return;
+                        }
+                    }
+                    write("No npc found with name: " + targetNpc + "\r\n");
                 }
-                write("No npc found with name: " + targetNpc + "\r\n");
             }
         });
     }

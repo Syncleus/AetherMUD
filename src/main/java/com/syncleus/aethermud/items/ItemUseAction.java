@@ -28,6 +28,6 @@ public interface ItemUseAction {
 
     void postExecuteAction(GameManager gameManager, Player player, ItemPojo item);
 
-    Set<EffectPojo> getEffects();
+    Set<Effect> getEffects();
 
 }

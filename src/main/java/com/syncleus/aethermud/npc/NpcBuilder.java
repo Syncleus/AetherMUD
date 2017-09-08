@@ -22,8 +22,8 @@ import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.stats.StatsPojo;
-import com.syncleus.aethermud.storage.graphdb.StatsData;
-import com.syncleus.aethermud.storage.graphdb.NpcData;
+import com.syncleus.aethermud.storage.graphdb.model.StatsData;
+import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.syncleus.aethermud.world.model.Area;
 import org.apache.commons.beanutils.PropertyUtils;
 

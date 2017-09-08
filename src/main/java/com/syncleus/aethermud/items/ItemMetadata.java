@@ -39,7 +39,7 @@ public class ItemMetadata {
     private int itemHalfLifeTicks;
     private Rarity rarity;
     private Equipment equipment;
-    private Set<EffectPojo> effects;
+    private Set<Effect> effects;
     private List<String> itemTriggers;
     private Set<TimeTracker.TimeOfDay> validTimeOfDays;
     private boolean isDisposable;
@@ -123,11 +123,11 @@ public class ItemMetadata {
         this.equipment = equipment;
     }
 
-    public Set<EffectPojo> getEffects() {
+    public Set<Effect> getEffects() {
         return effects;
     }
 
-    public void setEffects(Set<EffectPojo> effects) {
+    public void setEffects(Set<Effect> effects) {
         this.effects = effects;
     }
 

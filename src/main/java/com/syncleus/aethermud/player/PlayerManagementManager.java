@@ -16,7 +16,8 @@
 package com.syncleus.aethermud.player;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import org.apache.log4j.Logger;
 
 import javax.management.*;
@@ -35,30 +36,34 @@ public class PlayerManagementManager {
     }
 
     public void createAndRegisterAllPlayerManagementMBeans() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
-        Set<Map.Entry<String, PlayerData>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
-        for (Map.Entry<String, PlayerData> entry : entrySet) {
-            registerPlayer(entry.getValue().getPlayerName(), entry.getValue().getPlayerId(), gameManager);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            Set<Map.Entry<String, PlayerData>> entrySet = tx.getStorage().getAllPlayerMetadata().entrySet();
+            for (Map.Entry<String, PlayerData> entry : entrySet) {
+                registerPlayer(entry.getValue().getPlayerName(), entry.getValue().getPlayerId(), gameManager);
+            }
         }
     }
 
     public void processPlayersMarkedForDeletion(){
-        Set<Map.Entry<String, PlayerData>> entrySet = gameManager.getPlayerManager().getPlayerMetadataStore().entrySet();
-        for (Map.Entry<String, PlayerData> entry : entrySet) {
-            String playerId = entry.getKey();
-            PlayerData playerData = entry.getValue();
-            if (playerData.isMarkedForDelete()) {
-                if (playerData.getInventory() != null) {
-                    for (String itemId : playerData.getInventory()) {
-                        gameManager.getEntityManager().removeItem(itemId);
-                        log.info("Removed itemId from " + playerData.getPlayerName() + "'s inventory: " + itemId);
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            Set<Map.Entry<String, PlayerData>> entrySet = tx.getStorage().getAllPlayerMetadata().entrySet();
+            for (Map.Entry<String, PlayerData> entry : entrySet) {
+                String playerId = entry.getKey();
+                PlayerData playerData = entry.getValue();
+                if (playerData.isMarkedForDelete()) {
+                    if (playerData.getInventory() != null) {
+                        for (String itemId : playerData.getInventory()) {
+                            gameManager.getEntityManager().removeItem(itemId);
+                            log.info("Removed itemId from " + playerData.getPlayerName() + "'s inventory: " + itemId);
+                        }
+                        for (String itemId : playerData.getLockerInventory()) {
+                            gameManager.getEntityManager().removeItem(itemId);
+                            log.info("Removed itemId from " + playerData.getPlayerName() + "'s locker inventory: " + itemId);
+                        }
                     }
-                    for (String itemId : playerData.getLockerInventory()) {
-                        gameManager.getEntityManager().removeItem(itemId);
-                        log.info("Removed itemId from " + playerData.getPlayerName() + "'s locker inventory: " + itemId);
-                    }
-                }
-                    gameManager.getPlayerManager().getPlayerMetadataStore().remove(playerId);
+                    tx.getStorage().getAllPlayerMetadata().get(playerId).remove();
                     log.info(playerData.getPlayerName() + " has been removed from the game.");
+                }
             }
         }
     }

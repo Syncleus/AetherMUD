@@ -15,7 +15,9 @@
  */
 package com.syncleus.aethermud.entity;
 
+import com.google.common.base.Function;
 import com.syncleus.aethermud.Main;
+import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.items.ItemPojo;
 import com.syncleus.aethermud.items.ItemBuilder;
@@ -23,7 +25,10 @@ import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.storage.AetherMudStorage;
-import com.syncleus.aethermud.storage.graphdb.ItemData;
+import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.RoomManager;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.log4j.Logger;
@@ -34,6 +39,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -41,15 +47,15 @@ public class EntityManager {
 
     private static final Logger log = Logger.getLogger(EntityManager.class);
 
-    private final AetherMudStorage aetherMudStorage;
+    private final GraphStorageFactory graphStorageFactory;
     private final RoomManager roomManager;
     private final PlayerManager playerManager;
     private final Map<String, NpcSpawn> npcs = new ConcurrentHashMap<>();
     private final Map<String, AetherMudEntity> entities = new ConcurrentHashMap<>();
     private final ExecutorService mainTickExecutorService = Executors.newFixedThreadPool(50);
 
-    public EntityManager(AetherMudStorage aetherMudStorage, RoomManager roomManager, PlayerManager playerManager) {
-        this.aetherMudStorage = aetherMudStorage;
+    public EntityManager(GraphStorageFactory graphStorageFactory, RoomManager roomManager, PlayerManager playerManager) {
+        this.graphStorageFactory = graphStorageFactory;
         this.roomManager = roomManager;
         this.playerManager = playerManager;
         ExecutorService tickOrchestratorService = Executors.newFixedThreadPool(5);
@@ -79,20 +85,22 @@ public class EntityManager {
     }
 
     public ItemData saveItem(ItemPojo item) {
-        return aetherMudStorage.saveItem(item);
+        return this.transact(storage -> storage.saveItem(item));
     }
 
     public void removeItem(ItemPojo item) {
-        aetherMudStorage.removeItem(item.getItemId());
+        this.consume(storage -> storage.removeItem(item.getItemId()));
     }
 
     public void removeItem(String itemId) {
-        aetherMudStorage.removeItem(itemId);
+        this.consume(storage -> storage.removeItem(itemId));
     }
 
     public Optional<ItemPojo> getItemEntity(String itemId) {
-        Optional<ItemData> item = aetherMudStorage.getItemEntity(itemId);
-        return item.map(itemName -> new ItemBuilder().from(itemName).create());
+        return this.transactRead(storage -> {
+            Optional<ItemData> item = storage.getItemEntity(itemId);
+            return item.map(itemName -> new ItemBuilder().from(itemName).create());
+        });
     }
 
     public void deleteNpcEntity(String npcId) {
@@ -104,6 +112,27 @@ public class EntityManager {
     }
 
     public static final int SLEEP_MILLIS = 500;
+
+    private <T> T transact(Function<GraphDbAetherMudStorage, T> func) {
+        try( GraphStorageFactory.AetherMudTx tx = this.graphStorageFactory.beginTransaction() ) {
+            T retVal = func.apply(tx.getStorage());
+            tx.success();
+            return retVal;
+        }
+    }
+
+    private void consume(Consumer<GraphDbAetherMudStorage> func) {
+        try( GraphStorageFactory.AetherMudTx tx = this.graphStorageFactory.beginTransaction() ) {
+            func.accept(tx.getStorage());
+            tx.success();
+        }
+    }
+
+    private <T> T transactRead(Function<GraphDbAetherMudStorage, T> func) {
+        try( GraphStorageFactory.AetherMudTx tx = this.graphStorageFactory.beginTransaction() ) {
+            return func.apply(tx.getStorage());
+        }
+    }
 
     class PlayerTicker implements Runnable {
         private final com.codahale.metrics.Timer ticktime = Main.metrics.timer(name(EntityManager.class, "player_tick_time"));

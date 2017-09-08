@@ -20,12 +20,15 @@ import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
-import com.syncleus.aethermud.storage.graphdb.NpcData;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.syncleus.ferma.DelegatingFramedGraph;
 import com.syncleus.ferma.WrappedFramedGraph;
+import com.syncleus.ferma.ext.orientdb.impl.OrientTransactionFactoryImpl;
+import org.apache.tinkerpop.gremlin.orientdb.OrientGraphFactory;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.Assert;
@@ -65,17 +68,19 @@ public class ColorizedTextTemplateTest {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        WrappedFramedGraph<Graph> framedGraph = new DelegatingFramedGraph(TinkerGraph.open(), Main.FRAMED_TYPES);
-        AetherMudStorage npcStorage = new GraphDbAetherMudStorage(framedGraph, null);
+        GraphStorageFactory txFactory = new GraphStorageFactory();
+        try( GraphStorageFactory.AetherMudTx tx = txFactory.beginTransaction() ) {
+            AetherMudStorage npcStorage = tx.getStorage();
 
-        List<? extends NpcData> npcData = npcStorage.getNpcDatas();
-        Assert.assertTrue(npcData.isEmpty());
+            List<? extends NpcData> npcData = npcStorage.getNpcDatas();
+            Assert.assertTrue(npcData.isEmpty());
 
-        NpcData newNpc = npcStorage.newNpcData();
-        newNpc.setColorName("blue");
+            NpcData newNpc = npcStorage.newNpcData();
+            newNpc.setColorName("blue");
 
-        npcData = npcStorage.getNpcDatas();
-        Assert.assertFalse(npcData.isEmpty());
+            npcData = npcStorage.getNpcDatas();
+            Assert.assertFalse(npcData.isEmpty());
+        }
 
 //        npcData.forEach(new Consumer<NpcData>() {
 //            @Override

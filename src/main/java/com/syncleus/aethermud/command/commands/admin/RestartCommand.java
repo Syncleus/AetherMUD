@@ -42,7 +42,6 @@ public class RestartCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommandThreadSafe(ctx, e, BounceIrcBotCommand.class, () -> {
-            gameManager.getGraphStorage().persist();
             playerManager.getAllPlayersMap().values().stream()
                     .filter(player -> player.getChannel().isConnected())
                     .forEach(player -> gameManager.getChannelUtils().write(player.getPlayerId(),
@@ -55,8 +54,6 @@ public class RestartCommand extends Command {
                     "88         \"8b,   ,aa 88b,   ,a8\" \"8a,   ,a8\" \"8a,   ,a8\"  88,    \n" +
                     "88          `\"Ybbd8\"' 8Y\"Ybbd8\"'   `\"YbbdP\"'   `\"YbbdP\"'   \"Y888  \n" +
                     "                                                                  "));
-            gameManager.getGraphStorage().stopAsync();
-            gameManager.getGraphStorage().awaitTerminated();
             System.exit(0);
         });
     }

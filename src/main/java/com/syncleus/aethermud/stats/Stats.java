@@ -50,7 +50,7 @@ public interface Stats {
 
     void setArmorRating(Integer armorRating);
 
-    Integer getMeleSkill();
+    Integer getMeleeSkill();
 
     void setMeleeSkill(Integer meleSkill);
 

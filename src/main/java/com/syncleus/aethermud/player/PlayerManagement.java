@@ -15,6 +15,7 @@
  */
 package com.syncleus.aethermud.player;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.ItemPojo;
@@ -26,9 +27,10 @@ import com.google.api.client.util.Maps;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
-import com.syncleus.aethermud.storage.graphdb.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PlayerManagement implements PlayerManagementMBean {
@@ -45,134 +47,75 @@ public class PlayerManagement implements PlayerManagementMBean {
     public void setMarkForDelete(boolean isMark) {
         Interner<String> interner = findInterner();
         synchronized (interner.intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.setIsMarkedForDelete(isMark);
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.setIsMarkedForDelete(isMark));
         }
     }
 
     @Override
     public boolean getMarkForDelete() {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return false;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return playerData.isMarkedForDelete();
+        return this.transactRead(playerData -> playerData.isMarkedForDelete());
     }
 
     @Override
     public int getGold() {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return 0;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return playerData.getGold();
+        return this.transactRead(playerData -> playerData.getGold());
     }
 
     @Override
     public int getGoldInBankAmount() {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return 0;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return playerData.getGoldInBank();
+        return this.transactRead(playerData -> playerData.getGoldInBank());
     }
 
     @Override
     public void setGoldInBankAmount(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.setGoldInBank(amt);
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.setGoldInBank(amt));
         }
     }
 
     @Override
     public void setGold(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.setGold(amt);
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.setGold(amt));
         }
     }
 
     @Override
     public void setHealth(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.getStats().setCurrentHealth(amt);
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.getStats().setCurrentHealth(amt));
         }
     }
 
     @Override
     public String getPassword() {
-        StringBuilder shadowPwd = new StringBuilder();
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return "";
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        String password = playerData.getPassword();
-        for (int i = 0; i < password.length(); i++) {
-            shadowPwd.append("*");
-        }
-        return shadowPwd.toString();
+        return this.transactRead(playerData -> {
+            StringBuilder shadowPwd = new StringBuilder();
+            String password = playerData.getPassword();
+            for (int i = 0; i < password.length(); i++) {
+                shadowPwd.append("*");
+            }
+            return shadowPwd.toString();
+        });
     }
 
     @Override
     public void setPassword(String password) {
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.setPassword(password);
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.setPassword(password));
         }
     }
 
     @Override
     public void setMana(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.getStats().setCurrentMana(amt);
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.getStats().setCurrentMana(amt));
         }
     }
 
     @Override
     public int getHealth() {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return 0;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return playerData.getStats().getCurrentHealth();
+        return this.transactRead(playerData -> playerData.getStats().getCurrentHealth());
     }
 
     @Override
@@ -182,117 +125,88 @@ public class PlayerManagement implements PlayerManagementMBean {
 
     @Override
     public int getMana() {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return 0;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return playerData.getStats().getCurrentMana();
+        return this.transactRead(playerData -> playerData.getStats().getCurrentMana());
     }
 
     @Override
     public void setExperience(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.getStats().setExperience(amt);
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.getStats().setExperience(amt));
         }
     }
 
     @Override
     public int getExperience() {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return 0;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return playerData.getStats().getExperience();
+        return this.transactRead(playerData -> playerData.getStats().getExperience());
     }
 
     @Override
     public void setRoles(String roles) {
         String[] split = roles.split(",");
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.resetPlayerRoles();
-            for (String roleType : split) {
-                PlayerRole byType = PlayerRole.getByType(roleType);
-                if (byType == null) {
-                    continue;
+            this.consume(playerData -> {
+                playerData.resetPlayerRoles();
+                for (String roleType : split) {
+                    PlayerRole byType = PlayerRole.getByType(roleType);
+                    if (byType == null) {
+                        continue;
+                    }
+                    playerData.addPlayerRole(byType);
                 }
-                playerData.addPlayerRole(byType);
-            }
-            gameManager.getPlayerManager().persist();
+            });
         }
     }
 
     @Override
     public String getRoles() {
-        List<String> rolesList = Lists.newArrayList();
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return "";
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerData.getPlayerRoles());
-        for (PlayerRole next : playerRoleSet) {
-            rolesList.add(next.getRoleType());
-        }
-        return Joiner.on(",").join(rolesList);
+        return this.transactRead(playerData -> {
+            List<String> rolesList = Lists.newArrayList();
+            Set<PlayerRole> playerRoleSet = Sets.newHashSet(playerData.getPlayerRoles());
+            for (PlayerRole next : playerRoleSet) {
+                rolesList.add(next.getRoleType());
+            }
+            return Joiner.on(",").join(rolesList);
+        });
     }
 
     @Override
     public Map<String, String> getInventory() {
-        Map<String, String> inventoryContents = Maps.newHashMap();
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return inventoryContents;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        List<String> inventory = playerData.getInventory();
-        for (String itemId : inventory) {
-            Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
-            if (!itemEntityOptional.isPresent()) {
-                continue;
-            }
-            ItemPojo itemEntity = itemEntityOptional.get();
-            String itemName = itemEntity.getItemName();
-            final String msgWithoutColorCodes =
+        return this.transactRead(playerData -> {
+            Map<String, String> inventoryContents = Maps.newHashMap();
+            List<String> inventory = playerData.getInventory();
+            for (String itemId : inventory) {
+                Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                if (!itemEntityOptional.isPresent()) {
+                    continue;
+                }
+                ItemPojo itemEntity = itemEntityOptional.get();
+                String itemName = itemEntity.getItemName();
+                final String msgWithoutColorCodes =
                     itemName.replaceAll("\u001B\\[[;\\d]*m", "");
-            inventoryContents.put(itemEntity.getItemId(), msgWithoutColorCodes);
-        }
-        return inventoryContents;
+                inventoryContents.put(itemEntity.getItemId(), msgWithoutColorCodes);
+            }
+            return inventoryContents;
+        });
     }
 
     @Override
     public Map<String, String> getLockerInventory() {
-        Map<String, String> inventoryContents = Maps.newHashMap();
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()){
-            return inventoryContents;
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        List<String> inventory = playerData.getLockerInventory();
-        for (String itemId : inventory) {
-            Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
-            if (!itemEntityOptional.isPresent()) {
-                continue;
-            }
-            ItemPojo itemEntity = itemEntityOptional.get();
-            String itemName = itemEntity.getItemName();
-            final String msgWithoutColorCodes =
+        return this.transactRead(playerData -> {
+            Map<String, String> inventoryContents = Maps.newHashMap();
+            List<String> inventory = playerData.getLockerInventory();
+            for (String itemId : inventory) {
+                Optional<ItemPojo> itemEntityOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                if (!itemEntityOptional.isPresent()) {
+                    continue;
+                }
+                ItemPojo itemEntity = itemEntityOptional.get();
+                String itemName = itemEntity.getItemName();
+                final String msgWithoutColorCodes =
                     itemName.replaceAll("\u001B\\[[;\\d]*m", "");
-            inventoryContents.put(itemEntity.getItemId(), msgWithoutColorCodes);
-        }
-        return inventoryContents;
+                inventoryContents.put(itemEntity.getItemId(), msgWithoutColorCodes);
+            }
+            return inventoryContents;
+        });
     }
 
     @Override
@@ -304,13 +218,7 @@ public class PlayerManagement implements PlayerManagementMBean {
         ItemPojo item = new ItemBuilder().from(itemMetadata.get()).create();
         gameManager.getEntityManager().saveItem(item);
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()){
-                return "";
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.addInventoryEntityId(item.getItemId());
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.addInventoryEntityId(item.getItemId()));
         }
         final String msgWithoutColorCodes = item.getItemName().replaceAll("\u001B\\[[;\\d]*m", "");
         return msgWithoutColorCodes + " created.";
@@ -323,38 +231,20 @@ public class PlayerManagement implements PlayerManagementMBean {
             return;
         }
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.setPlayerClass(collect.get(0));
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.setPlayerClass(collect.get(0)));
         }
 
     }
 
     @Override
     public String getPlayerClass() {
-        Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-        if (!playerMetadataOptional.isPresent()) {
-            return "";
-        }
-        PlayerData playerData = playerMetadataOptional.get();
-        return playerData.getPlayerClass().getIdentifier();
+        return this.transact(playerData -> playerData.getPlayerClass().getIdentifier());
     }
 
     @Override
     public void clearAllCoolDowns() {
         synchronized (findInterner().intern(playerId)) {
-            Optional<PlayerData> playerMetadataOptional = gameManager.getPlayerManager().getPlayerMetadata(playerId);
-            if (!playerMetadataOptional.isPresent()) {
-                return;
-            }
-            PlayerData playerData = playerMetadataOptional.get();
-            playerData.resetCoolDowns();
-
-            gameManager.getPlayerManager().persist();
+            this.consume(playerData -> playerData.resetCoolDowns());
         }
     }
 
@@ -374,5 +264,21 @@ public class PlayerManagement implements PlayerManagementMBean {
             interner = player.getInterner();
         }
         return interner;
+    }
+
+    private <T> T transact(Function<PlayerData, T> func) {
+        return PlayerUtil.transact(this.gameManager, this.playerId, func);
+    }
+
+    private void consume(Consumer<PlayerData> func) {
+        PlayerUtil.consume(this.gameManager, this.playerId, func);
+    }
+
+    private <T> T transactRead(Function<PlayerData, T> func) {
+        return PlayerUtil.transactRead(this.gameManager, this.playerId, func);
+    }
+
+    private void consumeRead(Consumer<PlayerData> func) {
+        PlayerUtil.consumeRead(this.gameManager, this.playerId, func);
     }
 }

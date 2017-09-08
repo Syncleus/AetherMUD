@@ -63,7 +63,7 @@ public class EffectBuilder {
         return this;
     }
 
-    public EffectPojo createEffect() {
-        return new EffectPojo(effectName, effectDescription, effectApplyMessages, applyStatsOnTick, durationStats, lifeSpanTicks, frozenMovement);
+    public Effect createEffect() {
+        return new Effect(effectName, effectDescription, effectApplyMessages, applyStatsOnTick, durationStats, lifeSpanTicks, frozenMovement);
     }
 }
