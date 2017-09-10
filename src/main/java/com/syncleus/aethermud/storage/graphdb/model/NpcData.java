@@ -18,12 +18,13 @@ package com.syncleus.aethermud.storage.graphdb.model;
 import com.google.common.collect.Lists;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.common.ColorizedTextTemplate;
+import com.syncleus.aethermud.items.Effect;
+import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.npc.Temperament;
+import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.aethermud.world.model.Area;
-import com.syncleus.ferma.AbstractVertexFrame;
-import com.syncleus.ferma.ElementFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
@@ -32,13 +33,10 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @GraphElement
 public abstract class NpcData extends AbstractInterceptingVertexFrame {
@@ -162,10 +160,10 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract <N extends StatsData> Iterator<? extends N> getAllStats(Class<? extends N> type);
+    public abstract <N extends StatsData> Iterator<? extends N> getAllStatsData(Class<? extends N> type);
 
-    public StatsData getStats() {
-        Iterator<? extends StatsData> allStats = this.getAllStats(StatsData.class);
+    public StatsData getStatsData() {
+        Iterator<? extends StatsData> allStats = this.getAllStatsData(StatsData.class);
         if( allStats.hasNext() )
             return allStats.next();
         else
@@ -173,17 +171,17 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract StatsData addStats(StatsData stats);
+    public abstract StatsData addStatsData(StatsData stats);
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract void removeStats(StatsData stats);
+    public abstract void removeStatsData(StatsData stats);
 
-    public void setStats(StatsData stats) {
-        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getAllStats(StatsData.class), statsData -> this.addStats(statsData), () -> this.createStats() );
+    public void setStatsData(StatsData stats) {
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getAllStatsData(StatsData.class), statsData -> this.addStatsData(statsData), () -> this.createStatsData() );
     }
 
-    public StatsData createStats() {
-        if( this.getStats() != null )
+    public StatsData createStatsData() {
+        if( this.getStatsData() != null )
             throw new IllegalStateException("Already has stats, can't create another");
         final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
         stats.setAgile(0);
@@ -204,8 +202,36 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         stats.setWeaponRatingMax(0);
         stats.setWeaponRatingMin(0);
         stats.setWillpower(0);
-        this.addStats(stats);
+        this.addStatsData(stats);
         return stats;
+    }
+
+    public static void copyNpc(NpcData dest, Npc src) {
+        try {
+            PropertyUtils.copyProperties(dest, src);
+            LootData.copyLoot(dest.createLootData(), src.getLoot());
+            for(SpawnRule spawnRule : src.getSpawnRules())
+                SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
+            StatsData.copyStats(dest.createStatsData(), src.getStats());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+    }
+
+    public static Npc copyNpc(NpcData src) {
+        Npc retVal = new Npc();
+        try {
+            PropertyUtils.copyProperties(retVal, src);
+            retVal.setLoot(LootData.copyLoot(src.getLootData()));
+            List<SpawnRule> rules = new ArrayList<>();
+            for(SpawnRuleData spawnRuleData : src.getSpawnRulesData())
+                rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
+            retVal.setSpawnRules(Collections.unmodifiableList(rules));
+            retVal.setStats(StatsData.copyStats(src.getStatsData()));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+        return retVal;
     }
 }
 

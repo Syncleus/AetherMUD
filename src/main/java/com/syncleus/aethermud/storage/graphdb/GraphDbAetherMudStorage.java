@@ -88,9 +88,9 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
     }
 
     public List<? extends NpcSpawn> getAllNpcs(GameManager gameManager) {
-        List<? extends NpcData> npcData = this.getNpcDatas();
-        return npcData.stream()
-            .map(metadata -> new NpcBuilder(metadata).setGameManager(gameManager).createNpc())
+        List<? extends NpcData> npcDatas = this.getNpcDatas();
+        return npcDatas.stream()
+            .map(npcData -> new NpcBuilder(NpcData.copyNpc(npcData)).setGameManager(gameManager).createNpc())
             .collect(Collectors.toList());
     }
 

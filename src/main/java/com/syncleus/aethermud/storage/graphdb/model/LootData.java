@@ -15,11 +15,16 @@
  */
 package com.syncleus.aethermud.storage.graphdb.model;
 
+import com.syncleus.aethermud.items.Effect;
+import com.syncleus.aethermud.items.Loot;
+import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
+import org.apache.commons.beanutils.PropertyUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @GraphElement
@@ -41,4 +46,22 @@ public abstract class LootData extends AbstractInterceptingVertexFrame {
 
     @Property("GoldMin")
     public abstract void setLootGoldMin(int lootGoldMin);
+
+    public static void copyLoot(LootData dest, Loot src) {
+        try {
+            PropertyUtils.copyProperties(dest, src);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+    }
+
+    public static Loot copyLoot(LootData src) {
+        Loot retVal = new Loot();
+        try {
+            PropertyUtils.copyProperties(retVal, src);;
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+        return retVal;
+    }
 }

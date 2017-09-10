@@ -1259,7 +1259,7 @@ public class Player extends AetherMudEntity {
         return this.transactRead(playerData -> new HashSet<PlayerRole>(playerData.getPlayerRoles()));
     }
 
-    public StatsPojo getStats() {
+    public Stats getStats() {
         return this.transactRead(playerData -> StatsData.copyStats(playerData.getStats()));
     }
 

@@ -16,14 +16,14 @@
 package com.syncleus.aethermud.items;
 
 
-import com.syncleus.aethermud.stats.StatsPojo;
+import com.syncleus.aethermud.stats.Stats;
 
 public class Equipment {
 
     private final EquipmentSlotType equipmentSlotType;
-    private final StatsPojo statsIncreaseWhileEquipped;
+    private final Stats statsIncreaseWhileEquipped;
 
-    public Equipment(EquipmentSlotType equipmentSlotType, StatsPojo statsIncreaseWhileEquipped) {
+    public Equipment(EquipmentSlotType equipmentSlotType, Stats statsIncreaseWhileEquipped) {
         this.equipmentSlotType = equipmentSlotType;
         this.statsIncreaseWhileEquipped = statsIncreaseWhileEquipped;
     }
@@ -37,7 +37,7 @@ public class Equipment {
         return equipmentSlotType;
     }
 
-    public StatsPojo getStats() {
+    public Stats getStats() {
         return statsIncreaseWhileEquipped;
     }
 }

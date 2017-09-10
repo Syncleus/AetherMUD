@@ -88,7 +88,7 @@ public class WizardStatsModifier implements StatsModifier {
 
     @Override
     public Stats modify(Player player) {
-        StatsPojo baseStats = player.getStats();
+        Stats baseStats = player.getStats();
         int level = Levels.getLevel(baseStats.getExperience());
         int newMaxHealth = getHealthForLevel(baseStats.getMaxHealth(), level);
         int newArmorRating = getArmorForLevel(baseStats.getArmorRating(), level);

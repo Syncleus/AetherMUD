@@ -19,7 +19,6 @@ import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.stats.StatsPojo;
 import com.syncleus.aethermud.world.model.Area;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class Npc {
 
     private String name;
     private String colorName;
-    private StatsPojo stats;
+    private Stats stats;
     private String dieMessage;
     private Temperament temperament;
     private List<Area> roamAreas;
@@ -100,9 +99,9 @@ public class Npc {
     }
 
     public void setStats(Stats stats) {
-        if( ! (stats instanceof StatsPojo) )
+        if( ! (stats instanceof Stats) )
             throw new IllegalStateException("not a pojo");
-        this.stats = (StatsPojo) stats;
+        this.stats = (Stats) stats;
     }
 
     public String getDieMessage() {

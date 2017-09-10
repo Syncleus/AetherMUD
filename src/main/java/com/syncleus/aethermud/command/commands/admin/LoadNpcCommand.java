@@ -100,7 +100,7 @@ public class LoadNpcCommand extends Command {
                 NpcData npcData = storage.newNpcData();
                 try {
                     PropertyUtils.copyProperties(npcData, npc);
-                    PropertyUtils.copyProperties(npcData.createStats(), npc.getStats());
+                    PropertyUtils.copyProperties(npcData.createStatsData(), npc.getStats());
                     PropertyUtils.copyProperties(npcData.createLootData(), npc.getLoot());
                 } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
                     throw new IllegalStateException("Could not copy properties for stats", ex);

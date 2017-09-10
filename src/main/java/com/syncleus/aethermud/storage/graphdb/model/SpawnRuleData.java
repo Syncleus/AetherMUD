@@ -15,11 +15,16 @@
  */
 package com.syncleus.aethermud.storage.graphdb.model;
 
+import com.syncleus.aethermud.items.Loot;
+import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
+import org.apache.commons.beanutils.PropertyUtils;
+
+import java.lang.reflect.InvocationTargetException;
 
 @GraphElement
 public abstract class SpawnRuleData extends AbstractInterceptingVertexFrame {
@@ -52,4 +57,22 @@ public abstract class SpawnRuleData extends AbstractInterceptingVertexFrame {
 
     @Property("MaxPerRoom")
     public abstract void setMaxPerRoom(int maxPerRoom);
+
+    public static void copySpawnRule(SpawnRuleData dest, SpawnRule src) {
+        try {
+            PropertyUtils.copyProperties(dest, src);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+    }
+
+    public static SpawnRule copySpawnRule(SpawnRuleData src) {
+        SpawnRule retVal = new SpawnRule();
+        try {
+            PropertyUtils.copyProperties(retVal, src);;
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
+        }
+        return retVal;
+    }
 }

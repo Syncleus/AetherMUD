@@ -186,7 +186,7 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder itemApplyStats(StatsData itemApplyStats) {
+    public ItemBuilder itemApplyStats(Stats itemApplyStats) {
         this.itemApplyStats = itemApplyStats;
         return this;
     }

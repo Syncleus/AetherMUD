@@ -65,6 +65,6 @@ public class Loot {
     }
 
     public void setInternalItemNames(List<String> internalItemNames) {
-        this.internalItemNames = internalItemNames;
+        this.internalItemNames = Lists.newArrayList(internalItemNames);
     }
 }

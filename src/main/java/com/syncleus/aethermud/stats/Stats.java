@@ -17,80 +17,235 @@ package com.syncleus.aethermud.stats;
 
 import static java.lang.StrictMath.sqrt;
 
-public interface Stats {
-    Integer getIntelligence();
+public class Stats {
+    private Integer strength;
+    private Integer intelligence;
+    private Integer willpower;
+    private Integer aim;
+    private Integer agile;
+    private Integer armorRating;
+    private Integer meleeSkill;
+    private Integer currentHealth;
+    private Integer maxHealth;
+    private Integer weaponRatingMax;
+    private Integer weaponRatingMin;
+    private Integer numberOfWeaponRolls;
+    private Integer experience;
+    private Integer currentMana;
+    private Integer maxMana;
+    private Integer foraging;
+    private Integer inventorySize;
+    private Integer maxEffects;
 
-    void setIntelligence(Integer Integerelligence);
+    public Stats() {
 
-    Integer getMaxEffects();
+    }
 
-    void setMaxEffects(Integer maxEffects);
+    public Stats(Stats stats) {
+        this.strength = ( stats == null ? 0 : stats.getStrength());
+        this.intelligence = ( stats == null ? 0 : stats.getIntelligence());
+        this.willpower = ( stats == null ? 0 : stats.getWillpower());
+        this.aim = ( stats == null ? 0 : stats.getAim());
+        this.agile = ( stats == null ? 0 : stats.getAgile());
+        this.armorRating = ( stats == null ? 0 : stats.getArmorRating());
+        this.meleeSkill = ( stats == null ? 0 : stats.getMeleeSkill());
+        this.currentHealth = ( stats == null ? 0 : stats.getCurrentHealth());
+        this.maxHealth = ( stats == null ? 0 : stats.getMaxHealth());
+        this.weaponRatingMax = ( stats == null ? 0 : stats.getWeaponRatingMax());
+        this.weaponRatingMin = ( stats == null ? 0 : stats.getWeaponRatingMin());
+        this.numberOfWeaponRolls = ( stats == null ? 0 : stats.getNumberOfWeaponRolls());
+        this.experience = ( stats == null ? 0 : stats.getExperience());
+        this.currentMana = ( stats == null ? 0 : stats.getCurrentMana());
+        this.foraging = ( stats == null ? 0 : stats.getForaging());
+        this.maxMana = ( stats == null ? 0 : stats.getMaxMana());
+        this.inventorySize = ( stats == null ? 0 : stats.getInventorySize());
+        this.maxEffects = ( stats == null ? 0 : stats.getMaxEffects());
+    }
 
-    Integer getExperience();
+    public Stats(Integer strength,
+                 Integer intelligence,
+                 Integer willpower,
+                 Integer aim,
+                 Integer agile,
+                 Integer armorRating,
+                 Integer meleeSkill,
+                 Integer currentHealth,
+                 Integer maxHealth,
+                 Integer weaponRatingMax,
+                 Integer weaponRatingMin,
+                 Integer numberOfWeaponRolls,
+                 Integer experience,
+                 Integer currentMana,
+                 Integer maxMana,
+                 Integer foraging,
+                 Integer inventorySize,
+                 Integer maxEffects) {
+        this.strength = strength;
+        this.intelligence = intelligence;
+        this.willpower = willpower;
+        this.aim = aim;
+        this.agile = agile;
+        this.armorRating = armorRating;
+        this.meleeSkill = meleeSkill;
+        this.currentHealth = currentHealth;
+        this.maxHealth = maxHealth;
+        this.weaponRatingMax = weaponRatingMax;
+        this.weaponRatingMin = weaponRatingMin;
+        this.numberOfWeaponRolls = numberOfWeaponRolls;
+        this.experience = experience;
+        this.currentMana = currentMana;
+        this.maxMana = maxMana;
+        this.foraging = foraging;
+        this.inventorySize = inventorySize;
+        this.maxEffects = maxEffects;
+    }
 
-    void setExperience(Integer experience);
 
-    Integer getStrength();
+    public Integer getIntelligence() {
+        return intelligence;
+    }
 
-    void setStrength(Integer strength);
+    public void setIntelligence(Integer intelligence) {
+        this.intelligence = intelligence;
+    }
 
-    Integer getWillpower();
+    public Integer getMaxEffects() {
+        return maxEffects;
+    }
 
-    void setWillpower(Integer willpower);
+    public void setMaxEffects(Integer maxEffects) {
+        this.maxEffects = maxEffects;
+    }
 
-    Integer getAim();
+    public Integer getExperience() {
+        return experience;
+    }
 
-    void setAim(Integer aim);
+    public void setExperience(Integer experience) {
+        this.experience = experience;
+    }
 
-    Integer getAgile();
+    public Integer getStrength() {
+        return strength;
+    }
 
-    void setAgile(Integer agile);
+    public void setStrength(Integer strength) {
+        this.strength = strength;
+    }
 
-    Integer getArmorRating();
+    public Integer getWillpower() {
+        return willpower;
+    }
 
-    void setArmorRating(Integer armorRating);
+    public void setWillpower(Integer willpower) {
+        this.willpower = willpower;
+    }
 
-    Integer getMeleeSkill();
+    public Integer getAim() {
+        return aim;
+    }
 
-    void setMeleeSkill(Integer meleSkill);
+    public void setAim(Integer aim) {
+        this.aim = aim;
+    }
 
-    Integer getCurrentHealth();
+    public Integer getAgile() {
+        return agile;
+    }
 
-    void setCurrentHealth(Integer currentHealth);
+    public void setAgile(Integer agile) {
+        this.agile = agile;
+    }
 
-    Integer getMaxHealth();
+    public Integer getArmorRating() {
+        return armorRating;
+    }
 
-    void setMaxHealth(Integer maxHealth);
+    public void setArmorRating(Integer armorRating) {
+        this.armorRating = armorRating;
+    }
 
-    Integer getWeaponRatingMax();
+    public Integer getMeleeSkill() {
+        return meleeSkill;
+    }
 
-    void setWeaponRatingMax(Integer weaponRatingMax);
+    public void setMeleeSkill(Integer meleSkill) {
+        this.meleeSkill = meleSkill;
+    }
 
-    Integer getWeaponRatingMin();
+    public Integer getCurrentHealth() {
+        return currentHealth;
+    }
 
-    void setWeaponRatingMin(Integer weaponRatingMin);
+    public void setCurrentHealth(Integer currentHealth) {
+        this.currentHealth = currentHealth;
+    }
 
-    Integer getNumberOfWeaponRolls();
+    public Integer getMaxHealth() {
+        return maxHealth;
+    }
 
-    void setNumberOfWeaponRolls(Integer numberOfWeaponRolls);
+    public void setMaxHealth(Integer maxHealth) {
+        this.maxHealth = maxHealth;
+    }
 
-    Integer getCurrentMana();
+    public Integer getWeaponRatingMax() {
+        return weaponRatingMax;
+    }
 
-    Integer getMaxMana();
+    public void setWeaponRatingMax(Integer weaponRatingMax) {
+        this.weaponRatingMax = weaponRatingMax;
+    }
 
-    void setCurrentMana(Integer currentMana);
+    public Integer getWeaponRatingMin() {
+        return weaponRatingMin;
+    }
 
-    void setMaxMana(Integer maxMana);
+    public void setWeaponRatingMin(Integer weaponRatingMin) {
+        this.weaponRatingMin = weaponRatingMin;
+    }
 
-    Integer getForaging();
+    public Integer getNumberOfWeaponRolls() {
+        return numberOfWeaponRolls;
+    }
 
-    void setForaging(Integer foraging);
+    public void setNumberOfWeaponRolls(Integer numberOfWeaponRolls) {
+        this.numberOfWeaponRolls = numberOfWeaponRolls;
+    }
 
-    Integer getInventorySize();
+    public Integer getCurrentMana() {
+        return currentMana;
+    }
 
-    void setInventorySize(Integer inventorySize);
+    public Integer getMaxMana() {
+        return maxMana;
+    }
 
-    default Integer getLevel() {
+    public void setCurrentMana(Integer currentMana) {
+        this.currentMana = currentMana;
+    }
+
+    public void setMaxMana(Integer maxMana) {
+        this.maxMana = maxMana;
+    }
+
+    public Integer getForaging() {
+        return foraging;
+    }
+
+    public void setForaging(Integer foraging) {
+        this.foraging = foraging;
+    }
+
+    public Integer getInventorySize() {
+        return inventorySize;
+    }
+
+    public void setInventorySize(Integer inventorySize) {
+        this.inventorySize = inventorySize;
+    }
+
+    public Integer getLevel() {
         double v = 0.02 * sqrt(getExperience());
         return Double.valueOf(Math.floor(v)).intValue();
     }

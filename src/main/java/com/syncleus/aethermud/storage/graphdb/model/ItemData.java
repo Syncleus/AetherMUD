@@ -230,7 +230,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame implement
     public Stats getItemApplyStats() {
         Iterator<? extends StatsData> allStats = this.getAllItemApplyStats(StatsData.class);
         if( allStats.hasNext() )
-            return allStats.next();
+            return StatsData.copyStats(allStats.next());
         else
             return null;
     }
@@ -257,15 +257,10 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame implement
             return;
         }
 
-        if( stats instanceof StatsData ) {
-            this.addStats((StatsData) stats);
-        }
-        else {
-            try {
-                PropertyUtils.copyProperties(this.createItemApplyStats(), stats);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalStateException("Could not copy properties");
-            }
+        try {
+            PropertyUtils.copyProperties(this.createItemApplyStats(), stats);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Could not copy properties");
         }
     }
 

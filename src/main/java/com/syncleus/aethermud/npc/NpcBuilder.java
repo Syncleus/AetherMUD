@@ -21,7 +21,6 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.stats.StatsPojo;
 import com.syncleus.aethermud.storage.graphdb.model.StatsData;
 import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.syncleus.aethermud.world.model.Area;
@@ -62,7 +61,7 @@ public class NpcBuilder {
         this.name = npcSpawn.getName();
         this.colorName = npcSpawn.getColorName();
         this.lastPhraseTimestamp = npcSpawn.getLastPhraseTimestamp();
-        this.stats = new StatsPojo(npcSpawn.getStats());
+        this.stats = new Stats(npcSpawn.getStats());
         this.dieMessage = npcSpawn.getDieMessage();
         this.roamAreas = npcSpawn.getRoamAreas();
         this.validTriggers = npcSpawn.getValidTriggers();
@@ -76,22 +75,22 @@ public class NpcBuilder {
         this.idleMessages = npcSpawn.getIdleMessages();
     }
 
-    public NpcBuilder(NpcData npcData) {
-        this.name = npcData.getName();
-        this.colorName = npcData.getColorName();
-        this.stats = new StatsPojo(npcData.getStats());
-        this.dieMessage = npcData.getDieMessage();
-        this.roamAreas = new HashSet<>(npcData.getRoamAreas());
-        this.validTriggers = Sets.newHashSet(npcData.getValidTriggers());
-        this.spawnRules = npcData.getSpawnRulesData().stream().map((d) -> new SpawnRule(d.getArea(), d.getSpawnIntervalTicks(), d.getMaxInstances(), d.getMaxPerRoom(), d.getRandomChance())).collect(Collectors.toSet());
-        this.temperament = npcData.getTemperament();
-        this.attackMessages = Sets.newHashSet(npcData.getAttackMessages());
-        this.criticalAttackMessages = Sets.newHashSet(npcData.getCriticalAttackMessages());
-        this.battleMessages = Sets.newHashSet(npcData.getBattleMessages());
-        this.idleMessages = Sets.newHashSet(npcData.getIdleMessages());
+    public NpcBuilder(Npc npc) {
+        this.name = npc.getName();
+        this.colorName = npc.getColorName();
+        this.stats = new Stats(npc.getStats());
+        this.dieMessage = npc.getDieMessage();
+        this.roamAreas = new HashSet<>(npc.getRoamAreas());
+        this.validTriggers = Sets.newHashSet(npc.getValidTriggers());
+        this.spawnRules = Sets.newHashSet(npc.getSpawnRules());
+        this.temperament = npc.getTemperament();
+        this.attackMessages = Sets.newHashSet(npc.getAttackMessages());
+        this.criticalAttackMessages = Sets.newHashSet(npc.getCriticalAttackMessages());
+        this.battleMessages = Sets.newHashSet(npc.getBattleMessages());
+        this.idleMessages = Sets.newHashSet(npc.getIdleMessages());
         this.loot = new Loot();
         try {
-            PropertyUtils.copyProperties(this.loot, npcData.getLootData());
+            PropertyUtils.copyProperties(this.loot, npc.getLoot());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties");
         }
@@ -117,7 +116,7 @@ public class NpcBuilder {
         return this;
     }
 
-    public NpcBuilder setStats(StatsData stats) {
+    public NpcBuilder setStats(Stats stats) {
         this.stats = stats;
         return this;
     }
