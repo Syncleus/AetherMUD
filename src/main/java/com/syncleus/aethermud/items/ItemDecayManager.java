@@ -38,7 +38,7 @@ public class ItemDecayManager extends AetherMudEntity {
         this.gameManager = gameManager;
     }
 
-    public void addItem(ItemPojo item) {
+    public void addItem(Item item) {
         item.setWithPlayer(false);
         itemDecayTracker.put(item.getItemId(), new DecayProgress(item.getItemHalfLifeTicks()));
     }
@@ -58,12 +58,12 @@ public class ItemDecayManager extends AetherMudEntity {
                 ConcurrentHashMap<String, DecayProgress> itemDecayTracker1 = getItemDecayTracker();
                 for (Map.Entry<String, DecayProgress> next : itemDecayTracker1.entrySet()) {
                     DecayProgress decayProgress = next.getValue();
-                    Optional<ItemPojo> itemOptional = entityManager.getItemEntity(next.getKey());
+                    Optional<Item> itemOptional = entityManager.getItemEntity(next.getKey());
                     if (!itemOptional.isPresent()) {
                         removeItemFromDecayManager(next.getKey());
                         continue;
                     }
-                    ItemPojo item = itemOptional.get();
+                    Item item = itemOptional.get();
                     if (item.isWithPlayer()) {
                         removeItemFromDecayManager(item.getItemId());
                         continue;

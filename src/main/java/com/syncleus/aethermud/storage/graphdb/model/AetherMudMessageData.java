@@ -41,7 +41,7 @@ public abstract class AetherMudMessageData extends AbstractVertexFrame {
         try {
             PropertyUtils.copyProperties(dest, src);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
+            throw new IllegalStateException("Could not copy properties", e);
         }
     }
 

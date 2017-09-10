@@ -16,9 +16,8 @@
 package com.syncleus.aethermud.storage;
 
 
-import com.google.common.util.concurrent.Service;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 import com.syncleus.aethermud.storage.graphdb.model.NpcData;
@@ -36,7 +35,7 @@ public interface AetherMudStorage {
 
     Map<String, PlayerData> getAllPlayerMetadata();
 
-    ItemData saveItem(ItemPojo item);
+    ItemData saveItem(Item item);
 
     Optional<ItemData> getItemEntity(String itemId);
 

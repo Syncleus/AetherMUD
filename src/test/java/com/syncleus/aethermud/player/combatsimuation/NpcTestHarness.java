@@ -21,7 +21,7 @@ import com.syncleus.aethermud.configuration.AetherMudConfiguration;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.entity.EntityManager;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.player.*;
@@ -31,20 +31,15 @@ import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.experience.Experience;
 import com.syncleus.aethermud.storage.WorldStorage;
-import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.syncleus.ferma.DelegatingFramedGraph;
-import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.configuration.MapConfiguration;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.jboss.netty.channel.Channel;
 import org.junit.Assert;
 import org.junit.Before;
@@ -142,18 +137,18 @@ public class NpcTestHarness {
         }
     }
 
-    private Set<ItemPojo> getEarlyLevelArmorSet() {
+    private Set<Item> getEarlyLevelArmorSet() {
         //  return Sets.newHashSet(ItemType.BERSERKER_BATON.create(), ItemType.BERSEKER_BOOTS.create(), ItemType.BERSEKER_SHORTS.create());
         return Sets.newConcurrentHashSet();
     }
 
-    private Set<ItemPojo> getMidLevelArmorSet() {
-        Set<ItemPojo> armorSet = getEarlyLevelArmorSet();
+    private Set<Item> getMidLevelArmorSet() {
+        Set<Item> armorSet = getEarlyLevelArmorSet();
         //  armorSet.addAll(Sets.newHashSet(ItemType.BERSERKER_BRACERS.create(), ItemType.BERSERKER_CHEST.create()));
         return armorSet;
     }
 
-    private void processRunAndVerify(NpcSpawn testNpcSpawn, int desiredLevel, Set<ItemPojo> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
+    private void processRunAndVerify(NpcSpawn testNpcSpawn, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
         CombatSimulationDetails combatSimulationDetailsLevel = new CombatSimulationDetails(desiredLevel, equipment, testNpcSpawn);
         CombatSimulationResult combatSimulationResultLevel = executeCombat(combatSimulationDetailsLevel);
         printCombatResults(combatSimulationDetailsLevel, combatSimulationResultLevel);
@@ -187,7 +182,7 @@ public class NpcTestHarness {
                 playerWins++;
                 int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npcSpawn.getLoot());
                 totalGold += gold;
-                Set<ItemPojo> items = gameManager.getLootManager().lootItemsReturn(npcSpawn.getLoot());
+                Set<Item> items = gameManager.getLootManager().lootItemsReturn(npcSpawn.getLoot());
                 items.forEach(item -> {
                     if (!drops.containsKey(item.getItemName())) {
                         drops.put(item.getItemName(), new AtomicInteger(1));
@@ -259,7 +254,7 @@ public class NpcTestHarness {
         return player;
     }
 
-    private void equipArmor(Player player, Set<ItemPojo> equipment) {
+    private void equipArmor(Player player, Set<Item> equipment) {
         equipment.forEach(item -> {
             entityManager.saveItem(item);
             gameManager.acquireItem(player, item.getItemId());

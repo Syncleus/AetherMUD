@@ -20,7 +20,7 @@ import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
@@ -88,7 +88,7 @@ public class ItemSpawner extends AetherMudEntity {
     private void createAndAddItem() {
         ArrayList<Room> rooms = Lists.newArrayList(Iterators.filter(gameManager.getRoomManager().getRoomsByArea(spawnArea).iterator(), getRoomsWithRoom()));
         Room room = rooms.get(random.nextInt(rooms.size()));
-        ItemPojo item = new ItemBuilder().from(itemMetadata).create();
+        Item item = new ItemBuilder().from(itemMetadata).create();
         ItemData itemData = gameManager.getEntityManager().saveItem(item);
         gameManager.placeItemInRoom(room.getRoomId(), item.getItemId());
         Main.metrics.counter(MetricRegistry.name(ItemSpawner.class, item.getItemName() + "-spawn")).inc();
@@ -100,11 +100,11 @@ public class ItemSpawner extends AetherMudEntity {
         for (Room room : roomsByArea) {
             if (room.getAreas().contains(spawnArea)) {
                 for (String i : room.getItemIds()) {
-                    Optional<ItemPojo> currentItemOptional = gameManager.getEntityManager().getItemEntity(i);
+                    Optional<Item> currentItemOptional = gameManager.getEntityManager().getItemEntity(i);
                     if (!currentItemOptional.isPresent()) {
                         continue;
                     }
-                    ItemPojo currentItem = currentItemOptional.get();
+                    Item currentItem = currentItemOptional.get();
                     if (currentItem.getInternalItemName().equals(itemMetadata.getInternalItemName())) {
                         numberCurrentlyInArea++;
                     }
@@ -121,11 +121,11 @@ public class ItemSpawner extends AetherMudEntity {
                 int count = 0;
                 Set<String> itemIds = room.getItemIds();
                 for (String itemId : itemIds) {
-                    Optional<ItemPojo> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                     if (!itemOptional.isPresent()) {
                         continue;
                     }
-                    ItemPojo item = itemOptional.get();
+                    Item item = itemOptional.get();
                     if (item.getInternalItemName().equals(itemMetadata.getInternalItemName())) {
                         count++;
                     }

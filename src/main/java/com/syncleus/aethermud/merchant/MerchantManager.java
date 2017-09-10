@@ -19,12 +19,11 @@ package com.syncleus.aethermud.merchant;
 import com.codahale.metrics.Timer;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerUtil;
-import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 
 import java.util.Optional;
 
@@ -62,7 +61,7 @@ public class MerchantManager {
                     PlayerUtil.consume(gameManager, player.getPlayerId(), playerData -> {
                         long availableGold = playerData.getGold();
                         if (availableGold >= price) {
-                            ItemPojo item = new ItemBuilder().from(itemMetadata).create();
+                            Item item = new ItemBuilder().from(itemMetadata).create();
                             gameManager.getEntityManager().saveItem(item);
                             gameManager.acquireItem(player, item.getItemId());
                             player.incrementGold(-price);

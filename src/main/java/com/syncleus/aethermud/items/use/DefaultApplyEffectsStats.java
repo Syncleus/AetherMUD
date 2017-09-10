@@ -43,7 +43,7 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, ItemPojo item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
         String playerName = player.getPlayerName();
 
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), playerName + " uses " + item.getItemName() + ".\r\n");
@@ -60,7 +60,7 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, ItemPojo item) {
+    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
         ItemUseHandler.incrementUses(item);
         if (item.isDisposable()) {
             if (item.getNumberOfUses() < item.getMaxUses()) {

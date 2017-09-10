@@ -35,7 +35,7 @@ public class ItemUseHandler {
         this.gameManager = gameManager;
     }
 
-    public void handle(Player player, ItemPojo item, UseCommand.UseItemOn useItemOn) {
+    public void handle(Player player, Item item, UseCommand.UseItemOn useItemOn) {
         ItemUseAction itemUseAction = null;
         Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(item.getInternalItemName());
         if (!itemMetadataOptional.isPresent()) {
@@ -61,7 +61,7 @@ public class ItemUseHandler {
         }
     }
 
-    public static void incrementUses(ItemPojo item) {
+    public static void incrementUses(Item item) {
         item.setNumberOfUses(item.getNumberOfUses() + 1);
     }
 }

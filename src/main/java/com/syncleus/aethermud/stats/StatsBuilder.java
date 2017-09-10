@@ -22,7 +22,7 @@ public class StatsBuilder {
     private int aim;
     private int agile;
     private int armorRating;
-    private int meleSkill;
+    private int meleeSkill;
     private int currentHealth;
     private int maxHealth;
     private int weaponRatingMax;
@@ -45,7 +45,7 @@ public class StatsBuilder {
         this.aim = stats.getAim();
         this.agile = stats.getAgile();
         this.armorRating = stats.getArmorRating();
-        this.meleSkill = stats.getMeleeSkill();
+        this.meleeSkill = stats.getMeleeSkill();
         this.currentHealth = stats.getCurrentHealth();
         this.maxHealth = stats.getMaxHealth();
         this.weaponRatingMax = stats.getWeaponRatingMax();
@@ -89,8 +89,8 @@ public class StatsBuilder {
         return this;
     }
 
-    public StatsBuilder setMeleSkill(int meleSkill) {
-        this.meleSkill = meleSkill;
+    public StatsBuilder setMeleeSkill(int meleeSkill) {
+        this.meleeSkill = meleeSkill;
         return this;
     }
 
@@ -150,6 +150,6 @@ public class StatsBuilder {
     }
 
     public Stats createStats() {
-        return new Stats(strength, intelligence, willpower, aim, agile, armorRating, meleSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize, maxEffects);
+        return new Stats(strength, intelligence, willpower, aim, agile, armorRating, meleeSkill, currentHealth, maxHealth, weaponRatingMax, weaponRatingMin, numberOfWeaponRolls, experience, currentMana, maxMana, foraging, inventorySize, maxEffects);
     }
 }

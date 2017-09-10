@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.command.commands;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.server.communication.Color;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -42,8 +42,8 @@ public class LootCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
             if (originalMessageParts.size() > 1) {
-                for (ItemPojo item : player.getInventory()) {
-                    if (item.getInternalItemName().equals(ItemPojo.CORPSE_INTENAL_NAME)) {
+                for (Item item : player.getInventory()) {
+                    if (item.getInternalItemName().equals(Item.CORPSE_INTENAL_NAME)) {
                         Loot loot = item.getLoot();
                         if (loot != null) {
                             int gold = lootManager.lootGoldAmountReturn(loot);
@@ -51,8 +51,8 @@ public class LootCommand extends Command {
                                 write("You looted " + NumberFormat.getNumberInstance(Locale.US).format(gold) + Color.YELLOW + " gold" + Color.RESET + " from a " + item.getItemName() + ".\r\n");
                                 player.incrementGold(gold);
                             }
-                            Set<ItemPojo> items = lootManager.lootItemsReturn(loot);
-                            for (ItemPojo i: items) {
+                            Set<Item> items = lootManager.lootItemsReturn(loot);
+                            for (Item i: items) {
                                 gameManager.acquireItem(player, i.getItemId(), true);
                                 write("You looted " + i.getItemName() +  " from a " + item.getItemName() + ".\r\n");
                             }

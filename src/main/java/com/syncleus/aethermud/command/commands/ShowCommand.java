@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.command.commands;
 
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.core.GameManager;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -41,7 +41,7 @@ public class ShowCommand extends Command {
             }
             originalMessageParts.remove(0);
             String target = Joiner.on(" ").join(originalMessageParts);
-            for (ItemPojo next : player.getInventory()) {
+            for (Item next : player.getInventory()) {
                 for (String s : next.getItemTriggers()) {
                     if (s.equalsIgnoreCase(target)) {
                         writeToRoom(player.getPlayerName() + " whips out " + next.getItemName() + ".\r\n");

@@ -75,11 +75,11 @@ public abstract class StatsData extends AbstractInterceptingVertexFrame {
     @Property("armorRating")
     public abstract void setArmorRating(Integer armorRating);
 
-    @Property("meleSkill")
+    @Property("meleeSkill")
     public abstract Integer getMeleeSkill();
 
-    @Property("meleSkill")
-    public abstract void setMeleeSkill(Integer meleSkill);
+    @Property("meleeSkill")
+    public abstract void setMeleeSkill(Integer meleeSkill);
 
     @Property("currentHealth")
     public abstract Integer getCurrentHealth();
@@ -139,7 +139,7 @@ public abstract class StatsData extends AbstractInterceptingVertexFrame {
         try {
             PropertyUtils.copyProperties(dest, src);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
+            throw new IllegalStateException("Could not copy properties", e);
         }
     }
 
@@ -148,7 +148,7 @@ public abstract class StatsData extends AbstractInterceptingVertexFrame {
         try {
             PropertyUtils.copyProperties(retVal, src);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
+            throw new IllegalStateException("Could not copy properties", e);
         }
         return retVal;
     }

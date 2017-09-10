@@ -22,7 +22,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
 import com.syncleus.aethermud.items.Effect;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.player.CoolDown;
 import com.syncleus.aethermud.player.CoolDownType;
@@ -278,7 +278,7 @@ public class NpcSpawn extends AetherMudEntity {
         isAlive.set(false);
         player.removeActiveAlertStatus(this);
         Map<String, Double> damagePercents;
-        ItemPojo corpse = ItemPojo.createCorpseItem(getName(), getLoot());
+        Item corpse = Item.createCorpseItem(getName(), getLoot());
         if (!player.isActive(CoolDownType.DEATH)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), getDieMessage() + "\r\n");
         }

@@ -183,7 +183,7 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
             dest.setApplyStatsOnTick(src.getApplyStatsOnTick());
             dest.setDurationStats(src.getDurationStats());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
+            throw new IllegalStateException("Could not copy properties", e);
         }
     }
 
@@ -198,7 +198,7 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
             PropertyUtils.copyProperties(applyStats, src.getApplyStatsOnTick());
             retVal.setApplyStatsOnTick(applyStats);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
+            throw new IllegalStateException("Could not copy properties", e);
         }
         return retVal;
     }

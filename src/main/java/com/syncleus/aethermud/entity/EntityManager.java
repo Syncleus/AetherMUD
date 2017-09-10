@@ -17,18 +17,15 @@ package com.syncleus.aethermud.entity;
 
 import com.google.common.base.Function;
 import com.syncleus.aethermud.Main;
-import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerManager;
-import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
-import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.RoomManager;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.log4j.Logger;
@@ -84,11 +81,11 @@ public class EntityManager {
         }
     }
 
-    public ItemData saveItem(ItemPojo item) {
+    public ItemData saveItem(Item item) {
         return this.transact(storage -> storage.saveItem(item));
     }
 
-    public void removeItem(ItemPojo item) {
+    public void removeItem(Item item) {
         this.consume(storage -> storage.removeItem(item.getItemId()));
     }
 
@@ -96,10 +93,10 @@ public class EntityManager {
         this.consume(storage -> storage.removeItem(itemId));
     }
 
-    public Optional<ItemPojo> getItemEntity(String itemId) {
+    public Optional<Item> getItemEntity(String itemId) {
         return this.transactRead(storage -> {
             Optional<ItemData> item = storage.getItemEntity(itemId);
-            return item.map(itemName -> new ItemBuilder().from(itemName).create());
+            return item.map(itemData -> new ItemBuilder().from(ItemData.copyItem(itemData)).create());
         });
     }
 

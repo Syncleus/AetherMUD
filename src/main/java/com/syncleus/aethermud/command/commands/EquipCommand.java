@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.command.commands;
 
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.core.GameManager;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -43,9 +43,9 @@ public class EquipCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            List<ItemPojo> inventory = player.getInventory();
+            List<Item> inventory = player.getInventory();
             if (inventory != null) {
-                for (ItemPojo item : inventory) {
+                for (Item item : inventory) {
                     if (item.getItemTriggers().contains(itemTarget)) {
                         if (item.getEquipment() == null) {
                             write("Item is not equipable.");

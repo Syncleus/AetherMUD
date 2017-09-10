@@ -80,24 +80,24 @@ public class Stats {
                  Integer foraging,
                  Integer inventorySize,
                  Integer maxEffects) {
-        this.strength = strength;
-        this.intelligence = intelligence;
-        this.willpower = willpower;
-        this.aim = aim;
-        this.agile = agile;
-        this.armorRating = armorRating;
-        this.meleeSkill = meleeSkill;
-        this.currentHealth = currentHealth;
-        this.maxHealth = maxHealth;
-        this.weaponRatingMax = weaponRatingMax;
-        this.weaponRatingMin = weaponRatingMin;
-        this.numberOfWeaponRolls = numberOfWeaponRolls;
-        this.experience = experience;
-        this.currentMana = currentMana;
-        this.maxMana = maxMana;
-        this.foraging = foraging;
-        this.inventorySize = inventorySize;
-        this.maxEffects = maxEffects;
+        this.strength = (strength == null ? 0 : strength);
+        this.intelligence = (intelligence == null ? 0 : intelligence);
+        this.willpower = (willpower == null ? 0 : willpower);
+        this.aim = (aim == null ? 0 : aim);
+        this.agile = (agile == null ? 0 : agile);
+        this.armorRating = (armorRating == null ? 0 : armorRating);
+        this.meleeSkill = (meleeSkill == null ? 0 : meleeSkill);
+        this.currentHealth = (currentHealth == null ? 0 : currentHealth);
+        this.maxHealth = (maxHealth == null ? 0 : maxHealth);
+        this.weaponRatingMax = (weaponRatingMax == null ? 0 : weaponRatingMax);
+        this.weaponRatingMin = (weaponRatingMin == null ? 0 : weaponRatingMin);
+        this.numberOfWeaponRolls = (numberOfWeaponRolls == null ? 0 : numberOfWeaponRolls);
+        this.experience = (experience == null ? 0 : experience);
+        this.currentMana = (currentMana == null ? 0 : currentMana);
+        this.maxMana = (maxMana == null ? 0 : maxMana);
+        this.foraging = (foraging == null ? 0 : foraging);
+        this.inventorySize = (inventorySize == null ? 0 : inventorySize);
+        this.maxEffects = (maxEffects == null ? 0 : maxEffects);
     }
 
 
@@ -106,7 +106,7 @@ public class Stats {
     }
 
     public void setIntelligence(Integer intelligence) {
-        this.intelligence = intelligence;
+        this.intelligence = (intelligence == null ? 0 : intelligence);
     }
 
     public Integer getMaxEffects() {
@@ -114,7 +114,7 @@ public class Stats {
     }
 
     public void setMaxEffects(Integer maxEffects) {
-        this.maxEffects = maxEffects;
+        this.maxEffects = (maxEffects == null ? 0 : maxEffects);
     }
 
     public Integer getExperience() {
@@ -122,7 +122,7 @@ public class Stats {
     }
 
     public void setExperience(Integer experience) {
-        this.experience = experience;
+        this.experience = (experience == null ? 0 : experience);
     }
 
     public Integer getStrength() {
@@ -130,7 +130,7 @@ public class Stats {
     }
 
     public void setStrength(Integer strength) {
-        this.strength = strength;
+        this.strength = (strength == null ? 0 : strength);
     }
 
     public Integer getWillpower() {
@@ -138,7 +138,7 @@ public class Stats {
     }
 
     public void setWillpower(Integer willpower) {
-        this.willpower = willpower;
+        this.willpower = (willpower == null ? 0 : willpower);
     }
 
     public Integer getAim() {
@@ -146,7 +146,7 @@ public class Stats {
     }
 
     public void setAim(Integer aim) {
-        this.aim = aim;
+        this.aim = (aim == null ? 0 : aim);
     }
 
     public Integer getAgile() {
@@ -154,7 +154,7 @@ public class Stats {
     }
 
     public void setAgile(Integer agile) {
-        this.agile = agile;
+        this.agile = (agile == null ? 0 : agile);
     }
 
     public Integer getArmorRating() {
@@ -162,15 +162,15 @@ public class Stats {
     }
 
     public void setArmorRating(Integer armorRating) {
-        this.armorRating = armorRating;
+        this.armorRating = (armorRating == null ? 0 : armorRating);
     }
 
     public Integer getMeleeSkill() {
         return meleeSkill;
     }
 
-    public void setMeleeSkill(Integer meleSkill) {
-        this.meleeSkill = meleSkill;
+    public void setMeleeSkill(Integer meleeSkill) {
+        this.meleeSkill = (meleeSkill == null ? 0 : meleeSkill);
     }
 
     public Integer getCurrentHealth() {
@@ -178,7 +178,7 @@ public class Stats {
     }
 
     public void setCurrentHealth(Integer currentHealth) {
-        this.currentHealth = currentHealth;
+        this.currentHealth = (currentHealth == null ? 0 : currentHealth);
     }
 
     public Integer getMaxHealth() {
@@ -186,7 +186,7 @@ public class Stats {
     }
 
     public void setMaxHealth(Integer maxHealth) {
-        this.maxHealth = maxHealth;
+        this.maxHealth = (maxHealth == null ? 0 : maxHealth);
     }
 
     public Integer getWeaponRatingMax() {
@@ -194,7 +194,7 @@ public class Stats {
     }
 
     public void setWeaponRatingMax(Integer weaponRatingMax) {
-        this.weaponRatingMax = weaponRatingMax;
+        this.weaponRatingMax = (weaponRatingMax == null ? 0 : weaponRatingMax);
     }
 
     public Integer getWeaponRatingMin() {
@@ -202,7 +202,7 @@ public class Stats {
     }
 
     public void setWeaponRatingMin(Integer weaponRatingMin) {
-        this.weaponRatingMin = weaponRatingMin;
+        this.weaponRatingMin = (weaponRatingMin == null ? 0 : weaponRatingMin);
     }
 
     public Integer getNumberOfWeaponRolls() {
@@ -210,7 +210,7 @@ public class Stats {
     }
 
     public void setNumberOfWeaponRolls(Integer numberOfWeaponRolls) {
-        this.numberOfWeaponRolls = numberOfWeaponRolls;
+        this.numberOfWeaponRolls = (numberOfWeaponRolls == null ? 0 : numberOfWeaponRolls);
     }
 
     public Integer getCurrentMana() {
@@ -222,11 +222,11 @@ public class Stats {
     }
 
     public void setCurrentMana(Integer currentMana) {
-        this.currentMana = currentMana;
+        this.currentMana = (currentMana == null ? 0 : currentMana);
     }
 
     public void setMaxMana(Integer maxMana) {
-        this.maxMana = maxMana;
+        this.maxMana = (maxMana == null ? 0 : maxMana);
     }
 
     public Integer getForaging() {
@@ -234,7 +234,7 @@ public class Stats {
     }
 
     public void setForaging(Integer foraging) {
-        this.foraging = foraging;
+        this.foraging = (foraging == null ? 0 : foraging);
     }
 
     public Integer getInventorySize() {
@@ -242,7 +242,7 @@ public class Stats {
     }
 
     public void setInventorySize(Integer inventorySize) {
-        this.inventorySize = inventorySize;
+        this.inventorySize = (inventorySize == null ? 0 : inventorySize);
     }
 
     public Integer getLevel() {

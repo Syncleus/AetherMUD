@@ -25,7 +25,7 @@ public class DefaultStats {
             .setAim(9)
             .setAgile(9)
             .setArmorRating(4)
-            .setMeleSkill(9)
+            .setMeleeSkill(9)
             .setCurrentHealth(100)
             .setMaxHealth(100)
             .setWeaponRatingMin(4)

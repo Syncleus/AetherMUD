@@ -107,7 +107,7 @@ public class ShamanStatsModifier implements StatsModifier {
         statsBuilder.setAim(newAimRating);
         statsBuilder.setWillpower(newWillpowerRating);
         statsBuilder.setAgile(newAgileRating);
-        statsBuilder.setMeleSkill(newMeleRating);
+        statsBuilder.setMeleeSkill(newMeleRating);
         statsBuilder.setCurrentHealth(baseStats.getCurrentHealth());
         statsBuilder.setCurrentMana(baseStats.getCurrentMana());
         return statsBuilder.createStats();

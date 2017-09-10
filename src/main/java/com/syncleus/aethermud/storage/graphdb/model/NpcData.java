@@ -18,11 +18,9 @@ package com.syncleus.aethermud.storage.graphdb.model;
 import com.google.common.collect.Lists;
 import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.common.ColorizedTextTemplate;
-import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.npc.Npc;
 import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.spawner.SpawnRule;
-import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.ferma.annotations.Adjacency;
@@ -31,7 +29,6 @@ import com.syncleus.ferma.annotations.Property;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -68,8 +65,8 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     @Adjacency(label = "spawnRule", direction = Direction.OUT)
     public abstract <N extends SpawnRuleData> Iterator<? extends N> getSpawnRulesDataIterator(Class<? extends N> type);
 
-    public List<SpawnRuleData> getSpawnRulesData() {
-        return Lists.newArrayList(this.getSpawnRulesDataIterator(SpawnRuleData.class));
+    public List<SpawnRuleData> getSpawnRuleDatas() {
+        return Collections.unmodifiableList(Lists.newArrayList(this.getSpawnRulesDataIterator(SpawnRuleData.class)));
     }
 
     @Adjacency(label = "spawnRule", direction = Direction.OUT)
@@ -79,7 +76,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeSpawnRuleData(SpawnRuleData spawnRule);
 
     public void setSpawnRulesDatas(List<SpawnRuleData> spawnRules) {
-        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> this.createSpawnRuleData() );
+        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> {} );
     }
 
     public SpawnRuleData createSpawnRuleData() {
@@ -298,7 +295,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
             for(AetherMudMessage message : src.getIdleMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createIdleMessageData(), message);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
+            throw new IllegalStateException("Could not copy properties", e);
         }
     }
 
@@ -310,7 +307,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
             retVal.setStats(StatsData.copyStats(src.getStatsData()));
 
             List<SpawnRule> rules = new ArrayList<>();
-            for(SpawnRuleData spawnRuleData : src.getSpawnRulesData())
+            for(SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
                 rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
             retVal.setSpawnRules(Collections.unmodifiableList(rules));
 
@@ -334,7 +331,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
                 idleMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
             retVal.setIdleMessages(Collections.unmodifiableList(idleMessages));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
+            throw new IllegalStateException("Could not copy properties", e);
         }
         return retVal;
     }

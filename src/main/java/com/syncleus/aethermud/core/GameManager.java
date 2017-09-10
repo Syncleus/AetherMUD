@@ -343,12 +343,12 @@ public class GameManager {
         }
 
         for (String itemId : playerCurrentRoom.getItemIds()) {
-            Optional<ItemPojo> itemOptional = entityManager.getItemEntity(itemId);
+            Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
             if (!itemOptional.isPresent()) {
                 playerCurrentRoom.removePresentItem(itemId);
                 continue;
             }
-            ItemPojo item = itemOptional.get();
+            Item item = itemOptional.get();
             sb.append("   ").append(item.getRestingName()).append("\r\n");
         }
 
@@ -465,11 +465,11 @@ public class GameManager {
     }
 
     public void placeItemInRoom(Integer roomId, String itemId) {
-        Optional<ItemPojo> itemOptional = entityManager.getItemEntity(itemId);
+        Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
         if (!itemOptional.isPresent()) {
             throw new IllegalArgumentException("itemId not valid.");
         }
-        ItemPojo item = itemOptional.get();
+        Item item = itemOptional.get();
         roomManager.getRoom(roomId).addPresentItem(item.getItemId());
     }
 
@@ -494,21 +494,21 @@ public class GameManager {
         synchronized (interner.intern(itemId)) {
             Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
             if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
-                Optional<ItemPojo> itemOptional = entityManager.getItemEntity(itemId);
+                Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
                 if (!itemOptional.isPresent()) {
                     return false;
                 }
-                ItemPojo itemEntity = itemOptional.get();
+                Item itemEntity = itemOptional.get();
                 itemEntity.setWithPlayer(true);
                 player.addInventoryId(itemId);
                 entityManager.saveItem(itemEntity);
                 return true;
             } else {
-                Optional<ItemPojo> itemOptional = entityManager.getItemEntity(itemId);
+                Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
                 if (!itemOptional.isPresent()) {
                     return false;
                 }
-                ItemPojo itemEntity = itemOptional.get();
+                Item itemEntity = itemOptional.get();
                 channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
                 if (isFromLoot) {
                     player.getCurrentRoom().addPresentItem(itemId);

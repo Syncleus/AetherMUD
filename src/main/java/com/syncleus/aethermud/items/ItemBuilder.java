@@ -19,7 +19,6 @@ package com.syncleus.aethermud.items;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.model.StatsData;
 
 import java.util.List;
 import java.util.Set;
@@ -191,8 +190,8 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemPojo create() {
-        return new ItemPojo(itemName, itemDescription, internalItemName, itemTriggers, restingName, itemId, numberOfUses, isWithPlayer, loot, itemHalfLifeTicks, equipment, rarity, valueInGold, effects, hasBeenWithPlayer, maxUses, isDisposable, validTimeOfDays, itemApplyStats);
+    public Item create() {
+        return new Item(itemName, itemDescription, internalItemName, itemTriggers, restingName, itemId, numberOfUses, isWithPlayer, loot, itemHalfLifeTicks, equipment, rarity, valueInGold, effects, hasBeenWithPlayer, maxUses, isDisposable, validTimeOfDays, itemApplyStats);
     }
 
 

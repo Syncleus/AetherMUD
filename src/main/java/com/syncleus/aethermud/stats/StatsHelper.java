@@ -26,7 +26,7 @@ public class StatsHelper {
         statsBuilder.setCurrentHealth(modifiedStats.getCurrentHealth() - origStats.getCurrentHealth());
         statsBuilder.setMaxHealth(modifiedStats.getMaxHealth() - origStats.getMaxHealth());
         statsBuilder.setExperience(modifiedStats.getExperience() - origStats.getExperience());
-        statsBuilder.setMeleSkill(modifiedStats.getMeleeSkill() - origStats.getMeleeSkill());
+        statsBuilder.setMeleeSkill(modifiedStats.getMeleeSkill() - origStats.getMeleeSkill());
         statsBuilder.setNumberOfWeaponRolls(modifiedStats.getNumberOfWeaponRolls() - origStats.getNumberOfWeaponRolls());
         statsBuilder.setStrength(modifiedStats.getStrength() - origStats.getStrength());
         statsBuilder.setWeaponRatingMax(modifiedStats.getWeaponRatingMax() - origStats.getWeaponRatingMax());

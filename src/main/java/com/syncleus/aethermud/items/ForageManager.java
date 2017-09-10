@@ -92,7 +92,7 @@ public class ForageManager {
                     totalForageXp += forage.getForageExperience();
                     for (long i = 0; i < numberToHarvest; i++) {
                         countOfForagesFound++;
-                        ItemPojo item = new ItemBuilder().from(itemMetadata).create();
+                        Item item = new ItemBuilder().from(itemMetadata).create();
                         gameManager.getEntityManager().saveItem(item);
                         gameManager.acquireItem(player, item.getItemId());
                     }

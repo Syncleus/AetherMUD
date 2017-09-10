@@ -15,9 +15,8 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
-import com.google.common.base.Function;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.storage.AetherMudStorage;
@@ -31,7 +30,6 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class GraphDbAetherMudStorage implements AetherMudStorage {
@@ -76,7 +74,7 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
     }
 
     @Override
-    public ItemData saveItem(ItemPojo item) {
+    public ItemData saveItem(Item item) {
         ItemData itemData = framedGraph.addFramedVertex(ItemData.class);
         try {
             PropertyUtils.copyProperties(itemData, item);

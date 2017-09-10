@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.player.combatsimuation;
 
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.npc.NpcSpawn;
 
 import java.util.Set;
@@ -24,10 +24,10 @@ public class CombatSimulationDetails {
 
     private final int level;
     private final int totalIterations;
-    private final Set<ItemPojo> equipmentSet;
+    private final Set<Item> equipmentSet;
     private final NpcSpawn npcSpawn;
 
-    public CombatSimulationDetails(int level, Set<ItemPojo> equipmentSet, NpcSpawn npcSpawn) {
+    public CombatSimulationDetails(int level, Set<Item> equipmentSet, NpcSpawn npcSpawn) {
         this.level = level;
         this.totalIterations = 1000;
         this.equipmentSet = equipmentSet;
@@ -46,7 +46,7 @@ public class CombatSimulationDetails {
         return npcSpawn;
     }
 
-    public Set<ItemPojo> getEquipmentSet() {
+    public Set<Item> getEquipmentSet() {
         return equipmentSet;
     }
 }

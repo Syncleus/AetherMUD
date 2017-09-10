@@ -18,7 +18,7 @@ package com.syncleus.aethermud.items.use;
 import com.syncleus.aethermud.command.commands.UseCommand;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Effect;
-import com.syncleus.aethermud.items.ItemPojo;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.items.ItemUseAction;
 import com.syncleus.aethermud.player.Player;
@@ -41,7 +41,7 @@ public class StickOfJusticeUseAction implements ItemUseAction {
 
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, ItemPojo item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
 
         if (!useItemOn.getTarget().isPresent()) {
             gameManager.getChannelUtils().write(player.getPlayerId(), "You must use the Stick Of Justice on someone who deserves it.");
@@ -60,7 +60,7 @@ public class StickOfJusticeUseAction implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, ItemPojo item) {
+    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
     }
 
     @Override
