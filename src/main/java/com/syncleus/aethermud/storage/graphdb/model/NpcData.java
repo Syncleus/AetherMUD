@@ -31,6 +31,7 @@ import com.syncleus.ferma.annotations.Property;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -40,30 +41,6 @@ import java.util.List;
 
 @GraphElement
 public abstract class NpcData extends AbstractInterceptingVertexFrame {
-    @Property("criticalAttackMessages")
-    public abstract List<AetherMudMessage> getCriticalAttackMessages();
-
-    @Property("criticalAttackMessages")
-    public abstract void setCriticalAttackMessages(List<AetherMudMessage> criticalAttackMessages);
-
-    @Property("battleMessages")
-    public abstract List<AetherMudMessage> getBattleMessages();
-
-    @Property("battleMessages")
-    public abstract void setBattleMessages(List<AetherMudMessage> battleMessages);
-
-    @Property("idleMessages")
-    public abstract List<AetherMudMessage> getIdleMessages();
-
-    @Property("idleMessages")
-    public abstract void setIdleMessages(List<AetherMudMessage> idleMessages);
-
-    @Property("attackMessages")
-    public abstract List<AetherMudMessage> getAttackMessages();
-
-    @Property("attackMessages")
-    public abstract void setAttackMessages(List<AetherMudMessage> attackMessages);
-
     @Property("name")
     public abstract String getName();
 
@@ -76,32 +53,32 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     @Property("temperament")
     public abstract void setTemperament(Temperament temperament);
 
-    @Property("roamAreas")
+    @Property("roamArea")
     public abstract List<Area> getRoamAreas();
 
-    @Property("roamAreas")
+    @Property("roamArea")
     public abstract void setRoamAreas(List<Area> roamAreas);
 
-    @Property("validTriggers")
+    @Property("validTrigger")
     public abstract List<String> getValidTriggers();
 
-    @Property("validTriggers")
+    @Property("validTrigger")
     public abstract void setValidTriggers(List<String> validTriggers);
 
-    @Adjacency(label = "spawnRules", direction = Direction.OUT)
+    @Adjacency(label = "spawnRule", direction = Direction.OUT)
     public abstract <N extends SpawnRuleData> Iterator<? extends N> getSpawnRulesDataIterator(Class<? extends N> type);
 
     public List<SpawnRuleData> getSpawnRulesData() {
         return Lists.newArrayList(this.getSpawnRulesDataIterator(SpawnRuleData.class));
     }
 
-    @Adjacency(label = "spawnRules", direction = Direction.OUT)
+    @Adjacency(label = "spawnRule", direction = Direction.OUT)
     public abstract void addSpawnRuleData(SpawnRuleData spawnRule);
 
-    @Adjacency(label = "spawnRules", direction = Direction.OUT)
+    @Adjacency(label = "spawnRule", direction = Direction.OUT)
     public abstract void removeSpawnRuleData(SpawnRuleData spawnRule);
 
-    public void setSpawnRulesData(List<SpawnRuleData> spawnRules) {
+    public void setSpawnRulesDatas(List<SpawnRuleData> spawnRules) {
         DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> this.createSpawnRuleData() );
     }
 
@@ -206,13 +183,120 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         return stats;
     }
 
+    @Adjacency(label = "AttackMessage", direction = Direction.OUT)
+    public abstract <N extends AetherMudMessageData> Iterator<? extends N> getAttackMessageDataIterator(Class<? extends N> type);
+
+    public List<AetherMudMessageData> getAttackMessageDatas() {
+        return Lists.newArrayList(this.getIdleMessageDataIterator(AetherMudMessageData.class));
+    }
+
+    @Adjacency(label = "AttackMessage", direction = Direction.OUT)
+    public abstract void addAttackMessageData(AetherMudMessageData message);
+
+    @Adjacency(label = "AttackMessage", direction = Direction.OUT)
+    public abstract void removeAttackMessageData(AetherMudMessageData message);
+
+    public void setAttackMessageDatas(List<AetherMudMessageData> messages) {
+        DataUtils.setAllElements(messages, () -> this.getAttackMessageDataIterator(AetherMudMessageData.class), message -> this.addAttackMessageData(message), () -> this.createAttackMessageData() );
+    }
+
+    public AetherMudMessageData createAttackMessageData() {
+        AetherMudMessageData message = this.createMessageData();
+        this.addAttackMessageData(message);
+        return message;
+    }
+
+    @Adjacency(label = "IdleMessage", direction = Direction.OUT)
+    public abstract <N extends AetherMudMessageData> Iterator<? extends N> getIdleMessageDataIterator(Class<? extends N> type);
+
+    public List<AetherMudMessageData> getIdleMessageDatas() {
+        return Lists.newArrayList(this.getIdleMessageDataIterator(AetherMudMessageData.class));
+    }
+
+    @Adjacency(label = "IdleMessage", direction = Direction.OUT)
+    public abstract void addIdleMessageData(AetherMudMessageData message);
+
+    @Adjacency(label = "IdleMessage", direction = Direction.OUT)
+    public abstract void removeIdleMessageData(AetherMudMessageData message);
+
+    public void setIdleMessageDatas(List<AetherMudMessageData> messages) {
+        DataUtils.setAllElements(messages, () -> this.getIdleMessageDataIterator(AetherMudMessageData.class), message -> this.addIdleMessageData(message), () -> this.createIdleMessageData() );
+    }
+
+    public AetherMudMessageData createIdleMessageData() {
+        AetherMudMessageData message = this.createMessageData();
+        this.addIdleMessageData(message);
+        return message;
+    }
+
+    @Adjacency(label = "BattleMessage", direction = Direction.OUT)
+    public abstract <N extends AetherMudMessageData> Iterator<? extends N> getBattleMessageDataIterator(Class<? extends N> type);
+
+    public List<AetherMudMessageData> getBattleMessageDatas() {
+        return Lists.newArrayList(this.getBattleMessageDataIterator(AetherMudMessageData.class));
+    }
+
+    @Adjacency(label = "BattleMessage", direction = Direction.OUT)
+    public abstract void addBattleMessageData(AetherMudMessageData message);
+
+    @Adjacency(label = "BattleMessage", direction = Direction.OUT)
+    public abstract void removeBattleMessageData(AetherMudMessageData message);
+
+    public void setBattleMessageDatas(List<AetherMudMessageData> messages) {
+        DataUtils.setAllElements(messages, () -> this.getBattleMessageDataIterator(AetherMudMessageData.class), message -> this.addBattleMessageData(message), () -> this.createBattleMessageData() );
+    }
+
+    public AetherMudMessageData createBattleMessageData() {
+        AetherMudMessageData message = this.createMessageData();
+        this.addBattleMessageData(message);
+        return message;
+    }
+
+    @Adjacency(label = "CriticalAttackMessageData", direction = Direction.OUT)
+    public abstract <N extends AetherMudMessageData> Iterator<? extends N> getCriticalAttackMessageDataIterator(Class<? extends N> type);
+
+    public List<AetherMudMessageData> getCriticalAttackMessageDatas() {
+        return Lists.newArrayList(this.getCriticalAttackMessageDataIterator(AetherMudMessageData.class));
+    }
+
+    @Adjacency(label = "CriticalAttackMessageData", direction = Direction.OUT)
+    public abstract void addCriticalAttackMessageData(AetherMudMessageData message);
+
+    @Adjacency(label = "CriticalAttackMessageData", direction = Direction.OUT)
+    public abstract void removeCriticalAttackMessageData(AetherMudMessageData message);
+
+    public void setCriticalAttackMessageDatas(List<AetherMudMessageData> messages) {
+        DataUtils.setAllElements(messages, () -> this.getCriticalAttackMessageDataIterator(AetherMudMessageData.class), message -> this.addCriticalAttackMessageData(message), () -> this.createCriticalAttackMessageData() );
+    }
+
+    public AetherMudMessageData createCriticalAttackMessageData() {
+        AetherMudMessageData message = this.createMessageData();
+        this.addCriticalAttackMessageData(message);
+        return message;
+    }
+
+    private AetherMudMessageData createMessageData() {
+        final AetherMudMessageData message = this.getGraph().addFramedVertex(AetherMudMessageData.class);
+        message.setType(AetherMudMessage.Type.NORMAL);
+        message.setMessage("");
+        return message;
+    }
+
     public static void copyNpc(NpcData dest, Npc src) {
         try {
             PropertyUtils.copyProperties(dest, src);
             LootData.copyLoot(dest.createLootData(), src.getLoot());
+            StatsData.copyStats(dest.createStatsData(), src.getStats());
             for(SpawnRule spawnRule : src.getSpawnRules())
                 SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
-            StatsData.copyStats(dest.createStatsData(), src.getStats());
+            for(AetherMudMessage message : src.getAttackMessages())
+                AetherMudMessageData.copyAetherMudMessage(dest.createAttackMessageData(), message);
+            for(AetherMudMessage message : src.getBattleMessages())
+                AetherMudMessageData.copyAetherMudMessage(dest.createBattleMessageData(), message);
+            for(AetherMudMessage message : src.getCriticalAttackMessages())
+                AetherMudMessageData.copyAetherMudMessage(dest.createCriticalAttackMessageData(), message);
+            for(AetherMudMessage message : src.getIdleMessages())
+                AetherMudMessageData.copyAetherMudMessage(dest.createIdleMessageData(), message);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties");
         }
@@ -223,11 +307,32 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         try {
             PropertyUtils.copyProperties(retVal, src);
             retVal.setLoot(LootData.copyLoot(src.getLootData()));
+            retVal.setStats(StatsData.copyStats(src.getStatsData()));
+
             List<SpawnRule> rules = new ArrayList<>();
             for(SpawnRuleData spawnRuleData : src.getSpawnRulesData())
                 rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
             retVal.setSpawnRules(Collections.unmodifiableList(rules));
-            retVal.setStats(StatsData.copyStats(src.getStatsData()));
+
+            List<AetherMudMessage> attackMessages = new ArrayList<>();
+            for(AetherMudMessageData message : src.getAttackMessageDatas())
+                attackMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
+            retVal.setAttackMessages(Collections.unmodifiableList(attackMessages));
+
+            List<AetherMudMessage> criticalAttackMessages = new ArrayList<>();
+            for(AetherMudMessageData message : src.getCriticalAttackMessageDatas())
+                criticalAttackMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
+            retVal.setCriticalAttackMessages(Collections.unmodifiableList(criticalAttackMessages));
+
+            List<AetherMudMessage> battleMessages = new ArrayList<>();
+            for(AetherMudMessageData message : src.getBattleMessageDatas())
+                battleMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
+            retVal.setBattleMessages(Collections.unmodifiableList(battleMessages));
+
+            List<AetherMudMessage> idleMessages = new ArrayList<>();
+            for(AetherMudMessageData message : src.getIdleMessageDatas())
+                idleMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
+            retVal.setIdleMessages(Collections.unmodifiableList(idleMessages));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties");
         }
