@@ -85,12 +85,6 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     @Property("ItemHalfLifeTicks")
     public abstract int getItemHalfLifeTicks();
 
-    @Property("Loot")
-    public abstract Loot getLoot();
-
-    @Property("Loot")
-    public abstract void setLoot(Loot loot);
-
     @Property("Equipment")
     public abstract Equipment getEquipment();
 
@@ -209,10 +203,42 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         return stats;
     }
 
+    @Adjacency(label = "Loot", direction = Direction.OUT)
+    public abstract <N extends LootData> Iterator<? extends N> getLootDatasIterator(Class<? extends N> type);
+
+    public LootData getLootData() {
+        Iterator<? extends LootData> allStats = this.getLootDatasIterator(LootData.class);
+        if( allStats.hasNext() )
+            return allStats.next();
+        else
+            return null;
+    }
+
+    @Adjacency(label = "Loot", direction = Direction.OUT)
+    public abstract LootData addLootData(LootData loot);
+
+    @Adjacency(label = "Loot", direction = Direction.OUT)
+    public abstract void removeLootData(LootData loot);
+
+    public void setLootData(LootData loot) {
+        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDatasIterator(LootData.class), lootData -> this.addLootData(lootData), () -> createLoottData() );
+    }
+
+    public LootData createLoottData() {
+        if( this.getLootData() != null )
+            throw new IllegalStateException("Already has loot, can't create another");
+        final LootData loot = this.getGraph().addFramedVertex(LootData.class);
+        loot.setLootGoldMax(0);
+        loot.setLootGoldMin(0);
+        this.addLootData(loot);
+        return loot;
+    }
+
     public static void copyItem(ItemData dest, Item src) {
         try {
             PropertyUtils.copyProperties(dest, src);
             StatsData.copyStats(dest.createItemApplyStatData(), src.getItemApplyStats());
+            LootData.copyLoot(dest.createLoottData(), src.getLoot());
             for(Effect effect : src.getEffects())
                 EffectData.copyEffect(dest.createEffectData(), effect);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -224,6 +250,11 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         Item retVal = new Item();
         try {
             PropertyUtils.copyProperties(retVal, src);
+
+            LootData lootData = src.getLootData();
+            if(lootData != null)
+                retVal.setLoot(LootData.copyLoot(lootData));
+
             StatsData applyStats = src.getItemApplyStatData();
             if( applyStats != null )
                 retVal.setItemApplyStats(StatsData.copyStats(applyStats));

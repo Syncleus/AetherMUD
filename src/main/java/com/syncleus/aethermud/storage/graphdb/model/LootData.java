@@ -58,7 +58,7 @@ public abstract class LootData extends AbstractInterceptingVertexFrame {
     public static Loot copyLoot(LootData src) {
         Loot retVal = new Loot();
         try {
-            PropertyUtils.copyProperties(retVal, src);;
+            PropertyUtils.copyProperties(retVal, src);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }
