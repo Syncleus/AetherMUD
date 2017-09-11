@@ -89,7 +89,7 @@ public class Main {
 
         Files.isDirectory().apply(new File("world/"));
 
-        GraphStorageFactory graphStorageFactory = new GraphStorageFactory();
+        GraphStorageFactory graphStorageFactory = new GraphStorageFactory(true);
 
         PlayerManager playerManager = new PlayerManager(graphStorageFactory, new SessionManager());
         playerManager.createAllGauges();

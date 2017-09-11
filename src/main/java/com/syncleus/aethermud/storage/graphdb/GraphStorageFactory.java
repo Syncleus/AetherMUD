@@ -30,11 +30,26 @@ public class GraphStorageFactory {
     OrientGraphFactory graphFactory;
     OrientTransactionFactory txFactory;
 
-    public GraphStorageFactory() {
-        graphFactory = new OrientGraphFactory("memory:tinkerpop");
+    public GraphStorageFactory(String connectUrl, String username, String password) {
+        graphFactory = new OrientGraphFactory(connectUrl, username, password);
         txFactory = new OrientTransactionFactoryImpl(graphFactory, true, "com.syncleus.aethermud.storage.graphdb.model");
         txFactory.setupElementClasses();
         txFactory.addEdgeClass("ItemApplyStats");
+    }
+
+    public GraphStorageFactory(String connectUrl) {
+        graphFactory = new OrientGraphFactory(connectUrl);
+        txFactory = new OrientTransactionFactoryImpl(graphFactory, true, "com.syncleus.aethermud.storage.graphdb.model");
+        txFactory.setupElementClasses();
+        txFactory.addEdgeClass("ItemApplyStats");
+    }
+
+    public GraphStorageFactory() {
+        this(false);
+    }
+
+    public GraphStorageFactory(boolean onDisk) {
+        this(onDisk ? "plocal:./aethermud-graphdb-orientdb" : "memory:tinkerpop");
     }
 
     public AetherMudTx beginTransaction() {
