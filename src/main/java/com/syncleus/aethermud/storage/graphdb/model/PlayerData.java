@@ -160,15 +160,7 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
         }
 
         for( EffectData effect : effects ) {
-            if (effect instanceof EffectData) {
-                this.addEffect((EffectData) effect);
-            } else {
-                try {
-                    PropertyUtils.copyProperties(this.createEffect(), effect);
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    throw new IllegalStateException("Could not copy properties");
-                }
-            }
+                this.addEffect(effect);
         }
     }
 
