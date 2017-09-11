@@ -977,7 +977,7 @@ public class Player extends AetherMudEntity {
                 }
                 if (playerData.getEffects() != null) {
                     for (EffectData effect : playerData.getEffects()) {
-                        StatsHelper.combineStats(newStats, StatData.copyStats(effect.getDurationStats()));
+                        StatsHelper.combineStats(newStats, StatData.copyStats(effect.getDurationStatData()));
                     }
                 }
                 return newStats;

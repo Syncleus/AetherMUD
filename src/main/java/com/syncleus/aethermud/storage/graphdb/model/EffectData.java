@@ -17,6 +17,7 @@ package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
@@ -25,6 +26,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -73,50 +75,37 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     public abstract void setFrozenMovement(boolean frozenMovement);
 
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
-    public abstract <N extends StatData> Iterator<? extends N> getAllApplyStatsOnTick(Class<? extends N> type);
+    public abstract <N extends StatData> Iterator<? extends N> getApplyStatOnTickDataIterator(Class<? extends N> type);
 
-    public Stats getApplyStatsOnTick() {
-        Iterator<? extends StatData> allStats = this.getAllApplyStatsOnTick(StatData.class);
+    public StatData getApplyStatOnTickData() {
+        Iterator<? extends StatData> allStats = this.getApplyStatOnTickDataIterator(StatData.class);
         if (allStats.hasNext())
-            return StatData.copyStats(allStats.next());
+            return allStats.next();
         else
             return null;
     }
 
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
-    public abstract StatData addApplyStatsOnTick(StatData stats);
+    public abstract StatData addApplyStatOnTickData(StatData stats);
 
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
-    public abstract void removeApplyStatsOnTick(StatData stats);
+    public abstract void removeApplyStatOnTickData(StatData stats);
 
-    public void setApplyStatsOnTick(Stats stats) {
-        Iterator<? extends StatData> existingAll = this.getAllApplyStatsOnTick(StatData.class);
-        if (existingAll != null) {
-            while (existingAll.hasNext()) {
-                StatData existing = existingAll.next();
-                this.removeApplyStatsOnTick(existing);
-                existing.remove();
-            }
-        }
-        if (stats == null) {
-            this.addApplyStatsOnTick(this.createOrphanStats());
-            return;
-        }
+    public void setApplyStatOnTickData(StatData stat) {
+        DataUtils.setAllElements(Collections.singletonList(stat), () -> this.getApplyStatOnTickDataIterator(StatData.class), applyStat -> this.addApplyStatOnTickData(applyStat), () -> createApplyStatOnTickData() );
+    }
 
-        StatData createdData = this.createOrphanStats();
-        try {
-            PropertyUtils.copyProperties(createdData, stats);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
-        }
-        this.addApplyStatsOnTick(createdData);
+    private StatData createApplyStatOnTickData() {
+        StatData statData = this.createOrphanStats();
+        this.addApplyStatOnTickData(statData);
+        return statData;
     }
 
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
-    public abstract <N extends StatData> Iterator<? extends N> getAllDurationStats(Class<? extends N> type);
+    public abstract <N extends StatData> Iterator<? extends N> getDurationStatDataIterator(Class<? extends N> type);
 
-    public StatData getDurationStats() {
-        Iterator<? extends StatData> allStats = this.getAllDurationStats(StatData.class);
+    public StatData getDurationStatData() {
+        Iterator<? extends StatData> allStats = this.getDurationStatDataIterator(StatData.class);
         if (allStats.hasNext())
             return allStats.next();
         else
@@ -124,36 +113,23 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
-    public abstract StatData addDurationStats(StatData stats);
+    public abstract StatData addDurationStatData(StatData stats);
 
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
-    public abstract void removeDurationStats(StatData stats);
+    public abstract void removeDurationStatData(StatData stats);
 
-    public void setDurationStats(Stats stats) {
-        Iterator<? extends StatData> existingAll = this.getAllDurationStats(StatData.class);
-        if (existingAll != null) {
-            while (existingAll.hasNext()) {
-                StatData existing = existingAll.next();
-                this.removeDurationStats(existing);
-                existing.remove();
-            }
-        }
-        if (stats == null) {
-            this.addApplyStatsOnTick(this.createOrphanStats());
-            return;
-        }
+    public void setDurationStatData(StatData stat) {
+        DataUtils.setAllElements(Collections.singletonList(stat), () -> this.getDurationStatDataIterator(StatData.class), durationStat -> this.addDurationStatData(durationStat), () -> createDurationStatData() );
+    }
 
-        StatData createdData = this.createOrphanStats();
-        try {
-            PropertyUtils.copyProperties(createdData, stats);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
-        }
-        this.addDurationStats(createdData);
+    private StatData createDurationStatData() {
+        StatData statData = this.createOrphanStats();
+        this.addDurationStatData(statData);
+        return statData;
     }
 
     private StatData createOrphanStats() {
-        if (this.getDurationStats() != null)
+        if (this.getDurationStatData() != null)
             throw new IllegalStateException("Already has stats, can't create another");
         final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
@@ -180,8 +156,8 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     public static void copyEffect(EffectData dest, Effect src) {
         try {
             PropertyUtils.copyProperties(dest, src);
-            dest.setApplyStatsOnTick(src.getApplyStatsOnTick());
-            dest.setDurationStats(src.getDurationStats());
+            StatData.copyStats(dest.createApplyStatOnTickData(), src.getApplyStatsOnTick());
+            StatData.copyStats(dest.createDurationStatData(), src.getDurationStats());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }
@@ -191,12 +167,10 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
         Effect retVal = new Effect();
         try {
             PropertyUtils.copyProperties(retVal, src);
-            Stats durationStats = new Stats();
-            PropertyUtils.copyProperties(durationStats, src.getDurationStats());
-            retVal.setDurationStats(durationStats);
-            Stats applyStats = new Stats();
-            PropertyUtils.copyProperties(applyStats, src.getApplyStatsOnTick());
-            retVal.setApplyStatsOnTick(applyStats);
+
+            retVal.setDurationStats(StatData.copyStats(src.getDurationStatData()));
+            retVal.setApplyStatsOnTick(StatData.copyStats(src.getApplyStatOnTickData()));
+
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }
