@@ -134,10 +134,10 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract <N extends StatsData> Iterator<? extends N> getAllStatsData(Class<? extends N> type);
+    public abstract <N extends StatData> Iterator<? extends N> getAllStatsData(Class<? extends N> type);
 
-    public StatsData getStatsData() {
-        Iterator<? extends StatsData> allStats = this.getAllStatsData(StatsData.class);
+    public StatData getStatsData() {
+        Iterator<? extends StatData> allStats = this.getAllStatsData(StatData.class);
         if( allStats.hasNext() )
             return allStats.next();
         else
@@ -145,19 +145,19 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract StatsData addStatsData(StatsData stats);
+    public abstract StatData addStatsData(StatData stats);
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract void removeStatsData(StatsData stats);
+    public abstract void removeStatsData(StatData stats);
 
-    public void setStatsData(StatsData stats) {
-        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getAllStatsData(StatsData.class), statsData -> this.addStatsData(statsData), () -> this.createStatsData() );
+    public void setStatsData(StatData stats) {
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getAllStatsData(StatData.class), statsData -> this.addStatsData(statsData), () -> this.createStatsData() );
     }
 
-    public StatsData createStatsData() {
+    public StatData createStatsData() {
         if( this.getStatsData() != null )
             throw new IllegalStateException("Already has stats, can't create another");
-        final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
         stats.setAim(0);
         stats.setArmorRating(0);
@@ -283,7 +283,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         try {
             PropertyUtils.copyProperties(dest, src);
             LootData.copyLoot(dest.createLootData(), src.getLoot());
-            StatsData.copyStats(dest.createStatsData(), src.getStats());
+            StatData.copyStats(dest.createStatsData(), src.getStats());
             for(SpawnRule spawnRule : src.getSpawnRules())
                 SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
             for(AetherMudMessage message : src.getAttackMessages())
@@ -304,7 +304,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         try {
             PropertyUtils.copyProperties(retVal, src);
             retVal.setLoot(LootData.copyLoot(src.getLootData()));
-            retVal.setStats(StatsData.copyStats(src.getStatsData()));
+            retVal.setStats(StatData.copyStats(src.getStatsData()));
 
             List<SpawnRule> rules = new ArrayList<>();
             for(SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())

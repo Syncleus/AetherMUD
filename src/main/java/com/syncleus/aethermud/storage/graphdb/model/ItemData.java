@@ -16,11 +16,8 @@
 package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.google.common.collect.Sets;
-import com.syncleus.aethermud.common.AetherMudMessage;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.items.*;
-import com.syncleus.aethermud.spawner.SpawnRule;
-import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
@@ -157,10 +154,10 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
-    public abstract <N extends StatsData> Iterator<? extends N> getItemApplyStatDatasIterator(Class<? extends N> type);
+    public abstract <N extends StatData> Iterator<? extends N> getItemApplyStatDatasIterator(Class<? extends N> type);
 
-    public StatsData getItemApplyStatData() {
-        Iterator<? extends StatsData> allStats = this.getItemApplyStatDatasIterator(StatsData.class);
+    public StatData getItemApplyStatData() {
+        Iterator<? extends StatData> allStats = this.getItemApplyStatDatasIterator(StatData.class);
         if( allStats.hasNext() )
             return allStats.next();
         else
@@ -168,19 +165,19 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
-    public abstract StatsData addStatData(StatsData stats);
+    public abstract StatData addStatData(StatData stats);
 
     @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
-    public abstract void removeStatData(StatsData stats);
+    public abstract void removeStatData(StatData stats);
 
-    public void setItemApplyStatData(StatsData stats) {
-        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getItemApplyStatDatasIterator(StatsData.class), statsData -> this.addStatData(statsData), () -> createItemApplyStatData() );
+    public void setItemApplyStatData(StatData stats) {
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getItemApplyStatDatasIterator(StatData.class), statsData -> this.addStatData(statsData), () -> createItemApplyStatData() );
     }
 
-    public StatsData createItemApplyStatData() {
+    public StatData createItemApplyStatData() {
         if( this.getItemApplyStatData() != null )
             throw new IllegalStateException("Already has stats, can't create another");
-        final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
         stats.setAim(0);
         stats.setArmorRating(0);
@@ -237,7 +234,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     public static void copyItem(ItemData dest, Item src) {
         try {
             PropertyUtils.copyProperties(dest, src);
-            StatsData.copyStats(dest.createItemApplyStatData(), src.getItemApplyStats());
+            StatData.copyStats(dest.createItemApplyStatData(), src.getItemApplyStats());
             LootData.copyLoot(dest.createLoottData(), src.getLoot());
             for(Effect effect : src.getEffects())
                 EffectData.copyEffect(dest.createEffectData(), effect);
@@ -255,9 +252,9 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             if(lootData != null)
                 retVal.setLoot(LootData.copyLoot(lootData));
 
-            StatsData applyStats = src.getItemApplyStatData();
+            StatData applyStats = src.getItemApplyStatData();
             if( applyStats != null )
-                retVal.setItemApplyStats(StatsData.copyStats(applyStats));
+                retVal.setItemApplyStats(StatData.copyStats(applyStats));
 
             Set<Effect> effects = new HashSet<>();
             for(EffectData effect : src.getEffectDatas())

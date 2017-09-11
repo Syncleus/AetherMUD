@@ -16,9 +16,9 @@
 package com.syncleus.aethermud.storage.graphdb.model;
 
 
-import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.player.*;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.ferma.ClassInitializer;
 import com.syncleus.ferma.DefaultClassInitializer;
 import com.syncleus.ferma.annotations.Adjacency;
@@ -256,10 +256,10 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract <N extends StatsData> Iterator<? extends N> getAllStats(Class<? extends N> type);
+    public abstract <N extends StatData> Iterator<? extends N> getStatDataIterator(Class<? extends N> type);
 
-    public StatsData getStats() {
-        Iterator<? extends StatsData> allStats = this.getAllStats(StatsData.class);
+    public StatData getStatData() {
+        Iterator<? extends StatData> allStats = this.getStatDataIterator(StatData.class);
         if( allStats.hasNext() )
             return allStats.next();
         else
@@ -267,44 +267,19 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract StatsData addStats(StatsData stats);
+    public abstract StatData addStatData(StatData stats);
 
     @Adjacency(label = "stats", direction = Direction.OUT)
-    public abstract void removeStats(StatsData stats);
+    public abstract void removeStatData(StatData stats);
 
-    public void setStats(StatsData stats) {
-        Iterator<? extends StatsData> existingAll = this.getAllStats(StatsData.class);
-        if( existingAll != null ) {
-            while( existingAll.hasNext() ) {
-                StatsData existing = existingAll.next();
-                this.removeStats(existing);
-                existing.remove();
-            }
-
-        }
-
-        if( stats == null ) {
-            this.createStats();
-            return;
-        }
-
-        StatsData statsData;
-        if( stats instanceof StatsData ) {
-            this.addStats((StatsData) stats);
-        }
-        else {
-            try {
-                PropertyUtils.copyProperties(this.createStats(), stats);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalStateException("Could not copy properties");
-            }
-        }
+    public void setStats(StatData stats) {
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getStatDataIterator(StatData.class), statsData -> this.addStatData(statsData), () -> createStatData() );
     }
 
-    public StatsData createStats() {
-        if( this.getStats() != null )
+    public StatData createStatData() {
+        if( this.getStatData() != null )
             throw new IllegalStateException("Already has stats, can't create another");
-        final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
         stats.setAim(0);
         stats.setArmorRating(0);
@@ -323,7 +298,7 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
         stats.setWeaponRatingMax(0);
         stats.setWeaponRatingMin(0);
         stats.setWillpower(0);
-        this.addStats(stats);
+        this.addStatData(stats);
         return stats;
     }
 

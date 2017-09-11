@@ -50,8 +50,8 @@ public class XpCommand extends Command {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommand(ctx, e, () -> {
             PlayerUtil.consume(gameManager, playerId, playerData -> {
-                int nextLevel = Levels.getLevel(playerData.getStats().getExperience()) + 1;
-                int expToNextLevel = Levels.getXp(nextLevel) - playerData.getStats().getExperience();
+                int nextLevel = Levels.getLevel(playerData.getStatData().getExperience()) + 1;
+                int expToNextLevel = Levels.getXp(nextLevel) - playerData.getStatData().getExperience();
                 Meter meter = Main.metrics.meter("experience-" + player.getPlayerName());
 
                 Table table = new Table(2, BorderStyle.CLASSIC_COMPATIBLE, ShownBorders.NONE);

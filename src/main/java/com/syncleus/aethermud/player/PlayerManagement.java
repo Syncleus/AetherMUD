@@ -83,7 +83,7 @@ public class PlayerManagement implements PlayerManagementMBean {
     @Override
     public void setHealth(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            this.consume(playerData -> playerData.getStats().setCurrentHealth(amt));
+            this.consume(playerData -> playerData.getStatData().setCurrentHealth(amt));
         }
     }
 
@@ -109,13 +109,13 @@ public class PlayerManagement implements PlayerManagementMBean {
     @Override
     public void setMana(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            this.consume(playerData -> playerData.getStats().setCurrentMana(amt));
+            this.consume(playerData -> playerData.getStatData().setCurrentMana(amt));
         }
     }
 
     @Override
     public int getHealth() {
-        return this.transactRead(playerData -> playerData.getStats().getCurrentHealth());
+        return this.transactRead(playerData -> playerData.getStatData().getCurrentHealth());
     }
 
     @Override
@@ -125,19 +125,19 @@ public class PlayerManagement implements PlayerManagementMBean {
 
     @Override
     public int getMana() {
-        return this.transactRead(playerData -> playerData.getStats().getCurrentMana());
+        return this.transactRead(playerData -> playerData.getStatData().getCurrentMana());
     }
 
     @Override
     public void setExperience(int amt) {
         synchronized (findInterner().intern(playerId)) {
-            this.consume(playerData -> playerData.getStats().setExperience(amt));
+            this.consume(playerData -> playerData.getStatData().setExperience(amt));
         }
     }
 
     @Override
     public int getExperience() {
-        return this.transactRead(playerData -> playerData.getStats().getExperience());
+        return this.transactRead(playerData -> playerData.getStatData().getExperience());
     }
 
     @Override

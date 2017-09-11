@@ -123,7 +123,7 @@ public class NewUserRegistrationManager {
             playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL, PlayerRole.ADMIN, PlayerRole.GOD, PlayerRole.TELEPORTER));
             playerData.setPlayerSettings(new HashMap<>());
             try {
-                PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+                PropertyUtils.copyProperties(playerData.createStatData(), DefaultStats.DEFAULT_PLAYER.createStats());
             } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
                 throw new IllegalStateException("Could not copy properties for stats", e);
             }

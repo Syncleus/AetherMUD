@@ -73,27 +73,27 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     public abstract void setFrozenMovement(boolean frozenMovement);
 
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
-    public abstract <N extends StatsData> Iterator<? extends N> getAllApplyStatsOnTick(Class<? extends N> type);
+    public abstract <N extends StatData> Iterator<? extends N> getAllApplyStatsOnTick(Class<? extends N> type);
 
     public Stats getApplyStatsOnTick() {
-        Iterator<? extends StatsData> allStats = this.getAllApplyStatsOnTick(StatsData.class);
+        Iterator<? extends StatData> allStats = this.getAllApplyStatsOnTick(StatData.class);
         if (allStats.hasNext())
-            return StatsData.copyStats(allStats.next());
+            return StatData.copyStats(allStats.next());
         else
             return null;
     }
 
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
-    public abstract StatsData addApplyStatsOnTick(StatsData stats);
+    public abstract StatData addApplyStatsOnTick(StatData stats);
 
     @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
-    public abstract void removeApplyStatsOnTick(StatsData stats);
+    public abstract void removeApplyStatsOnTick(StatData stats);
 
     public void setApplyStatsOnTick(Stats stats) {
-        Iterator<? extends StatsData> existingAll = this.getAllApplyStatsOnTick(StatsData.class);
+        Iterator<? extends StatData> existingAll = this.getAllApplyStatsOnTick(StatData.class);
         if (existingAll != null) {
             while (existingAll.hasNext()) {
-                StatsData existing = existingAll.next();
+                StatData existing = existingAll.next();
                 this.removeApplyStatsOnTick(existing);
                 existing.remove();
             }
@@ -103,7 +103,7 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
             return;
         }
 
-        StatsData createdData = this.createOrphanStats();
+        StatData createdData = this.createOrphanStats();
         try {
             PropertyUtils.copyProperties(createdData, stats);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -113,10 +113,10 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
-    public abstract <N extends StatsData> Iterator<? extends N> getAllDurationStats(Class<? extends N> type);
+    public abstract <N extends StatData> Iterator<? extends N> getAllDurationStats(Class<? extends N> type);
 
-    public StatsData getDurationStats() {
-        Iterator<? extends StatsData> allStats = this.getAllDurationStats(StatsData.class);
+    public StatData getDurationStats() {
+        Iterator<? extends StatData> allStats = this.getAllDurationStats(StatData.class);
         if (allStats.hasNext())
             return allStats.next();
         else
@@ -124,16 +124,16 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
-    public abstract StatsData addDurationStats(StatsData stats);
+    public abstract StatData addDurationStats(StatData stats);
 
     @Adjacency(label = "DurationStats", direction = Direction.OUT)
-    public abstract void removeDurationStats(StatsData stats);
+    public abstract void removeDurationStats(StatData stats);
 
     public void setDurationStats(Stats stats) {
-        Iterator<? extends StatsData> existingAll = this.getAllDurationStats(StatsData.class);
+        Iterator<? extends StatData> existingAll = this.getAllDurationStats(StatData.class);
         if (existingAll != null) {
             while (existingAll.hasNext()) {
-                StatsData existing = existingAll.next();
+                StatData existing = existingAll.next();
                 this.removeDurationStats(existing);
                 existing.remove();
             }
@@ -143,7 +143,7 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
             return;
         }
 
-        StatsData createdData = this.createOrphanStats();
+        StatData createdData = this.createOrphanStats();
         try {
             PropertyUtils.copyProperties(createdData, stats);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -152,10 +152,10 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
         this.addDurationStats(createdData);
     }
 
-    private StatsData createOrphanStats() {
+    private StatData createOrphanStats() {
         if (this.getDurationStats() != null)
             throw new IllegalStateException("Already has stats, can't create another");
-        final StatsData stats = this.getGraph().addFramedVertex(StatsData.class);
+        final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
         stats.setAim(0);
         stats.setArmorRating(0);

@@ -21,15 +21,12 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.aethermud.storage.graphdb.model.StatsData;
-import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.syncleus.aethermud.world.model.Area;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

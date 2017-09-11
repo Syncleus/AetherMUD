@@ -26,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import static java.lang.StrictMath.sqrt;
 
 @GraphElement
-public abstract class StatsData extends AbstractInterceptingVertexFrame {
+public abstract class StatData extends AbstractInterceptingVertexFrame {
     @Property("intelligence")
     public abstract Integer getIntelligence();
 
@@ -135,7 +135,7 @@ public abstract class StatsData extends AbstractInterceptingVertexFrame {
     @Property("inventorySize")
     public abstract void setInventorySize(Integer inventorySize);
 
-    public static void copyStats(StatsData dest, Stats src) {
+    public static void copyStats(StatData dest, Stats src) {
         try {
             PropertyUtils.copyProperties(dest, src);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -143,7 +143,7 @@ public abstract class StatsData extends AbstractInterceptingVertexFrame {
         }
     }
 
-    public static Stats copyStats(StatsData src) {
+    public static Stats copyStats(StatData src) {
         Stats retVal = new Stats();
         try {
             PropertyUtils.copyProperties(retVal, src);

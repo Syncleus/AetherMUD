@@ -26,11 +26,10 @@ import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.stats.modifier.StatsModifierFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
-import com.syncleus.aethermud.storage.graphdb.model.StatsData;
+import com.syncleus.aethermud.storage.graphdb.model.StatData;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,13 +70,13 @@ public class AetherMudUtilsTest {
         playerData.setPlayerId(Main.createPlayerId("usertest"));
         playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL));
         playerData.setPlayerSettings(new HashMap<>());
-        StatsData statsData = mock(StatsData.class);
+        StatData statData = mock(StatData.class);
         try {
-            PropertyUtils.copyProperties(statsData, DefaultStats.DEFAULT_PLAYER.createStats());
+            PropertyUtils.copyProperties(statData, DefaultStats.DEFAULT_PLAYER.createStats());
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not create a stats object", e);
         }
-        when(playerData.getStats()).thenReturn(statsData);
+        when(playerData.getStatData()).thenReturn(statData);
 
         GameManager gameManager = mock(GameManager.class);
         StatsModifierFactory statsModifierFactory = mock(StatsModifierFactory.class);

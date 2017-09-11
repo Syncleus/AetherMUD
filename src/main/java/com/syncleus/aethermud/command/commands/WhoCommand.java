@@ -62,8 +62,8 @@ public class WhoCommand extends Command {
                         continue;
                     }
                     PlayerData playerData = playerMetadataOptional.get();
-                    t.addCell(Long.toString(Levels.getLevel(playerData.getStats().getExperience())));
-                    t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerData.getStats().getExperience())));
+                    t.addCell(Long.toString(Levels.getLevel(playerData.getStatData().getExperience())));
+                    t.addCell(NumberFormat.getNumberInstance(Locale.US).format((playerData.getStatData().getExperience())));
                     t.addCell(roomManager.getPlayerCurrentRoom(allPlayer).get().getRoomTitle());
                 }
             }

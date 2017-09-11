@@ -318,7 +318,7 @@ public class NpcTestHarness {
             playerData.setPlayerRoles(Sets.newHashSet(PlayerRole.MORTAL));
             playerData.setPlayerSettings(new HashMap<>());
             try {
-                PropertyUtils.copyProperties(playerData.createStats(), DefaultStats.DEFAULT_PLAYER.createStats());
+                PropertyUtils.copyProperties(playerData.createStatData(), DefaultStats.DEFAULT_PLAYER.createStats());
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalStateException("Could not create a stats object", e);
             }

@@ -30,7 +30,7 @@ import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.*;
 import com.syncleus.aethermud.storage.graphdb.model.CoolDownData;
 import com.syncleus.aethermud.storage.graphdb.model.EffectData;
-import com.syncleus.aethermud.storage.graphdb.model.StatsData;
+import com.syncleus.aethermud.storage.graphdb.model.StatData;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.collect.*;
@@ -149,10 +149,10 @@ public class Player extends AetherMudEntity {
             }
             int maxHealth = stats.getMaxHealth();
             this.consumeRead((p) -> {
-                if (p.getStats().getCurrentHealth() < maxHealth) {
+                if (p.getStatData().getCurrentHealth() < maxHealth) {
                     updatePlayerHealth((int) (maxHealth * .05), null);
                 }
-                if (p.getStats().getCurrentMana() < maxHealth) {
+                if (p.getStatData().getCurrentMana() < maxHealth) {
                     addMana((int) (maxHealth * .03));
                 }
             });
@@ -204,7 +204,8 @@ public class Player extends AetherMudEntity {
     public boolean updatePlayerHealth(int amount, NpcSpawn npcSpawn) {
         synchronized (interner.intern(playerId)) {
             if (amount > 0) {
-                int currentHealth = this.transactRead(playerData -> playerData.getStats().getCurrentHealth());
+                // TODO : make this one large transaction
+                int currentHealth = this.transactRead(playerData -> playerData.getStatData().getCurrentHealth());
                 Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
                 int maxHealth = statsModifier.getMaxHealth();
                 int proposedNewAmt = currentHealth + amount;
@@ -218,15 +219,15 @@ public class Player extends AetherMudEntity {
                 }
                 else
                     finalNewAmount = proposedNewAmt;
-                this.consume(playerData -> playerData.getStats().setCurrentHealth(finalNewAmount));
+                this.consume(playerData -> playerData.getStatData().setCurrentHealth(finalNewAmount));
                 return false;
             } else {
-                if ((this.transactRead(playerData -> playerData.getStats().getCurrentHealth()) + amount) < 0) {
-                    this.consume(playerData -> playerData.getStats().setCurrentHealth(0));
+                if ((this.transactRead(playerData -> playerData.getStatData().getCurrentHealth()) + amount) < 0) {
+                    this.consume(playerData -> playerData.getStatData().setCurrentHealth(0));
                 } else {
-                    this.consume(playerData -> playerData.getStats().setCurrentHealth(playerData.getStats().getCurrentHealth() + amount));
+                    this.consume(playerData -> playerData.getStatData().setCurrentHealth(playerData.getStatData().getCurrentHealth() + amount));
                 }
-                if (this.transactRead(playerData -> playerData.getStats().getCurrentHealth()) == 0) {
+                if (this.transactRead(playerData -> playerData.getStatData().getCurrentHealth()) == 0) {
                     killPlayer(npcSpawn);
                     return true;
                 }
@@ -257,7 +258,8 @@ public class Player extends AetherMudEntity {
 
     public void addMana(int addAmt) {
         synchronized (interner.intern(playerId)) {
-            int currentMana = this.transactRead(playerData -> playerData.getStats().getCurrentMana());
+            //TODO : Make this one large transaction
+            int currentMana = this.transactRead(playerData -> playerData.getStatData().getCurrentMana());
             Stats statsModifier = getPlayerStatsWithEquipmentAndLevel();
             int maxMana = statsModifier.getMaxMana();
             int proposedNewAmt = currentMana + addAmt;
@@ -271,7 +273,7 @@ public class Player extends AetherMudEntity {
             }
             else
                 finalNewAmount = proposedNewAmt;
-            this.consume(playerData -> playerData.getStats().setCurrentMana(finalNewAmount));
+            this.consume(playerData -> playerData.getStatData().setCurrentMana(finalNewAmount));
         }
     }
 
@@ -279,11 +281,11 @@ public class Player extends AetherMudEntity {
         synchronized (interner.intern(playerId)) {
             final Meter requests = Main.metrics.meter("experience-" + playerName);
             this.consume(playerData -> {
-                int currentExperience = playerData.getStats().getExperience();
+                int currentExperience = playerData.getStatData().getExperience();
                 int currentLevel = Levels.getLevel(currentExperience);
-                playerData.getStats().setExperience(currentExperience + exp);
+                playerData.getStatData().setExperience(currentExperience + exp);
                 requests.mark(exp);
-                int newLevel = Levels.getLevel(playerData.getStats().getExperience());
+                int newLevel = Levels.getLevel(playerData.getStatData().getExperience());
                 if (newLevel > currentLevel) {
                     gameManager.announceLevelUp(playerName, currentLevel, newLevel);
                 }
@@ -292,18 +294,18 @@ public class Player extends AetherMudEntity {
     }
 
     public int getLevel() {
-        return this.transactRead(playerData -> Levels.getLevel(playerData.getStats().getExperience()));
+        return this.transactRead(playerData -> Levels.getLevel(playerData.getStatData().getExperience()));
     }
 
     public int getCurrentHealth() {
         synchronized (interner.intern(playerId)) {
-            return this.transactRead(playerData -> playerData.getStats().getCurrentHealth());
+            return this.transactRead(playerData -> playerData.getStatData().getCurrentHealth());
         }
     }
 
     public void setCurrentHealth(int health) {
         synchronized (interner.intern(playerId)) {
-            this.consume(playerData -> playerData.getStats().setCurrentHealth(health));
+            this.consume(playerData -> playerData.getStatData().setCurrentHealth(health));
         }
     }
 
@@ -328,7 +330,7 @@ public class Player extends AetherMudEntity {
     public boolean addEffect(Effect effect) {
         synchronized (interner.intern(playerId)) {
             return this.transact(playerData -> {
-                if (playerData.getEffects() != null && (playerData.getEffects().size() >= playerData.getStats().getMaxEffects())) {
+                if (playerData.getEffects() != null && (playerData.getEffects().size() >= playerData.getStatData().getMaxEffects())) {
                     return false;
                 }
 
@@ -462,13 +464,13 @@ public class Player extends AetherMudEntity {
 
     public void updatePlayerMana(int amount) {
         synchronized (interner.intern(playerId)) {
-            this.consume(playerData -> playerData.getStats().setCurrentMana(playerData.getStats().getCurrentMana() + amount));
+            this.consume(playerData -> playerData.getStatData().setCurrentMana(playerData.getStatData().getCurrentMana() + amount));
         }
     }
 
     public void updatePlayerForageExperience(int amount) {
         synchronized (interner.intern(playerId)) {
-            this.consume(playerData -> playerData.getStats().setForaging(playerData.getStats().getForaging() + amount));
+            this.consume(playerData -> playerData.getStatData().setForaging(playerData.getStatData().getForaging() + amount));
         }
     }
 
@@ -975,7 +977,7 @@ public class Player extends AetherMudEntity {
                 }
                 if (playerData.getEffects() != null) {
                     for (EffectData effect : playerData.getEffects()) {
-                        StatsHelper.combineStats(newStats, StatsData.copyStats(effect.getDurationStats()));
+                        StatsHelper.combineStats(newStats, StatData.copyStats(effect.getDurationStats()));
                     }
                 }
                 return newStats;
@@ -1260,7 +1262,7 @@ public class Player extends AetherMudEntity {
     }
 
     public Stats getStats() {
-        return this.transactRead(playerData -> StatsData.copyStats(playerData.getStats()));
+        return this.transactRead(playerData -> StatData.copyStats(playerData.getStatData()));
     }
 
     private <T> T transact(Function<PlayerData, T> func) {
