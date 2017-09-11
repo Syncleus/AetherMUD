@@ -82,12 +82,6 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     @Property("ItemHalfLifeTicks")
     public abstract int getItemHalfLifeTicks();
 
-    @Property("Equipment")
-    public abstract Equipment getEquipment();
-
-    @Property("Equipment")
-    public abstract void setEquipment(Equipment equipment);
-
     @Property("HasBeenWithPlayer")
     public abstract void setHasBeenWithPlayer(boolean hasBeenWithPlayer);
 
@@ -129,6 +123,35 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
 
     @Property("HasBeenWithPlayer")
     public abstract boolean isHasBeenWithPlayer();
+
+    @Adjacency(label = "Equipment", direction = Direction.OUT)
+    public abstract <N extends EquipmentData> Iterator<? extends N> getEquipmentDataIterator(Class<? extends N> type);
+
+    public EquipmentData getEquipmentData() {
+        Iterator<? extends EquipmentData> allEquipment = this.getEquipmentDataIterator(EquipmentData.class);
+        if( allEquipment.hasNext() )
+            return allEquipment.next();
+        else
+            return null;
+    }
+
+    @Adjacency(label = "Equipment", direction = Direction.OUT)
+    public abstract EquipmentData addEquipmentData(EquipmentData equipment);
+
+    @Adjacency(label = "Equipment", direction = Direction.OUT)
+    public abstract void removeEquipmentData(EquipmentData equipment);
+
+    public void setEquipmentData(EquipmentData equipment) {
+        DataUtils.setAllElements(Collections.singletonList(equipment), () -> this.getEquipmentDataIterator(EquipmentData.class), equipmentData -> this.addEquipmentData(equipmentData), () -> createEquipmentData() );
+    }
+
+    public EquipmentData createEquipmentData() {
+        if( this.getEquipmentData() != null )
+            throw new IllegalStateException("Already has stats, can't create another");
+        final EquipmentData equipment = this.getGraph().addFramedVertex(EquipmentData.class);
+        this.addEquipmentData(equipment);
+        return equipment;
+    }
 
     @Adjacency(label = "Effect", direction = Direction.OUT)
     public abstract EffectData addEffectData(EffectData effects);
@@ -236,6 +259,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             PropertyUtils.copyProperties(dest, src);
             StatData.copyStats(dest.createItemApplyStatData(), src.getItemApplyStats());
             LootData.copyLoot(dest.createLoottData(), src.getLoot());
+            EquipmentData.copyEquipment(dest.createEquipmentData(), src.getEquipment());
             for(Effect effect : src.getEffects())
                 EffectData.copyEffect(dest.createEffectData(), effect);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -247,6 +271,10 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         Item retVal = new Item();
         try {
             PropertyUtils.copyProperties(retVal, src);
+
+            EquipmentData equipmentData = src.getEquipmentData();
+            if(equipmentData != null)
+                retVal.setEquipment(EquipmentData.copyEquipment(equipmentData));
 
             LootData lootData = src.getLootData();
             if(lootData != null)
