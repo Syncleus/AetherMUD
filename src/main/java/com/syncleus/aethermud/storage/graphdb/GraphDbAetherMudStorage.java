@@ -76,12 +76,7 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
     @Override
     public ItemData saveItem(Item item) {
         ItemData itemData = framedGraph.addFramedVertex(ItemData.class);
-        try {
-            PropertyUtils.copyProperties(itemData, item);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalStateException("Could not copy beans", e);
-        }
-        itemData.setItemTriggers(item.getItemTriggers());
+        ItemData.copyItem(itemData, item);
         return itemData;
     }
 

@@ -257,11 +257,15 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     public static void copyItem(ItemData dest, Item src) {
         try {
             PropertyUtils.copyProperties(dest, src);
-            StatData.copyStats(dest.createItemApplyStatData(), src.getItemApplyStats());
-            LootData.copyLoot(dest.createLoottData(), src.getLoot());
-            EquipmentData.copyEquipment(dest.createEquipmentData(), src.getEquipment());
-            for(Effect effect : src.getEffects())
-                EffectData.copyEffect(dest.createEffectData(), effect);
+            if( src.getItemApplyStats() != null )
+                StatData.copyStats(dest.createItemApplyStatData(), src.getItemApplyStats());
+            if(src.getLoot() != null )
+                LootData.copyLoot(dest.createLoottData(), src.getLoot());
+            if( src.getEquipment() != null )
+                EquipmentData.copyEquipment(dest.createEquipmentData(), src.getEquipment());
+            if( src.getEffects() != null )
+                for(Effect effect : src.getEffects())
+                    EffectData.copyEffect(dest.createEffectData(), effect);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }
@@ -284,10 +288,12 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             if( applyStats != null )
                 retVal.setItemApplyStats(StatData.copyStats(applyStats));
 
-            Set<Effect> effects = new HashSet<>();
-            for(EffectData effect : src.getEffectDatas())
-                effects.add(EffectData.copyEffect(effect));
-            retVal.setEffects(Collections.unmodifiableSet(effects));
+            if( src.getEffectDatas() != null ) {
+                Set<Effect> effects = new HashSet<>();
+                for (EffectData effect : src.getEffectDatas())
+                    effects.add(EffectData.copyEffect(effect));
+                retVal.setEffects(Collections.unmodifiableSet(effects));
+            }
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
