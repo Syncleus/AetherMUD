@@ -207,7 +207,7 @@
         <dependency>
             <groupId>com.syncleus.ferma</groupId>
             <artifactId>ferma-orientdb</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 
