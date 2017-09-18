@@ -87,7 +87,7 @@ public abstract class EquipmentData extends AbstractVertexFrame {
     public static void copyEquipment(EquipmentData dest, Equipment src) {
         try {
             PropertyUtils.copyProperties(dest, src);
-            StatData.copyStats(dest.getStatData(), src.getStats());
+            StatData.copyStats((dest.getStatData() != null ? dest.getStatData() : dest.createStatData()), src.getStats());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }

@@ -96,6 +96,8 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     }
 
     private StatData createApplyStatOnTickData() {
+        if (this.getApplyStatOnTickData() != null)
+            throw new IllegalStateException("Already has stats, can't create another");
         StatData statData = this.createOrphanStats();
         this.addApplyStatOnTickData(statData);
         return statData;
@@ -123,14 +125,14 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     }
 
     private StatData createDurationStatData() {
+        if (this.getDurationStatData() != null)
+            throw new IllegalStateException("Already has stats, can't create another");
         StatData statData = this.createOrphanStats();
         this.addDurationStatData(statData);
         return statData;
     }
 
     private StatData createOrphanStats() {
-        if (this.getDurationStatData() != null)
-            throw new IllegalStateException("Already has stats, can't create another");
         final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
         stats.setAim(0);
@@ -156,8 +158,8 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
     public static void copyEffect(EffectData dest, Effect src) {
         try {
             PropertyUtils.copyProperties(dest, src);
-            StatData.copyStats(dest.createApplyStatOnTickData(), src.getApplyStatsOnTick());
-            StatData.copyStats(dest.createDurationStatData(), src.getDurationStats());
+            StatData.copyStats((dest.getApplyStatOnTickData() != null ? dest.getApplyStatOnTickData() : dest.createApplyStatOnTickData()), src.getApplyStatsOnTick());
+            StatData.copyStats((dest.getDurationStatData() != null ? dest.getDurationStatData() : dest.createDurationStatData()), src.getDurationStats());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }

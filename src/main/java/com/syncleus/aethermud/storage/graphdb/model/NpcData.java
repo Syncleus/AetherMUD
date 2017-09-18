@@ -282,16 +282,32 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public static void copyNpc(NpcData dest, Npc src) {
         try {
             PropertyUtils.copyProperties(dest, src);
-            LootData.copyLoot(dest.createLootData(), src.getLoot());
-            StatData.copyStats(dest.createStatsData(), src.getStats());
+            LootData.copyLoot((dest.getLootData() != null ? dest.getLootData() : dest.createLootData()), src.getLoot());
+            StatData.copyStats((dest.getStatsData() != null ? dest.getStatsData() : dest.createStatsData()), src.getStats());
+
+            for(SpawnRuleData data : dest.getSpawnRuleDatas())
+                data.remove();
             for(SpawnRule spawnRule : src.getSpawnRules())
                 SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
+
+            for(AetherMudMessageData data : dest.getAttackMessageDatas())
+                data.remove();
             for(AetherMudMessage message : src.getAttackMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createAttackMessageData(), message);
+
+
+            for(AetherMudMessageData data : dest.getBattleMessageDatas())
+                data.remove();
             for(AetherMudMessage message : src.getBattleMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createBattleMessageData(), message);
+
+            for(AetherMudMessageData data : dest.getCriticalAttackMessageDatas())
+                data.remove();
             for(AetherMudMessage message : src.getCriticalAttackMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createCriticalAttackMessageData(), message);
+
+            for(AetherMudMessageData data : dest.getIdleMessageDatas())
+                data.remove();
             for(AetherMudMessage message : src.getIdleMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createIdleMessageData(), message);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
