@@ -19,6 +19,8 @@ import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
+import com.syncleus.ferma.TEdge;
+import com.syncleus.ferma.VertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
@@ -223,7 +225,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         return stats;
     }
 
-    @Adjacency(label = "Loot", direction = Direction.OUT)
+    @Adjacency(label = "loot", direction = Direction.OUT)
     public abstract <N extends LootData> Iterator<? extends N> getLootDatasIterator(Class<? extends N> type);
 
     public LootData getLootData() {
@@ -234,17 +236,17 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             return null;
     }
 
-    @Adjacency(label = "Loot", direction = Direction.OUT)
+    @Adjacency(label = "loot", direction = Direction.OUT)
     public abstract LootData addLootData(LootData loot);
 
-    @Adjacency(label = "Loot", direction = Direction.OUT)
+    @Adjacency(label = "loot", direction = Direction.OUT)
     public abstract void removeLootData(LootData loot);
 
     public void setLootData(LootData loot) {
-        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDatasIterator(LootData.class), lootData -> this.addLootData(lootData), () -> createLoottData() );
+        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDatasIterator(LootData.class), lootData -> this.addLootData(lootData), () -> createLootData() );
     }
 
-    public LootData createLoottData() {
+    public LootData createLootData() {
         if( this.getLootData() != null )
             throw new IllegalStateException("Already has loot, can't create another");
         final LootData loot = this.getGraph().addFramedVertex(LootData.class);
@@ -258,14 +260,17 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         try {
             PropertyUtils.copyProperties(dest, src);
             if( src.getItemApplyStats() != null )
-                StatData.copyStats(dest.createItemApplyStatData(), src.getItemApplyStats());
+                StatData.copyStats((dest.getItemApplyStatData() != null ? dest.getItemApplyStatData() : dest.createItemApplyStatData()), src.getItemApplyStats());
             if(src.getLoot() != null )
-                LootData.copyLoot(dest.createLoottData(), src.getLoot());
+                LootData.copyLoot((dest.getLootData() != null ? dest.getLootData() : dest.createLootData()), src.getLoot());
             if( src.getEquipment() != null )
-                EquipmentData.copyEquipment(dest.createEquipmentData(), src.getEquipment());
-            if( src.getEffects() != null )
-                for(Effect effect : src.getEffects())
+                EquipmentData.copyEquipment((dest.getEquipmentData() != null ? dest.getEquipmentData() :dest.createEquipmentData()), src.getEquipment());
+            if( src.getEffects() != null ) {
+                for(EffectData data : dest.getEffectDatas())
+                    data.remove();
+                for (Effect effect : src.getEffects())
                     EffectData.copyEffect(dest.createEffectData(), effect);
+            }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }

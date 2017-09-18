@@ -15,10 +15,8 @@
  */
 package com.syncleus.aethermud.storage.graphdb.model;
 
-import com.syncleus.aethermud.items.Effect;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.stats.Stats;
-import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;

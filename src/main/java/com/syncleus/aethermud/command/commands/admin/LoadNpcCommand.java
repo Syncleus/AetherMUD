@@ -98,23 +98,7 @@ public class LoadNpcCommand extends Command {
             try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
                 AetherMudStorage storage = tx.getStorage();
                 NpcData npcData = storage.newNpcData();
-                try {
-                    PropertyUtils.copyProperties(npcData, npc);
-                    PropertyUtils.copyProperties(npcData.createStatsData(), npc.getStats());
-                    PropertyUtils.copyProperties(npcData.createLootData(), npc.getLoot());
-                } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
-                    throw new IllegalStateException("Could not copy properties for stats", ex);
-                }
-                npc.getSpawnRules().forEach(new Consumer<SpawnRule>() {
-                    @Override
-                    public void accept(SpawnRule spawnRule) {
-                        try {
-                            PropertyUtils.copyProperties(npcData.createSpawnRuleData(), spawnRule);
-                        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
-                            throw new IllegalStateException("Could not copy properties for stats", ex);
-                        }
-                    }
-                });
+                NpcData.copyNpc(npcData, npc);
                 tx.success();
                 write("NPC Saved. - " + npc.getName() + "\r\n");
             }

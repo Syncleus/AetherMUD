@@ -85,12 +85,7 @@ public class NpcBuilder {
         this.criticalAttackMessages = Sets.newHashSet(npc.getCriticalAttackMessages());
         this.battleMessages = Sets.newHashSet(npc.getBattleMessages());
         this.idleMessages = Sets.newHashSet(npc.getIdleMessages());
-        this.loot = new Loot();
-        try {
-            PropertyUtils.copyProperties(this.loot, npc.getLoot());
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not copy properties");
-        }
+        this.loot = npc.getLoot();
     }
 
     public NpcBuilder setGameManager(GameManager gameManager) {

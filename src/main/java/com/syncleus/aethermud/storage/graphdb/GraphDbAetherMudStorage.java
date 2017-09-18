@@ -75,7 +75,12 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
 
     @Override
     public ItemData saveItem(Item item) {
-        ItemData itemData = framedGraph.addFramedVertex(ItemData.class);
+        Optional<ItemData> existing = this.getItemEntity(item.getItemId());
+        ItemData itemData;
+        if(existing.isPresent())
+            itemData = existing.get();
+        else
+            itemData = framedGraph.addFramedVertex(ItemData.class);
         ItemData.copyItem(itemData, item);
         return itemData;
     }

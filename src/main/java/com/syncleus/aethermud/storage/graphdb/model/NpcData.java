@@ -102,10 +102,10 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     }
 
     @Adjacency(label = "loot", direction = Direction.OUT)
-    public abstract <N extends LootData> Iterator<? extends N> getAllLootDatas(Class<? extends N> type);
+    public abstract <N extends LootData> Iterator<? extends N> getLootDataIterator(Class<? extends N> type);
 
     public LootData getLootData() {
-        Iterator<? extends LootData> allLoots = this.getAllLootDatas(LootData.class);
+        Iterator<? extends LootData> allLoots = this.getLootDataIterator(LootData.class);
         if( allLoots.hasNext() )
             return allLoots.next();
         else
@@ -119,7 +119,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeLootData(LootData loot);
 
     public void setLootData(LootData loot) {
-        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getAllLootDatas(LootData.class), lootData -> this.addLootData(lootData), () -> this.createLootData() );
+        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDataIterator(LootData.class), lootData -> this.addLootData(lootData), () -> this.createLootData() );
     }
 
     public LootData createLootData() {
