@@ -34,14 +34,14 @@ public class GraphStorageFactory {
         graphFactory = new OrientGraphFactory(connectUrl, username, password);
         txFactory = new OrientTransactionFactoryImpl(graphFactory, true, "com.syncleus.aethermud.storage.graphdb.model");
         txFactory.setupElementClasses();
-        txFactory.addEdgeClass("ItemApplyStats");
+        txFactory.addEdgeClass("itemApplyStats");
     }
 
     public GraphStorageFactory(String connectUrl) {
         graphFactory = new OrientGraphFactory(connectUrl);
         txFactory = new OrientTransactionFactoryImpl(graphFactory, true, "com.syncleus.aethermud.storage.graphdb.model");
         txFactory.setupElementClasses();
-        txFactory.addEdgeClass("ItemApplyStats");
+        txFactory.addEdgeClass("itemApplyStats");
     }
 
     public GraphStorageFactory() {

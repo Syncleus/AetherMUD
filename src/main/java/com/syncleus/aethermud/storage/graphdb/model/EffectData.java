@@ -32,49 +32,49 @@ import java.util.List;
 
 @GraphElement
 public abstract class EffectData extends AbstractInterceptingVertexFrame {
-    @Property("EffectName")
+    @Property("effectName")
     public abstract String getEffectName();
 
-    @Property("EffectDescription")
+    @Property("effectDescription")
     public abstract String getEffectDescription();
 
-    @Property("EffectApplyMessages")
+    @Property("effectApplyMessages")
     public abstract List<String> getEffectApplyMessages();
 
-    @Property("MaxEffectApplications")
+    @Property("maxEffectApplications")
     public abstract int getMaxEffectApplications();
 
-    @Property("FrozenMovement")
+    @Property("frozenMovement")
     public abstract boolean isFrozenMovement();
 
-    @Property("EffectApplications")
+    @Property("effectApplications")
     public abstract int getEffectApplications();
 
-    @Property("EffectApplications")
+    @Property("effectApplications")
     public abstract void setEffectApplications(int effectApplications);
 
-    @Property("PlayerId")
+    @Property("playerId")
     public abstract String getPlayerId();
 
-    @Property("PlayerId")
+    @Property("playerId")
     public abstract void setPlayerId(String playerId);
 
-    @Property("EffectName")
+    @Property("effectName")
     public abstract void setEffectName(String effectName);
 
-    @Property("EffectDescription")
+    @Property("effectDescription")
     public abstract void setEffectDescription(String effectDescription);
 
-    @Property("EffectApplyMessages")
+    @Property("effectApplyMessages")
     public abstract void setEffectApplyMessages(List<String> effectApplyMessages);
 
-    @Property("MaxEffectApplications")
+    @Property("maxEffectApplications")
     public abstract void setMaxEffectApplications(int maxEffectApplications);
 
-    @Property("FrozenMovement")
+    @Property("frozenMovement")
     public abstract void setFrozenMovement(boolean frozenMovement);
 
-    @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
+    @Adjacency(label = "applyStatsOnTick", direction = Direction.OUT)
     public abstract <N extends StatData> Iterator<? extends N> getApplyStatOnTickDataIterator(Class<? extends N> type);
 
     public StatData getApplyStatOnTickData() {
@@ -85,10 +85,10 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
             return null;
     }
 
-    @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
+    @Adjacency(label = "applyStatsOnTick", direction = Direction.OUT)
     public abstract StatData addApplyStatOnTickData(StatData stats);
 
-    @Adjacency(label = "ApplyStatsOnTick", direction = Direction.OUT)
+    @Adjacency(label = "applyStatsOnTick", direction = Direction.OUT)
     public abstract void removeApplyStatOnTickData(StatData stats);
 
     public void setApplyStatOnTickData(StatData stat) {
@@ -101,7 +101,7 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
         return statData;
     }
 
-    @Adjacency(label = "DurationStats", direction = Direction.OUT)
+    @Adjacency(label = "durationStats", direction = Direction.OUT)
     public abstract <N extends StatData> Iterator<? extends N> getDurationStatDataIterator(Class<? extends N> type);
 
     public StatData getDurationStatData() {
@@ -112,10 +112,10 @@ public abstract class EffectData extends AbstractInterceptingVertexFrame {
             return null;
     }
 
-    @Adjacency(label = "DurationStats", direction = Direction.OUT)
+    @Adjacency(label = "durationStats", direction = Direction.OUT)
     public abstract StatData addDurationStatData(StatData stats);
 
-    @Adjacency(label = "DurationStats", direction = Direction.OUT)
+    @Adjacency(label = "durationStats", direction = Direction.OUT)
     public abstract void removeDurationStatData(StatData stats);
 
     public void setDurationStatData(StatData stat) {

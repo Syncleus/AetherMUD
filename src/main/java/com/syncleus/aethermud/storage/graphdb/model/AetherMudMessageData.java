@@ -25,16 +25,16 @@ import java.lang.reflect.InvocationTargetException;
 
 @GraphElement
 public abstract class AetherMudMessageData extends AbstractVertexFrame {
-    @Property("MessageType")
+    @Property("messageType")
     public abstract AetherMudMessage.Type getType();
 
-    @Property("MessageType")
+    @Property("messageType")
     public abstract void setType(AetherMudMessage.Type type);
 
-    @Property("Message")
+    @Property("message")
     public abstract String getMessage();
 
-    @Property("Message")
+    @Property("message")
     public abstract void setMessage(String message);
 
     public static void copyAetherMudMessage(AetherMudMessageData dest, AetherMudMessage src) {

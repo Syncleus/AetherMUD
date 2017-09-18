@@ -33,100 +33,100 @@ import java.util.*;
 
 @GraphElement
 public abstract class ItemData extends AbstractInterceptingVertexFrame {
-    @Property("ValidTimeOfDays")
+    @Property("validTimeOfDays")
     public abstract List<TimeTracker.TimeOfDay> getValidTimeOfDays();
 
-    @Property("ValidTimeOfDays")
+    @Property("validTimeOfDays")
     public abstract void setValidTimeOfDays(List<TimeTracker.TimeOfDay> validTimeOfDays);
 
-    @Property("ValidTimeOfDays")
+    @Property("validTimeOfDays")
     public abstract void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays);
 
-    @Property("Disposable")
+    @Property("disposable")
     public abstract boolean isDisposable();
 
-    @Property("MaxUses")
+    @Property("maxUses")
     public abstract int getMaxUses();
 
-    @Property("WithPlayer")
+    @Property("withPlayer")
     public abstract boolean isWithPlayer();
 
-    @Property("WithPlayer")
+    @Property("withPlayer")
     public abstract void setWithPlayer(boolean isWithPlayer);
 
-    @Property("NumberOfUses")
+    @Property("numberOfUses")
     public abstract int getNumberOfUses();
 
-    @Property("NumberOfUses")
+    @Property("numberOfUses")
     public abstract void setNumberOfUses(int numberOfUses);
 
-    @Property("ItemId")
+    @Property("itemId")
     public abstract String getItemId();
 
-    @Property("InternalItemName")
+    @Property("internalItemName")
     public abstract String getInternalItemName();
 
-    @Property("ItemName")
+    @Property("itemName")
     public abstract String getItemName();
 
-    @Property("ItemDescription")
+    @Property("itemDescription")
     public abstract String getItemDescription();
 
-    @Property("ItemTriggers")
+    @Property("itemTriggers")
     public abstract List<String> getItemTriggers();
 
-    @Property("ItemTriggers")
+    @Property("itemTriggers")
     public abstract void setItemTriggers(List<String> itemTriggers);
 
-    @Property("RestingName")
+    @Property("restingName")
     public abstract String getRestingName();
 
-    @Property("ItemHalfLifeTicks")
+    @Property("itemHalfLifeTicks")
     public abstract int getItemHalfLifeTicks();
 
-    @Property("HasBeenWithPlayer")
+    @Property("hasBeenWithPlayer")
     public abstract void setHasBeenWithPlayer(boolean hasBeenWithPlayer);
 
-    @Property("Rarity")
+    @Property("rarity")
     public abstract Rarity getRarity();
 
-    @Property("Rarity")
+    @Property("rarity")
     public abstract void setRarity(Rarity rarity);
 
-    @Property("ValueInGold")
+    @Property("valueInGold")
     public abstract int getValueInGold();
 
-    @Property("ItemName")
+    @Property("itemName")
     public abstract void setItemName(String itemName);
 
-    @Property("ItemDescription")
+    @Property("itemDescription")
     public abstract void setItemDescription(String itemDescription);
 
-    @Property("InternalItemName")
+    @Property("internalItemName")
     public abstract void setInternalItemName(String internalItemName);
 
-    @Property("RestingName")
+    @Property("restingName")
     public abstract void setRestingName(String restingName);
 
-    @Property("ItemId")
+    @Property("itemId")
     public abstract void setItemId(String itemId);
 
-    @Property("ItemHalfLifeTicks")
+    @Property("itemHalfLifeTicks")
     public abstract void setItemHalfLifeTicks(int itemHalfLifeTicks);
 
-    @Property("ValueInGold")
+    @Property("valueInGold")
     public abstract void setValueInGold(int valueInGold);
 
-    @Property("MaxUses")
+    @Property("maxUses")
     public abstract void setMaxUses(int maxUses);
 
-    @Property("Disposable")
+    @Property("disposable")
     public abstract void setDisposable(boolean disposable);
 
-    @Property("HasBeenWithPlayer")
+    @Property("hasBeenWithPlayer")
     public abstract boolean isHasBeenWithPlayer();
 
-    @Adjacency(label = "Equipment", direction = Direction.OUT)
+    @Adjacency(label = "equipment", direction = Direction.OUT)
     public abstract <N extends EquipmentData> Iterator<? extends N> getEquipmentDataIterator(Class<? extends N> type);
 
     public EquipmentData getEquipmentData() {
@@ -137,10 +137,10 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             return null;
     }
 
-    @Adjacency(label = "Equipment", direction = Direction.OUT)
+    @Adjacency(label = "equipment", direction = Direction.OUT)
     public abstract EquipmentData addEquipmentData(EquipmentData equipment);
 
-    @Adjacency(label = "Equipment", direction = Direction.OUT)
+    @Adjacency(label = "equipment", direction = Direction.OUT)
     public abstract void removeEquipmentData(EquipmentData equipment);
 
     public void setEquipmentData(EquipmentData equipment) {
@@ -155,13 +155,13 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         return equipment;
     }
 
-    @Adjacency(label = "Effect", direction = Direction.OUT)
+    @Adjacency(label = "effect", direction = Direction.OUT)
     public abstract EffectData addEffectData(EffectData effects);
 
-    @Adjacency(label = "Effect", direction = Direction.OUT)
+    @Adjacency(label = "effect", direction = Direction.OUT)
     public abstract void removeEffectData(EffectData stats);
 
-    @Adjacency(label = "Effect", direction = Direction.OUT)
+    @Adjacency(label = "effect", direction = Direction.OUT)
     public abstract <N extends EffectData> Iterator<? extends N> getEffectDatasIterator(Class<? extends N> type);
 
     public Set<EffectData> getEffectDatas() {
@@ -178,7 +178,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         return effect;
     }
 
-    @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
+    @Adjacency(label = "itemApplyStats", direction = Direction.OUT)
     public abstract <N extends StatData> Iterator<? extends N> getItemApplyStatDatasIterator(Class<? extends N> type);
 
     public StatData getItemApplyStatData() {
@@ -189,10 +189,10 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             return null;
     }
 
-    @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
+    @Adjacency(label = "itemApplyStats", direction = Direction.OUT)
     public abstract StatData addStatData(StatData stats);
 
-    @Adjacency(label = "ItemApplyStats", direction = Direction.OUT)
+    @Adjacency(label = "itemApplyStats", direction = Direction.OUT)
     public abstract void removeStatData(StatData stats);
 
     public void setItemApplyStatData(StatData stats) {

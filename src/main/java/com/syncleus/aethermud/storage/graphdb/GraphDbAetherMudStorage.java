@@ -64,7 +64,7 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
 
     @Override
     public Optional<ItemData> getItemEntity(String itemId) {
-        return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class).has("ItemId", itemId)).nextOrDefault(ItemData.class, null));
+        return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class).has("itemId", itemId)).nextOrDefault(ItemData.class, null));
     }
 
     @Override

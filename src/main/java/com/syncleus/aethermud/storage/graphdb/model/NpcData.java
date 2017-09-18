@@ -180,17 +180,17 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         return stats;
     }
 
-    @Adjacency(label = "AttackMessage", direction = Direction.OUT)
+    @Adjacency(label = "attackMessage", direction = Direction.OUT)
     public abstract <N extends AetherMudMessageData> Iterator<? extends N> getAttackMessageDataIterator(Class<? extends N> type);
 
     public List<AetherMudMessageData> getAttackMessageDatas() {
         return Lists.newArrayList(this.getIdleMessageDataIterator(AetherMudMessageData.class));
     }
 
-    @Adjacency(label = "AttackMessage", direction = Direction.OUT)
+    @Adjacency(label = "attackMessage", direction = Direction.OUT)
     public abstract void addAttackMessageData(AetherMudMessageData message);
 
-    @Adjacency(label = "AttackMessage", direction = Direction.OUT)
+    @Adjacency(label = "attackMessage", direction = Direction.OUT)
     public abstract void removeAttackMessageData(AetherMudMessageData message);
 
     public void setAttackMessageDatas(List<AetherMudMessageData> messages) {
@@ -203,17 +203,17 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         return message;
     }
 
-    @Adjacency(label = "IdleMessage", direction = Direction.OUT)
+    @Adjacency(label = "idleMessage", direction = Direction.OUT)
     public abstract <N extends AetherMudMessageData> Iterator<? extends N> getIdleMessageDataIterator(Class<? extends N> type);
 
     public List<AetherMudMessageData> getIdleMessageDatas() {
         return Lists.newArrayList(this.getIdleMessageDataIterator(AetherMudMessageData.class));
     }
 
-    @Adjacency(label = "IdleMessage", direction = Direction.OUT)
+    @Adjacency(label = "idleMessage", direction = Direction.OUT)
     public abstract void addIdleMessageData(AetherMudMessageData message);
 
-    @Adjacency(label = "IdleMessage", direction = Direction.OUT)
+    @Adjacency(label = "idleMessage", direction = Direction.OUT)
     public abstract void removeIdleMessageData(AetherMudMessageData message);
 
     public void setIdleMessageDatas(List<AetherMudMessageData> messages) {
@@ -226,17 +226,17 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         return message;
     }
 
-    @Adjacency(label = "BattleMessage", direction = Direction.OUT)
+    @Adjacency(label = "battleMessage", direction = Direction.OUT)
     public abstract <N extends AetherMudMessageData> Iterator<? extends N> getBattleMessageDataIterator(Class<? extends N> type);
 
     public List<AetherMudMessageData> getBattleMessageDatas() {
         return Lists.newArrayList(this.getBattleMessageDataIterator(AetherMudMessageData.class));
     }
 
-    @Adjacency(label = "BattleMessage", direction = Direction.OUT)
+    @Adjacency(label = "battleMessage", direction = Direction.OUT)
     public abstract void addBattleMessageData(AetherMudMessageData message);
 
-    @Adjacency(label = "BattleMessage", direction = Direction.OUT)
+    @Adjacency(label = "battleMessage", direction = Direction.OUT)
     public abstract void removeBattleMessageData(AetherMudMessageData message);
 
     public void setBattleMessageDatas(List<AetherMudMessageData> messages) {
@@ -249,17 +249,17 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
         return message;
     }
 
-    @Adjacency(label = "CriticalAttackMessageData", direction = Direction.OUT)
+    @Adjacency(label = "criticalAttackMessageData", direction = Direction.OUT)
     public abstract <N extends AetherMudMessageData> Iterator<? extends N> getCriticalAttackMessageDataIterator(Class<? extends N> type);
 
     public List<AetherMudMessageData> getCriticalAttackMessageDatas() {
         return Lists.newArrayList(this.getCriticalAttackMessageDataIterator(AetherMudMessageData.class));
     }
 
-    @Adjacency(label = "CriticalAttackMessageData", direction = Direction.OUT)
+    @Adjacency(label = "criticalAttackMessageData", direction = Direction.OUT)
     public abstract void addCriticalAttackMessageData(AetherMudMessageData message);
 
-    @Adjacency(label = "CriticalAttackMessageData", direction = Direction.OUT)
+    @Adjacency(label = "criticalAttackMessageData", direction = Direction.OUT)
     public abstract void removeCriticalAttackMessageData(AetherMudMessageData message);
 
     public void setCriticalAttackMessageDatas(List<AetherMudMessageData> messages) {

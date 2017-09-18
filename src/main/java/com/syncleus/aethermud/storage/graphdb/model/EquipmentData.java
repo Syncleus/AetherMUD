@@ -31,10 +31,10 @@ import java.util.Iterator;
 
 @GraphElement
 public abstract class EquipmentData extends AbstractVertexFrame {
-    @Property("EquipmentSlotType")
+    @Property("equipmentSlotType")
     public abstract void setEquipmentSlotType(EquipmentSlotType slotType);
 
-    @Property("EquipmentSlotType")
+    @Property("equipmentSlotType")
     public abstract EquipmentSlotType getEquipmentSlotType();
 
     @Adjacency(label = "stats", direction = Direction.OUT)

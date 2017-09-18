@@ -28,34 +28,34 @@ import java.lang.reflect.InvocationTargetException;
 
 @GraphElement
 public abstract class SpawnRuleData extends AbstractInterceptingVertexFrame {
-    @Property("RandomChance")
+    @Property("randomChance")
     public abstract int getRandomChance();
 
-    @Property("MaxPerRoom")
+    @Property("maxPerRoom")
     public abstract int getMaxPerRoom();
 
-    @Property("IntervalTicks")
+    @Property("intervalTicks")
     public abstract int getSpawnIntervalTicks();
 
-    @Property("MaxInstances")
+    @Property("maxInstances")
     public abstract int getMaxInstances();
 
-    @Property("Area")
+    @Property("area")
     public abstract Area getArea();
 
-    @Property("Area")
+    @Property("area")
     public abstract void setArea(Area area);
 
-    @Property("RandomChance")
+    @Property("randomChance")
     public abstract void setRandomChance(int randomChance);
 
-    @Property("IntervalTicks")
+    @Property("intervalTicks")
     public abstract void setSpawnIntervalTicks(int spawnIntervalTicks);
 
-    @Property("MaxInstances")
+    @Property("maxInstances")
     public abstract void setMaxInstances(int maxInstances);
 
-    @Property("MaxPerRoom")
+    @Property("maxPerRoom")
     public abstract void setMaxPerRoom(int maxPerRoom);
 
     public static void copySpawnRule(SpawnRuleData dest, SpawnRule src) {

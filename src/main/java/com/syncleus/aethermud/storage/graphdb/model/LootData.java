@@ -27,22 +27,22 @@ import java.util.List;
 
 @GraphElement
 public abstract class LootData extends AbstractInterceptingVertexFrame {
-    @Property("InternalItemNames")
+    @Property("internalItemNames")
     public abstract List<String> getInternalItemNames();
 
-    @Property("InternalItemNames")
+    @Property("internalItemNames")
     public abstract void setInternalItemNames(List<String> internalItemNames);
 
-    @Property("GoldMax")
+    @Property("goldMax")
     public abstract int getLootGoldMax();
 
-    @Property("GoldMin")
+    @Property("goldMin")
     public abstract int getLootGoldMin();
 
-    @Property("GoldMax")
+    @Property("goldMax")
     public abstract void setLootGoldMax(int lootGoldMax);
 
-    @Property("GoldMin")
+    @Property("goldMin")
     public abstract void setLootGoldMin(int lootGoldMin);
 
     public static void copyLoot(LootData dest, Loot src) {

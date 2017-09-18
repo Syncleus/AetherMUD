@@ -139,13 +139,13 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
     @Property("currentRoomId")
     public abstract void setCurrentRoomId(Integer currentRoomId);
 
-    @Adjacency(label = "Effect", direction = Direction.OUT)
+    @Adjacency(label = "effect", direction = Direction.OUT)
     public abstract EffectData addEffect(EffectData effects);
 
-    @Adjacency(label = "Effect", direction = Direction.OUT)
+    @Adjacency(label = "effect", direction = Direction.OUT)
     public abstract void removeEffect(EffectData stats);
 
-    @Adjacency(label = "Effect", direction = Direction.OUT)
+    @Adjacency(label = "effect", direction = Direction.OUT)
     public abstract <N extends EffectData> Iterator<? extends N> getEffects(Class<? extends N> type);
 
     public Set<EffectData> getEffects() {
@@ -181,13 +181,13 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
         }
     }
 
-    @Adjacency(label = "coolDowns", direction = Direction.OUT)
+    @Adjacency(label = "coolDown", direction = Direction.OUT)
     public abstract <N extends CoolDownData> Iterator<? extends N> getCoolDowns(Class<? extends N> type);
 
-    @Adjacency(label = "coolDowns", direction = Direction.OUT)
+    @Adjacency(label = "coolDown", direction = Direction.OUT)
     public abstract void removeCoolDown(CoolDownData stats);
 
-    @Adjacency(label = "coolDowns", direction = Direction.OUT)
+    @Adjacency(label = "coolDown", direction = Direction.OUT)
     public abstract void addCoolDown(CoolDownData coolDown);
 
     public void setCoolDowns(Map<CoolDownType, CoolDownData> coolDowns) {
