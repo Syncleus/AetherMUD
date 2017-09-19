@@ -16,16 +16,18 @@
 package com.syncleus.aethermud.entity;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.SentryManager;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.items.ItemBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
-import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.storage.graphdb.model.ItemInstanceData;
 import com.syncleus.aethermud.world.RoomManager;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.log4j.Logger;
@@ -50,6 +52,7 @@ public class EntityManager {
     private final Map<String, NpcSpawn> npcs = new ConcurrentHashMap<>();
     private final Map<String, AetherMudEntity> entities = new ConcurrentHashMap<>();
     private final ExecutorService mainTickExecutorService = Executors.newFixedThreadPool(50);
+    private final Interner<String> interner = Interners.newWeakInterner();
 
     public EntityManager(GraphStorageFactory graphStorageFactory, RoomManager roomManager, PlayerManager playerManager) {
         this.graphStorageFactory = graphStorageFactory;
@@ -81,23 +84,31 @@ public class EntityManager {
         }
     }
 
-    public ItemData saveItem(Item item) {
-        return this.transact(storage -> storage.saveItem(item));
+    public void saveItem(ItemInstance item) {
+        synchronized (interner.intern(item.getItemId())) {
+            this.transact(storage -> storage.saveItemEntity(item));
+        }
     }
 
-    public void removeItem(Item item) {
-        this.consume(storage -> storage.removeItem(item.getItemId()));
+    public void removeItem(ItemInstance item) {
+        synchronized (interner.intern(item.getItemId())) {
+            this.consume(storage -> storage.removeItemEntity(item.getItemId()));
+        }
     }
 
     public void removeItem(String itemId) {
-        this.consume(storage -> storage.removeItem(itemId));
+        synchronized (interner.intern(itemId)) {
+            this.consume(storage -> storage.removeItemEntity(itemId));
+        }
     }
 
-    public Optional<Item> getItemEntity(String itemId) {
-        return this.transactRead(storage -> {
-            Optional<ItemData> item = storage.getItemEntity(itemId);
-            return item.map(itemData -> new ItemBuilder().from(ItemData.copyItem(itemData)).create());
-        });
+    public Optional<ItemInstance> getItemEntity(String itemId) {
+        synchronized (interner.intern(itemId)) {
+            return this.transactRead(storage -> {
+                Optional<ItemInstanceData> item = storage.getItemEntity(itemId);
+                return item.map(itemData -> new ItemBuilder().from(ItemInstanceData.copyItem(itemData)).create());
+            });
+        }
     }
 
     public void deleteNpcEntity(String npcId) {

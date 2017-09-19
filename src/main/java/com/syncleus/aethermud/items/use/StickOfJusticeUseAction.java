@@ -19,7 +19,7 @@ import com.syncleus.aethermud.command.commands.UseCommand;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.items.Item;
-import com.syncleus.aethermud.items.ItemMetadata;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.items.ItemUseAction;
 import com.syncleus.aethermud.player.Player;
 
@@ -28,20 +28,20 @@ import java.util.Set;
 
 public class StickOfJusticeUseAction implements ItemUseAction {
 
-    private final ItemMetadata itemMetadata;
+    private final Item item;
 
-    public StickOfJusticeUseAction(ItemMetadata itemMetadata) {
-        this.itemMetadata = itemMetadata;
+    public StickOfJusticeUseAction(Item item) {
+        this.item = item;
     }
 
     @Override
     public String getInternalItemName() {
-        return itemMetadata.getInternalItemName();
+        return item.getInternalItemName();
     }
 
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemInstance item, UseCommand.UseItemOn useItemOn) {
 
         if (!useItemOn.getTarget().isPresent()) {
             gameManager.getChannelUtils().write(player.getPlayerId(), "You must use the Stick Of Justice on someone who deserves it.");
@@ -60,7 +60,7 @@ public class StickOfJusticeUseAction implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemInstance item) {
     }
 
     @Override

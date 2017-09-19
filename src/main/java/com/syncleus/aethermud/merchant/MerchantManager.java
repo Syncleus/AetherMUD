@@ -20,10 +20,12 @@ import com.codahale.metrics.Timer;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.items.ItemBuilder;
-import com.syncleus.aethermud.items.ItemMetadata;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.player.PlayerUtil;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 
 import java.util.Optional;
 
@@ -47,11 +49,14 @@ public class MerchantManager {
                 i++;
                 if (i == itemNo) {
                     String internalItemName = merchantItemForSale.getInternalItemName();
-                    Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(internalItemName);
-                    if (!itemMetadataOptional.isPresent()) {
-                        continue;
+                    Item item;
+                    try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                        Optional<ItemData> itemOptional = tx.getStorage().getItem(internalItemName);
+                        if (!itemOptional.isPresent()) {
+                            continue;
+                        }
+                        item = ItemData.copyItem(itemOptional.get());
                     }
-                    ItemMetadata itemMetadata = itemMetadataOptional.get();
                     long maxInventorySize = player.getPlayerStatsWithEquipmentAndLevel().getInventorySize();
                     if (player.getInventory().size() >= maxInventorySize) {
                         gameManager.getChannelUtils().write(player.getPlayerId(), "Your inventory is full, drop some items and come back.\r\n");
@@ -61,13 +66,13 @@ public class MerchantManager {
                     PlayerUtil.consume(gameManager, player.getPlayerId(), playerData -> {
                         long availableGold = playerData.getGold();
                         if (availableGold >= price) {
-                            Item item = new ItemBuilder().from(itemMetadata).create();
-                            gameManager.getEntityManager().saveItem(item);
-                            gameManager.acquireItem(player, item.getItemId());
+                            ItemInstance itemInstance = new ItemBuilder().from(item).create();
+                            gameManager.getEntityManager().saveItem(itemInstance);
+                            gameManager.acquireItem(player, itemInstance.getItemId());
                             player.incrementGold(-price);
-                            gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + item.getItemName() + "\r\n");
+                            gameManager.getChannelUtils().write(player.getPlayerId(), "You have purchased: " + itemInstance.getItemName() + "\r\n");
                         } else {
-                            gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + itemMetadata.getItemName() + "\r\n");
+                            gameManager.getChannelUtils().write(player.getPlayerId(), "You can't afford: " + item.getItemName() + "\r\n");
                         }
                     });
                 }

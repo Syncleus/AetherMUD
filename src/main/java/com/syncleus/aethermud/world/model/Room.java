@@ -19,7 +19,7 @@ import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.entity.AetherMudEntity;
 import com.syncleus.aethermud.items.Forage;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.merchant.Merchant;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.player.Player;
@@ -290,12 +290,12 @@ public abstract class Room extends AetherMudEntity {
     @Override
     public void run() {
         for (String itemId : itemIds) {
-            Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+            Optional<ItemInstance> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
             if (!itemOptional.isPresent()) {
                 removePresentItem(itemId);
                 continue;
             }
-            Item itemEntity = itemOptional.get();
+            ItemInstance itemEntity = itemOptional.get();
             if (itemEntity.isHasBeenWithPlayer()) {
                 continue;
             }

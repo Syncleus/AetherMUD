@@ -20,13 +20,14 @@ import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.entity.EntityManager;
 import com.syncleus.aethermud.items.Forage;
-import com.syncleus.aethermud.items.ItemMetadata;
+import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.merchant.Merchant;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.spawner.ItemSpawner;
 import com.syncleus.aethermud.spawner.NpcSpawner;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,20 +54,24 @@ public class ConfigureNpc {
 
         configureAllNpcs(gameManager);
 
-        List<ItemMetadata> allItemMetadata = gameManager.getItemStorage().getItemMetadatas();
+        try( GraphStorageFactory.AetherMudTx tx = gameManager.getGraphStorageFactory().beginTransaction() ) {
+            List<? extends ItemData> allItem = tx.getStorage().getAllItems();
 
-        for (ItemMetadata itemMetadata : allItemMetadata) {
-            for (SpawnRule spawnRule : itemMetadata.getSpawnRules()) {
-                Main.startUpMessage("Adding item spawn: " + itemMetadata.getInternalItemName());
-                ItemSpawner itemSpawner = new ItemSpawner(itemMetadata, spawnRule, gameManager);
-                entityManager.addEntity(itemSpawner);
-            }
-        }
-
-        for (ItemMetadata itemMetadata : allItemMetadata) {
-            for (Forage forage : itemMetadata.getForages()) {
-                Main.startUpMessage("Adding forage: " + itemMetadata.getInternalItemName());
-                gameManager.getForageManager().addForage(itemMetadata.getInternalItemName(), forage);
+            for (ItemData itemData : allItem) {
+                Item item = ItemData.copyItem(itemData);
+                if( item.getSpawnRules() != null ) {
+                    for (SpawnRule spawnRule : item.getSpawnRules()) {
+                        Main.startUpMessage("Adding item spawn: " + item.getInternalItemName());
+                        ItemSpawner itemSpawner = new ItemSpawner(item, spawnRule, gameManager);
+                        entityManager.addEntity(itemSpawner);
+                    }
+                }
+                if( item.getForages() != null ) {
+                    for (Forage forage : item.getForages()) {
+                        Main.startUpMessage("Adding forage: " + item.getInternalItemName());
+                        gameManager.getForageManager().addForage(item.getInternalItemName(), forage);
+                    }
+                }
             }
         }
 

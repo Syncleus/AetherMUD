@@ -16,7 +16,9 @@
 package com.syncleus.aethermud.merchant;
 
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.ItemMetadata;
+import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
@@ -71,14 +73,17 @@ public class Merchant {
         while (iterator.hasNext()) {
             i++;
             MerchantItemForSale merchantItemForSale = iterator.next();
-            Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(merchantItemForSale.getInternalItemName());
-            if (!itemMetadataOptional.isPresent()) {
-                continue;
+            Item item;
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                Optional<ItemData> itemOptional = tx.getStorage().getItem(merchantItemForSale.getInternalItemName());
+                if (!itemOptional.isPresent()) {
+                    continue;
+                }
+                item = ItemData.copyItem(itemOptional.get());
             }
-            ItemMetadata itemMetadata = itemMetadataOptional.get();
             t.addCell(String.valueOf(i));
             t.addCell(NumberFormat.getNumberInstance(Locale.US).format(merchantItemForSale.getCost()));
-            t.addCell(itemMetadata.getItemDescription());
+            t.addCell(item.getItemDescription());
         }
         return t.render();
     }

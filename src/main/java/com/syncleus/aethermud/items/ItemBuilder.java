@@ -18,8 +18,10 @@ package com.syncleus.aethermud.items;
 
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.core.service.TimeTracker;
+import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -45,32 +47,36 @@ public class ItemBuilder {
     private boolean isDisposable;
     private Set<TimeTracker.TimeOfDay> validTimeOfDays;
     private Stats itemApplyStats;
+    private Set<SpawnRule> spawnRules;
+    private Set<Forage> forages;
 
-    public ItemBuilder from(ItemMetadata itemMetadata) {
-        this.internalItemName = itemMetadata.getInternalItemName();
-        this.itemName = itemMetadata.getItemName();
-        this.itemDescription = itemMetadata.getItemDescription();
-        this.itemTriggers = itemMetadata.getItemTriggers();
-        this.restingName = itemMetadata.getRestingName();
+    public ItemBuilder from(Item item) {
+        this.internalItemName = item.getInternalItemName();
+        this.itemName = item.getItemName();
+        this.itemDescription = item.getItemDescription();
+        this.itemTriggers = item.getItemTriggers();
+        this.restingName = item.getRestingName();
         this.itemId = UUID.randomUUID().toString();
         // zero uses, its new.
         this.numberOfUses = 0;
         this.isWithPlayer = false;
-        this.itemHalfLifeTicks = itemMetadata.getItemHalfLifeTicks();
-        this.rarity = itemMetadata.getRarity();
-        this.valueInGold = itemMetadata.getValueInGold();
-        this.maxUses = itemMetadata.getMaxUses();
+        this.itemHalfLifeTicks = item.getItemHalfLifeTicks();
+        this.rarity = item.getRarity();
+        this.valueInGold = item.getValueInGold();
+        this.maxUses = item.getMaxUses();
         this.loot = null;
-        this.isDisposable = itemMetadata.isDisposable();
-        this.equipment = itemMetadata.getEquipment();
-        this.validTimeOfDays = itemMetadata.getValidTimeOfDays();
-        Set<Effect> effects = itemMetadata.getEffects();
-        this.effects = (effects != null ? Sets.newHashSet(itemMetadata.getEffects()) : null );
-        this.itemApplyStats = itemMetadata.getItemApplyStats();
+        this.isDisposable = item.isDisposable();
+        this.equipment = item.getEquipment();
+        this.validTimeOfDays = new HashSet<>(item.getValidTimeOfDays());
+        Set<Effect> effects = item.getEffects();
+        this.effects = (effects != null ? Sets.newHashSet(item.getEffects()) : null );
+        this.itemApplyStats = item.getItemApplyStats();
+        this.spawnRules = (spawnRules != null ? Sets.newHashSet(item.getSpawnRules()) : null);
+        this.forages = (forages != null ? Sets.newHashSet(item.getForages()) : null);
         return this;
     }
 
-    public ItemBuilder from(Item origItem) {
+    public ItemBuilder from(ItemInstance origItem) {
         this.internalItemName = origItem.getInternalItemName();
         this.itemName = origItem.getItemName();
         this.itemDescription = origItem.getItemDescription();
@@ -92,6 +98,8 @@ public class ItemBuilder {
         this.isDisposable = origItem.isDisposable();
         this.validTimeOfDays = Sets.newHashSet(origItem.getValidTimeOfDays());
         this.itemApplyStats = origItem.getItemApplyStats();
+        this.spawnRules = (spawnRules != null ? Sets.newHashSet(origItem.getSpawnRules()) : null);
+        this.forages = (forages != null ? Sets.newHashSet(origItem.getForages()) : null);
         return this;
     }
 
@@ -190,8 +198,9 @@ public class ItemBuilder {
         return this;
     }
 
-    public Item create() {
-        return new Item(itemName, itemDescription, internalItemName, itemTriggers, restingName, itemId, numberOfUses, isWithPlayer, loot, itemHalfLifeTicks, equipment, rarity, valueInGold, effects, hasBeenWithPlayer, maxUses, isDisposable, validTimeOfDays, itemApplyStats);
+    public ItemInstance create() {
+        Item item = new ItemImpl(itemName, itemDescription, internalItemName, itemTriggers, restingName, loot, itemHalfLifeTicks, equipment, rarity, valueInGold, effects, maxUses, isDisposable, validTimeOfDays, itemApplyStats, spawnRules, forages);
+        return new ItemInstanceImpl(item, itemId, numberOfUses, isWithPlayer, hasBeenWithPlayer);
     }
 
 

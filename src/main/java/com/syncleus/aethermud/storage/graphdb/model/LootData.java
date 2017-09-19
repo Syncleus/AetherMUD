@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package com.syncleus.aethermud.storage.graphdb.model;
+import com.google.common.collect.Lists;
 
-import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.Loot;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
@@ -55,6 +55,7 @@ public abstract class LootData extends AbstractInterceptingVertexFrame {
 
     public static Loot copyLoot(LootData src) {
         Loot retVal = new Loot();
+
         try {
             PropertyUtils.copyProperties(retVal, src);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {

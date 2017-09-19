@@ -15,12 +15,13 @@
  */
 package com.syncleus.aethermud.storage.graphdb.model;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.common.ColorizedTextTemplate;
 import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.items.*;
+import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
-import com.syncleus.ferma.TEdge;
-import com.syncleus.ferma.VertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
@@ -48,29 +49,20 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     @Property("maxUses")
     public abstract int getMaxUses();
 
-    @Property("withPlayer")
-    public abstract boolean isWithPlayer();
-
-    @Property("withPlayer")
-    public abstract void setWithPlayer(boolean isWithPlayer);
-
-    @Property("numberOfUses")
-    public abstract int getNumberOfUses();
-
-    @Property("numberOfUses")
-    public abstract void setNumberOfUses(int numberOfUses);
-
-    @Property("itemId")
-    public abstract String getItemId();
-
     @Property("internalItemName")
     public abstract String getInternalItemName();
 
-    @Property("itemName")
-    public abstract String getItemName();
+    public String getItemName() {
+        return ColorizedTextTemplate.renderFromTemplateLanguage(this.getProperty("itemName"));
+    }
 
-    @Property("itemDescription")
-    public abstract String getItemDescription();
+    public void setItemName(String itemName) {
+        this.setProperty("itemName", ColorizedTextTemplate.renderToTemplateLanguage(itemName));
+    }
+
+    public String getItemDescription() {
+        return ColorizedTextTemplate.renderFromTemplateLanguage(this.getProperty("itemDescription"));
+    }
 
     @Property("itemTriggers")
     public abstract List<String> getItemTriggers();
@@ -78,14 +70,12 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     @Property("itemTriggers")
     public abstract void setItemTriggers(List<String> itemTriggers);
 
-    @Property("restingName")
-    public abstract String getRestingName();
+    public String getRestingName() {
+        return ColorizedTextTemplate.renderFromTemplateLanguage(this.getProperty("restingName"));
+    }
 
     @Property("itemHalfLifeTicks")
     public abstract int getItemHalfLifeTicks();
-
-    @Property("hasBeenWithPlayer")
-    public abstract void setHasBeenWithPlayer(boolean hasBeenWithPlayer);
 
     @Property("rarity")
     public abstract Rarity getRarity();
@@ -96,20 +86,16 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     @Property("valueInGold")
     public abstract int getValueInGold();
 
-    @Property("itemName")
-    public abstract void setItemName(String itemName);
-
-    @Property("itemDescription")
-    public abstract void setItemDescription(String itemDescription);
+    public void setItemDescription(String itemDescription) {
+        this.setProperty("itemDescription", ColorizedTextTemplate.renderToTemplateLanguage(itemDescription));
+    }
 
     @Property("internalItemName")
     public abstract void setInternalItemName(String internalItemName);
 
-    @Property("restingName")
-    public abstract void setRestingName(String restingName);
-
-    @Property("itemId")
-    public abstract void setItemId(String itemId);
+    public void setRestingName(String restingName) {
+        this.setProperty("restingName", ColorizedTextTemplate.renderToTemplateLanguage(restingName));
+    }
 
     @Property("itemHalfLifeTicks")
     public abstract void setItemHalfLifeTicks(int itemHalfLifeTicks);
@@ -123,8 +109,34 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     @Property("disposable")
     public abstract void setDisposable(boolean disposable);
 
-    @Property("hasBeenWithPlayer")
-    public abstract boolean isHasBeenWithPlayer();
+    @Property("forage")
+    public abstract Set<Forage> getForages();
+
+    @Property("forage")
+    public abstract void setForages(Set<Forage> forages);
+
+    @Adjacency(label = "spawnRule", direction = Direction.OUT)
+    public abstract <N extends SpawnRuleData> Iterator<? extends N> getSpawnRulesDataIterator(Class<? extends N> type);
+
+    public List<SpawnRuleData> getSpawnRuleDatas() {
+        return Collections.unmodifiableList(Lists.newArrayList(this.getSpawnRulesDataIterator(SpawnRuleData.class)));
+    }
+
+    @Adjacency(label = "spawnRule", direction = Direction.OUT)
+    public abstract void addSpawnRuleData(SpawnRuleData spawnRule);
+
+    @Adjacency(label = "spawnRule", direction = Direction.OUT)
+    public abstract void removeSpawnRuleData(SpawnRuleData spawnRule);
+
+    public void setSpawnRulesDatas(List<SpawnRuleData> spawnRules) {
+        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> {} );
+    }
+
+    public SpawnRuleData createSpawnRuleData() {
+        final SpawnRuleData rule = this.getGraph().addFramedVertex(SpawnRuleData.class);
+        this.addSpawnRuleData(rule);
+        return rule;
+    }
 
     @Adjacency(label = "equipment", direction = Direction.OUT)
     public abstract <N extends EquipmentData> Iterator<? extends N> getEquipmentDataIterator(Class<? extends N> type);
@@ -259,6 +271,12 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     public static void copyItem(ItemData dest, Item src) {
         try {
             PropertyUtils.copyProperties(dest, src);
+
+            for(SpawnRuleData data : dest.getSpawnRuleDatas())
+                data.remove();
+            for(SpawnRule spawnRule : src.getSpawnRules())
+                SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
+
             if( src.getItemApplyStats() != null )
                 StatData.copyStats((dest.getItemApplyStatData() != null ? dest.getItemApplyStatData() : dest.createItemApplyStatData()), src.getItemApplyStats());
             if(src.getLoot() != null )
@@ -277,9 +295,14 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     }
 
     public static Item copyItem(ItemData src) {
-        Item retVal = new Item();
+        Item retVal = new ItemImpl();
         try {
             PropertyUtils.copyProperties(retVal, src);
+
+            Set<SpawnRule> rules = new HashSet<>();
+            for(SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
+                rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
+            retVal.setSpawnRules(Collections.unmodifiableSet(rules));
 
             EquipmentData equipmentData = src.getEquipmentData();
             if(equipmentData != null)

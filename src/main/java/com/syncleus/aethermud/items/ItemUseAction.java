@@ -24,9 +24,9 @@ import java.util.Set;
 public interface ItemUseAction {
     String getInternalItemName();
 
-    void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn);
+    void executeAction(GameManager gameManager, Player player, ItemInstance item, UseCommand.UseItemOn useItemOn);
 
-    void postExecuteAction(GameManager gameManager, Player player, Item item);
+    void postExecuteAction(GameManager gameManager, Player player, ItemInstance item);
 
     Set<Effect> getEffects();
 

@@ -31,10 +31,10 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     private final Stats itemApplyStats;
     private static final Logger log = Logger.getLogger(DefaultApplyEffectsStats.class);
 
-    public DefaultApplyEffectsStats(ItemMetadata itemMetadata) {
-        this.internalItemName = itemMetadata.getInternalItemName();
-        this.effectSet = itemMetadata.getEffects();
-        this.itemApplyStats = itemMetadata.getItemApplyStats();
+    public DefaultApplyEffectsStats(Item item) {
+        this.internalItemName = item.getInternalItemName();
+        this.effectSet = item.getEffects();
+        this.itemApplyStats = item.getItemApplyStats();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemInstance item, UseCommand.UseItemOn useItemOn) {
         String playerName = player.getPlayerName();
 
         gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), playerName + " uses " + item.getItemName() + ".\r\n");
@@ -60,7 +60,7 @@ public class DefaultApplyEffectsStats implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemInstance item) {
         ItemUseHandler.incrementUses(item);
         if (item.isDisposable()) {
             if (item.getNumberOfUses() < item.getMaxUses()) {

@@ -24,25 +24,25 @@ import java.util.Set;
 
 public class ResetAllEffectsUseAction implements ItemUseAction {
 
-    private final ItemMetadata itemMetadata;
+    private final Item item;
 
-    public ResetAllEffectsUseAction(ItemMetadata itemMetadata) {
-        this.itemMetadata = itemMetadata;
+    public ResetAllEffectsUseAction(Item item) {
+        this.item = item;
     }
 
     @Override
     public String getInternalItemName() {
-        return itemMetadata.getInternalItemName();
+        return item.getInternalItemName();
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemInstance item, UseCommand.UseItemOn useItemOn) {
         player.resetEffects();
         gameManager.getChannelUtils().write(player.getPlayerId(), "All Effects are removed." + "\r\n");
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemInstance item) {
         ItemUseHandler.incrementUses(item);
         if (item.isDisposable()) {
             if (item.getNumberOfUses() < item.getMaxUses()) {

@@ -17,7 +17,7 @@ package com.syncleus.aethermud.merchant;
 
 import com.syncleus.aethermud.command.commands.CommandAuditLog;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.server.communication.Color;
@@ -70,7 +70,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
                     Integer desiredItem = Integer.parseInt(split[1]);
                     if (inventoryMenu.containsKey(desiredItem)) {
                         InventoryItemForSale inventoryItemForSale = inventoryMenu.get(desiredItem);
-                        Item item = inventoryItemForSale.getItem();
+                        ItemInstance item = inventoryItemForSale.getItem();
                         playerByUsername.incrementGold(inventoryItemForSale.getCost());
                         gameManager.getChannelUtils().write(playerByUsername.getPlayerId(), "You have received: " + inventoryItemForSale.getCost() + Color.YELLOW + " gold" + Color.RESET + " for " + item.getItemName() + "\r\n");
                         playerByUsername.removeInventoryId(item.getItemId());
@@ -103,9 +103,9 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
 
     public Map<Integer, InventoryItemForSale> getInventoryMenu(Player player) {
         Map<Integer, InventoryItemForSale> inventoryItemsForSale = Maps.newHashMap();
-        List<Item> inventory = player.getInventory();
+        List<ItemInstance> inventory = player.getInventory();
         int inv = 1;
-        for (Item itemEntity : inventory) {
+        for (ItemInstance itemEntity : inventory) {
             int valueInGold = itemEntity.getValueInGold();
             if (valueInGold == 0) {
                 valueInGold = itemEntity.getValueInGold();
@@ -150,10 +150,10 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
     }
 
     class InventoryItemForSale {
-        private final Item item;
+        private final ItemInstance item;
         private final Integer cost;
 
-        public InventoryItemForSale(Integer cost, Item item) {
+        public InventoryItemForSale(Integer cost, ItemInstance item) {
             this.cost = cost;
             this.item = item;
         }
@@ -162,7 +162,7 @@ public class MerchantCommandHandler extends SimpleChannelUpstreamHandler {
             return cost;
         }
 
-        public Item getItem() {
+        public ItemInstance getItem() {
             return item;
         }
     }

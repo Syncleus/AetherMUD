@@ -18,8 +18,10 @@ package com.syncleus.aethermud.storage;
 
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.storage.graphdb.model.ItemInstanceData;
 import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 
@@ -35,11 +37,19 @@ public interface AetherMudStorage {
 
     Map<String, PlayerData> getAllPlayerMetadata();
 
+    ItemInstanceData saveItemEntity(ItemInstance item);
+
+    Optional<ItemInstanceData> getItemEntity(String itemId);
+
+    void removeItemEntity(String itemId);
+
     ItemData saveItem(Item item);
 
-    Optional<ItemData> getItemEntity(String itemId);
+    Optional<ItemData> getItem(String internalName);
 
-    void removeItem(String itemId);
+    void removeItem(String internalName);
+
+    public List<? extends ItemData> getAllItems();
 
     List<? extends NpcSpawn> getAllNpcs(GameManager gameManager);
 

@@ -22,6 +22,8 @@ import com.syncleus.aethermud.items.use.DefaultApplyEffectsStats;
 import com.syncleus.aethermud.items.use.LightningSpellBookUseAction;
 import com.syncleus.aethermud.items.use.StickOfJusticeUseAction;
 import com.syncleus.aethermud.player.Player;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 import org.apache.log4j.Logger;
 
 import java.util.Optional;
@@ -35,33 +37,36 @@ public class ItemUseHandler {
         this.gameManager = gameManager;
     }
 
-    public void handle(Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void handle(Player player, ItemInstance itemInstance, UseCommand.UseItemOn useItemOn) {
         ItemUseAction itemUseAction = null;
-        Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(item.getInternalItemName());
-        if (!itemMetadataOptional.isPresent()) {
-            return;
+        Item item;
+        try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+            Optional<ItemData> itemOptional = tx.getStorage().getItem(itemInstance.getInternalItemName());
+            if (!itemOptional.isPresent()) {
+                return;
+            }
+            item = ItemData.copyItem(itemOptional.get());
         }
-        ItemMetadata itemMetadata = itemMetadataOptional.get();
-        switch (itemMetadata.getInternalItemName()) {
+        switch (item.getInternalItemName()) {
             case "lightning spellbook":
-                itemUseAction = new LightningSpellBookUseAction(itemMetadata);
+                itemUseAction = new LightningSpellBookUseAction(item);
                 break;
             case "stick of justice":
-                itemUseAction = new StickOfJusticeUseAction(itemMetadata);
+                itemUseAction = new StickOfJusticeUseAction(item);
                 break;
             default:
-                if ((item.getEffects() != null && item.getEffects().size() > 0) || (item.getItemApplyStats() != null)) {
-                    itemUseAction = new DefaultApplyEffectsStats(itemMetadata);
+                if ((itemInstance.getEffects() != null && itemInstance.getEffects().size() > 0) || (itemInstance.getItemApplyStats() != null)) {
+                    itemUseAction = new DefaultApplyEffectsStats(item);
                 }
                 break;
         }
         if (itemUseAction != null) {
-            itemUseAction.executeAction(gameManager, player, item, useItemOn);
-            itemUseAction.postExecuteAction(gameManager, player, item);
+            itemUseAction.executeAction(gameManager, player, itemInstance, useItemOn);
+            itemUseAction.postExecuteAction(gameManager, player, itemInstance);
         }
     }
 
-    public static void incrementUses(Item item) {
+    public static void incrementUses(ItemInstance item) {
         item.setNumberOfUses(item.getNumberOfUses() + 1);
     }
 }

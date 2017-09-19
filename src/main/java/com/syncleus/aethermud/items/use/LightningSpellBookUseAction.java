@@ -19,7 +19,7 @@ import com.syncleus.aethermud.command.commands.UseCommand;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.items.Item;
-import com.syncleus.aethermud.items.ItemMetadata;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.items.ItemUseAction;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.spells.LightningSpell;
@@ -28,21 +28,21 @@ import java.util.Set;
 
 public class LightningSpellBookUseAction implements ItemUseAction {
 
-    private final ItemMetadata itemMetadata;
+    private final Item item;
 
-    public LightningSpellBookUseAction(ItemMetadata itemMetadata) {
-        this.itemMetadata = itemMetadata;
+    public LightningSpellBookUseAction(Item item) {
+        this.item = item;
     }
 
     private Boolean dontDelete = Boolean.FALSE;
 
     @Override
     public String getInternalItemName() {
-        return itemMetadata.getInternalItemName();
+        return item.getInternalItemName();
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemInstance item, UseCommand.UseItemOn useItemOn) {
         if (player.getLearnedSpells().contains(LightningSpell.name)) {
             gameManager.getChannelUtils().write(player.getPlayerId(), "You already know how to use " + LightningSpell.name);
             dontDelete = true;
@@ -53,7 +53,7 @@ public class LightningSpellBookUseAction implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemInstance item) {
         if (!dontDelete) {
             player.removeInventoryId(item.getItemId());
             gameManager.getEntityManager().removeItem(item);

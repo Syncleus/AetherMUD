@@ -15,26 +15,29 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.storage.graphdb.model.ItemInstanceData;
 import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.ferma.WrappedFramedGraph;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GraphDbAetherMudStorage implements AetherMudStorage {
     private static final Logger LOGGER = Logger.getLogger(GraphDbAetherMudStorage.class);
     private final WrappedFramedGraph<? extends Graph> framedGraph;
+    private final Interner<String> interner = Interners.newWeakInterner();
 
 
     public GraphDbAetherMudStorage(WrappedFramedGraph<? extends Graph> framedGraph) {
@@ -63,26 +66,65 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
     }
 
     @Override
-    public Optional<ItemData> getItemEntity(String itemId) {
-        return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class).has("itemId", itemId)).nextOrDefault(ItemData.class, null));
+    public Optional<ItemInstanceData> getItemEntity(String itemId) {
+        synchronized (interner.intern(itemId)) {
+            return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemInstanceData.class).has("itemId", itemId)).nextOrDefault(ItemInstanceData.class, null));
+        }
     }
 
     @Override
-    public void removeItem(String itemId) {
-        this.getItemEntity(itemId).ifPresent((i) -> i.remove());
+    public void removeItemEntity(String itemId) {
+        synchronized (interner.intern(itemId)) {
+            this.getItemEntity(itemId).ifPresent((i) -> i.remove());
+        }
+    }
 
+    @Override
+    public ItemInstanceData saveItemEntity(ItemInstance itemInstance) {
+        synchronized (interner.intern(itemInstance.getItemId())) {
+            Optional<ItemInstanceData> existing = this.getItemEntity(itemInstance.getItemId());
+            ItemInstanceData itemInstanceData;
+            if (existing.isPresent())
+                itemInstanceData = existing.get();
+            else
+                itemInstanceData = framedGraph.addFramedVertex(ItemInstanceData.class);
+            ItemInstanceData.copyItem(itemInstanceData, itemInstance, this.getItem(itemInstance.getItem().getInternalItemName()).get());
+            return itemInstanceData;
+        }
     }
 
     @Override
     public ItemData saveItem(Item item) {
-        Optional<ItemData> existing = this.getItemEntity(item.getItemId());
-        ItemData itemData;
-        if(existing.isPresent())
-            itemData = existing.get();
-        else
-            itemData = framedGraph.addFramedVertex(ItemData.class);
-        ItemData.copyItem(itemData, item);
-        return itemData;
+        synchronized (interner.intern(item.getInternalItemName())) {
+            Optional<ItemData> existing = this.getItem(item.getInternalItemName());
+            ItemData itemData;
+            if (existing.isPresent())
+                itemData = existing.get();
+            else
+                itemData = framedGraph.addFramedVertex(ItemData.class);
+            ItemData.copyItem(itemData, item);
+            return itemData;
+        }
+    }
+
+    @Override
+    public Optional<ItemData> getItem(String internalName) {
+        synchronized (interner.intern(internalName)) {
+            return Optional.ofNullable(framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class).has("internalItemName", internalName)).nextOrDefault(ItemData.class, null));
+        }
+    }
+
+    @Override
+    public List<? extends ItemData> getAllItems() {
+        return framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemData.class)).toList(ItemData.class);
+    }
+
+    @Override
+    public void removeItem(String internalName) {
+        synchronized (interner.intern(internalName)) {
+            // TODO : recursively remove all instances
+            this.getItem(internalName).ifPresent((i) -> i.remove());
+        }
     }
 
     public List<? extends NpcSpawn> getAllNpcs(GameManager gameManager) {

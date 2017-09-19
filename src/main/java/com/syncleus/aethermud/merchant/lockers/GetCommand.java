@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.merchant.lockers;
 
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
@@ -50,11 +50,11 @@ public class GetCommand extends LockerCommand {
                 }
                 PlayerData playerData = playerMetadataOptional.get();
                 for (String entityId : playerData.getLockerInventory()) {
-                    Optional<Item> itemEntityOptional = gameManager.getEntityManager().getItemEntity(entityId);
+                    Optional<ItemInstance> itemEntityOptional = gameManager.getEntityManager().getItemEntity(entityId);
                     if (!itemEntityOptional.isPresent()) {
                         continue;
                     }
-                    Item itemEntity = itemEntityOptional.get();
+                    ItemInstance itemEntity = itemEntityOptional.get();
                     if (itemEntity.getItemTriggers().contains(desiredRetrieveOption)) {
                         player.transferItemFromLocker(entityId);
                         write(itemEntity.getItemName() + " retrieved from locker.\r\n");

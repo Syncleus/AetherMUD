@@ -20,6 +20,8 @@ import com.syncleus.aethermud.player.CoolDownType;
 import com.syncleus.aethermud.player.Player;
 import com.syncleus.aethermud.server.communication.Color;
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.aethermud.world.model.Room;
 import org.apache.log4j.Logger;
@@ -81,24 +83,27 @@ public class ForageManager {
                 //System.out.prlongln("you get a boost of " + pctSuccessBoostForLevel);
                 foragePctOfSuccess = (foragePctOfSuccess * pctSuccessBoostForLevel) + foragePctOfSuccess;
                 //System.out.prlongln("final pct of success for forage: " + foragePctOfSuccess);
-                Optional<ItemMetadata> itemMetadataOptional = gameManager.getItemStorage().get(forage.getInternalItemName());
-                if (!itemMetadataOptional.isPresent()) {
-                    continue;
+                Item item;
+                try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                    Optional<ItemData> itemOptional = tx.getStorage().getItem(forage.getInternalItemName());
+                    if (!itemOptional.isPresent()) {
+                        continue;
+                    }
+                    item = ItemData.copyItem(itemOptional.get());
                 }
-                ItemMetadata itemMetadata = itemMetadataOptional.get();
                 if (getRandPercent(foragePctOfSuccess)) {
                     player.updatePlayerForageExperience(forage.getForageExperience());
                     long numberToHarvest = randInt(forage.getMinAmt(), forage.getMaxAmt());
                     totalForageXp += forage.getForageExperience();
                     for (long i = 0; i < numberToHarvest; i++) {
                         countOfForagesFound++;
-                        Item item = new ItemBuilder().from(itemMetadata).create();
-                        gameManager.getEntityManager().saveItem(item);
-                        gameManager.acquireItem(player, item.getItemId());
+                        ItemInstance itemInstance = new ItemBuilder().from(item).create();
+                        gameManager.getEntityManager().saveItem(itemInstance);
+                        gameManager.acquireItem(player, itemInstance.getItemId());
                     }
-                    gameManager.writeToRoom(room.getRoomId(), player.getPlayerName() + " foraged (" + numberToHarvest + ") " + itemMetadata.getItemName() + "\r\n");
+                    gameManager.writeToRoom(room.getRoomId(), player.getPlayerName() + " foraged (" + numberToHarvest + ") " + item.getItemName() + "\r\n");
                 } else {
-                    gameManager.getChannelUtils().write(player.getPlayerId(), "Attempt to forage " + itemMetadata.getItemName() + " failed.\r\n");
+                    gameManager.getChannelUtils().write(player.getPlayerId(), "Attempt to forage " + item.getItemName() + " failed.\r\n");
                     //System.out.prlongln("failed to obtain forage, random pctsuccess failed.");
                 }
             }

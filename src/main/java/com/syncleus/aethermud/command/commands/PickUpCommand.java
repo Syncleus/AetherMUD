@@ -15,7 +15,7 @@
  */
 package com.syncleus.aethermud.command.commands;
 
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.core.GameManager;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -43,7 +43,7 @@ public class PickUpCommand extends Command {
             originalMessageParts.remove(0);
             String desiredPickUpItem = Joiner.on(" ").join(originalMessageParts);
             for (String next : itemIds) {
-                Optional<Item> itemEntityOptional = entityManager.getItemEntity(next);
+                Optional<ItemInstance> itemEntityOptional = entityManager.getItemEntity(next);
                 if (!itemEntityOptional.isPresent()) {
                     continue;
                 }

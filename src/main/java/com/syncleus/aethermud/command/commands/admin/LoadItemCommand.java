@@ -17,9 +17,12 @@ package com.syncleus.aethermud.command.commands.admin;
 
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.items.ItemMetadata;
+import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemImpl;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -33,6 +36,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class LoadItemCommand extends Command {
@@ -79,17 +83,20 @@ public class LoadItemCommand extends Command {
 
             String npcJson = EntityUtils.toString(entity);
 
-            ItemMetadata itemMetadata = null;
+            Item item;
             try {
-                itemMetadata = gameManager.getGson().fromJson(npcJson, ItemMetadata.class);
+                item = gameManager.getGson().fromJson(npcJson, ItemImpl.class);
             } catch (Exception ex) {
                 write("Retrieved JSON file is malformed. " + ex.getLocalizedMessage() + "\r\n");
                 return;
             }
             httpGet.reset();
 
-            gameManager.getItemStorage().saveItemMetadata(itemMetadata);
-            write("Item Saved. - " + itemMetadata.getInternalItemName() + "\r\n");
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                tx.getStorage().saveItem(item);
+                tx.success();
+            }
+            write("Item Saved. - " + item.getInternalItemName() + "\r\n");
 
         });
     }

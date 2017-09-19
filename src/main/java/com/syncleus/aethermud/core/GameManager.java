@@ -102,7 +102,6 @@ public class GameManager {
     private final Spells spells;
     private final MultiThreadedEventProcessor eventProcessor = new MultiThreadedEventProcessor(new ArrayBlockingQueue<>(10000));
     private final Room detainmentRoom;
-    private final ItemStorage itemStorage;
     private final HttpClient httpclient;
     private final Gson gson;
     private final FilebasedJsonStorage filebasedJsonStorage;
@@ -145,7 +144,6 @@ public class GameManager {
         this.detainmentRoom = buildDetainmentRoom();
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.filebasedJsonStorage = new FilebasedJsonStorage(gson);
-        this.itemStorage = new ItemStorage(filebasedJsonStorage);
         this.merchantStorage = new MerchantStorage(this, filebasedJsonStorage);
         this.httpclient = httpClient;
     }
@@ -156,10 +154,6 @@ public class GameManager {
 
     public Gson getGson() {
         return gson;
-    }
-
-    public ItemStorage getItemStorage() {
-        return itemStorage;
     }
 
     private Room buildDetainmentRoom() {
@@ -343,12 +337,12 @@ public class GameManager {
         }
 
         for (String itemId : playerCurrentRoom.getItemIds()) {
-            Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+            Optional<ItemInstance> itemOptional = entityManager.getItemEntity(itemId);
             if (!itemOptional.isPresent()) {
                 playerCurrentRoom.removePresentItem(itemId);
                 continue;
             }
-            Item item = itemOptional.get();
+            ItemInstance item = itemOptional.get();
             sb.append("   ").append(item.getRestingName()).append("\r\n");
         }
 
@@ -465,11 +459,11 @@ public class GameManager {
     }
 
     public void placeItemInRoom(Integer roomId, String itemId) {
-        Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+        Optional<ItemInstance> itemOptional = entityManager.getItemEntity(itemId);
         if (!itemOptional.isPresent()) {
             throw new IllegalArgumentException("itemId not valid.");
         }
-        Item item = itemOptional.get();
+        ItemInstance item = itemOptional.get();
         roomManager.getRoom(roomId).addPresentItem(item.getItemId());
     }
 
@@ -494,21 +488,21 @@ public class GameManager {
         synchronized (interner.intern(itemId)) {
             Stats playerStatsWithEquipmentAndLevel = player.getPlayerStatsWithEquipmentAndLevel();
             if (player.getInventory().size() < playerStatsWithEquipmentAndLevel.getInventorySize()) {
-                Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+                Optional<ItemInstance> itemOptional = entityManager.getItemEntity(itemId);
                 if (!itemOptional.isPresent()) {
                     return false;
                 }
-                Item itemEntity = itemOptional.get();
+                ItemInstance itemEntity = itemOptional.get();
                 itemEntity.setWithPlayer(true);
                 player.addInventoryId(itemId);
                 entityManager.saveItem(itemEntity);
                 return true;
             } else {
-                Optional<Item> itemOptional = entityManager.getItemEntity(itemId);
+                Optional<ItemInstance> itemOptional = entityManager.getItemEntity(itemId);
                 if (!itemOptional.isPresent()) {
                     return false;
                 }
-                Item itemEntity = itemOptional.get();
+                ItemInstance itemEntity = itemOptional.get();
                 channelUtils.write(player.getPlayerId(), "Your inventory is full, drop some items to free up room.\r\n");
                 if (isFromLoot) {
                     player.getCurrentRoom().addPresentItem(itemId);

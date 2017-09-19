@@ -21,7 +21,7 @@ import com.syncleus.aethermud.configuration.AetherMudConfiguration;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SessionManager;
 import com.syncleus.aethermud.entity.EntityManager;
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.player.*;
@@ -137,18 +137,18 @@ public class NpcTestHarness {
         }
     }
 
-    private Set<Item> getEarlyLevelArmorSet() {
+    private Set<ItemInstance> getEarlyLevelArmorSet() {
         //  return Sets.newHashSet(ItemType.BERSERKER_BATON.create(), ItemType.BERSEKER_BOOTS.create(), ItemType.BERSEKER_SHORTS.create());
         return Sets.newConcurrentHashSet();
     }
 
-    private Set<Item> getMidLevelArmorSet() {
-        Set<Item> armorSet = getEarlyLevelArmorSet();
+    private Set<ItemInstance> getMidLevelArmorSet() {
+        Set<ItemInstance> armorSet = getEarlyLevelArmorSet();
         //  armorSet.addAll(Sets.newHashSet(ItemType.BERSERKER_BRACERS.create(), ItemType.BERSERKER_CHEST.create()));
         return armorSet;
     }
 
-    private void processRunAndVerify(NpcSpawn testNpcSpawn, int desiredLevel, Set<Item> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
+    private void processRunAndVerify(NpcSpawn testNpcSpawn, int desiredLevel, Set<ItemInstance> equipment, float winPctMax, float winPctMin, int maxRounds, int minRounds, int maxAvgGold, int minAvgGold) throws Exception {
         CombatSimulationDetails combatSimulationDetailsLevel = new CombatSimulationDetails(desiredLevel, equipment, testNpcSpawn);
         CombatSimulationResult combatSimulationResultLevel = executeCombat(combatSimulationDetailsLevel);
         printCombatResults(combatSimulationDetailsLevel, combatSimulationResultLevel);
@@ -182,7 +182,7 @@ public class NpcTestHarness {
                 playerWins++;
                 int gold = (int) gameManager.getLootManager().lootGoldAmountReturn(npcSpawn.getLoot());
                 totalGold += gold;
-                Set<Item> items = gameManager.getLootManager().lootItemsReturn(npcSpawn.getLoot());
+                Set<ItemInstance> items = gameManager.getLootManager().lootItemsReturn(npcSpawn.getLoot());
                 items.forEach(item -> {
                     if (!drops.containsKey(item.getItemName())) {
                         drops.put(item.getItemName(), new AtomicInteger(1));
@@ -254,7 +254,7 @@ public class NpcTestHarness {
         return player;
     }
 
-    private void equipArmor(Player player, Set<Item> equipment) {
+    private void equipArmor(Player player, Set<ItemInstance> equipment) {
         equipment.forEach(item -> {
             entityManager.saveItem(item);
             gameManager.acquireItem(player, item.getItemId());

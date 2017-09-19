@@ -16,14 +16,16 @@
 package com.syncleus.aethermud.spawner;
 
 import com.codahale.metrics.MetricRegistry;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.syncleus.aethermud.Main;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.core.SentryManager;
 import com.syncleus.aethermud.entity.AetherMudEntity;
 import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.items.ItemBuilder;
-import com.syncleus.aethermud.items.ItemMetadata;
-import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.storage.graphdb.model.ItemInstanceData;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.aethermud.world.model.Room;
 import com.google.common.base.Predicate;
@@ -38,17 +40,18 @@ import java.util.Set;
 
 public class ItemSpawner extends AetherMudEntity {
     private static final Logger LOGGER = Logger.getLogger(ItemSpawner.class);
-    private final ItemMetadata itemMetadata;
+    private final Item item;
     private final SpawnRule spawnRule;
     private final GameManager gameManager;
     private Integer roomId;
     private int noTicks = 0;
     private final Random random = new Random();
     private final Area spawnArea;
+    private final Interner<String> interner = Interners.newWeakInterner();
 
 
-    public ItemSpawner(ItemMetadata itemMetadata, SpawnRule spawnRule, GameManager gameManager) {
-        this.itemMetadata = itemMetadata;
+    public ItemSpawner(Item item, SpawnRule spawnRule, GameManager gameManager) {
+        this.item = item;
         this.spawnRule = spawnRule;
         this.gameManager = gameManager;
         this.noTicks = spawnRule.getSpawnIntervalTicks();
@@ -68,8 +71,8 @@ public class ItemSpawner extends AetherMudEntity {
                 int numberOfAttempts = spawnRule.getMaxInstances() - counterNumberInArea();
                 for (int i = 0; i < numberOfAttempts; i++) {
                     if (random.nextInt(100) < randomPercentage || randomPercentage == 100) {
-                        if (itemMetadata.getValidTimeOfDays() != null && itemMetadata.getValidTimeOfDays().size() > 0) {
-                            if (itemMetadata.getValidTimeOfDays().contains(gameManager.getTimeTracker().getTimeOfDay())) {
+                        if (item.getValidTimeOfDays() != null && item.getValidTimeOfDays().size() > 0) {
+                            if (item.getValidTimeOfDays().contains(gameManager.getTimeTracker().getTimeOfDay())) {
                                 createAndAddItem();
                             }
                         } else {
@@ -88,10 +91,12 @@ public class ItemSpawner extends AetherMudEntity {
     private void createAndAddItem() {
         ArrayList<Room> rooms = Lists.newArrayList(Iterators.filter(gameManager.getRoomManager().getRoomsByArea(spawnArea).iterator(), getRoomsWithRoom()));
         Room room = rooms.get(random.nextInt(rooms.size()));
-        Item item = new ItemBuilder().from(itemMetadata).create();
-        ItemData itemData = gameManager.getEntityManager().saveItem(item);
-        gameManager.placeItemInRoom(room.getRoomId(), item.getItemId());
-        Main.metrics.counter(MetricRegistry.name(ItemSpawner.class, item.getItemName() + "-spawn")).inc();
+        synchronized (interner.intern(this.item.getInternalItemName())) {
+            ItemInstance itemInstance = new ItemBuilder().from(this.item).create();
+            gameManager.getEntityManager().saveItem(itemInstance);
+            gameManager.placeItemInRoom(room.getRoomId(), itemInstance.getItemId());
+            Main.metrics.counter(MetricRegistry.name(ItemSpawner.class, itemInstance.getItemName() + "-spawn")).inc();
+        }
     }
 
     private int counterNumberInArea() {
@@ -100,12 +105,12 @@ public class ItemSpawner extends AetherMudEntity {
         for (Room room : roomsByArea) {
             if (room.getAreas().contains(spawnArea)) {
                 for (String i : room.getItemIds()) {
-                    Optional<Item> currentItemOptional = gameManager.getEntityManager().getItemEntity(i);
+                    Optional<ItemInstance> currentItemOptional = gameManager.getEntityManager().getItemEntity(i);
                     if (!currentItemOptional.isPresent()) {
                         continue;
                     }
-                    Item currentItem = currentItemOptional.get();
-                    if (currentItem.getInternalItemName().equals(itemMetadata.getInternalItemName())) {
+                    ItemInstance currentItem = currentItemOptional.get();
+                    if (currentItem.getInternalItemName().equals(item.getInternalItemName())) {
                         numberCurrentlyInArea++;
                     }
                 }
@@ -121,12 +126,12 @@ public class ItemSpawner extends AetherMudEntity {
                 int count = 0;
                 Set<String> itemIds = room.getItemIds();
                 for (String itemId : itemIds) {
-                    Optional<Item> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
+                    Optional<ItemInstance> itemOptional = gameManager.getEntityManager().getItemEntity(itemId);
                     if (!itemOptional.isPresent()) {
                         continue;
                     }
-                    Item item = itemOptional.get();
-                    if (item.getInternalItemName().equals(itemMetadata.getInternalItemName())) {
+                    ItemInstance item = itemOptional.get();
+                    if (item.getInternalItemName().equals(ItemSpawner.this.item.getInternalItemName())) {
                         count++;
                     }
                 }

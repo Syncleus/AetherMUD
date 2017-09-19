@@ -15,242 +15,81 @@
  */
 package com.syncleus.aethermud.items;
 
-
 import com.syncleus.aethermud.core.service.TimeTracker;
+import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.stats.Stats;
-import com.google.common.collect.Lists;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
-public class Item implements Serializable {
+public interface Item {
+    Stats getItemApplyStats();
 
-    private String itemName;
-    private String itemDescription;
-    private String internalItemName;
-    private List<String> itemTriggers;
-    private String restingName;
-    private String itemId;
-    private int numberOfUses;
-    private boolean isWithPlayer;
-    private Loot loot;
-    private int itemHalfLifeTicks;
-    private Equipment equipment;
-    private Rarity rarity;
-    private int valueInGold;
-    private Set<Effect> effects;
-    private boolean hasBeenWithPlayer;
-    private int maxUses;
-    private boolean isDisposable;
-    private List<TimeTracker.TimeOfDay> validTimeOfDays;
-    private Stats itemApplyStats;
+    List<TimeTracker.TimeOfDay> getValidTimeOfDays();
 
-    public static final String CORPSE_INTENAL_NAME = "corpse";
+    void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays);
 
-    public Item() {
-    }
+    void setValidTimeOfDays(List<TimeTracker.TimeOfDay> validTimeOfDays);
 
-    protected Item(String itemName, String itemDescription, String internalItemName, List<String> itemTriggers, String restingName, String itemId, int numberOfUses, boolean isWithPlayer, Loot loot, int itemHalfLifeTicks, Equipment equipment, Rarity rarity, int valueInGold, Set<Effect> effects, boolean hasBeenWithPlayer, int maxUses, boolean isDisposable, Set<TimeTracker.TimeOfDay> validTimeOfDays, Stats itemApplyStats) {
-        this.itemName = itemName;
-        this.itemDescription = itemDescription;
-        this.internalItemName = internalItemName;
-        this.itemTriggers = itemTriggers;
-        this.restingName = restingName;
-        this.itemId = itemId;
-        this.numberOfUses = numberOfUses;
-        this.isWithPlayer = isWithPlayer;
-        this.loot = loot;
-        this.itemHalfLifeTicks = itemHalfLifeTicks;
-        this.equipment = equipment;
-        this.rarity = rarity;
-        this.valueInGold = valueInGold;
-        this.effects = effects;
-        this.hasBeenWithPlayer = hasBeenWithPlayer;
-        this.maxUses = maxUses;
-        this.isDisposable = isDisposable;
-        this.validTimeOfDays = ( validTimeOfDays == null ? Lists.newArrayList() : Lists.newArrayList(validTimeOfDays));
-        this.itemApplyStats = itemApplyStats;
-    }
+    boolean isDisposable();
 
-    public Stats getItemApplyStats() {
-        return itemApplyStats;
-    }
+    int getMaxUses();
 
-    public List<TimeTracker.TimeOfDay> getValidTimeOfDays() {
-        return validTimeOfDays;
-    }
+    String getInternalItemName();
 
-    public void setValidTimeOfDays(Set<TimeTracker.TimeOfDay> validTimeOfDays) {
-        this.validTimeOfDays = Lists.newArrayList(validTimeOfDays);
-    }
+    String getItemName();
 
-    public void setValidTimeOfDays(List<TimeTracker.TimeOfDay> validTimeOfDays) {
-        this.validTimeOfDays = Lists.newArrayList(validTimeOfDays);
-    }
+    String getItemDescription();
 
-    public boolean isDisposable() {
-        return isDisposable;
-    }
+    List<String> getItemTriggers();
 
-    public int getMaxUses() {
-        return maxUses;
-    }
+    String getRestingName();
 
-    public boolean isWithPlayer() {
-        return isWithPlayer;
-    }
+    int getItemHalfLifeTicks();
 
-    public void setWithPlayer(boolean isWithPlayer) {
-        if (isWithPlayer) {
-            setHasBeenWithPlayer(true);
-        }
-        this.isWithPlayer = isWithPlayer;
-    }
+    Loot getLoot();
 
-    public int getNumberOfUses() {
-        return numberOfUses;
-    }
+    void setEquipment(Equipment equipment);
 
-    public void setNumberOfUses(int numberOfUses) {
-        this.numberOfUses = numberOfUses;
-    }
+    Equipment getEquipment();
 
-    public String getItemId() {
-        return itemId;
-    }
+    Rarity getRarity();
 
+    int getValueInGold();
 
-    public String getInternalItemName() {
-        return internalItemName;
-    }
+    void setEffects(Set<Effect> effects);
 
-    public String getItemName() {
-        return itemName;
-    }
+    Set<Effect> getEffects();
 
-    public String getItemDescription() {
-        return itemDescription;
-    }
+    void setItemName(String itemName);
 
-    public List<String> getItemTriggers() {
-        return itemTriggers;
-    }
+    void setItemDescription(String itemDescription);
 
-    public String getRestingName() {
-        return restingName;
-    }
+    void setInternalItemName(String internalItemName);
 
-    public int getItemHalfLifeTicks() {
-        return itemHalfLifeTicks;
-    }
+    void setItemTriggers(List<String> itemTriggers);
 
-    public Loot getLoot() {
-        return loot;
-    }
+    void setRestingName(String restingName);
 
-    public void setEquipment(Equipment equipment) {
-        this.equipment = equipment;
-    }
+    void setLoot(Loot loot);
 
-    public void setHasBeenWithPlayer(boolean hasBeenWithPlayer) {
-        this.hasBeenWithPlayer = hasBeenWithPlayer;
-    }
+    void setItemHalfLifeTicks(int itemHalfLifeTicks);
 
-    public Equipment getEquipment() {
-        return equipment;
-    }
+    void setRarity(Rarity rarity);
 
-    public Rarity getRarity() {
-        return rarity;
-    }
+    void setValueInGold(int valueInGold);
 
-    public int getValueInGold() {
-        return valueInGold;
-    }
+    void setMaxUses(int maxUses);
 
-    public void setEffects(Set<Effect> effects) {
-        this.effects = effects;
-    }
+    void setDisposable(boolean disposable);
 
-    public Set<Effect> getEffects() {
-        return effects;
-    }
+    void setItemApplyStats(Stats itemApplyStats);
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
+    Set<SpawnRule> getSpawnRules();
 
-    public void setItemDescription(String itemDescription) {
-        this.itemDescription = itemDescription;
-    }
+    void setSpawnRules(Set<SpawnRule> spawnRules);
 
-    public void setInternalItemName(String internalItemName) {
-        this.internalItemName = internalItemName;
-    }
+    Set<Forage> getForages();
 
-    public void setItemTriggers(List<String> itemTriggers) {
-        this.itemTriggers = itemTriggers;
-    }
-
-    public void setRestingName(String restingName) {
-        this.restingName = restingName;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
-    }
-
-    public void setLoot(Loot loot) {
-        this.loot = loot;
-    }
-
-    public void setItemHalfLifeTicks(int itemHalfLifeTicks) {
-        this.itemHalfLifeTicks = itemHalfLifeTicks;
-    }
-
-    public void setRarity(Rarity rarity) {
-        this.rarity = rarity;
-    }
-
-    public void setValueInGold(int valueInGold) {
-        this.valueInGold = valueInGold;
-    }
-
-    public void setMaxUses(int maxUses) {
-        this.maxUses = maxUses;
-    }
-
-    public void setDisposable(boolean disposable) {
-        isDisposable = disposable;
-    }
-
-    public void setItemApplyStats(Stats itemApplyStats) {
-        this.itemApplyStats = itemApplyStats;
-    }
-
-    public boolean isHasBeenWithPlayer() {
-        return hasBeenWithPlayer;
-    }
-
-    public static Item createCorpseItem(String name, Loot loot) {
-
-        Item item = new ItemBuilder()
-                .internalItemName(Item.CORPSE_INTENAL_NAME)
-                .itemName(name + " corpse")
-                .itemDescription("a bloody corpse")
-                .itemTriggers(Lists.newArrayList("corpse", "c", name, name + " corpse"))
-                .itemId(UUID.randomUUID().toString())
-                .itemHalfLifeTicks(120)
-                .rarity(Rarity.BASIC)
-                .valueInGold(5)
-                .isDisposable(false)
-                .restingName("a corpse lies on the ground.")
-                .loot(loot)
-                .create();
-
-        return item;
-
-    }
+    void setForages(Set<Forage> forages);
 }

@@ -32,19 +32,19 @@ import java.util.Set;
 
 public class DirtyBombUseAction implements ItemUseAction {
 
-    private final ItemMetadata itemMetadata;
+    private final Item item;
 
-    public DirtyBombUseAction(ItemMetadata itemMetadata) {
-        this.itemMetadata = itemMetadata;
+    public DirtyBombUseAction(Item item) {
+        this.item = item;
     }
 
     @Override
     public String getInternalItemName() {
-        return itemMetadata.getInternalItemName();
+        return item.getInternalItemName();
     }
 
     @Override
-    public void executeAction(GameManager gameManager, Player player, Item item, UseCommand.UseItemOn useItemOn) {
+    public void executeAction(GameManager gameManager, Player player, ItemInstance item, UseCommand.UseItemOn useItemOn) {
         Room currentRoom = player.getCurrentRoom();
         if (currentRoom.getRoomId().equals(1)) {
             gameManager.writeToPlayerCurrentRoom(player.getPlayerId(), player.getPlayerName() + " tried to detonate a " + item.getItemName() + "!");
@@ -74,7 +74,7 @@ public class DirtyBombUseAction implements ItemUseAction {
     }
 
     @Override
-    public void postExecuteAction(GameManager gameManager, Player player, Item item) {
+    public void postExecuteAction(GameManager gameManager, Player player, ItemInstance item) {
         ItemUseHandler.incrementUses(item);
         if (item.isDisposable()) {
             if (item.getNumberOfUses() < item.getMaxUses()) {

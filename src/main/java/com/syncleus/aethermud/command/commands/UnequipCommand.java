@@ -16,7 +16,7 @@
 package com.syncleus.aethermud.command.commands;
 
 
-import com.syncleus.aethermud.items.Item;
+import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.core.GameManager;
 import com.google.common.base.Joiner;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -44,8 +44,8 @@ public class UnequipCommand extends Command {
             }
             originalMessageParts.remove(0);
             String itemTarget = Joiner.on(" ").join(originalMessageParts);
-            Set<Item> equipment = player.getEquipment();
-            for (Item item : equipment) {
+            Set<ItemInstance> equipment = player.getEquipment();
+            for (ItemInstance item : equipment) {
                 if (item.getItemTriggers().contains(itemTarget)) {
                     player.unEquip(item);
                     return;
