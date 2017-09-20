@@ -56,4 +56,7 @@ public interface AetherMudStorage {
     List<? extends NpcData> getNpcDatas();
 
     NpcData newNpcData();
+
+    GraphInfo getGraphInfo();
+
 }

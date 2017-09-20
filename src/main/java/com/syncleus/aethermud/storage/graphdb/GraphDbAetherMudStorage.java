@@ -23,10 +23,12 @@ import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.storage.AetherMudStorage;
+import com.syncleus.aethermud.storage.GraphInfo;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
 import com.syncleus.aethermud.storage.graphdb.model.ItemInstanceData;
 import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
+import com.syncleus.ferma.VertexFrame;
 import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.log4j.Logger;
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -88,7 +90,7 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
                 itemInstanceData = existing.get();
             else
                 itemInstanceData = framedGraph.addFramedVertex(ItemInstanceData.class);
-            ItemInstanceData.copyItem(itemInstanceData, itemInstance, this.getItem(itemInstance.getItem().getInternalItemName()).get());
+            ItemInstanceData.copyItem(itemInstanceData, itemInstance, this.saveItem(itemInstance.getItem()));
             return itemInstanceData;
         }
     }
@@ -125,6 +127,19 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
             // TODO : recursively remove all instances
             this.getItem(internalName).ifPresent((i) -> i.remove());
         }
+    }
+
+    @Override
+    public GraphInfo getGraphInfo() {
+        final List<? extends ItemData> allItems = this.getAllItems();
+        final int numberOfItems = allItems.size();
+        final List<String> internalNames = new ArrayList<>();
+        for(ItemData itemData : allItems) {
+            internalNames.add(itemData.getInternalItemName());
+        }
+        final int numberOfItemInstances = framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), ItemInstanceData.class)).toList(ItemInstanceData.class).size();
+        final int numberOfNodes = framedGraph.traverse((g) -> g.V()).toList(VertexFrame.class).size();
+        return new GraphInfo(numberOfItems, numberOfItemInstances, internalNames, numberOfNodes);
     }
 
     public List<? extends NpcSpawn> getAllNpcs(GameManager gameManager) {

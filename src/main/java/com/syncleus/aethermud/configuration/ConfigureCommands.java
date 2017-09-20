@@ -122,5 +122,6 @@ public class ConfigureCommands {
         commandRegistry.addCommand(new LoadMerchantCommand(gameManager));
         commandRegistry.addCommand(new RestartCommand(gameManager));
         commandRegistry.addCommand(new GiveHealthCommand(gameManager));
+        commandRegistry.addCommand(new GraphStatusCommand(gameManager));
     }
 }
