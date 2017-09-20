@@ -53,14 +53,14 @@ public class ItemImpl implements Item {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.internalItemName = internalItemName;
-        this.itemTriggers = Lists.newArrayList(itemTriggers);
+        this.itemTriggers = (itemTriggers == null ? Lists.newArrayList() : Lists.newArrayList(itemTriggers));
         this.restingName = restingName;
         this.loot = loot;
         this.itemHalfLifeTicks = itemHalfLifeTicks;
         this.equipment = equipment;
         this.rarity = rarity;
         this.valueInGold = valueInGold;
-        this.effects = Sets.newHashSet(effects);
+        this.effects = (effects == null ? Sets.newHashSet() : Sets.newHashSet(effects));
         this.maxUses = maxUses;
         this.isDisposable = isDisposable;
         this.validTimeOfDays = (validTimeOfDays == null ? Lists.newArrayList() : Lists.newArrayList(validTimeOfDays));
