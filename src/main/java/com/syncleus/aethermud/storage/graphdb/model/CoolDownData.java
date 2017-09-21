@@ -17,12 +17,12 @@ package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.syncleus.aethermud.player.CoolDown;
 import com.syncleus.aethermud.player.CoolDownType;
+import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 
 @GraphElement
-public abstract class CoolDownData extends AbstractInterceptingVertexFrame {
+public abstract class CoolDownData extends AbstractVertexFrame {
     @Property("type")
     public abstract CoolDownType getCoolDownType();
 

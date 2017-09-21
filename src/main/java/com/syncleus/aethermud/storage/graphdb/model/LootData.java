@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package com.syncleus.aethermud.storage.graphdb.model;
-import com.google.common.collect.Lists;
 
 import com.syncleus.aethermud.items.Loot;
+import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @GraphElement
-public abstract class LootData extends AbstractInterceptingVertexFrame {
+public abstract class LootData extends AbstractVertexFrame {
     @Property("internalItemNames")
     public abstract List<String> getInternalItemNames();
 

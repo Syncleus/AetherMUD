@@ -16,15 +16,14 @@
 package com.syncleus.aethermud.storage.graphdb.model;
 
 
-import com.syncleus.aethermud.player.*;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.player.*;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
-import com.syncleus.ferma.ClassInitializer;
-import com.syncleus.ferma.DefaultClassInitializer;
+import com.syncleus.ferma.*;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
@@ -32,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @GraphElement
-public abstract class PlayerData extends AbstractInterceptingVertexFrame {
+public abstract class PlayerData extends AbstractVertexFrame {
 
     static final ClassInitializer<PlayerData> DEFAULT_INITIALIZER = new DefaultClassInitializer(PlayerData.class);
 
@@ -84,14 +83,14 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
     public Set<PlayerRole> getPlayerRoles() {
         HashSet<PlayerRole> roles = new HashSet<>();
         Collection<String> rolesText = getPlayerRoleTextCollection();
-        for(final String roleText : rolesText)
+        for (final String roleText : rolesText)
             roles.add(PlayerRole.valueOf(roleText));
         return Collections.unmodifiableSet(roles);
     }
 
     public void setPlayerRoles(Collection<PlayerRole> playerRoleSet) {
         ArrayList<String> newProperty = new ArrayList<String>();
-        for(PlayerRole role : playerRoleSet) {
+        for (PlayerRole role : playerRoleSet) {
             newProperty.add(role.toString());
         }
         this.setProperty("roleSet", newProperty);
@@ -121,11 +120,45 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
     @Property("learnedSpells")
     public abstract void setLearnedSpells(List<String> learnedSpells);
 
-    @Property("npcKillLog")
-    public abstract Map<String, Long> getNpcKillLog();
+    public Map<String, Long> getNpcKillLog() {
+        final List<? extends TEdge> killEdges = this.traverse((v) -> v.outE().hasLabel("npcKillLog")).toList(TEdge.class);
+        if( killEdges == null || killEdges.isEmpty())
+            return Collections.emptyMap();
 
-    @Property("npcKillLog")
-    public abstract void setNpcKillLog(Map<String, Long> killLog);
+        final Map<String, Long> killLog = new HashMap<>(killEdges.size());
+        for(TEdge killEdge : killEdges) {
+            final Long count = killEdge.getProperty("count");
+            final String name = killEdge.traverse((e) -> this.getGraph().getTypeResolver().hasNotType(e.inV(), NpcData.class)).next(NpcData.class).getProperty("name");
+            killLog.put(name, count);
+        }
+        return Collections.unmodifiableMap(killLog);
+    }
+
+    public void setNpcKillLog(Map<String, Long> killLog) {
+        final Map<String, Long> existingLog = this.getNpcKillLog();
+
+        final Set<String> toDeleteNames = Sets.newHashSet(existingLog.keySet());
+        toDeleteNames.removeAll(killLog.keySet());
+        final Map<String, Long> toAdd = Maps.newHashMap(killLog);
+        toAdd.keySet().removeAll(existingLog.keySet());
+
+        final List<? extends TEdge> killEdges = this.traverse((v) -> v.outE().hasLabel("npcKillLog")).toList(TEdge.class);
+        for(TEdge killEdge : killEdges) {
+            final String name = killEdge.traverse((e) -> this.getGraph().getTypeResolver().hasNotType(e.inV(), NpcData.class)).next(NpcData.class).getProperty("name");
+            if(toDeleteNames.contains(name))
+                killEdge.remove();
+            else
+                killEdge.setProperty("count", killLog.get(name));
+        }
+
+        for(Map.Entry<String, Long> addEntry : toAdd.entrySet()) {
+            final String name = addEntry.getKey();
+            final Long count = addEntry.getValue();
+            final NpcData dest = this.getGraph().traverse((g) -> this.getGraph().getTypeResolver().hasNotType(g.V().has("name", name), NpcData.class)).next(NpcData.class);
+            final TEdge addedEdge = this.getGraph().addFramedEdge(this, dest, "npcKillLog");
+            addedEdge.setProperty("npcKillLog", count);
+        }
+    }
 
     @Property("playerClass")
     public abstract PlayerClass getPlayerClass();
@@ -155,12 +188,12 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
     public void setEffects(Set<EffectData> effects) {
         this.resetEffects();
 
-        if( effects == null || effects.size() == 0 ) {
+        if (effects == null || effects.size() == 0) {
             return;
         }
 
-        for( EffectData effect : effects ) {
-                this.addEffect(effect);
+        for (EffectData effect : effects) {
+            this.addEffect(effect);
         }
     }
 
@@ -170,10 +203,10 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
         return effect;
     }
 
-    public void resetEffects(){
+    public void resetEffects() {
         Iterator<? extends EffectData> existingAll = this.getEffects(EffectData.class);
-        if( existingAll != null ) {
-            while( existingAll.hasNext() ) {
+        if (existingAll != null) {
+            while (existingAll.hasNext()) {
                 EffectData existing = existingAll.next();
                 this.removeEffect(existing);
                 existing.remove();
@@ -192,12 +225,12 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
 
     public void setCoolDowns(Map<CoolDownType, CoolDownData> coolDowns) {
         Iterator<? extends CoolDownData> existingCoolDowns = getCoolDowns(CoolDownData.class);
-        while(existingCoolDowns.hasNext()) {
+        while (existingCoolDowns.hasNext()) {
             CoolDownData existingCoolDown = existingCoolDowns.next();
             this.removeCoolDown(existingCoolDown);
         }
 
-        for(CoolDownData coolDown : coolDowns.values()) {
+        for (CoolDownData coolDown : coolDowns.values()) {
             this.addCoolDown(coolDown);
         }
     }
@@ -208,9 +241,9 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
 
     public CoolDownData createCoolDown(CoolDownType type) {
         Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
-        while(coolDowns.hasNext()) {
+        while (coolDowns.hasNext()) {
             CoolDownData coolDown = coolDowns.next();
-            if(coolDown.getCoolDownType().equals(type)) {
+            if (coolDown.getCoolDownType().equals(type)) {
                 coolDown.remove();
             }
         }
@@ -226,9 +259,9 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
 
     public CoolDownData createCoolDown(CoolDown coolDownSource) {
         Iterator<? extends CoolDownData> coolDowns = getCoolDowns(CoolDownData.class);
-        while(coolDowns.hasNext()) {
+        while (coolDowns.hasNext()) {
             CoolDownData coolDown = coolDowns.next();
-            if(coolDown.getCoolDownType().equals(coolDownSource.getCoolDownType())) {
+            if (coolDown.getCoolDownType().equals(coolDownSource.getCoolDownType())) {
                 coolDown.remove();
             }
         }
@@ -252,7 +285,7 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
 
     public StatData getStatData() {
         Iterator<? extends StatData> allStats = this.getStatDataIterator(StatData.class);
-        if( allStats.hasNext() )
+        if (allStats.hasNext())
             return allStats.next();
         else
             return null;
@@ -265,11 +298,11 @@ public abstract class PlayerData extends AbstractInterceptingVertexFrame {
     public abstract void removeStatData(StatData stats);
 
     public void setStats(StatData stats) {
-        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getStatDataIterator(StatData.class), statsData -> this.addStatData(statsData), () -> createStatData() );
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getStatDataIterator(StatData.class), statsData -> this.addStatData(statsData), () -> createStatData());
     }
 
     public StatData createStatData() {
-        if( this.getStatData() != null )
+        if (this.getStatData() != null)
             throw new IllegalStateException("Already has stats, can't create another");
         final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);

@@ -16,9 +16,9 @@
 package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.syncleus.aethermud.stats.Stats;
+import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import static java.lang.StrictMath.sqrt;
 
 @GraphElement
-public abstract class StatData extends AbstractInterceptingVertexFrame {
+public abstract class StatData extends AbstractVertexFrame {
     @Property("intelligence")
     public abstract Integer getIntelligence();
 

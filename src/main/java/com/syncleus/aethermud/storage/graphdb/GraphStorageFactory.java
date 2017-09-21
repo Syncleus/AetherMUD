@@ -15,33 +15,52 @@
  */
 package com.syncleus.aethermud.storage.graphdb;
 
-import com.google.common.base.Function;
-import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
-import com.syncleus.ferma.ext.orientdb.OrientTransactionFactory;
-import com.syncleus.ferma.ext.orientdb.impl.OrientTransactionFactoryImpl;
-import com.syncleus.ferma.tx.Tx;
-import com.syncleus.ferma.tx.TxFactory;
-import org.apache.tinkerpop.gremlin.orientdb.OrientGraphFactory;
+import com.google.common.collect.Sets;
+import com.syncleus.aethermud.items.ItemInstance;
+import com.syncleus.aethermud.storage.graphdb.model.*;
+import com.syncleus.ferma.DelegatingFramedGraph;
+import com.thinkaurelius.titan.core.TitanFactory;
+import com.thinkaurelius.titan.core.TitanGraph;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.tinkerpop.gremlin.structure.Transaction;
 
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 public class GraphStorageFactory {
-    OrientGraphFactory graphFactory;
-    OrientTransactionFactory txFactory;
+
+    private static final Set<? extends Class<?>> MODEL_CLASSES = Sets.newHashSet(Arrays.asList(
+        AetherMudMessageData.class,
+        CoolDownData.class,
+        EffectData.class,
+        EquipmentData.class,
+        ItemData.class,
+        ItemInstance.class,
+        LootData.class,
+        NpcData.class,
+        PlayerData.class,
+        SpawnRuleData.class,
+        StatData.class
+    ));
+
+    private static final String PROPS_PATH = "titan-cassandra-es.properties";
+
+    private TitanGraph titanGraph;
 
     public GraphStorageFactory(String connectUrl, String username, String password) {
-        graphFactory = new OrientGraphFactory(connectUrl, username, password);
-        txFactory = new OrientTransactionFactoryImpl(graphFactory, true, "com.syncleus.aethermud.storage.graphdb.model");
-        txFactory.setupElementClasses();
-        txFactory.addEdgeClass("itemApplyStats");
+        try {
+            Configuration conf = new PropertiesConfiguration(PROPS_PATH);
+            titanGraph = TitanFactory.open(conf);
+        } catch (ConfigurationException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public GraphStorageFactory(String connectUrl) {
-        graphFactory = new OrientGraphFactory(connectUrl);
-        txFactory = new OrientTransactionFactoryImpl(graphFactory, true, "com.syncleus.aethermud.storage.graphdb.model");
-        txFactory.setupElementClasses();
-        txFactory.addEdgeClass("itemApplyStats");
+        this(connectUrl, null, null);
     }
 
     public GraphStorageFactory() {
@@ -49,18 +68,17 @@ public class GraphStorageFactory {
     }
 
     public GraphStorageFactory(boolean onDisk) {
-        this(onDisk ? "plocal:./aethermud-graphdb-orientdb" : "memory:tinkerpop");
+        this(null, null, null);
     }
 
     public AetherMudTx beginTransaction() {
-        return new AetherMudTx(txFactory.tx());
+        return new AetherMudTx(this.titanGraph);
     }
 
     public void close() {
-        if( this.graphFactory != null ) {
-            this.graphFactory.close();
-            this.graphFactory = null;
-            this.txFactory = null;
+        if( this.titanGraph != null ) {
+            this.titanGraph.close();
+            this.titanGraph = null;
         }
     }
 
@@ -71,20 +89,20 @@ public class GraphStorageFactory {
     }
 
     public static class AetherMudTx implements AutoCloseable {
-        private final Tx tx;
         private final GraphDbAetherMudStorage storage;
+        private final Transaction tx;
 
-        public AetherMudTx(Tx tx) {
-            this.tx = tx;
-            this.storage = new GraphDbAetherMudStorage(tx.getGraph());
+        public AetherMudTx(final TitanGraph titanGraph) {
+            this.tx = titanGraph.tx();
+            this.storage = new GraphDbAetherMudStorage(new DelegatingFramedGraph<TitanGraph>(this.tx.createThreadedTx(), true, MODEL_CLASSES));
         }
 
         public void success() {
-            tx.success();
+            tx.commit();
         }
 
         public void failure() {
-            tx.failure();
+            tx.rollback();
         }
 
         public void close() {

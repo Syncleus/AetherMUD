@@ -18,10 +18,10 @@ package com.syncleus.aethermud.storage.graphdb.model;
 import com.syncleus.aethermud.items.Effect;
 import com.syncleus.aethermud.stats.Stats;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
+import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @GraphElement
-public abstract class EffectData extends AbstractInterceptingVertexFrame {
+public abstract class EffectData extends AbstractVertexFrame {
     @Property("effectName")
     public abstract String getEffectName();
 

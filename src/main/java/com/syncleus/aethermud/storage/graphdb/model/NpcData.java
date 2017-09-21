@@ -23,10 +23,10 @@ import com.syncleus.aethermud.npc.Temperament;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.aethermud.world.model.Area;
+import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
@@ -37,7 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @GraphElement
-public abstract class NpcData extends AbstractInterceptingVertexFrame {
+public abstract class NpcData extends AbstractVertexFrame {
     @Property("name")
     public abstract String getName();
 
@@ -76,7 +76,8 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeSpawnRuleData(SpawnRuleData spawnRule);
 
     public void setSpawnRulesDatas(List<SpawnRuleData> spawnRules) {
-        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> {} );
+        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> {
+        });
     }
 
     public SpawnRuleData createSpawnRuleData() {
@@ -106,7 +107,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
 
     public LootData getLootData() {
         Iterator<? extends LootData> allLoots = this.getLootDataIterator(LootData.class);
-        if( allLoots.hasNext() )
+        if (allLoots.hasNext())
             return allLoots.next();
         else
             return null;
@@ -119,11 +120,11 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeLootData(LootData loot);
 
     public void setLootData(LootData loot) {
-        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDataIterator(LootData.class), lootData -> this.addLootData(lootData), () -> this.createLootData() );
+        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDataIterator(LootData.class), lootData -> this.addLootData(lootData), () -> this.createLootData());
     }
 
     public LootData createLootData() {
-        if( this.getLootData() != null )
+        if (this.getLootData() != null)
             throw new IllegalStateException("Already has stats, can't create another");
         final LootData loot = this.getGraph().addFramedVertex(LootData.class);
         loot.setInternalItemNames(Lists.newArrayList());
@@ -138,7 +139,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
 
     public StatData getStatsData() {
         Iterator<? extends StatData> allStats = this.getAllStatsData(StatData.class);
-        if( allStats.hasNext() )
+        if (allStats.hasNext())
             return allStats.next();
         else
             return null;
@@ -151,11 +152,11 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeStatsData(StatData stats);
 
     public void setStatsData(StatData stats) {
-        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getAllStatsData(StatData.class), statsData -> this.addStatsData(statsData), () -> this.createStatsData() );
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getAllStatsData(StatData.class), statsData -> this.addStatsData(statsData), () -> this.createStatsData());
     }
 
     public StatData createStatsData() {
-        if( this.getStatsData() != null )
+        if (this.getStatsData() != null)
             throw new IllegalStateException("Already has stats, can't create another");
         final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
@@ -194,7 +195,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeAttackMessageData(AetherMudMessageData message);
 
     public void setAttackMessageDatas(List<AetherMudMessageData> messages) {
-        DataUtils.setAllElements(messages, () -> this.getAttackMessageDataIterator(AetherMudMessageData.class), message -> this.addAttackMessageData(message), () -> this.createAttackMessageData() );
+        DataUtils.setAllElements(messages, () -> this.getAttackMessageDataIterator(AetherMudMessageData.class), message -> this.addAttackMessageData(message), () -> this.createAttackMessageData());
     }
 
     public AetherMudMessageData createAttackMessageData() {
@@ -217,7 +218,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeIdleMessageData(AetherMudMessageData message);
 
     public void setIdleMessageDatas(List<AetherMudMessageData> messages) {
-        DataUtils.setAllElements(messages, () -> this.getIdleMessageDataIterator(AetherMudMessageData.class), message -> this.addIdleMessageData(message), () -> this.createIdleMessageData() );
+        DataUtils.setAllElements(messages, () -> this.getIdleMessageDataIterator(AetherMudMessageData.class), message -> this.addIdleMessageData(message), () -> this.createIdleMessageData());
     }
 
     public AetherMudMessageData createIdleMessageData() {
@@ -240,7 +241,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeBattleMessageData(AetherMudMessageData message);
 
     public void setBattleMessageDatas(List<AetherMudMessageData> messages) {
-        DataUtils.setAllElements(messages, () -> this.getBattleMessageDataIterator(AetherMudMessageData.class), message -> this.addBattleMessageData(message), () -> this.createBattleMessageData() );
+        DataUtils.setAllElements(messages, () -> this.getBattleMessageDataIterator(AetherMudMessageData.class), message -> this.addBattleMessageData(message), () -> this.createBattleMessageData());
     }
 
     public AetherMudMessageData createBattleMessageData() {
@@ -263,7 +264,7 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
     public abstract void removeCriticalAttackMessageData(AetherMudMessageData message);
 
     public void setCriticalAttackMessageDatas(List<AetherMudMessageData> messages) {
-        DataUtils.setAllElements(messages, () -> this.getCriticalAttackMessageDataIterator(AetherMudMessageData.class), message -> this.addCriticalAttackMessageData(message), () -> this.createCriticalAttackMessageData() );
+        DataUtils.setAllElements(messages, () -> this.getCriticalAttackMessageDataIterator(AetherMudMessageData.class), message -> this.addCriticalAttackMessageData(message), () -> this.createCriticalAttackMessageData());
     }
 
     public AetherMudMessageData createCriticalAttackMessageData() {
@@ -285,30 +286,30 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
             LootData.copyLoot((dest.getLootData() != null ? dest.getLootData() : dest.createLootData()), src.getLoot());
             StatData.copyStats((dest.getStatsData() != null ? dest.getStatsData() : dest.createStatsData()), src.getStats());
 
-            for(SpawnRuleData data : dest.getSpawnRuleDatas())
+            for (SpawnRuleData data : dest.getSpawnRuleDatas())
                 data.remove();
-            for(SpawnRule spawnRule : src.getSpawnRules())
+            for (SpawnRule spawnRule : src.getSpawnRules())
                 SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
 
-            for(AetherMudMessageData data : dest.getAttackMessageDatas())
+            for (AetherMudMessageData data : dest.getAttackMessageDatas())
                 data.remove();
-            for(AetherMudMessage message : src.getAttackMessages())
+            for (AetherMudMessage message : src.getAttackMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createAttackMessageData(), message);
 
 
-            for(AetherMudMessageData data : dest.getBattleMessageDatas())
+            for (AetherMudMessageData data : dest.getBattleMessageDatas())
                 data.remove();
-            for(AetherMudMessage message : src.getBattleMessages())
+            for (AetherMudMessage message : src.getBattleMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createBattleMessageData(), message);
 
-            for(AetherMudMessageData data : dest.getCriticalAttackMessageDatas())
+            for (AetherMudMessageData data : dest.getCriticalAttackMessageDatas())
                 data.remove();
-            for(AetherMudMessage message : src.getCriticalAttackMessages())
+            for (AetherMudMessage message : src.getCriticalAttackMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createCriticalAttackMessageData(), message);
 
-            for(AetherMudMessageData data : dest.getIdleMessageDatas())
+            for (AetherMudMessageData data : dest.getIdleMessageDatas())
                 data.remove();
-            for(AetherMudMessage message : src.getIdleMessages())
+            for (AetherMudMessage message : src.getIdleMessages())
                 AetherMudMessageData.copyAetherMudMessage(dest.createIdleMessageData(), message);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
@@ -323,27 +324,27 @@ public abstract class NpcData extends AbstractInterceptingVertexFrame {
             retVal.setStats(StatData.copyStats(src.getStatsData()));
 
             List<SpawnRule> rules = new ArrayList<>();
-            for(SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
+            for (SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
                 rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
             retVal.setSpawnRules(Collections.unmodifiableList(rules));
 
             List<AetherMudMessage> attackMessages = new ArrayList<>();
-            for(AetherMudMessageData message : src.getAttackMessageDatas())
+            for (AetherMudMessageData message : src.getAttackMessageDatas())
                 attackMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
             retVal.setAttackMessages(Collections.unmodifiableList(attackMessages));
 
             List<AetherMudMessage> criticalAttackMessages = new ArrayList<>();
-            for(AetherMudMessageData message : src.getCriticalAttackMessageDatas())
+            for (AetherMudMessageData message : src.getCriticalAttackMessageDatas())
                 criticalAttackMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
             retVal.setCriticalAttackMessages(Collections.unmodifiableList(criticalAttackMessages));
 
             List<AetherMudMessage> battleMessages = new ArrayList<>();
-            for(AetherMudMessageData message : src.getBattleMessageDatas())
+            for (AetherMudMessageData message : src.getBattleMessageDatas())
                 battleMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
             retVal.setBattleMessages(Collections.unmodifiableList(battleMessages));
 
             List<AetherMudMessage> idleMessages = new ArrayList<>();
-            for(AetherMudMessageData message : src.getIdleMessageDatas())
+            for (AetherMudMessageData message : src.getIdleMessageDatas())
                 idleMessages.add(AetherMudMessageData.copyAetherMudMessage(message));
             retVal.setIdleMessages(Collections.unmodifiableList(idleMessages));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {

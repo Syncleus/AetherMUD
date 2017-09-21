@@ -20,10 +20,10 @@ import com.syncleus.aethermud.items.ItemInstance;
 import com.syncleus.aethermud.items.ItemInstanceImpl;
 import com.syncleus.aethermud.items.Rarity;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
+import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
 import java.util.Collections;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 @GraphElement
-public abstract class ItemInstanceData extends AbstractInterceptingVertexFrame {
+public abstract class ItemInstanceData extends AbstractVertexFrame {
     @Property("withPlayer")
     public abstract boolean isWithPlayer();
 
@@ -75,7 +75,8 @@ public abstract class ItemInstanceData extends AbstractInterceptingVertexFrame {
     public abstract void removeItemData(ItemData item);
 
     public void setItemData(ItemData item) {
-        DataUtils.setAllElements(Collections.singletonList(item), () -> this.getItemDatasIterator(ItemData.class), itemData -> this.addItemData(itemData), () -> {});
+        DataUtils.setAllElements(Collections.singletonList(item), () -> this.getItemDatasIterator(ItemData.class), itemData -> this.addItemData(itemData), () -> {
+        });
     }
 
     public List<TimeTracker.TimeOfDay> getValidTimeOfDays() {
@@ -223,9 +224,9 @@ public abstract class ItemInstanceData extends AbstractInterceptingVertexFrame {
         dest.setNumberOfUses(src.getNumberOfUses());
         dest.setHasBeenWithPlayer(src.isHasBeenWithPlayer());
         dest.setItemId(src.getItemId());
-        if(dest.getItemData() == null )
+        if (dest.getItemData() == null)
             dest.setItemData(itemData);
-        else if(!dest.getItemData().getInternalItemName().equals(itemData.getInternalItemName())) {
+        else if (!dest.getItemData().getInternalItemName().equals(itemData.getInternalItemName())) {
             dest.removeItemData(dest.getItemData());
             dest.setItemData(itemData);
         }

@@ -22,10 +22,10 @@ import com.syncleus.aethermud.core.service.TimeTracker;
 import com.syncleus.aethermud.items.*;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
+import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 
@@ -33,7 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @GraphElement
-public abstract class ItemData extends AbstractInterceptingVertexFrame {
+public abstract class ItemData extends AbstractVertexFrame {
     @Property("validTimeOfDays")
     public abstract List<TimeTracker.TimeOfDay> getValidTimeOfDays();
 
@@ -129,7 +129,8 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     public abstract void removeSpawnRuleData(SpawnRuleData spawnRule);
 
     public void setSpawnRulesDatas(List<SpawnRuleData> spawnRules) {
-        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> {} );
+        DataUtils.setAllElements(spawnRules, () -> this.getSpawnRulesDataIterator(SpawnRuleData.class), ruleData -> this.addSpawnRuleData(ruleData), () -> {
+        });
     }
 
     public SpawnRuleData createSpawnRuleData() {
@@ -143,7 +144,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
 
     public EquipmentData getEquipmentData() {
         Iterator<? extends EquipmentData> allEquipment = this.getEquipmentDataIterator(EquipmentData.class);
-        if( allEquipment.hasNext() )
+        if (allEquipment.hasNext())
             return allEquipment.next();
         else
             return null;
@@ -156,11 +157,11 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     public abstract void removeEquipmentData(EquipmentData equipment);
 
     public void setEquipmentData(EquipmentData equipment) {
-        DataUtils.setAllElements(Collections.singletonList(equipment), () -> this.getEquipmentDataIterator(EquipmentData.class), equipmentData -> this.addEquipmentData(equipmentData), () -> createEquipmentData() );
+        DataUtils.setAllElements(Collections.singletonList(equipment), () -> this.getEquipmentDataIterator(EquipmentData.class), equipmentData -> this.addEquipmentData(equipmentData), () -> createEquipmentData());
     }
 
     public EquipmentData createEquipmentData() {
-        if( this.getEquipmentData() != null )
+        if (this.getEquipmentData() != null)
             throw new IllegalStateException("Already has stats, can't create another");
         final EquipmentData equipment = this.getGraph().addFramedVertex(EquipmentData.class);
         this.addEquipmentData(equipment);
@@ -181,7 +182,8 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     }
 
     public void setEffectDatas(Set<EffectData> effects) {
-        DataUtils.setAllElements(effects, () -> this.getEffectDatasIterator(EffectData.class), effectData -> this.addEffectData(effectData), () -> {} );
+        DataUtils.setAllElements(effects, () -> this.getEffectDatasIterator(EffectData.class), effectData -> this.addEffectData(effectData), () -> {
+        });
     }
 
     public EffectData createEffectData() {
@@ -195,7 +197,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
 
     public StatData getItemApplyStatData() {
         Iterator<? extends StatData> allStats = this.getItemApplyStatDatasIterator(StatData.class);
-        if( allStats.hasNext() )
+        if (allStats.hasNext())
             return allStats.next();
         else
             return null;
@@ -208,11 +210,11 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     public abstract void removeStatData(StatData stats);
 
     public void setItemApplyStatData(StatData stats) {
-        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getItemApplyStatDatasIterator(StatData.class), statsData -> this.addStatData(statsData), () -> createItemApplyStatData() );
+        DataUtils.setAllElements(Collections.singletonList(stats), () -> this.getItemApplyStatDatasIterator(StatData.class), statsData -> this.addStatData(statsData), () -> createItemApplyStatData());
     }
 
     public StatData createItemApplyStatData() {
-        if( this.getItemApplyStatData() != null )
+        if (this.getItemApplyStatData() != null)
             throw new IllegalStateException("Already has stats, can't create another");
         final StatData stats = this.getGraph().addFramedVertex(StatData.class);
         stats.setAgile(0);
@@ -242,7 +244,7 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
 
     public LootData getLootData() {
         Iterator<? extends LootData> allStats = this.getLootDatasIterator(LootData.class);
-        if( allStats.hasNext() )
+        if (allStats.hasNext())
             return allStats.next();
         else
             return null;
@@ -255,11 +257,11 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     public abstract void removeLootData(LootData loot);
 
     public void setLootData(LootData loot) {
-        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDatasIterator(LootData.class), lootData -> this.addLootData(lootData), () -> createLootData() );
+        DataUtils.setAllElements(Collections.singletonList(loot), () -> this.getLootDatasIterator(LootData.class), lootData -> this.addLootData(lootData), () -> createLootData());
     }
 
     public LootData createLootData() {
-        if( this.getLootData() != null )
+        if (this.getLootData() != null)
             throw new IllegalStateException("Already has loot, can't create another");
         final LootData loot = this.getGraph().addFramedVertex(LootData.class);
         loot.setLootGoldMax(0);
@@ -272,19 +274,19 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
         try {
             PropertyUtils.copyProperties(dest, src);
 
-            for(SpawnRuleData data : dest.getSpawnRuleDatas())
+            for (SpawnRuleData data : dest.getSpawnRuleDatas())
                 data.remove();
-            for(SpawnRule spawnRule : src.getSpawnRules())
+            for (SpawnRule spawnRule : src.getSpawnRules())
                 SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
 
-            if( src.getItemApplyStats() != null )
+            if (src.getItemApplyStats() != null)
                 StatData.copyStats((dest.getItemApplyStatData() != null ? dest.getItemApplyStatData() : dest.createItemApplyStatData()), src.getItemApplyStats());
-            if(src.getLoot() != null )
+            if (src.getLoot() != null)
                 LootData.copyLoot((dest.getLootData() != null ? dest.getLootData() : dest.createLootData()), src.getLoot());
-            if( src.getEquipment() != null )
-                EquipmentData.copyEquipment((dest.getEquipmentData() != null ? dest.getEquipmentData() :dest.createEquipmentData()), src.getEquipment());
-            if( src.getEffects() != null ) {
-                for(EffectData data : dest.getEffectDatas())
+            if (src.getEquipment() != null)
+                EquipmentData.copyEquipment((dest.getEquipmentData() != null ? dest.getEquipmentData() : dest.createEquipmentData()), src.getEquipment());
+            if (src.getEffects() != null) {
+                for (EffectData data : dest.getEffectDatas())
                     data.remove();
                 for (Effect effect : src.getEffects())
                     EffectData.copyEffect(dest.createEffectData(), effect);
@@ -300,23 +302,23 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             PropertyUtils.copyProperties(retVal, src);
 
             Set<SpawnRule> rules = new HashSet<>();
-            for(SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
+            for (SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
                 rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
             retVal.setSpawnRules(Collections.unmodifiableSet(rules));
 
             EquipmentData equipmentData = src.getEquipmentData();
-            if(equipmentData != null)
+            if (equipmentData != null)
                 retVal.setEquipment(EquipmentData.copyEquipment(equipmentData));
 
             LootData lootData = src.getLootData();
-            if(lootData != null)
+            if (lootData != null)
                 retVal.setLoot(LootData.copyLoot(lootData));
 
             StatData applyStats = src.getItemApplyStatData();
-            if( applyStats != null )
+            if (applyStats != null)
                 retVal.setItemApplyStats(StatData.copyStats(applyStats));
 
-            if( src.getEffectDatas() != null ) {
+            if (src.getEffectDatas() != null) {
                 Set<Effect> effects = new HashSet<>();
                 for (EffectData effect : src.getEffectDatas())
                     effects.add(EffectData.copyEffect(effect));

@@ -15,19 +15,17 @@
  */
 package com.syncleus.aethermud.storage.graphdb.model;
 
-import com.syncleus.aethermud.items.Loot;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.world.model.Area;
 import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.annotations.Property;
-import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.reflect.InvocationTargetException;
 
 @GraphElement
-public abstract class SpawnRuleData extends AbstractInterceptingVertexFrame {
+public abstract class SpawnRuleData extends AbstractVertexFrame {
     @Property("randomChance")
     public abstract int getRandomChance();
 
@@ -69,7 +67,8 @@ public abstract class SpawnRuleData extends AbstractInterceptingVertexFrame {
     public static SpawnRule copySpawnRule(SpawnRuleData src) {
         SpawnRule retVal = new SpawnRule();
         try {
-            PropertyUtils.copyProperties(retVal, src);;
+            PropertyUtils.copyProperties(retVal, src);
+            ;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }

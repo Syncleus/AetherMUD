@@ -16,21 +16,13 @@
 package com.syncleus.aethermud.common;
 
 import com.google.common.collect.Lists;
-import com.syncleus.aethermud.Main;
-import com.syncleus.aethermud.items.Loot;
-import com.syncleus.aethermud.storage.AetherMudStorage;
-import com.syncleus.aethermud.storage.graphdb.GraphDbAetherMudStorage;
-import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
-import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.syncleus.ferma.DelegatingFramedGraph;
-import com.syncleus.ferma.WrappedFramedGraph;
-import com.syncleus.ferma.ext.orientdb.impl.OrientTransactionFactoryImpl;
-import org.apache.tinkerpop.gremlin.orientdb.OrientGraphFactory;
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
+import com.syncleus.aethermud.items.Loot;
+import com.syncleus.aethermud.storage.AetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.NpcData;
 import org.junit.Assert;
 import org.junit.Test;
 
