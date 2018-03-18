@@ -44,7 +44,7 @@ public class AetherMudConfiguration {
     public final int graphitePort;
 
     public static final String IRC_SERVER = "irc.server";
-    public static final String IRC_SERVER_DEFAULT = "Chicago.IL.US.Undernet.org";
+    public static final String IRC_SERVER_DEFAULT = "irc.freenode.net";
     public final String ircServer;
 
     public static final String IRC_USERNAME = "irc.username";
@@ -52,7 +52,7 @@ public class AetherMudConfiguration {
     public final String ircUsername;
 
     public static final String IRC_NICKNAME = "irc.nickname";
-    public static final String IRC_NICKNAME_DEFAULT = "AetherMUD1";
+    public static final String IRC_NICKNAME_DEFAULT = "AetherMUD";
     public final String ircNickname;
 
     public static final String IRC_CHANNEL = "irc.channel";
