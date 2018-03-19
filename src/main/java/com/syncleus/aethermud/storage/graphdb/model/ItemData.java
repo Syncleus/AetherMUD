@@ -274,8 +274,9 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
 
             for(SpawnRuleData data : dest.getSpawnRuleDatas())
                 data.remove();
-            for(SpawnRule spawnRule : src.getSpawnRules())
-                SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
+            if( src.getSpawnRules() != null )
+                for(SpawnRule spawnRule : src.getSpawnRules())
+                    SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
 
             if( src.getItemApplyStats() != null )
                 StatData.copyStats((dest.getItemApplyStatData() != null ? dest.getItemApplyStatData() : dest.createItemApplyStatData()), src.getItemApplyStats());

@@ -123,5 +123,6 @@ public class ConfigureCommands {
         commandRegistry.addCommand(new RestartCommand(gameManager));
         commandRegistry.addCommand(new GiveHealthCommand(gameManager));
         commandRegistry.addCommand(new GraphStatusCommand(gameManager));
+        commandRegistry.addCommand(new ManifestCommand(gameManager));
     }
 }

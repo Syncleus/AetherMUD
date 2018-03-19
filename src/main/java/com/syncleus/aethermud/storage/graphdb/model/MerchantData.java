@@ -55,7 +55,7 @@ public abstract class MerchantData extends AbstractInterceptingVertexFrame {
 
     @Property("name")
     public abstract void setName(String name);
-    
+
     public String getColorName() {
         return ColorizedTextTemplate.renderFromTemplateLanguage(this.getProperty("colorName"));
     }
