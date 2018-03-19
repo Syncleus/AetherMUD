@@ -33,7 +33,10 @@ public class Forage extends AetherMudEntity {
     private int coolDownTicksLeft;
     private final Set<Area> forageAreas;
 
-    protected Forage(String internalItemName, int minLevel, double pctOfSuccess, int minAmt, int maxAmt, int forageExperience, int coolDownTicks, Set<Area> forageAreas) {
+    public Forage(String internalItemName, int minLevel, double pctOfSuccess, int minAmt, int maxAmt, int forageExperience, int coolDownTicks, Set<Area> forageAreas) {
+        if( forageAreas == null || forageAreas.isEmpty() )
+            throw new IllegalArgumentException((internalItemName == null ? "(null)" : internalItemName) + ": forageAreas must not be null and must have at least one value.");
+
         this.internalItemName = internalItemName;
         this.minLevel = minLevel;
         this.pctOfSuccess = pctOfSuccess;

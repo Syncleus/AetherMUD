@@ -109,11 +109,28 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
     @Property("disposable")
     public abstract void setDisposable(boolean disposable);
 
-    @Property("forage")
-    public abstract Set<Forage> getForages();
+    @Adjacency(label = "forage", direction = Direction.OUT)
+    public abstract <N extends ForageData> Iterator<? extends N> getForageDataIterator(Class<? extends N> type);
 
-    @Property("forage")
-    public abstract void setForages(Set<Forage> forages);
+    public List<ForageData> getForageDatas() {
+        return Collections.unmodifiableList(Lists.newArrayList(this.getForageDataIterator(ForageData.class)));
+    }
+
+    @Adjacency(label = "forage", direction = Direction.OUT)
+    public abstract void addForageData(ForageData forageData);
+
+    @Adjacency(label = "forage", direction = Direction.OUT)
+    public abstract void removeForageData(ForageData forageData);
+
+    public void setForageDatas(List<ForageData> forageDatas) {
+        DataUtils.setAllElements(forageDatas, () -> this.getForageDataIterator(ForageData.class), forageData -> this.addForageData(forageData), () -> {} );
+    }
+
+    public ForageData createForageData() {
+        final ForageData forageData = this.getGraph().addFramedVertex(ForageData.class);
+        this.addForageData(forageData);
+        return forageData;
+    }
 
     @Adjacency(label = "spawnRule", direction = Direction.OUT)
     public abstract <N extends SpawnRuleData> Iterator<? extends N> getSpawnRulesDataIterator(Class<? extends N> type);
@@ -278,6 +295,12 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
                 for(SpawnRule spawnRule : src.getSpawnRules())
                     SpawnRuleData.copySpawnRule(dest.createSpawnRuleData(), spawnRule);
 
+            for(ForageData data : dest.getForageDatas())
+                data.remove();
+            if( src.getForages() != null )
+                for(Forage forage : src.getForages())
+                    ForageData.copyForage(dest.createForageData(), forage);
+
             if( src.getItemApplyStats() != null )
                 StatData.copyStats((dest.getItemApplyStatData() != null ? dest.getItemApplyStatData() : dest.createItemApplyStatData()), src.getItemApplyStats());
             if(src.getLoot() != null )
@@ -301,9 +324,16 @@ public abstract class ItemData extends AbstractInterceptingVertexFrame {
             PropertyUtils.copyProperties(retVal, src);
 
             Set<SpawnRule> rules = new HashSet<>();
-            for(SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
-                rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
+            if( src.getSpawnRuleDatas() != null )
+                for(SpawnRuleData spawnRuleData : src.getSpawnRuleDatas())
+                    rules.add(SpawnRuleData.copySpawnRule(spawnRuleData));
             retVal.setSpawnRules(Collections.unmodifiableSet(rules));
+
+            Set<Forage> forages = new HashSet<>();
+            if( src.getForageDatas() != null )
+                for(ForageData forageData : src.getForageDatas())
+                    forages.add(ForageData.copyForage(forageData));
+            retVal.setForages(Collections.unmodifiableSet(forages));
 
             EquipmentData equipmentData = src.getEquipmentData();
             if(equipmentData != null)

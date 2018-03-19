@@ -17,12 +17,15 @@ package com.syncleus.aethermud.command.commands.admin;
 
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
+import com.syncleus.aethermud.items.Forage;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemImpl;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.google.common.collect.Sets;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.ForageData;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.world.model.Area;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
