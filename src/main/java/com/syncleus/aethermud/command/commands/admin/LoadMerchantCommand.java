@@ -100,10 +100,11 @@ public class LoadMerchantCommand extends Command {
                 merchantData.setName(merchant.name);
                 merchantData.setColorName(merchant.colorName);
                 merchantData.setValidTriggers(merchant.validTriggers);
-                for(MerchantItemForSale item : merchant.merchantItemForSales) {
-                    MerchantItemForSaleData itemData = merchantData.createMerchantItemForSaleData();
-                    MerchantItemForSaleData.copyMerchantItemForSale(itemData, item);
-                }
+                if( merchant.merchantItemForSales != null )
+                    for(MerchantItemForSale item : merchant.merchantItemForSales) {
+                        MerchantItemForSaleData itemData = merchantData.createMerchantItemForSaleData();
+                        MerchantItemForSaleData.copyMerchantItemForSale(itemData, item);
+                    }
                 merchantData.setWelcomeMessage(merchant.welcomeMessage);
                 merchantData.setMerchantType(merchant.merchantType);
                 merchantData.setRoomIds(merchant.roomIds);
