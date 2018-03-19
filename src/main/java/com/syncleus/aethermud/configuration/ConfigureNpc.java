@@ -28,9 +28,11 @@ import com.syncleus.aethermud.spawner.NpcSpawner;
 import com.syncleus.aethermud.spawner.SpawnRule;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import com.syncleus.aethermud.storage.graphdb.model.ItemData;
+import com.syncleus.aethermud.storage.graphdb.model.MerchantData;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ConfigureNpc {
@@ -75,11 +77,14 @@ public class ConfigureNpc {
             }
         }
 
-        List<Merchant> allMerchantMetadatas = gameManager.getMerchantStorage().getAllMerchants();
+        List<Merchant> allMerchantMetadatas;
+        try( GraphStorageFactory.AetherMudTx tx = gameManager.getGraphStorageFactory().beginTransaction() ) {
+            allMerchantMetadatas = tx.getStorage().getAllMerchants(gameManager);
+        }
+
         for (Merchant merchant : allMerchantMetadatas) {
             Main.startUpMessage("Adding merchant: " + merchant.getInternalName());
             gameManager.getRoomManager().addMerchant(merchant);
         }
-
     }
 }

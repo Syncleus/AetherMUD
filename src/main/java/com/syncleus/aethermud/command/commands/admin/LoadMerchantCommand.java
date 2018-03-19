@@ -17,9 +17,14 @@ package com.syncleus.aethermud.command.commands.admin;
 
 import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
-import com.syncleus.aethermud.merchant.MerchantMetadata;
+import com.syncleus.aethermud.merchant.Merchant;
+import com.syncleus.aethermud.merchant.MerchantItemForSale;
+import com.syncleus.aethermud.storage.AetherMudStorage;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
+import com.syncleus.aethermud.storage.graphdb.model.MerchantData;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.model.MerchantItemForSaleData;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -79,17 +84,32 @@ public class LoadMerchantCommand extends Command {
 
             String npcJson = EntityUtils.toString(entity);
 
-            MerchantMetadata merchantMetadata = null;
+            Merchant merchant = null;
             try {
-                merchantMetadata = gameManager.getGson().fromJson(npcJson, MerchantMetadata.class);
+                merchant = gameManager.getGson().fromJson(npcJson, Merchant.class);
             } catch (Exception ex) {
                 write("Retrieved JSON file is malformed. " + ex.getLocalizedMessage() + "\r\n");
                 return;
             }
             httpGet.reset();
 
-            gameManager.getMerchantStorage().saveMerchantMetadata(merchantMetadata);
-            write("Merchant Saved. - " + merchantMetadata.getInternalName() + "\r\n");
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                AetherMudStorage storage = tx.getStorage();
+                MerchantData merchantData = storage.newMerchantData();
+                merchantData.setInternalName(merchant.internalName);
+                merchantData.setName(merchant.name);
+                merchantData.setColorName(merchant.colorName);
+                merchantData.setValidTriggers(merchant.validTriggers);
+                for(MerchantItemForSale item : merchant.merchantItemForSales) {
+                    MerchantItemForSaleData itemData = merchantData.createMerchantItemForSaleData();
+                    MerchantItemForSaleData.copyMerchantItemForSale(itemData, item);
+                }
+                merchantData.setWelcomeMessage(merchant.welcomeMessage);
+                merchantData.setMerchantType(merchant.merchantType);
+                merchantData.setRoomIds(merchant.roomIds);
+                tx.success();
+                write("Merchant Saved. - " + merchant.name + "\r\n");
+            }
 
         });
     }
@@ -109,5 +129,15 @@ public class LoadMerchantCommand extends Command {
         return true;
     }
 
+    private static class Merchant {
+        public String internalName;
+        public String name;
+        public String colorName;
+        public Set<String> validTriggers;
+        public List<MerchantItemForSale> merchantItemForSales;
+        public String welcomeMessage;
+        public com.syncleus.aethermud.merchant.Merchant.MerchantType merchantType;
+        public Set<Integer> roomIds;
+    }
 }
 

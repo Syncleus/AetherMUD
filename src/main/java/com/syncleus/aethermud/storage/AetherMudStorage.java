@@ -19,11 +19,9 @@ package com.syncleus.aethermud.storage;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemInstance;
+import com.syncleus.aethermud.merchant.Merchant;
 import com.syncleus.aethermud.npc.NpcSpawn;
-import com.syncleus.aethermud.storage.graphdb.model.ItemData;
-import com.syncleus.aethermud.storage.graphdb.model.ItemInstanceData;
-import com.syncleus.aethermud.storage.graphdb.model.NpcData;
-import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -59,4 +57,13 @@ public interface AetherMudStorage {
 
     GraphInfo getGraphInfo();
 
+    List<? extends MerchantData> getMerchantDatas();
+
+    List<Merchant> getAllMerchants(GameManager gameManager);
+
+    Merchant createMerchant(GameManager gameManager, MerchantData merchantData);
+
+    Optional<MerchantData> getMerchantData(String internalName);
+
+    MerchantData newMerchantData();
 }

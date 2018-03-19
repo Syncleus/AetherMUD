@@ -20,14 +20,12 @@ import com.google.common.collect.Interners;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.items.Item;
 import com.syncleus.aethermud.items.ItemInstance;
+import com.syncleus.aethermud.merchant.Merchant;
 import com.syncleus.aethermud.npc.NpcBuilder;
 import com.syncleus.aethermud.npc.NpcSpawn;
 import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.storage.GraphInfo;
-import com.syncleus.aethermud.storage.graphdb.model.ItemData;
-import com.syncleus.aethermud.storage.graphdb.model.ItemInstanceData;
-import com.syncleus.aethermud.storage.graphdb.model.NpcData;
-import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
+import com.syncleus.aethermud.storage.graphdb.model.*;
 import com.syncleus.ferma.VertexFrame;
 import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.log4j.Logger;
@@ -155,5 +153,45 @@ public class GraphDbAetherMudStorage implements AetherMudStorage {
 
     public NpcData newNpcData() {
         return framedGraph.addFramedVertex(NpcData.class);
+    }
+
+    public List<? extends MerchantData> getMerchantDatas() {
+        return framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), MerchantData.class)).toList(MerchantData.class);
+    }
+
+    public List<Merchant> getAllMerchants(GameManager gameManager) {
+        return this.getMerchantDatas().stream().map(m -> this.createMerchant(gameManager, m)).collect(Collectors.toList());
+    }
+
+    public Merchant createMerchant(GameManager gameManager, MerchantData merchantData) {
+        if (merchantData.getMerchantType() != null) {
+            return new Merchant(gameManager,
+                merchantData.getInternalName(),
+                merchantData.getName(),
+                merchantData.getColorName(),
+                merchantData.getValidTriggers(),
+                merchantData.getMerchantItemForSaleDatas().stream().map(m -> MerchantItemForSaleData.copyMerchantItemForSale(m)).collect(Collectors.toList()),
+                merchantData.getWelcomeMessage(),
+                merchantData.getRoomIds(),
+                merchantData.getMerchantType());
+        }
+
+        return new Merchant(gameManager,
+            merchantData.getInternalName(),
+            merchantData.getName(),
+            merchantData.getColorName(),
+            merchantData.getValidTriggers(),
+            merchantData.getMerchantItemForSaleDatas().stream().map(m -> MerchantItemForSaleData.copyMerchantItemForSale(m)).collect(Collectors.toList()),
+            merchantData.getWelcomeMessage(),
+            merchantData.getRoomIds());
+    }
+
+    public Optional<MerchantData> getMerchantData(String internalName) {
+        MerchantData data = framedGraph.traverse((g) -> framedGraph.getTypeResolver().hasType(g.V(), MerchantData.class).property("internalName", internalName)).nextOrDefault(MerchantData.class,null);
+        return Optional.ofNullable(data);
+    }
+
+    public MerchantData newMerchantData() {
+        return framedGraph.addFramedVertex(MerchantData.class);
     }
 }

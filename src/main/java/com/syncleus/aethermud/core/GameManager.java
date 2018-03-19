@@ -104,14 +104,7 @@ public class GameManager {
     private final Room detainmentRoom;
     private final HttpClient httpclient;
     private final Gson gson;
-    private final FilebasedJsonStorage filebasedJsonStorage;
     private final GraphStorageFactory graphStorageFactory;
-
-    public MerchantStorage getMerchantStorage() {
-        return merchantStorage;
-    }
-
-    private final MerchantStorage merchantStorage;
 
 
     public GameManager(GraphStorageFactory graphStorageFactory, AetherMudConfiguration aetherMudConfiguration, RoomManager roomManager, PlayerManager playerManager, EntityManager entityManager, MapsManager mapsManager, ChannelCommunicationUtils channelUtils, HttpClient httpClient) {
@@ -143,8 +136,6 @@ public class GameManager {
         this.eventProcessor.startAsync();
         this.detainmentRoom = buildDetainmentRoom();
         this.gson = new GsonBuilder().setPrettyPrinting().create();
-        this.filebasedJsonStorage = new FilebasedJsonStorage(gson);
-        this.merchantStorage = new MerchantStorage(this, filebasedJsonStorage);
         this.httpclient = httpClient;
     }
 
