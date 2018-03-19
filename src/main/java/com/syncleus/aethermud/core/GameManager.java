@@ -669,7 +669,7 @@ public class GameManager {
         sb.append("[");
         int numberOfProgressBarNotches = getNumberOfProgressBarNotches(pct);
         for (int i = 0; i < numberOfProgressBarNotches; i++) {
-            sb.append("+");
+            sb.append("■");
         }
         for (int i = numberOfProgressBarNotches; i < 10; i++) {
             sb.append(" ");
@@ -688,10 +688,14 @@ public class GameManager {
     }
 
     public String renderCoolDownString(Set<? extends CoolDown> coolDowns) {
-        Table t = new Table(2, BorderStyle.CLASSIC_COMPATIBLE,
+        Table t = new Table(5, BorderStyle.CLASSIC_COMPATIBLE,
                 ShownBorders.NONE);
 
-        t.setColumnWidth(0, 19, 25);
+        t.setColumnWidth(0, 13, 13);
+        t.setColumnWidth(1, 2, 10);
+        t.setColumnWidth(2, 3, 3);
+        t.setColumnWidth(3, 2, 10);
+        t.setColumnWidth(4, 10, 25);
         // t.setColumnWidth(1, 10, 13);
 
         int i = 1;
@@ -699,9 +703,15 @@ public class GameManager {
             int percent = 100 - (int) (((coolDown.getOriginalNumberOfTicks() - coolDown.getNumberOfTicks()) * 100.0f) / coolDown.getOriginalNumberOfTicks());
             // 1 tick == .5 seconds.
             int approxSecondsRemaining = coolDown.getNumberOfTicks() / 2;
+            int approxSecondsOriginal = coolDown.getOriginalNumberOfTicks() / 2;
             FriendlyTime friendlyTime = new FriendlyTime(approxSecondsRemaining);
+            FriendlyTime friendlyTimeOriginal = new FriendlyTime(approxSecondsOriginal);
             String friendlyFormattedShort = friendlyTime.getFriendlyFormattedShort();
-            t.addCell(drawProgressBar(percent) + friendlyFormattedShort);
+            String friendlyOriginalFormattedShort = friendlyTimeOriginal.getFriendlyFormattedShort();
+            t.addCell(drawProgressBar(percent) + " ");
+            t.addCell(friendlyFormattedShort);
+            t.addCell(" / " );
+            t.addCell(friendlyOriginalFormattedShort + " ");
             t.addCell(coolDown.getName());
             i++;
         }

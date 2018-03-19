@@ -37,6 +37,13 @@ public class CoolDown {
         this.originalNumberOfTicks = numberOfTicks;
     }
 
+    public CoolDown(String name, int numberOfTicks, int originalNumberOfTicks, CoolDownType coolDownType){
+        this.name = name;
+        this.numberOfTicks = numberOfTicks;
+        this.coolDownType = coolDownType;
+        this.originalNumberOfTicks = originalNumberOfTicks;
+    }
+
     public CoolDownType getCoolDownType() {
         return coolDownType;
     }

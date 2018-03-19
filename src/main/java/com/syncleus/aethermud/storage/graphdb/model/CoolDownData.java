@@ -53,7 +53,7 @@ public abstract class CoolDownData extends AbstractInterceptingVertexFrame {
     }
 
     public static CoolDown copyCoolDown(CoolDownData src) {
-        return new CoolDown(src.getName(), src.getNumberOfTicks(), src.getCoolDownType());
+        return new CoolDown(src.getName(), src.getNumberOfTicks(), src.getOriginalNumberOfTicks(), src.getCoolDownType());
     }
 
     public void decrementTick() {
