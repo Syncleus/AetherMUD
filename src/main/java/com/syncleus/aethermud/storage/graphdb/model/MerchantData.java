@@ -76,11 +76,13 @@ public abstract class MerchantData extends AbstractInterceptingVertexFrame {
     @Property("roomIds")
     public abstract void setRoomIds(Set<Integer> roomIds);
 
-    @Property("welcomeMessage")
-    public abstract String getWelcomeMessage();
+    public String getWelcomeMessage() {
+        return ColorizedTextTemplate.renderFromTemplateLanguage(this.getProperty("welcomeMessage"));
+    }
 
-    @Property("welcomeMessage")
-    public abstract void setWelcomeMessage(String welcomeMessage);
+    public void setWelcomeMessage(String welcomeMessage) {
+        this.setProperty("welcomeMessage", ColorizedTextTemplate.renderToTemplateLanguage(welcomeMessage));
+    }
 
     @Adjacency(label = "merchantItemForSales", direction = Direction.OUT)
     public abstract <N extends MerchantItemForSaleData> Iterator<? extends N> getMerchantItemForSaleDataIterator(Class<? extends N> type);
