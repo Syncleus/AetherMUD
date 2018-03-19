@@ -41,7 +41,7 @@ public class ManifestCommand extends Command {
 
     final static List<String> validTriggers = Arrays.asList("manifest");
     final static String description = "Manifest an item.";
-    final static String correctUsage = "manifest <item id> | spawn";
+    final static String correctUsage = "manifest <item name> | spawn";
     final static Set<PlayerRole> roles = Sets.newHashSet(PlayerRole.ADMIN);
 
     public ManifestCommand(GameManager gameManager) {
