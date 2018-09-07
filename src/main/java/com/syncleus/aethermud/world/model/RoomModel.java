@@ -30,6 +30,9 @@ public class RoomModel {
     Set<String> areaNames;
     Map<String, String> enterExitNames;
     Map<String, String> notables;
+    
+    public RoomModel() {
+    }
 
     public RoomModel(int roomId, int floorId, String roomDescription, String roomTitle, Map<String, String> notables, Set<String> roomTags, Set<String> areaNames, Map<String, String> enterExitNames) {
         this.roomId = roomId;

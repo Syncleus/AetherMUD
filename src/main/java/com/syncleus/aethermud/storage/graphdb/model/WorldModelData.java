@@ -48,7 +48,7 @@ public abstract class WorldModelData extends AbstractInterceptingVertexFrame {
 
     public FloorModelData createFloorModelData() {
         final FloorModelData floorModel = this.getGraph().addFramedVertex(FloorModelData.class);
-        this.addEffectData(floorModel);
+        this.addFloorModelData(floorModel);
         return floorModel;
     }
 
@@ -58,9 +58,9 @@ public abstract class WorldModelData extends AbstractInterceptingVertexFrame {
 
             for(FloorModelData data : dest.getFloorModelDatas())
                 data.remove();
-            if( src.getFloorModelDatas() != null )
-                for(FloorModelData floorModelData : src.getFloorModelDatas())
-                    FloorModelData.copyFloorModel(dest.createFloorModelData(), floorModelData);
+            if( src.getFloorModelList() != null )
+                for(FloorModel floorModel : src.getFloorModelList())
+                    FloorModelData.copyFloorModel(dest.createFloorModelData(), floorModel);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }
@@ -75,7 +75,7 @@ public abstract class WorldModelData extends AbstractInterceptingVertexFrame {
             if( src.getFloorModelDatas() != null )
                 for(FloorModelData floorModelData : src.getFloorModelDatas())
                     floorModels.add(FloorModelData.copyFloorModel(floorModelData));
-            retVal.setFloorModels(Collections.unmodifiableSet(floorModels));
+            retVal.setFloorModelList(Collections.unmodifiableSet(floorModels));
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);

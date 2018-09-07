@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.ferma.annotations.Adjacency;
 import com.syncleus.ferma.annotations.GraphElement;
+import com.syncleus.ferma.annotations.Property;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
@@ -49,7 +50,7 @@ public abstract class FloorModelData extends AbstractInterceptingVertexFrame {
 
     public RoomModelData createRoomModelData() {
         final RoomModelData roomModel = this.getGraph().addFramedVertex(RoomModelData.class);
-        this.addEffectData(roomModel);
+        this.addRoomModelData(roomModel);
         return roomModel;
     }
 
@@ -77,9 +78,9 @@ public abstract class FloorModelData extends AbstractInterceptingVertexFrame {
 
             for(RoomModelData data : dest.getRoomModelDatas())
                 data.remove();
-            if( src.getRoomModelDatas() != null )
-                for(RoomModelData roomModelData : src.getRoomModelDatas())
-                    RoomModelData.copyFloorModel(dest.createRoomModelData(), roomModelData);
+            if( src.getRoomModels() != null )
+                for(RoomModel roomModel : src.getRoomModels())
+                    RoomModelData.copyRoomModel(dest.createRoomModelData(), roomModel);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Could not copy properties", e);
         }

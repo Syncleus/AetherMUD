@@ -17,6 +17,7 @@ package com.syncleus.aethermud.storage.graphdb.model;
 
 import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.ferma.annotations.GraphElement;
+import com.syncleus.ferma.annotations.Property;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import com.syncleus.aethermud.world.model.*;
@@ -30,52 +31,52 @@ import java.util.Set;
 public abstract class RoomModelData extends AbstractInterceptingVertexFrame {
 
     @Property("areaNames")
-    public Set<String> getAreaNames();
+    public abstract Set<String> getAreaNames();
 
     @Property("areaNames")
-    public void setAreaNames(Set<String> areaNames);
+    public abstract void setAreaNames(Set<String> areaNames);
 
     @Property("floorId")
-    public int getFloorId();
+    public abstract int getFloorId();
 
     @Property("floorId")
-    public void setFloorId(int floorId);
+    public abstract void setFloorId(int floorId);
 
     @Property("roomTags")
-    public Set<String> getRoomTags();
+    public abstract Set<String> getRoomTags();
 
     @Property("roomTags")
-    public void setRoomTags(Set<String> roomTags);
+    public abstract void setRoomTags(Set<String> roomTags);
 
     @Property("roomId")
-    public int getRoomId();
+    public abstract int getRoomId();
 
     @Property("roomId")
-    public void setRoomId(int roomId);
+    public abstract void setRoomId(int roomId);
 
     @Property("roomDescription")
-    public String getRoomDescription();
+    public abstract String getRoomDescription();
 
     @Property("roomDescription")
-    public void setRoomDescription(String roomDescription);
+    public abstract void setRoomDescription(String roomDescription);
 
     @Property("roomTitle")
-    public String getRoomTitle();
+    public abstract String getRoomTitle();
 
     @Property("roomTitle")
-    public void setRoomTitle(String roomTitle);
+    public abstract void setRoomTitle(String roomTitle);
 
     @Property("enterExitNames")
-    public Map<String, String> getEnterExitNames();
+    public abstract Map<String, String> getEnterExitNames();
 
     @Property("enterExitNames")
-    public void setEnterExitNames(Map<String, String> enterExitNames);
+    public abstract void setEnterExitNames(Map<String, String> enterExitNames);
 
     @Property("notables")
-    public Map<String, String> getNotables();
+    public abstract Map<String, String> getNotables();
     
     @Property("notables")
-    public void setNotables(Map<String, String> notables);
+    public abstract void setNotables(Map<String, String> notables);
     
         
     public static void copyRoomModel(RoomModelData dest, RoomModel src) {
