@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Syncleus, Inc.
+ * Copyright 2017 - 2018 Syncleus, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class AetherMudConfiguration {
     public final String mudName;
 
     public static final String TELNET_PORT = "telnet.port";
-    public static final int TELNET_PORT_DEFAULT = 8080;
+    public static final int TELNET_PORT_DEFAULT = 2323;
     public final int telnetPort;
 
     public static final String DATABASE_FILE_NAME = "database.file.name";
