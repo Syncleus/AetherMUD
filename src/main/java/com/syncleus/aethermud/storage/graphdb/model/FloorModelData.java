@@ -22,7 +22,7 @@ import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.tinkerpop.gremlin.structure.Direction;
-import com.syncleus.aethermud.world.model.RoomModelData;
+import com.syncleus.aethermud.world.model.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;

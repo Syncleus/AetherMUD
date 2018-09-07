@@ -19,6 +19,7 @@ import com.syncleus.aethermud.storage.graphdb.DataUtils;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 import org.apache.commons.beanutils.PropertyUtils;
+import com.syncleus.aethermud.world.model.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
