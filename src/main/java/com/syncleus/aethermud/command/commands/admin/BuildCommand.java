@@ -19,7 +19,7 @@ import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.PlayerMovement;
 import com.syncleus.aethermud.player.PlayerRole;
-import com.syncleus.aethermud.storage.WorldStorage;
+import com.syncleus.aethermud.storage.AetherMudStorage;
 import com.syncleus.aethermud.world.MapMatrix;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -225,7 +225,7 @@ public class BuildCommand extends Command {
 
     private void addNewRoomAndFloorAndMovePlayer(Room newRoom, FloorModel newFloorModel, Optional<RemoteExit> returnRemoteExit) {
         entityManager.addEntity(newRoom);
-        Set<RoomModel> roomModels = Sets.newHashSet(newRoom).stream().map(WorldStorage.buildRoomModelsFromRooms()).collect(Collectors.toSet());
+        Set<RoomModel> roomModels = Sets.newHashSet(newRoom).stream().map(AetherMudStorage.buildRoomModelsFromRooms()).collect(Collectors.toSet());
         newFloorModel.setRoomModels(roomModels);
         floorManager.addFloor(newFloorModel.getId(), newFloorModel.getName());
         MapMatrix matrixFromCsv = MapMatrix.createMatrixFromCsv(newFloorModel.getRawMatrixCsv());

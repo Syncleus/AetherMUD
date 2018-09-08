@@ -24,7 +24,6 @@ import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.syncleus.aethermud.server.model.AetherMudSession;
 import com.syncleus.aethermud.server.communication.ChannelCommunicationUtils;
-import com.syncleus.aethermud.storage.WorldStorage;
 import com.syncleus.aethermud.world.FloorManager;
 import com.syncleus.aethermud.world.MapMatrix;
 import com.syncleus.aethermud.world.MapsManager;
@@ -63,7 +62,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
     public Optional<MapMatrix> mapMatrix = Optional.empty();
     public Optional<Coords> currentRoomCoords = Optional.empty();
     public List<String> originalMessageParts;
-    public WorldStorage worldExporter;
     public String rootCommand;
 
     protected Command(GameManager gameManager, List<String> validTriggers, String description, String correctUsage) {
@@ -81,7 +79,6 @@ public abstract class Command extends SimpleChannelUpstreamHandler {
         this.entityManager = gameManager.getEntityManager();
         this.playerManager = gameManager.getPlayerManager();
         this.channelUtils = gameManager.getChannelUtils();
-        this.worldExporter = new WorldStorage(roomManager, mapsManager, floorManager, entityManager, gameManager);
         this.lootManager = gameManager.getLootManager();
         this.roles = roles;
     }

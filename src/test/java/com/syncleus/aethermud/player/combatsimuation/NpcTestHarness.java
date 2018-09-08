@@ -30,7 +30,6 @@ import com.syncleus.aethermud.server.communication.ChannelCommunicationUtils;
 import com.syncleus.aethermud.stats.DefaultStats;
 import com.syncleus.aethermud.stats.Levels;
 import com.syncleus.aethermud.stats.experience.Experience;
-import com.syncleus.aethermud.storage.WorldStorage;
 import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import com.syncleus.aethermud.storage.graphdb.model.PlayerData;
 import com.syncleus.aethermud.world.MapsManager;
@@ -345,8 +344,10 @@ public class NpcTestHarness {
         MapsManager mapsManager = new MapsManager(aetherMudConfiguration, roomManager);
         EntityManager entityManager = new EntityManager(storageFactory, roomManager, playerManager);
         GameManager gameManager = new GameManager(storageFactory, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
-        WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
-        worldExporter.buildTestworld();
+        try( GraphStorageFactory.AetherMudTx tx = gameManager.getGraphStorageFactory().beginTransaction() ) {
+            tx.getStorage().loadWorld(mapsManager, entityManager, gameManager);
+            tx.success();
+        }
         ConfigureCommands.configure(gameManager);
         this.entityManager = entityManager;
         this.gameManager = gameManager;

@@ -19,6 +19,7 @@ import com.syncleus.aethermud.command.commands.Command;
 import com.syncleus.aethermud.core.GameManager;
 import com.syncleus.aethermud.player.PlayerRole;
 import com.google.common.collect.Sets;
+import com.syncleus.aethermud.storage.graphdb.GraphStorageFactory;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 
@@ -40,7 +41,10 @@ public class SaveWorldCommand extends Command {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         execCommandThreadSafe(ctx, e, SaveWorldCommand.class, () -> {
-            worldExporter.saveWorld();
+            try( GraphStorageFactory.AetherMudTx tx = this.gameManager.getGraphStorageFactory().beginTransaction() ) {
+                tx.getStorage().saveWorld(roomManager, mapsManager, floorManager);
+                tx.success();
+            }
             write("World saved.");
         });
     }

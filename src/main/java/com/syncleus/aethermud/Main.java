@@ -30,23 +30,15 @@ import com.syncleus.aethermud.player.PlayerManagementManager;
 import com.syncleus.aethermud.player.PlayerManager;
 import com.syncleus.aethermud.server.communication.ChannelUtils;
 import com.syncleus.aethermud.server.telnet.AetherMudServer;
-import com.syncleus.aethermud.storage.WorldStorage;
 import com.syncleus.aethermud.storage.graphdb.*;
-import com.syncleus.aethermud.storage.graphdb.model.*;
 import com.syncleus.aethermud.world.MapsManager;
 import com.syncleus.aethermud.world.RoomManager;
 import com.google.common.io.Files;
-import com.syncleus.ferma.DelegatingFramedGraph;
-import com.syncleus.ferma.WrappedFramedGraph;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.*;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.apache.tinkerpop.gremlin.structure.io.IoCore;
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import java.io.File;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -103,8 +95,10 @@ public class Main {
         GameManager gameManager = new GameManager(graphStorageFactory, aetherMudConfiguration, roomManager, playerManager, entityManager, mapsManager, channelUtils, HttpClients.createDefault());
 
         startUpMessage("Reading world from disk.");
-        WorldStorage worldExporter = new WorldStorage(roomManager, mapsManager, gameManager.getFloorManager(), entityManager, gameManager);
-        worldExporter.readWorldFromDisk();
+        try( GraphStorageFactory.AetherMudTx tx = gameManager.getGraphStorageFactory().beginTransaction() ) {
+            tx.getStorage().loadWorld(mapsManager, entityManager, gameManager);
+            tx.success();
+        }
 
         startUpMessage("Creating and registering Player Management MBeans.");
         PlayerManagementManager playerManagementManager = new PlayerManagementManager(gameManager);
